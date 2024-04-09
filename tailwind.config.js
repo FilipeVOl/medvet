@@ -3,9 +3,14 @@ export default {
   content: ["./src/**/*.{html,js,jsx}"],
   theme: {
     extend: {
-      colors: {
-        'gray-med': '#989898'
+      fontFamily: {
+        Montserrat: ['Montserrat']
+      },
 
+      colors: {
+        'gray-med': '#989898',
+        'border-gray': '#848484',
+        'border-blue': '#100F49'
       }
     },
   },

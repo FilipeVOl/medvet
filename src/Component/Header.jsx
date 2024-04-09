@@ -5,7 +5,7 @@ import uniLogo from '../assets/unilogo.svg'
 export default function Header() {
     return (
         <>
-<div className="header-container justify-between grid grid-cols-2 w-screen mt-4 shadow-md overflow-hidden px-5">
+<div className="header-container justify-between grid grid-cols-2 w-screen items-center mt-4 shadow-md px-5 pb-5">
             <img className='med-logo' src={medvetlogo} alt='logo'/>
 
     
