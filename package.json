@@ -12,6 +12,7 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.51.2",
     "react-input-mask": "^2.0.4",
     "vite-plugin-svgr": "^4.2.0"
   },
