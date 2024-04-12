@@ -36,7 +36,7 @@ export default function Cadastro() {
       name: nome,
       cpf: cpfSemPonto,
       phone,
-      passwo rd: cpfSemPonto,
+      password: cpfSemPonto,
     }
 
     console.log(data)
