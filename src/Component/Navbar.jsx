@@ -2,7 +2,7 @@ import React from 'react'
 
 const Navbar = () => {
   return (
-    <div className='shadow-md w-60 h-screen'></div>
+    <div className='shadow-md min-w-60 w-60 bg-[#007448]'></div>
   )
 }
 

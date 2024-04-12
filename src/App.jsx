@@ -1,16 +1,13 @@
-import Header from './Component/Header'
-import Navbar from './Component/Navbar'
-import Cadastro from './Component/Cadastro'
+import { Router } from "./Router";
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
 
   return (
     <>
-        <Header />
-        <div className='separador flex'>
-        <Navbar />
-        <Cadastro />
-        </div>
+       <BrowserRouter>
+       <Router />
+       </BrowserRouter>
     </>
   )
 }
