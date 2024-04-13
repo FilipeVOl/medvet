@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { Input, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";
 import z from "zod";
-import axios from "axios";
+// import axios from "axios";
 
 const schema = z.object({
   paciente: z.string(),
@@ -100,8 +100,9 @@ const TelaConsulta = () => {
                 onChange={(e) => {
                   handleChange(e.target.value, setEspecie);
                 }}
-                className={`border ${especie === "" ? "border-red-600" : " border-[#848484]"
-                  } rounded-[2px] h-[46px] p-2`}
+                className={`border ${
+                  especie === "" ? "border-red-600" : " border-[#848484]"
+                } rounded-[2px] h-[46px] p-2`}
               />
             </div>
 
@@ -116,8 +117,9 @@ const TelaConsulta = () => {
                 onChange={(e) => {
                   handleChange(e.target.value, setContato);
                 }}
-                className={`border ${contato === "" ? "border-red-600" : " border-[#848484]"
-                  } rounded-[2px] h-[46px] p-2`}
+                className={`border ${
+                  contato === "" ? "border-red-600" : " border-[#848484]"
+                } rounded-[2px] h-[46px] p-2`}
               />
             </div>
 
@@ -132,8 +134,9 @@ const TelaConsulta = () => {
                 onChange={(e) => {
                   handleChange(e.target.value, setData);
                 }}
-                className={`border ${data === "" ? "border-red-600" : " border-[#848484]"
-                  } rounded-[2px] h-[46px] p-2`}
+                className={`border ${
+                  data === "" ? "border-red-600" : " border-[#848484]"
+                } rounded-[2px] h-[46px] p-2`}
               />
             </div>
           </div>
@@ -145,8 +148,9 @@ const TelaConsulta = () => {
             onChange={(e) => {
               handleChange(e.target.value, setObs);
             }}
-            className={`border ${obs === "" ? "border-red-600" : "border-[#848484]"
-              }  rounded-[2px] h-[92px] p-2 text-base w-full resize-none`}
+            className={`border ${
+              obs === "" ? "border-red-600" : "border-[#848484]"
+            }  rounded-[2px] h-[92px] p-2 text-base w-full resize-none`}
           />
         </form>
         <div className="justify-between flex ml-4 mt-10">
