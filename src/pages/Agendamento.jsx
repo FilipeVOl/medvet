@@ -4,10 +4,11 @@ import TelaNovoTutor from "../Component/TelaNovoTutor";
 
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import { Input, InputLabel } from "@mui/material";
 
 const Agendamento = () => {
   const [open, setOpen] = useState(false);
-  const [cpf, setCpf] = useState("");
+  const [telefone, setTelefone] = useState("");
 
   const style = {
     display: "flex",
@@ -44,16 +45,16 @@ const Agendamento = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <h1 className="text-2xl font-bold">Conferir CPF</h1>
+          <h1 className="text-2xl font-bold">Conferir Telefone</h1>
           <div>
-            <label className="ml-4" htmlFor="">
-              CPF
-            </label>
-            <input
+            <InputLabel className="ml-4" htmlFor="">
+              Telefone
+            </InputLabel>
+            <Input
               onChange={(e) => {
-                setCpf(e.target.value);
+                setTelefone(e.target.value);
               }}
-              className="border border-[#848484] rounded-[10px] h-[46px] p-2 text-base w-full"
+              className="border border-[#848484] rounded-[2px] h-[46px] p-2 text-base w-full"
             />
             <div className="flex justify-between">
               <button
@@ -71,11 +72,7 @@ const Agendamento = () => {
           </div>
         </Box>
       </Modal>
-      {cpf === "consulta" ? (
-        <TelaConsulta />
-      ) : (
-        <TelaNovoTutor />
-      )}
+      {telefone === "222" ? <TelaConsulta /> : <TelaNovoTutor />}
     </>
   );
 };
