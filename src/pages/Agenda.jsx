@@ -30,7 +30,7 @@ export default function Agenda() {
                 {dados[chave].map((e) => {
                   return (
                     <div className='flex flex-col bg-side-gray my-4 p-2 rounded-lg pr-96'>
-                      <span className='justify-self-start bg-red-400'>oi</span>
+                      <span className='justify-self-start bg-red-400 '>oi</span>
                       <span className="m-2"key={e[0]}>{e[0]}</span>
                       <span className="m-2"key={e[1]}>{e[1]}</span>
                       <span className="m-2"key={e[2]}>{e[2]}</span>
