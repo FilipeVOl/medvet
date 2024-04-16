@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import TelaConsulta from "../Component/TelaConsulta";
-import TelaNovoTutor from "../Component/TelaNovoTutor";
+import { UserContext } from "../contexts/userContext";
 
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -9,6 +9,7 @@ import { Input, InputLabel } from "@mui/material";
 const Agendamento = () => {
   const [open, setOpen] = useState(false);
   const [telefone, setTelefone] = useState("");
+  const { user, setUser } = useContext(UserContext);
 
   const style = {
     display: "flex",
@@ -53,6 +54,7 @@ const Agendamento = () => {
             <Input
               onChange={(e) => {
                 setTelefone(e.target.value);
+                setUser({ ...user, phone: e.target.value });
               }}
               className="border border-[#848484] rounded-[2px] h-[46px] p-2 text-base w-full"
             />
@@ -72,7 +74,7 @@ const Agendamento = () => {
           </div>
         </Box>
       </Modal>
-      {telefone === "222" ? <TelaConsulta /> : <TelaNovoTutor />}
+      <TelaConsulta />
     </>
   );
 };

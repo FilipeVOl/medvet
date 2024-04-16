@@ -5,9 +5,12 @@ import InputMask from "react-input-mask";
 export default function Cadastro() {
   return (
     <>
-      <div style={{
-        height: "calc(100vh - 116px)",
-      }} className="cadastro-container w-full">
+      <div
+        style={{
+          height: "calc(100vh - 116px)",
+        }}
+        className="cadastro-container w-full"
+      >
         <h1 className="font-Montserrat p-20 h-10 font-bold">Novo aluno</h1>
 
         <form>

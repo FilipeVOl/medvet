@@ -1,7 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useContext } from "react";
 import { Input, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";
 import z from "zod";
+import { UserContext } from "../contexts/userContext";
 // import axios from "axios";
 
 const schema = z.object({
@@ -41,7 +42,9 @@ const TelaConsulta = () => {
   const Dropdown = ({ label, options, onchange, value }) => {
     return (
       <div className="flex flex-col w-full mb-4">
-        <InputLabel className="ml-4">{label}</InputLabel>
+        <InputLabel htmlFor={label} className="ml-4">
+          {label}
+        </InputLabel>
         <select
           onChange={(e) => {
             onchange(e.target.value);
@@ -64,6 +67,11 @@ const TelaConsulta = () => {
     { label: "Paciente 2", value: "paciente2" },
     { label: "Paciente 3", value: "paciente3" },
   ];
+  const { user } = useContext(UserContext);
+
+  const checkPhone = () => {
+    return user.phone === "62920007153";
+  };
 
   return (
     <>
@@ -74,7 +82,7 @@ const TelaConsulta = () => {
             <Dropdown
               label="Paciente"
               options={dataPacientes}
-              value={pacientes}
+              value={checkPhone ? user.paciente : pacientes}
               onchange={(value) => {
                 handleChange(value, setPacientes);
               }}
@@ -82,7 +90,7 @@ const TelaConsulta = () => {
             <Dropdown
               label="Tutor"
               options={dataPacientes}
-              value={tutores}
+              value={checkPhone ? user.tutor : tutores}
               onchange={(value) => {
                 handleChange(value, setTutores);
               }}
@@ -96,7 +104,9 @@ const TelaConsulta = () => {
               <Input
                 label="Especie"
                 type="text"
-                value={especie}
+                value={
+                  user.phone === "62920007153" ? user.pet.especie : especie
+                }
                 onChange={(e) => {
                   handleChange(e.target.value, setEspecie);
                 }}
@@ -113,7 +123,7 @@ const TelaConsulta = () => {
               <Input
                 label="Contato"
                 type="text"
-                value={contato}
+                value={user.phone === "62920007153" ? user.phone : contato}
                 onChange={(e) => {
                   handleChange(e.target.value, setContato);
                 }}
@@ -130,7 +140,7 @@ const TelaConsulta = () => {
               <Input
                 label="Data"
                 type="text"
-                value={data}
+                value={user.phone === "62920007153" ? user.data : data}
                 onChange={(e) => {
                   handleChange(e.target.value, setData);
                 }}
@@ -144,7 +154,7 @@ const TelaConsulta = () => {
             Observação*
           </label>
           <textarea
-            value={obs}
+            value={user.phone === "62920007153" ? user.obs : obs}
             onChange={(e) => {
               handleChange(e.target.value, setObs);
             }}
