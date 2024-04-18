@@ -33,11 +33,11 @@ export default function Agenda() {
           {agendas.map((dados) => {
             const chave = Object.keys(dados);
             return (
-              <div key = {chave} className="m-12 pr-20">
+              <div key = {chave} className="m-12 pr-20 max-w-4xl">
                 <h2 className="text-2xl pr-0 text-text-gray font-semibold">{transData(chave)}</h2>
                 {dados[chave].map((e) => {
                   return (
-                    <div key={e}className='flex bg-side-gray my-4 rounded-lg ml-4 pr-[200vh]'>
+                    <div key={e}className='flex bg-side-gray my-4 rounded-lg ml-4'>
                       <div className='bg-card-green m-0 text-transparent  rounded-lg'>a</div>
                       <div className='flex flex-col p-4'>
                         <div className='m-2'>
