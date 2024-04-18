@@ -4,6 +4,7 @@ import Agendamento from "./pages/Agendamento";
 import Professor from "./pages/professor";
 import { DefaultLayout } from "./layouts/DefaultLayout";
 import { UserProvider } from "./contexts/userContext";
+import { Calendar } from "./Component/Calendar/Calendar";
 
 export function Router() {
   return (
@@ -11,6 +12,7 @@ export function Router() {
       <Routes>
         <Route path="/" element={<DefaultLayout />}>
           <Route path="cadastro" element={<Cadastro />} />
+          <Route path="calendario" element={<Calendar />} />
           <Route path="agendamento" element={<Agendamento />} />
         </Route>
       </Routes>

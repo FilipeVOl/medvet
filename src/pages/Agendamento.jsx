@@ -5,28 +5,12 @@ import { UserContext } from "../contexts/userContext";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Input, InputLabel } from "@mui/material";
+import { style } from "../Component/Calendar/calendar_utils";
 
 const Agendamento = () => {
   const [open, setOpen] = useState(false);
   const [telefone, setTelefone] = useState("");
   const { user, setUser } = useContext(UserContext);
-
-  const style = {
-    display: "flex",
-    justifyContent: "space-between",
-    flexDirection: "column",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "50%",
-    height: "50%",
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    borderRadius: 3,
-    p: 8,
-  };
 
   useEffect(() => {
     setOpen(true);
