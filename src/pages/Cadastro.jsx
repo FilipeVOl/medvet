@@ -45,7 +45,7 @@ export default function Cadastro() {
     console.log(data);
 
     axios
-      .post("http://localhost:3333/users/student", data)
+      .post("http://localhost:3000/users/student", data)
       .then((res) => {
         console.log(res);
       })
@@ -68,7 +68,7 @@ export default function Cadastro() {
 
       <form>
         <div className="forms-container px-28 grid w-full justify-center">
-          <div className="box-1 grid grid-cols-[2fr_1fr] gap-8 mb-4">
+          <div className="box-1 grid grid-cols-[2fr_1fr] gap-8">
             <div className="">
               <label htmlFor="nome" className="font-Montserrat indent-4">
                 Nome completo *<br></br>
@@ -114,7 +114,7 @@ export default function Cadastro() {
             </div>
           </div>
 
-          <div className="box-2 grid grid-cols-[196px_400px] gap-32 mb-4">
+          <div className="box-2 grid grid-cols-[196px_400px] gap-32">
             <label htmlFor="cpf" className="font-Montserrat indent-4">
               CPF *<br></br>
               <InputMask
@@ -152,7 +152,7 @@ export default function Cadastro() {
             </label>
           </div>
 
-          <div className="box-3 grid grid-cols-[200px_390px] gap-44 mb-4">
+          <div className="box-3 grid grid-cols-[200px_390px] gap-44">
             <label htmlFor="course" className="font-Montserrat indent-4">
               Curso *<br></br>
               <input
