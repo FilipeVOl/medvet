@@ -2,7 +2,7 @@ import { useState, useCallback, useContext } from "react";
 import { Input, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";
 import z from "zod";
-import { UserContext } from "../contexts/userContext";
+import { UserContext } from "../contexts/userContext
 // import axios from "axios";
 
 const schema = z.object({
@@ -69,10 +69,6 @@ const TelaConsulta = () => {
   ];
   const { user } = useContext(UserContext);
 
-  const checkPhone = () => {
-    return user.phone === "62920007153";
-  };
-
   return (
     <>
       <div className="flex flex-col p-16 w-full">
@@ -82,7 +78,7 @@ const TelaConsulta = () => {
             <Dropdown
               label="Paciente"
               options={dataPacientes}
-              value={checkPhone ? user.paciente : pacientes}
+              value={ pacientes}
               onchange={(value) => {
                 handleChange(value, setPacientes);
               }}
@@ -90,7 +86,7 @@ const TelaConsulta = () => {
             <Dropdown
               label="Tutor"
               options={dataPacientes}
-              value={checkPhone ? user.tutor : tutores}
+              value={tutores}
               onchange={(value) => {
                 handleChange(value, setTutores);
               }}

@@ -5,7 +5,7 @@ import Professor from "./pages/professor";
 import { DefaultLayout } from "./layouts/DefaultLayout";
 import { UserProvider } from "./contexts/userContext";
 import { Calendar } from "./Component/Calendar/Calendar";
-import { Agenda } from "./pages/Agenda";
+import Agenda from "./pages/Agenda";
 
 export function Router() {
   return (

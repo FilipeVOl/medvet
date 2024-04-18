@@ -1,7 +1,7 @@
+import TelaNovoTutor from "../Component/TelaNovoTutor";
 import { useState, useEffect, useContext } from "react";
 import TelaConsulta from "../Component/TelaConsulta";
 import { UserContext } from "../contexts/userContext";
-
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Input, InputLabel } from "@mui/material";
@@ -10,7 +10,7 @@ import { style } from "../Component/Calendar/calendar_utils";
 const Agendamento = () => {
   const [open, setOpen] = useState(false);
   const [telefone, setTelefone] = useState("");
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext)
 
   useEffect(() => {
     setOpen(true);
@@ -58,7 +58,7 @@ const Agendamento = () => {
           </div>
         </Box>
       </Modal>
-      <TelaConsulta />
+      {telefone === "222" ? <TelaConsulta /> : <TelaNovoTutor />}
     </>
   );
 };
