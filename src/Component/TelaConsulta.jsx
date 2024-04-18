@@ -2,7 +2,7 @@ import { useState, useCallback, useContext } from "react";
 import { Input, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";
 import z from "zod";
-import { UserContext } from "../contexts/userContext
+import { UserContext } from "../contexts/userContext"
 // import axios from "axios";
 
 const schema = z.object({
@@ -71,7 +71,7 @@ const TelaConsulta = () => {
 
   return (
     <>
-      <div className="flex flex-col p-16 w-full">
+      <div className="flex flex-col p-16 w-full h-screen">
         <h1 className="text-2xl font-bold">Agendar Consulta</h1>
         <form onSubmit={(e) => e.preventDefault()} className="pt-12 ml-4">
           <div className="flex gap-8">

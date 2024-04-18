@@ -12,10 +12,11 @@ export function Router() {
     <UserProvider>
       <Routes>
         <Route path="/" element={<DefaultLayout />}>
-          <Route path="cadastro" element={<Cadastro />} />
+          <Route path="aluno" element={<Cadastro />} />
           <Route path="calendario" element={<Calendar />} />
           <Route path="agendamento" element={<Agendamento />} />
           <Route path="agenda" element={<Agenda/>} />
+          <Route path="professor" element={ <Professor/>}/>
         </Route>
       </Routes>
     </UserProvider>

@@ -37,9 +37,9 @@ export default function Agenda() {
                 <h2 className="text-2xl pr-0 text-text-gray font-semibold">{transData(chave)}</h2>
                 {dados[chave].map((e) => {
                   return (
-                    <div key={e}className='flex bg-side-gray my-4 rounded-lg ml-4'>
+                    <div key={e}className='flex bg-side-gray my-4 rounded-lg ml-4 pr-[200vh]'>
                       <div className='bg-card-green m-0 text-transparent  rounded-lg'>a</div>
-                      <div className='flex flex-col p-4 pr-96'>
+                      <div className='flex flex-col p-4'>
                         <div className='m-2'>
                           <span>Tutor:  <span className="font-bold pl-1">{e.Paciente}</span></span>
                           <span>, {e.Especie}</span>

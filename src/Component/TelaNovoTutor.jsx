@@ -135,7 +135,7 @@ const TelaNovoTutor = () => {
 
   return (
     <>
-      <div className="flex flex-col p-16">
+      <div className="flex flex-col p-16 h-screen">
         <h1 className=" text-2xl font-bold">Agendar Consulta</h1>
         <form>
           <div className="pt-12 ml-4">
