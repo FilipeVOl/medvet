@@ -45,7 +45,7 @@ export default function Cadastro() {
     console.log(data);
 
     axios
-      .post("http://localhost:3000/users/student", data)
+      .post("http://localhost:3333/users/student", data)
       .then((res) => {
         console.log(res);
       })
