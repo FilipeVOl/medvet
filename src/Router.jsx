@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Cadastro from "./pages/Cadastro";
 import Agendamento from "./pages/Agendamento";
 import Professor from "./pages/professor";
+import NovaConsulta from "./pages/NovaConsulta";
 import { DefaultLayout } from "./layouts/DefaultLayout";
 import { UserProvider } from "./contexts/userContext";
 import { Calendar } from "./Component/Calendar/Calendar";
@@ -17,6 +18,7 @@ export function Router() {
           <Route path="agendamento" element={<Agendamento />} />
           <Route path="agenda" element={<Agenda/>} />
           <Route path="professor" element={ <Professor/>}/>
+          <Route path="criarconsulta" element={<NovaConsulta/>}/>
         </Route>
       </Routes>
     </UserProvider>
