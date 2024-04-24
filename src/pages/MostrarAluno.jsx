@@ -10,9 +10,11 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '../images/edit.svg';
+import TrashIcon from '../images/trash.svg'
 import { DataGrid } from '@mui/x-data-grid';
 import Novoaluno from '../images/novoaluno.png'
 import IconButton from '@mui/material/IconButton';
+
 
 
 const theme = createTheme({
@@ -28,10 +30,12 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     backgroundColor: theme.palette.common.azul,
     color: theme.palette.common.white,
     paddingLeft: '70px',
+    width: '900px'
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
     paddingLeft: '70px',
+    width: '900px'
   },
 }));
 
@@ -45,10 +49,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const columns = [
-  { field: 'registration', headerName: 'Matrícula', width: 150 },
-  { field: 'name', headerName: 'Nome', width: 250 },
-  { field: 'phone', headerName: 'N° de telefone', width: 200 },
-  { field: 'editIcon', headerName: '', width: 200 },
+  { field: 'registration', headerName: 'Matrícula'},
+  { field: 'name', headerName: 'Nome'},
+  { field: 'phone', headerName: 'N° de telefone'},
+  { field: 'editIcon', headerName: ''},
 ];
 
 const rows = [
@@ -56,7 +60,6 @@ const rows = [
   { id: 2, registration: '2210108', name: 'Jeniffer Ferraz', phone: '62-992448809' },
   { id: 3, registration: '2211863', name: 'Leticia Reis', phone: '62-992286724' },
   { id: 4, registration: '2313031', name: 'Millena Cardoso', phone: '62-981929827' },
-  { id: 5, registration: '2313031', name: 'Millena Cardoso', phone: '62-981929827' },
 ];
 
 const MostrarAluno = () => {
@@ -90,19 +93,24 @@ const MostrarAluno = () => {
             </Button>
           </div>
         </div>
-        <div className='ml-36 lg:w-auto sm:w-screen md:w-[400px] mt-16'>
+        <div className='ml-36 lg:w-auto sm:w-auto md:w-auto mt-16'>
           <TableContainer component={Paper}>
-            <Table sx={{ 
-              width: '100%'
-            }} aria-label="customized table">
+            <Table aria-label="customized table">
               <TableHead>
                 <TableRow>
                   {columns.map((column) => (
-                    <StyledTableCell 
+                    // <StyledTableCell
+                    // key={column.field}>{column.headerName}
+                    // </StyledTableCell>
+                    column.field == "editIcon" ?
+                    <StyledTableCell
                     style={{
-                      width: `${column.width}`
+                      width: "100px"
                     }}
-                    key={column.field}>{column.headerName}</StyledTableCell>
+                    key={column.field}>{column.headerName}
+                    </StyledTableCell> : <StyledTableCell
+                    key={column.field}>{column.headerName}
+                    </StyledTableCell> 
                   ))}
                 </TableRow>
               </TableHead>
@@ -112,8 +120,12 @@ const MostrarAluno = () => {
                       <StyledTableCell>{row.registration}</StyledTableCell>
                       <StyledTableCell>{row.name}</StyledTableCell>
                       <StyledTableCell>{row.phone}</StyledTableCell>
-                      <IconButton style={{
-                      }}> <img src={EditIcon} /></IconButton>
+                      <IconButton>
+                        <img src={EditIcon} />
+                      </IconButton>
+                      <IconButton>
+                      <img src={TrashIcon} />
+                      </IconButton>
                   </StyledTableRow>
                 ))}
               </TableBody>

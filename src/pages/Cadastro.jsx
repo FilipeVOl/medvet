@@ -1,6 +1,6 @@
 import { useState } from "react";
 import InputMask from "react-input-mask";
-import axios from "axios";
+import { postAluno } from '../utils/MostrarAluno.utils';
 
 export default function Cadastro() {
   const [registration, setRegistration] = useState("");
@@ -12,32 +12,25 @@ export default function Cadastro() {
   const [shift, setShift] = useState("");
   const [phone, setPhone] = useState("");
 
+  const cpfSemPonto = cpf.replace(/[.-]/g, "");
+  const data = {
+    email,
+    cpf: cpfSemPonto,
+    password: cpfSemPonto,
+    registration,
+    course,
+    shift,
+    period,
+    phone,
+    name: nome,
+  };
+
   function clickError() {
-    const cpfSemPonto = cpf.replace(/[.-]/g, "");
-
-    const data = {
-      email,
-      cpf: cpfSemPonto,
-      password: cpfSemPonto,
-      registration,
-      course,
-      shift,
-      period,
-      phone,
-      name: nome,
-    };
-
-    console.log(data);
-
-    axios
-      .post("http://localhost:3333/users/student", data)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    postAluno(data);
   }
+  
+
+  
 
   function ValidateInput() {
     return nome && registration && cpf && phone;
