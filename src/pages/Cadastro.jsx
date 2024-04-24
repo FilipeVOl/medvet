@@ -48,7 +48,7 @@ export default function Cadastro() {
       <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">Novo aluno</h1>
 
       <form>
-        <div className="forms-container px-28 grid grid-cols-1 grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
+        <div className="forms-container px-28 grid grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
           <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
             
             <label htmlFor="nome" className="font-Montserrat">
