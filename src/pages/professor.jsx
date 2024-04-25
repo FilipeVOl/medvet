@@ -1,78 +1,172 @@
 import React, { useState } from "react";
-//import Header from "./Header";
 import InputMask from "react-input-mask";
 import axios from "axios";
-import { data } from "autoprefixer";
-
 
 export default function Professor() {
-  const [nome, setNome] = useState("")
-  const [registration, setRegistration] = useState("")
-  const [cpf, setCpf] = useState("")
-  const [phone, setPhone] = useState("")
-  const data = {
-    name: nome,
-    registration,
-    cpf,
-    phone,
+  const [nome, setNome] = useState("");
+  const [registration, setRegistration] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [course, setCourse] = useState("Medicina Veterinária");
+
+  function clickError() {
+    const cpfSemPonto = cpf.replace(/[.-]/g, "");
+    const data = {
+      name: nome,
+      registration,
+      cpf,
+      course,
+      phone,
+      email,
+      password: cpfSemPonto,
+    };
+
+    axios
+      .post("http://localhost:3333/users/teacher", data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
-  axios.post("http://localhost:3333/users/teacher", data).then((res) => {
-    console.log(res)
-  }).catch((err) => {
-    console.log(err)
-  })
+
+  function ValidateInput() {
+    return nome && registration && cpf && phone && email && course;
+  }
+
   return (
     <>
-      <div style={{
-        height: "calc(100vh - 116px)",
-      }} className="cadastro-container w-full">
-        <h1 className="font-Montserrat p-20 h-10 font-bold text-[25px]">Novo Professor</h1>
+      <div
+        style={{ height: "calc(100vh - 116px)" }}
+        className="cadastro-container w-full flex flex-col "
+      >
+        <h1 className="font-Montserrat p-20 h-10 font-bold text-xl">
+          Novo Professor
+        </h1>
         <form>
-          <div className="forms-container px-28 grid w-full justify-center">
-            <div className="box-1 grid grid-cols-[2fr_1fr] gap-8">
-              <label htmlFor="nome" className="font-Montserrat indent-4">
-                Nome completo<br></br>
+          <div className="forms-container px-10 lg:px-28 gap-8">
+
+            <div className="box-1 grid grid-cols-2 gap-8">
+              <label htmlFor="nome" className="font-Montserrat">
+                Nome completo *<br />
                 <input
-                  id="name" name="name" type="text"
-                  className="w-full border-2 border-border-gray rounded-md h-9 mb-4 pl-2"
-                />{" "}
+                  id="name"
+                  value={nome}
+                  required
+                  onChange={(e) => {
+                    setNome(e.target.value);
+                  }}
+                  name="nome"
+                  type="text"
+                  className={`w-full border-[1px] ${
+                    !nome ? "border-red-600 outline-red-600" : "border-border-gray"
+                  } rounded-md h-9 pl-2`}
+                />
               </label>
 
-              <label htmlFor="identificação" className="flex flex-col indent-4 ">
-                  N° de identificação<br></br>
+              <label htmlFor="registration" className="font-Montserrat">
+                CRMV<br />
                 <input
-                  id="registration" name="registration" type="text"
-                  className="border-2 w-[300px] border-border-gray rounded-md h-9 indent-4"
-                />{" "}
+                  id="registration"
+                  required
+                  value={registration}
+                  name="registration"
+                  type="number"
+                  onChange={(e) => {
+                    setRegistration(e.target.value);
+                  }}
+                  className={`border-[1px] w-full rounded-md h-9 pl-2 ${
+                    !registration ? "outline-red-600 border-red-500" : "border-border-gray"
+                  }`}
+                />
               </label>
             </div>
 
-            <div className="box-2 grid grid-cols-[196px_400px] gap-32 indent-4">
-              <label htmlFor="cpf"  className="font-Montserrat">
-                CPF<br></br>
+            <div className="box-2 grid grid-cols-2 gap-8">
+              <label htmlFor="cpf" className="font-Montserrat">
+                CPF *<br />
                 <InputMask
+                  id="cpf"
+                  required
+                  value={cpf}
+                  name="cpf"
                   mask="999.999.999-99"
-                  id="cpf" name="cpf"
-                  className="border-2 w-64 border-border-gray rounded-md h-9 pl-2"
+                  onChange={(e) => {
+                    setCpf(e.target.value);
+                  }}
+                  className={`${
+                    !cpf ? "outline-red-600 border-red-500" : "border-border-gray"
+                  } border-[1px] w-full rounded-md h-9 pl-2`}
                 />
               </label>
-              <label htmlFor="phone" id="phone" name="phone" className="font-Montserrat">
-                N° de telefone<br></br>
+
+              <label htmlFor="email" className="font-Montserrat">
+                Email *<br />
                 <input
-                  type="phone"
-                  className="w-[196px] border-2 border-border-gray rounded-md h-9 ident-4 pl-2"
-                />{" "}
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                  id="email"
+                  name="email"
+                  className={`${
+                    !email ? "outline-red-600 border-red-500" : "border-border-gray"
+                  } w-full border-[1px] rounded-md h-9 pl-2`}
+                />
+              </label>
+            </div>
+
+            <div className="box-3 grid grid-cols-2 gap-8">
+              <label htmlFor="phone" className="font-Montserrat">
+                N° de contato *<br />
+                <InputMask
+                  mask="(99)99999-9999"
+                  required
+                  value={phone}
+                  name="phone"
+                  id="phone"
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                  }}
+                  className={`${
+                    !phone ? "outline-red-600 border-red-500" : "border-border-gray"
+                  } border-[1px] w-full rounded-md h-9 pl-`}
+                />
+              </label>
+              <label htmlFor="course" className="font-Montserrat">
+                Curso *<br />
+                <input
+                  type="text"
+                  required
+                  value={course}
+                  disabled
+                  name="course"
+                  id="course"
+                  onChange={(e) => {
+                    setCourse(e.target.value);
+                  }}
+                  className="w-full border-[1px] rounded-md h-9 pl-2"
+                />
               </label>
             </div>
           </div>
-          <div className="buttons grid grid-cols-2 px-28 gap-[375px]">
-            <button className="font-Montserrat border-[1px] w-52 rounded-md border-border-gray h-10 mt-36">
-              Voltar
-            </button>
-
+          <div className="button-container flex justify-end px-10 lg:px-28">
             <button
+              id="cadastrar"
+              name="cadastrar"
               type="submit"
-              className="font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white">
+              onClick={(e) => {
+                e.preventDefault();
+                clickError();
+              }}
+              className={`${
+                !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
+              } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
+            >
               Cadastrar
             </button>
           </div>
