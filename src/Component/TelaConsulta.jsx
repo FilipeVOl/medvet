@@ -39,9 +39,9 @@ const TelaConsulta = () => {
     setter(value);
   }, []);
 
-  const Dropdown = ({ label, options, onchange, value }) => {
+  const Dropdown = ({ label, options, onchange, value, width }) => {
     return (
-      <div className="flex flex-col w-full mb-4">
+      <div className={`flex flex-col w-full mb-4 w-${width}`}>
         <InputLabel htmlFor={label} className="ml-4">
           {label}
         </InputLabel>
@@ -180,6 +180,7 @@ TelaConsulta.propTypes = {
   onchange: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
+  width: PropTypes.number,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,
