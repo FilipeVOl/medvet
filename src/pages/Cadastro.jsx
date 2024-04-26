@@ -1,22 +1,9 @@
 import { useState } from "react";
 import InputMask from "react-input-mask";
-// import { useForm } from "react-hook-form";
-import axios from "axios";
+import { postAluno } from '../utils/MostrarAluno.utils';
+import PropTypes from 'prop-types'
 
-export default function Cadastro() {
-  // const {register,formState, handleSubmit, watch} = useForm({
-  //   // defaultValues:{
-  //   //   matricula: undefined,
-  //   //   nome: undefined,
-  //   //   cpf: undefined,
-  //   //   email: undefined,
-  //   //   curso: 'Medicina Veterinária',
-  //   //   periodo: undefined,
-  //   //   turno: undefined,
-
-  //   // }
-  // })
-
+export default function Cadastro(props) {
   const [registration, setRegistration] = useState("");
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
@@ -26,76 +13,62 @@ export default function Cadastro() {
   const [shift, setShift] = useState("");
   const [phone, setPhone] = useState("");
 
+  {Cadastro.propTypes = {
+    buttonName: PropTypes.string
+  }}
+
+  const cpfSemPonto = cpf.replace(/[.-]/g, "");
+  const data = {
+    email,
+    cpf: cpfSemPonto,
+    password: cpfSemPonto,
+    registration,
+    course,
+    shift,
+    period,
+    phone,
+    name: nome,
+  };
+
   function clickError() {
-    // setErro(formState.errors.erro)
-    const cpfSemPonto = cpf.replace(/[.-]/g, "");
-
-    const data = {
-      email,
-      cpf: cpfSemPonto,
-      password: cpfSemPonto,
-      registration,
-      course,
-      shift,
-      period,
-      phone,
-      name: nome,
-    };
-
-    console.log(data);
-
-    axios
-      .post("http://localhost:3000/users/student", data)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    postAluno(data);
   }
+  
+
+  
 
   function ValidateInput() {
-    if (nome && registration && cpf && phone) {
-      return true;
-    } else {
-      return false;
-    }
+    return nome && registration && cpf && phone;
   }
+
+
 
   return (
     <div className="cadastro-container w-full">
-      <h1 className="font-Montserrat p-20 h-10 font-bold">Novo aluno</h1>
+      <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">Novo aluno</h1>
 
       <form>
-        <div className="forms-container px-28 grid w-full justify-center">
-          <div className="box-1 grid grid-cols-[2fr_1fr] gap-8">
-            <div className="">
-              <label htmlFor="nome" className="font-Montserrat indent-4">
-                Nome completo *<br></br>
-                <input
-                  id="name"
-                  value={nome}
-                  required
-                  onChange={(e) => {
-                    setNome(e.target.value);
-                  }}
-                  name="name"
-                  type="text"
-                  className={`w-full border-[1px] ${
-                    !nome
-                      ? "border-red-600 outline-red-600"
-                      : "border-border-gray"
-                  } rounded-md h-9 pl-2`}
-                />{" "}
-              </label>
-            </div>
-
-            <div>
-              <div className="flex gap-2 items-center">
-                <label htmlFor="registration" className="indent-4 w-32">
-                  Matricula *<br></br>
-                </label>
-              </div>
+        <div className="forms-container px-28 grid grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
+          <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
+            
+            <label htmlFor="nome" className="font-Montserrat">
+              Nome completo *<br />
+              <input
+                id="name"
+                value={nome}
+                required
+                onChange={(e) => {
+                  setNome(e.target.value);
+                }}
+                name="name"
+                type="text"
+                className={`w-full border-[1px] ${
+                  !nome ? "border-red-600 outline-red-600" : "border-border-gray"
+                } rounded-md h-9 pl-2`}
+              />
+            </label>
+            <label htmlFor="registration" className="font-Montserrat">
+              Matricula *<br />
               <input
                 id="registration"
                 required
@@ -105,18 +78,16 @@ export default function Cadastro() {
                 onChange={(e) => {
                   setRegistration(e.target.value);
                 }}
-                className={`border-[1px] w-[300px]  rounded-md h-9 pl-2 ${
-                  !registration
-                    ? "outline-red-600 border-red-500"
-                    : "border-border-gray"
+                className={`border-[1px] w-full rounded-md h-9 pl-2 ${
+                  !registration ? "outline-red-600 border-red-500" : "border-border-gray"
                 }`}
               />
-            </div>
+            </label>
           </div>
 
-          <div className="box-2 grid grid-cols-[196px_400px] gap-32">
-            <label htmlFor="cpf" className="font-Montserrat indent-4">
-              CPF *<br></br>
+          <div className="box-2 grid grid-cols-[1fr_2fr] gap-[5%]">
+            <label htmlFor="cpf" className="font-Montserrat">
+              CPF *<br />
               <InputMask
                 id="cpf"
                 required
@@ -128,49 +99,12 @@ export default function Cadastro() {
                 }}
                 className={`${
                   !cpf ? "outline-red-600 border-red-500" : "border-border-gray"
-                } border-[1px] w-64 rounded-md h-9 pl-2`}
+                } border-[1px] w-full rounded-md h-9 pl-2`}
               />
             </label>
 
-            <label htmlFor="phone" className="font-Montserrat indent-4">
-              Contato *<br></br>
-              <InputMask
-                mask="(99)99999-9999"
-                required
-                value={phone}
-                name="phone"
-                id="phone"
-                onChange={(e) => {
-                  setPhone(e.target.value);
-                }}
-                className={`${
-                  !phone
-                    ? "outline-red-600 border-red-500"
-                    : "border-border-gray"
-                } border-[1px] w-72 rounded-md h-9 pl-`}
-              />
-            </label>
-          </div>
-
-          <div className="box-3 grid grid-cols-[200px_390px] gap-44">
-            <label htmlFor="course" className="font-Montserrat indent-4">
-              Curso *<br></br>
-              <input
-                type="text"
-                required
-                value={course}
-                disabled
-                name="course"
-                id="course"
-                onChange={(e) => {
-                  setCourse(e.target.value);
-                }}
-                className="w-[300px] border-[1px] rounded-md h-9 pl-2"
-              />{" "}
-            </label>
-
-            <label htmlFor="email" className="font-Montserrat indent-4">
-              Email *<br></br>
+            <label htmlFor="email" className="font-Montserrat">
+              Email *<br />
               <input
                 type="email"
                 required
@@ -181,21 +115,53 @@ export default function Cadastro() {
                 id="email"
                 name="email"
                 className={`${
-                  !email
-                    ? "outline-red-600 border-red-500"
-                    : "border-border-gray"
-                } w-[520px] border-[1px] rounded-md h-9 pl-2`}
-              />{" "}
+                  !email ? "outline-red-600 border-red-500" : "border-border-gray"
+                } w-full border-[1px] rounded-md h-9 pl-2`}
+              />
             </label>
+            
           </div>
 
-          <div className="box-4 grid grid-cols-[200px_200px] gap-8">
-            <label
-              htmlFor="period"
-              value={period}
-              className="font-Montserrat indent-4"
-            >
-              Período<br></br>
+          <div className="box-3 grid grid-cols-[1fr_2fr] gap-[5%]">
+            
+            <label htmlFor="phone" className="font-Montserrat">
+              Contato *<br />
+              <InputMask
+                mask="(99)99999-9999"
+                required
+                value={phone}
+                name="phone"
+                id="phone"
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                }}
+                className={`${
+                  !phone ? "outline-red-600 border-red-500" : "border-border-gray"
+                } border-[1px] w-full rounded-md h-9 pl-`}
+              />
+            </label>
+
+            <label htmlFor="course" className="font-Montserrat">
+              Curso *<br />
+              <input
+                type="text"
+                required
+                value={course}
+                disabled
+                name="course"
+                id="course"
+                onChange={(e) => {
+                  setCourse(e.target.value);
+                }}
+                className="w-full border-[1px] rounded-md h-9 pl-2"
+              />
+            </label>
+            
+          </div>
+
+          <div className="box-4 grid grid-cols-[1fr_2fr] gap-[2%] md:gap-[5%]">
+            <label htmlFor="period" className="font-Montserrat">
+              Período<br />
               <input
                 type="number"
                 required
@@ -205,16 +171,14 @@ export default function Cadastro() {
                   setPeriod(e.target.value);
                 }}
                 className={`${
-                  !period
-                    ? "outline-red-600 border-red-500"
-                    : "border-border-gray"
-                } border-[1px] rounded-md h-9 pl-2`}
+                  !period ? "outline-red-600 border-red-500" : "border-border-gray"
+                } border-[1px] rounded-md h-9 pl-2 max-w-63`}
                 maxLength={2}
               />
             </label>
-
-            <label htmlFor="shift" className="font-Montserrat indent-4">
-              Turno<br></br>
+            
+            <label htmlFor="shift" className="font-Montserrat">
+              Turno<br />
               <input
                 type="text"
                 required
@@ -225,11 +189,9 @@ export default function Cadastro() {
                   setShift(e.target.value);
                 }}
                 className={`${
-                  !shift
-                    ? "outline-red-600 border-red-500"
-                    : "border-border-gray"
-                } border-[1px] rounded-md h-9 pl-2`}
-              />{" "}
+                  !shift ? "outline-red-600 border-red-500" : "border-border-gray"
+                } border-[1px] rounded-md h-9 pl-2 max-w-63`}
+              />
             </label>
           </div>
         </div>
@@ -237,7 +199,7 @@ export default function Cadastro() {
         <div className="button-container flex justify-end px-28 h-[28rem]">
           <button
             id="cadastrar"
-            name="cadastrar"
+            name={props.buttonName}
             type="submit"
             onClick={(e) => {
               e.preventDefault();
@@ -247,7 +209,8 @@ export default function Cadastro() {
               !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
             } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
           >
-            Cadastrar
+            {props.buttonName}
+       
           </button>
         </div>
       </form>
