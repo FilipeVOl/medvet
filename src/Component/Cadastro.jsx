@@ -81,11 +81,10 @@ export default function Cadastro() {
                   }}
                   name="name"
                   type="text"
-                  className={`w-full border-[1px] ${
-                    !nome
+                  className={`w-full border-[1px] ${!nome
                       ? "border-red-600 outline-red-600"
                       : "border-border-gray"
-                  } rounded-md h-9 pl-2`}
+                    } rounded-md h-9 pl-2`}
                 />{" "}
               </label>
             </div>
@@ -105,11 +104,10 @@ export default function Cadastro() {
                 onChange={(e) => {
                   setRegistration(e.target.value);
                 }}
-                className={`border-[1px] w-[300px]  rounded-md h-9 pl-2 ${
-                  !registration
+                className={`border-[1px] w-[300px]  rounded-md h-9 pl-2 ${!registration
                     ? "outline-red-600 border-red-500"
                     : "border-border-gray"
-                }`}
+                  }`}
               />
             </div>
           </div>
@@ -126,9 +124,8 @@ export default function Cadastro() {
                 onChange={(e) => {
                   setCpf(e.target.value);
                 }}
-                className={`${
-                  !cpf ? "outline-red-600 border-red-500" : "border-border-gray"
-                } border-[1px] w-64 rounded-md h-9 pl-2`}
+                className={`${!cpf ? "outline-red-600 border-red-500" : "border-border-gray"
+                  } border-[1px] w-64 rounded-md h-9 pl-2`}
               />
             </label>
 
@@ -143,11 +140,10 @@ export default function Cadastro() {
                 onChange={(e) => {
                   setPhone(e.target.value);
                 }}
-                className={`${
-                  !phone
+                className={`${!phone
                     ? "outline-red-600 border-red-500"
                     : "border-border-gray"
-                } border-[1px] w-72 rounded-md h-9 pl-`}
+                  } border-[1px] w-72 rounded-md h-9 pl-`}
               />
             </label>
           </div>
@@ -180,11 +176,10 @@ export default function Cadastro() {
                 }}
                 id="email"
                 name="email"
-                className={`${
-                  !email
+                className={`${!email
                     ? "outline-red-600 border-red-500"
                     : "border-border-gray"
-                } w-[520px] border-[1px] rounded-md h-9 pl-2`}
+                  } w-[520px] border-[1px] rounded-md h-9 pl-2`}
               />{" "}
             </label>
           </div>
@@ -204,11 +199,10 @@ export default function Cadastro() {
                 onChange={(e) => {
                   setPeriod(e.target.value);
                 }}
-                className={`${
-                  !period
+                className={`${!period
                     ? "outline-red-600 border-red-500"
                     : "border-border-gray"
-                } border-[1px] rounded-md h-9 pl-2`}
+                  } border-[1px] rounded-md h-9 pl-2`}
                 maxLength={2}
               />
             </label>
@@ -224,11 +218,10 @@ export default function Cadastro() {
                 onChange={(e) => {
                   setShift(e.target.value);
                 }}
-                className={`${
-                  !shift
+                className={`${!shift
                     ? "outline-red-600 border-red-500"
                     : "border-border-gray"
-                } border-[1px] rounded-md h-9 pl-2`}
+                  } border-[1px] rounded-md h-9 pl-2`}
               />{" "}
             </label>
           </div>
@@ -243,9 +236,8 @@ export default function Cadastro() {
               e.preventDefault();
               clickError();
             }}
-            className={`${
-              !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
-            } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
+            className={`${!ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
+              } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
           >
             Cadastrar
           </button>
