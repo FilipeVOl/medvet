@@ -1,34 +1,13 @@
 import professores from "../../mocks/professores.mock"
-import { useEffect, useState } from 'react';
+import { useState, useContext } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import InputComponent from "./InputComponent";
+import { ConsultContext } from "../../contexts/consultContext";
 
-import "./firstPart.css";
 export default function FirstPart() {
-  // const [infoStorage, setStorage] = useState(JSON.parse(localStorage.getItem('pag1')))
+  const { pag1, setPagOne } = useContext(ConsultContext)
   const [data, setData]  = useState(new Date())
-  const [infos, setInfos] = useState({
-    paciente: '',
-    tutor: '',
-    especie: '',
-    raca: '',
-    sexo: '',
-    idade: '',
-    peso: '',
-    pelagem: '',
-    historico: '',
-    professor: '',
-    vacina: [{name: '', date: ''}],
-    desmer: [{name: '', date: ''}],
-  })
-  const handleChange = (name, value) => {
-    const dataaltered = infos
-    dataaltered[name] = value
-    console.log(dataaltered)
-    setInfos(dataaltered);
-    console.log(infos)
-  };
   const [paciente, setPaciente] = useState('')
   const [tutor, setTutor] = useState('')
   const [especie, setEspecie] = useState('');
@@ -41,27 +20,9 @@ export default function FirstPart() {
   const [professor,   setProfessor] = useState('');
   const [vacina1, setVacina1] = useState({vacina1 : '', date: ''});
   const [desmer, setDesmer] = useState({desmer : '', date: ''});
-  // useEffect(() => {
-  //   try {
 
-  //   }
-  // })
-  const resolveData = {
-    paciente,
-    tutor,
-    especie,
-    raca,
-    sexo,
-    idade,
-    peso,
-    pelagem,
-    historico,
-    professor,
-    vacina1,
-    desmer,
-  }
   const handleProx = (() => {
-    localStorage.setItem('pag1', JSON.stringify([resolveData]));
+    console.log('oi')
   })
   const handleVacina = ((e) => {
     let obj = {...vacina1}
@@ -98,8 +59,8 @@ export default function FirstPart() {
                   id="free-solo-2-demo"
                   disableClearable
                   options={professores.map((option) => option.name)}
-                  value={infos.professor}
-                  onChange={((e) => handleChange('professor', e.target.value))}
+                  value={professor}
+                  onChange={((e) => setProfessor(e.target.value))}
                   renderInput={(params) => (
                     <TextField
                       {...params}

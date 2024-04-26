@@ -11,16 +11,16 @@ import Agenda from "./pages/Agenda";
 export function Router() {
   return (
     <UserProvider>
-      <Routes>
-        <Route path="/" element={<DefaultLayout />}>
-          <Route path="aluno" element={<Cadastro />} />
-          <Route path="calendario" element={<Calendar />} />
-          <Route path="agendamento" element={<Agendamento />} />
-          <Route path="agenda" element={<Agenda/>} />
-          <Route path="professor" element={ <Professor/>}/>
-          <Route path="criarconsulta" element={<NovaConsulta/>}/>
-        </Route>
-      </Routes>
+        <Routes>
+          <Route path="/" element={<DefaultLayout />}>
+            <Route path="aluno" element={<Cadastro />} />
+            <Route path="calendario" element={<Calendar />} />
+            <Route path="agendamento" element={<Agendamento />} />
+            <Route path="agenda" element={<Agenda/>} />
+            <Route path="professor" element={ <Professor/>}/>
+            <Route path="criarconsulta" element={<NovaConsulta/>}/>
+          </Route>
+        </Routes>
     </UserProvider>
   );
 }
