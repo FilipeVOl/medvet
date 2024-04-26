@@ -1,34 +1,34 @@
-import { createContext, useState } from "react";
-import PropTypes from "prop-types";
+// import { createContext, useState } from "react";
+// import PropTypes from "prop-types";
 
-export const ConsultContext = createContext();
+// export const ConsultContext = createContext();
 
-const pagOneData = {
-  paciente: '',
-  data: new Date(),
-  tutor: '',
-  especie: '',
-  raca: '',
-  sexo: '',
-  idade: '',
-  peso: '',
-  pelagem: '',
-  historico: '',
-  professor: '',
-  vacina1: '',
-  desmer: '',
-}
+// const pagOneData = {
+//   paciente: '',
+//   data: '12022024',
+//   tutor: '',
+//   especie: '',
+//   raca: '',
+//   sexo: '',
+//   idade: '',
+//   peso: '',
+//   pelagem: '',
+//   historico: '',
+//   professor: '',
+//   vacina1: '',
+//   desmer: '',
+// }
 
-export const ConsultProvider = ({ children }) => {
-  const [pag1, setPagOne] = useState(pagOneData);
+// export const ConsultProvider = ({ children }) => {
+//   const [pagOne, setPagOne] = useState(pagOneData);
 
-  return (
-    <ConsultContext.Provider value={{ pag1, setPagOne }}>
-      {children}
-    </ConsultContext.Provider>
-  );
-};
+//   return (
+//     <ConsultContext.Provider value={{ pagOne, setPagOne }}>
+//       {children}
+//     </ConsultContext.Provider>
+//   );
+// };
 
-ConsultProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+// ConsultProvider.propTypes = {
+//   children: PropTypes.node.isRequired,
+// };
