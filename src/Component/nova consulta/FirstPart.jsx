@@ -4,7 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import InputComponent from "./InputComponent";
 import { ConsultContext } from "../../pages/NovaConsulta";
-
+import "./firstPart.css";
 export default function FirstPart() {
   const { pagOne, setPagOne } = useContext(ConsultContext);
   const [data, setData] = useState(pagOne.data);
