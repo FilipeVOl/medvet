@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 import InputComponent from "./InputComponent";
 import { ConsultContext } from "../../pages/NovaConsulta";
 import "./firstPart.css";
-export default function FirstPart() {
+export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
   const [data, setData] = useState(pagOne.data);
   const [paciente, setPaciente] = useState(pagOne.paciente);
@@ -40,7 +40,8 @@ export default function FirstPart() {
   }
 
   const handleProx = (() => {
-    setPagOne(sendDataContext)
+    setPagOne(sendDataContext);
+    props.setSteps(2);
   })
   const handleVacina = ((e) => {
     let obj = { ...vacina1 }

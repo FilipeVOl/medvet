@@ -22,7 +22,7 @@ export default function NovaConsulta() {
   const [pagOne, setPagOne] = useState(pagOneData);
   return (
     <ConsultContext.Provider value={{ pagOne, setPagOne }}>
-      {steps === 1 ? <FirstPart /> : <SecondPart/>}
+      {steps === 1 ? <FirstPart setSteps={setSteps}/> : <SecondPart/>}
     </ConsultContext.Provider>
   )
 }
