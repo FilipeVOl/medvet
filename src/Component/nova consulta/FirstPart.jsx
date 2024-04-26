@@ -142,7 +142,9 @@ export default function FirstPart(props) {
             <div id="div-cons-hist" className="gap-8 my-8">
               <label htmlFor="motivo" className="grow my-2 mx-8">
                 Motivo da Consulta
-                <textarea name="" id="" cols="25" rows="3" className="w-full border-solid border-2 order-border-gray rounded-lg p-1 resize-none"></textarea>
+                <textarea name="" id="" cols="25" rows="3" 
+                className="w-full border-solid border-2 order-border-gray rounded-lg p-1 resize-none"
+                ></textarea>
               </label>
               <label htmlFor="historico" className="grow mx-8">
                 Histórico

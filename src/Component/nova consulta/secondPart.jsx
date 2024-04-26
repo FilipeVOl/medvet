@@ -71,7 +71,7 @@ export default function SecondPart() {
           </div>
           {renderTextArea.map((e) => {
             return (
-              <textAreaComponent key={e} value={e.value} setState={e.set}/>
+              <textAreaComponent key={e} value={e.value} setSomething={e.set}/>
             )
           })}
         </div>
