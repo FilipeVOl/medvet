@@ -13,6 +13,7 @@ export default {
         'side-gray': '#F4F1EC',
         'card-green': '#BDD9BF',
         'text-gray': '#636363',
+        'blue-button': '#100F49',
       }
     },
   },
