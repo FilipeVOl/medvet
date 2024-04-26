@@ -13,6 +13,7 @@ export default {
         "side-gray": "#F4F1EC",
         "card-green": "#BDD9BF",
         "text-gray": "#636363",
+        "button-purple": "#2C2B60",
       },
       backgroundImage: {
         search: "url('../images/search.png)",

@@ -4,30 +4,24 @@ import axios from 'axios';
 
 // COLOCAR A LOGICA DENTRO DA PAGINA
 
-const LogicaMostrarAluno = () => {
+const LogicaMostrarAluno = (props) => {
 
-  const [data, setData] = useState([])
-
-  const getAluno = () => {
-    axios.get("http://localhost:3333/get/student?numberOfItems=10&page=1")
-      .then(response => {
-        setData(response.data)
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error )
-      })
-
-    setData(data);
-    console.log(data)
-  };
 
   useEffect(() => {
-    getAluno()
+      axios.get("http://localhost:3333/get/student?numberOfItems=10&page=1")
+        .then(response => {
+          props.setData(response.data)
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error )
+        })
   }, []);
+
+  
+  
 
   return (
     <>
-    {JSON.stringify(data)}
     </>
   )
 }

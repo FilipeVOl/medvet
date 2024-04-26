@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -11,11 +11,27 @@ import Paper from '@mui/material/Paper';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '../images/edit.svg';
 import TrashIcon from '../images/trash.svg'
-import { DataGrid } from '@mui/x-data-grid';
 import Novoaluno from '../images/novoaluno.png'
 import IconButton from '@mui/material/IconButton';
+import LogicaMostrarAluno from '../Component/LogicaMostrarAluno';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Cadastro from './Cadastro';
+import axios from 'axios';
 
-
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 'auto',
+  height: '90%',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const theme = createTheme({
   palette: {
@@ -49,22 +65,32 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const columns = [
-  { field: 'registration', headerName: 'Matrícula'},
+  { field: 'registration', headerName: 'Matricula'},
   { field: 'name', headerName: 'Nome'},
   { field: 'phone', headerName: 'N° de telefone'},
   { field: 'editIcon', headerName: ''},
 ];
 
-const rows = [
-  { id: 1, registration: '2211377', name: 'Filipe Gideao', phone: '62-982595874' },
-  { id: 2, registration: '2210108', name: 'Jeniffer Ferraz', phone: '62-992448809' },
-  { id: 3, registration: '2211863', name: 'Leticia Reis', phone: '62-992286724' },
-  { id: 4, registration: '2313031', name: 'Millena Cardoso', phone: '62-981929827' },
-];
+
+
+// const rows = ((reg, nam, pho) => {
+
+//   return [
+//     { id: 1, registration: reg, name: nam, phone: pho },
+//     { id: 2, registration: '2210108', name: 'Jeniffer Ferraz', phone: '62-992448809' },
+//     { id: 3, registration: '2211863', name: 'Leticia Reis', phone: '62-992286724' },
+//     { id: 4, registration: '2313031', name: 'Millena Cardoso', phone: '62-981929827' },
+//   ];
+// })
 
 const MostrarAluno = () => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  let  [data, setData] = useState('')
   return (
     <ThemeProvider theme={theme}>
+      <LogicaMostrarAluno setData={setData} />
       <div className="container">
         <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">Alunos cadastrados</h1>
         <div className="mid grid grid-cols-[2fr_1fr] ml-36">
@@ -83,6 +109,9 @@ const MostrarAluno = () => {
                 backgroundColor: '#100F49',
                 width: '200px',
                 borderRadius: '0.5rem;',
+                '&:hover': {
+                  backgroundColor: '#2C2B60'
+                }
               }}
               variant="contained"
             >
@@ -115,16 +144,41 @@ const MostrarAluno = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
+                {Object.values(data).map((row) => (
                   <StyledTableRow key={row.id}>
                       <StyledTableCell>{row.registration}</StyledTableCell>
                       <StyledTableCell>{row.name}</StyledTableCell>
                       <StyledTableCell>{row.phone}</StyledTableCell>
+                      <IconButton onClick={handleOpen}>
+                        <Modal
+                          open={open}
+                          onClose={handleClose}
+                          aria-labelledby="modal-modal-title"
+                          aria-describedby="modal-modal-description"
+                        >
+                        <Box sx={style}>
+
+                          <Typography id="modal-modal-title" variant="h6" component="h2">
+                            <Cadastro buttonName="Atualizar"/>
+                          </Typography>
+
+                        </Box>
+                        </Modal>
+                        <img src={EditIcon}
+                        </IconButton>
+                        
                       <IconButton>
-                        <img src={EditIcon} />
-                      </IconButton>
-                      <IconButton>
+                      {/* <IconButton onClick={
+                        axios.delete(`http://localhost:3333/deletealuno/${row.id}`)
+                        function removeRow () {
+                          const dataC = [...data]
+                          dataC.splice(TableBody.data, 0)
+                          console.log(dataC)
+                        }
+
+                      } /> */}
                       <img src={TrashIcon} />
+                      
                       </IconButton>
                   </StyledTableRow>
                 ))}

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import InputMask from "react-input-mask";
 import { postAluno } from '../utils/MostrarAluno.utils';
+import PropTypes from 'prop-types'
 
-export default function Cadastro() {
+export default function Cadastro(props) {
   const [registration, setRegistration] = useState("");
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
@@ -11,6 +12,10 @@ export default function Cadastro() {
   const [period, setPeriod] = useState("");
   const [shift, setShift] = useState("");
   const [phone, setPhone] = useState("");
+
+  {Cadastro.propTypes = {
+    buttonName: PropTypes.string
+  }}
 
   const cpfSemPonto = cpf.replace(/[.-]/g, "");
   const data = {
@@ -35,6 +40,8 @@ export default function Cadastro() {
   function ValidateInput() {
     return nome && registration && cpf && phone;
   }
+
+
 
   return (
     <div className="cadastro-container w-full">
@@ -192,7 +199,7 @@ export default function Cadastro() {
         <div className="button-container flex justify-end px-28 h-[28rem]">
           <button
             id="cadastrar"
-            name="cadastrar"
+            name={props.buttonName}
             type="submit"
             onClick={(e) => {
               e.preventDefault();
@@ -202,7 +209,8 @@ export default function Cadastro() {
               !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
             } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
           >
-            Cadastrar
+            {props.buttonName}
+       
           </button>
         </div>
       </form>
