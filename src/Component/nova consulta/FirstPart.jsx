@@ -4,8 +4,10 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import InputComponent from "./InputComponent";
 import { ConsultContext } from "../../pages/NovaConsulta";
-import "./firstPart.css";
-export default function FirstPart() {
+import PropTypes from "prop-types";
+import "./consultPages.css"
+
+export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
   const [data, setData] = useState(pagOne.data);
   const [paciente, setPaciente] = useState(pagOne.paciente);
@@ -41,6 +43,7 @@ export default function FirstPart() {
 
   const handleProx = (() => {
     setPagOne(sendDataContext)
+    props.setSteps(2)
   })
   const handleVacina = ((e) => {
     let obj = { ...vacina1 }
@@ -100,7 +103,7 @@ export default function FirstPart() {
                   disableClearable
                   options={professores.map((option) => option.name)}
                   value={tutor}
-                  onChange={((e) => setTutor(e.target.value))}
+                  onChange={((_e, value) => setTutor(value))}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -207,4 +210,8 @@ export default function FirstPart() {
       </div>
     </div>
   )
+}
+
+FirstPart.PropTypes = {
+  setSteps: PropTypes.func.isRequired,
 }
