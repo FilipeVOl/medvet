@@ -88,106 +88,107 @@ const MostrarAluno = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   let  [data, setData] = useState('')
-  return (
-    <ThemeProvider theme={theme}>
-      <LogicaMostrarAluno setData={setData} />
-      <div className="container">
-        <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">Alunos cadastrados</h1>
-        <div className="mid grid grid-cols-[2fr_1fr] ml-36">
-          <div className='flex items-center'>
-            <input
-              placeholder='N° de matricula'
-              name="searchRegist"
-              type="text"
-              className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
-            />
-            <SearchIcon className="absolute p-4" />
-          </div>
-          <div className='flex justify-end'>
-            <Button
-              sx={{
-                backgroundColor: '#100F49',
-                width: '200px',
-                borderRadius: '0.5rem;',
-                '&:hover': {
-                  backgroundColor: '#2C2B60'
-                }
-              }}
-              variant="contained"
-            >
-              <div className='flex flex-row justify-center mr-auto gap-8'>
-                <img src={Novoaluno} alt="imagem do botao" />
-                Novo aluno
-              </div>
-            </Button>
-          </div>
-        </div>
-        <div className='ml-36 lg:w-auto sm:w-auto md:w-auto mt-16'>
-          <TableContainer component={Paper}>
-            <Table aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) => (
-                    // <StyledTableCell
-                    // key={column.field}>{column.headerName}
-                    // </StyledTableCell>
-                    column.field == "editIcon" ?
-                    <StyledTableCell
-                    style={{
-                      width: "100px"
-                    }}
-                    key={column.field}>{column.headerName}
-                    </StyledTableCell> : <StyledTableCell
-                    key={column.field}>{column.headerName}
-                    </StyledTableCell> 
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {Object.values(data).map((row) => (
-                  <StyledTableRow key={row.id}>
-                      <StyledTableCell>{row.registration}</StyledTableCell>
-                      <StyledTableCell>{row.name}</StyledTableCell>
-                      <StyledTableCell>{row.phone}</StyledTableCell>
-                      <IconButton onClick={handleOpen}>
-                        <Modal
-                          open={open}
-                          onClose={handleClose}
-                          aria-labelledby="modal-modal-title"
-                          aria-describedby="modal-modal-description"
-                        >
-                        <Box sx={style}>
+  return (<></>
+    // <ThemeProvider theme={theme}>
+    //   <LogicaMostrarAluno setData={setData} />
+    //   <div className="container">
+    //     <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">Alunos cadastrados</h1>
+    //     <div className="mid grid grid-cols-[2fr_1fr] ml-36">
+    //       <div className='flex items-center'>
+    //         <input
+    //           placeholder='N° de matricula'
+    //           name="searchRegist"
+    //           type="text"
+    //           className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
+    //         />
+    //         <SearchIcon className="absolute p-4" />
+    //       </div>
+    //       <div className='flex justify-end'>
+    //         <Button
+    //           sx={{
+    //             backgroundColor: '#100F49',
+    //             width: '200px',
+    //             borderRadius: '0.5rem;',
+    //             '&:hover': {
+    //               backgroundColor: '#2C2B60'
+    //             }
+    //           }}
+    //           variant="contained"
+    //         >
+    //           <div className='flex flex-row justify-center mr-auto gap-8'>
+    //             <img src={Novoaluno} alt="imagem do botao" />
+    //             Novo aluno
+    //           </div>
+    //         </Button>
+    //       </div>
+    //     </div>
+    //     <div className='ml-36 lg:w-auto sm:w-auto md:w-auto mt-16'>
+    //       <TableContainer component={Paper}>
+    //         <Table aria-label="customized table">
+    //           <TableHead>
+    //             <TableRow>
+    //               {columns.map((column) => (
+    //                 // <StyledTableCell
+    //                 // key={column.field}>{column.headerName}
+    //                 // </StyledTableCell>
+    //                 column.field == "editIcon" ?
+    //                 <StyledTableCell
+    //                 style={{
+    //                   width: "100px"
+    //                 }}
+    //                 key={column.field}>{column.headerName}
+    //                 </StyledTableCell> : <StyledTableCell
+    //                 key={column.field}>{column.headerName}
+    //                 </StyledTableCell> 
+    //               ))}
+    //             </TableRow>
+    //           </TableHead>
+    //           <TableBody>
+    //             {Object.values(data).map((row) => (
+    //               <StyledTableRow key={row.id}>
+    //                   <StyledTableCell>{row.registration}</StyledTableCell>
+    //                   <StyledTableCell>{row.name}</StyledTableCell>
+    //                   <StyledTableCell>{row.phone}</StyledTableCell>
+    //                   <IconButton onClick={handleOpen}>
+    //                     <Modal
+    //                       open={open}
+    //                       onClose={handleClose}
+    //                       aria-labelledby="modal-modal-title"
+    //                       aria-describedby="modal-modal-description"
+    //                     >
+    //                     <Box sx={style}>
 
-                          <Typography id="modal-modal-title" variant="h6" component="h2">
-                            <Cadastro buttonName="Atualizar"/>
-                          </Typography>
+    //                       <Typography id="modal-modal-title" variant="h6" component="h2">
+    //                         <Cadastro buttonName="Atualizar"/>
+    //                       </Typography>
 
-                        </Box>
-                        </Modal>
-                        <img src={EditIcon}
-                        </IconButton>
+    //                     </Box>
+    //                     </Modal>
+    //                     <img src={EditIcon}
+    //                     </IconButton>
                         
-                      <IconButton>
-                      {/* <IconButton onClick={
-                        axios.delete(`http://localhost:3333/deletealuno/${row.id}`)
-                        function removeRow () {
-                          const dataC = [...data]
-                          dataC.splice(TableBody.data, 0)
-                          console.log(dataC)
-                        }
+    //                   <IconButton>
+    //                   {/* <IconButton onClick={
+    //                     axios.delete(`http://localhost:3333/deletealuno/${row.id}`)
+    //                     function removeRow () {
+    //                       const dataC = [...data]
+    //                       dataC.splice(TableBody.data, 0)
+    //                       console.log(dataC)
+    //                     }
 
-                      } /> */}
-                      <img src={TrashIcon} />
+    //                   } /> */}
+    //                   <img src={TrashIcon} />
                       
-                      </IconButton>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-      </div>
-    </ThemeProvider>
+    //                   </IconButton>
+    //               </StyledTableRow>
+    //             ))}
+    //           </TableBody>
+    //         </Table>
+    //       </TableContainer>
+    //     </div>
+    //   </div>
+    // </ThemeProvider>
+  
   );
 };
 

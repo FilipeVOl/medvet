@@ -1,5 +1,5 @@
 import professores from "../../mocks/professores.mock"
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import InputComponent from "./InputComponent";
@@ -20,10 +20,13 @@ export default function FirstPart(props) {
   const [pelagem, setPelagem] = useState(pagOne.pelagem);
   const [historico, setHistorico] = useState(pagOne.historico);
   const [professor, setProfessor] = useState(pagOne.professor);
-
+  const [consult, setConst] = useState(pagOne.const);
+  useEffect(() => {
+    
+  },[raca, paciente])
   //Ajeitar lógica da vacina e desmerninação
-  const [vacina1, setVacina1] = useState({ vacina1: '', date: '' });
-  const [desmer, setDesmer] = useState({ desmer: '', date: '' });
+  const [vacina1, setVacina1] = useState({ vacina1: pagOne.vacina1.vacina1, date: pagOne.vacina1.date });
+  const [desmer, setDesmer] = useState({ desmer: pagOne.desmer.desmer, date: pagOne.desmer.date });
 
   const sendDataContext = {
     data,
@@ -38,7 +41,8 @@ export default function FirstPart(props) {
     historico,
     professor,
     vacina1,
-    desmer
+    desmer,
+    consult
   }
 
   const handleProx = (() => {
@@ -144,6 +148,8 @@ export default function FirstPart(props) {
                 Motivo da Consulta
                 <textarea name="" id="" cols="25" rows="3" 
                 className="w-full border-solid border-2 order-border-gray rounded-lg p-1 resize-none"
+                value={consult}
+                onChange={((e) => setConst(e.target.value))}
                 ></textarea>
               </label>
               <label htmlFor="historico" className="grow mx-8">
