@@ -3,7 +3,13 @@ import PropTypes from "prop-types";
 import { Input, InputLabel, TextareaAutosize } from "@mui/material";
 import z from "zod";
 
-const InputConsulta = ({ label, type, isBig, setter, value }) => {
+const InputConsulta = ({ label, type, isBig, setter, value, props }) => {
+
+  {TelaNovoTutor.propTypes = {
+    buttonName: PropTypes.string
+  }}
+
+
   const handleChange = useCallback(
     (e) => {
       setter(e.target.value);
@@ -52,7 +58,7 @@ const InputTutor = ({ label, type, isBig, setter, value }) => {
   );
 };
 
-const TelaNovoTutor = () => {
+const TelaNovoTutor = (props) => {
   const [Paciente, setPaciente] = useState("");
   const [raca, setRaca] = useState("");
   const [sexo, setSexo] = useState("");
@@ -136,53 +142,6 @@ const TelaNovoTutor = () => {
   return (
     <>
       <div className="flex flex-col p-16 h-screen">
-        <h1 className=" text-2xl font-bold">Agendar Consulta</h1>
-        <form>
-          <div className="pt-12 ml-4">
-            <div className="flex gap-8">
-              <InputConsulta
-                label="Paciente"
-                type="text"
-                isBig
-                setter={setPaciente}
-                value={Paciente}
-              />
-              <InputConsulta
-                label="Raça"
-                type="text"
-                setter={setRaca}
-                value={raca}
-              />
-              <InputConsulta
-                label="Sexo"
-                type="text"
-                setter={setSexo}
-                value={sexo}
-              />
-            </div>
-            <div className="flex gap-8">
-              <InputConsulta
-                label="Data"
-                type="text"
-                setter={setData}
-                value={dateMask(data)}
-              />
-              <InputConsulta
-                label="Hora"
-                type="text"
-                setter={setHora}
-                value={hourMask(hora)}
-              />
-              <InputConsulta
-                label="Contato"
-                type="text"
-                isBig
-                setter={setContato}
-                value={phoneMask(contato)}
-              />
-            </div>
-          </div>
-        </form>
         <h1 className=" text-2xl font-bold mt-2">Novo tutor</h1>
         <form>
           <div className="pt-12 ml-4">
@@ -238,10 +197,11 @@ const TelaNovoTutor = () => {
           </button>
           <button
             onClick={handleSubmit}
+            name={props.buttonName}
             className="bg-[#100F49] text-white font-bold rounded-[10px] h-[46px] w-[220px]"
             //set the button to disabled if any of the fields are empty
           >
-            Confirmar
+            {props.buttonName}
           </button>
         </div>
       </div>

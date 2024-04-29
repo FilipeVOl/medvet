@@ -8,6 +8,9 @@ import { UserProvider } from "./contexts/userContext";
 import { Calendar } from "./Component/Calendar/Calendar";
 import Agenda from "./pages/Agenda";
 import MostrarAluno from "./pages/MostrarAluno";
+import MostrarProfessor from "./pages/MostrarProfessor";
+import MostrarTutor from "./pages/MostrarTutor";
+import TelaNovoTutor from "./Component/TelaNovoTutor";
 
 export function Router() {
   return (
@@ -17,10 +20,13 @@ export function Router() {
           <Route path="aluno" element={<Cadastro buttonName = "Cadastrar"/>} />
           <Route path="calendario" element={<Calendar />} />
           <Route path="agendamento" element={<Agendamento />} />
+          <Route path="tutor" element={<TelaNovoTutor buttonName = "Confirmar"/>} />
           <Route path="agenda" element={<Agenda/>} />
-          <Route path="professor" element={ <Professor/>}/>
+          <Route path="professor" element={ <Professor buttonName = "Cadastrar"/>}/>
           <Route path="showAluno" element={ <MostrarAluno />} />
+          <Route path="showProfessor" element={ <MostrarProfessor />} />
           <Route path="criarconsulta" element={<NovaConsulta/>}/>
+          <Route path="showTutor" element={<MostrarTutor/>} />
         </Route>
       </Routes>
     </UserProvider>

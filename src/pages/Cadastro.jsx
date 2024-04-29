@@ -76,6 +76,7 @@ export default function Cadastro(props) {
                 name="registration"
                 type="text"
                 onChange={(e) => {
+                  setUserData(...userData, userData.registration = e.target.value)
                   setRegistration(e.target.value);
                 }}
                 className={`border-[1px] w-full rounded-md h-9 pl-2 ${
