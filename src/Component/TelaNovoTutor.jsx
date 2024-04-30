@@ -3,36 +3,6 @@ import PropTypes from "prop-types";
 import { Input, InputLabel, TextareaAutosize } from "@mui/material";
 import z from "zod";
 
-const InputConsulta = ({ label, type, isBig, setter, value, props }) => {
-
-  {TelaNovoTutor.propTypes = {
-    buttonName: PropTypes.string
-  }}
-
-
-  const handleChange = useCallback(
-    (e) => {
-      setter(e.target.value);
-    },
-    [setter]
-  );
-  return (
-    <div className="flex flex-col mb-4">
-      <InputLabel className="ml-4" htmlFor={label}>
-        {label}
-      </InputLabel>
-      <Input
-        onChange={handleChange}
-        type={type}
-        value={value}
-        className={`${isBig ? "w-[320px]" : "w-[220px]"} ${
-          value === "" ? "border-[#FF0000]" : "border-[#848484]"
-        } border rounded-[2px] h-[46px] p-2 text-base`}
-      />
-    </div>
-  );
-};
-
 const InputTutor = ({ label, type, isBig, setter, value }) => {
   const handleChange = useCallback(
     (e) => {
@@ -50,7 +20,7 @@ const InputTutor = ({ label, type, isBig, setter, value }) => {
         type={type}
         value={value}
         onChange={handleChange}
-        className={`${isBig ? "w-[490px]" : "w-[290px]"} ${
+        className={`${isBig ? "lg:w-[490px]" : "w-[290px]"} ${
           value === "" ? "border-[#FF0000]" : "border-[#848484]"
         }  border rounded-[2px] h-[46px] p-2 text-base`}
       />
@@ -58,7 +28,7 @@ const InputTutor = ({ label, type, isBig, setter, value }) => {
   );
 };
 
-const TelaNovoTutor = (props) => {
+const TelaNovoTutor = () => {
   const [Paciente, setPaciente] = useState("");
   const [raca, setRaca] = useState("");
   const [sexo, setSexo] = useState("");
@@ -141,80 +111,68 @@ const TelaNovoTutor = (props) => {
 
   return (
     <>
-      <div className="flex flex-col p-16 h-screen">
-        <h1 className=" text-2xl font-bold mt-2">Novo tutor</h1>
-        <form>
-          <div className="pt-12 ml-4">
-            <div className="flex gap-11">
-              <InputTutor
-                label="Nome"
-                type="text"
-                isBig
-                setter={setNome}
-                value={nome}
-              />
-              <InputTutor
-                label="CPF"
-                type="text"
-                setter={setCpf}
-                value={cpfMask(cpf)}
-              />
-            </div>
-            <div className="flex gap-11">
-              <InputTutor
-                label="Email"
-                type="text"
-                setter={setEmail}
-                value={email}
-              />
-              <InputTutor
-                label="Telefone"
-                type="text"
-                isBig
-                setter={setTelefone}
-                value={phoneMask(telefone)}
-              />
-            </div>
-            <div>
-              <label className="ml-4" htmlFor="obs">
-                Observação
-              </label>
-              <TextareaAutosize
-                onChange={(e) => {
-                  setObs(e.target.value);
-                }}
-                value={obs}
-                className={`border ${
-                  obs === "" ? "border-red-600" : "border-[#848484]"
-                }  rounded-[2px] h-[92px] p-2 text-base w-full resize-none`}
-              />
-            </div>
+      <h1 className=" text-2xl font-bold mt-2">Novo tutor</h1>
+      <form>
+        <div className="pt-12 ml-4">
+          <div className="flex gap-11">
+            <InputTutor
+              label="Nome"
+              type="text"
+              isBig
+              setter={setNome}
+              value={nome}
+            />
+            <InputTutor
+              label="CPF"
+              type="text"
+              setter={setCpf}
+              value={cpfMask(cpf)}
+            />
           </div>
-        </form>
-        <div className="justify-between flex ml-4 mt-8">
-          <button className="bg-white border border-[#848484] text-black font-bold rounded-[10px] h-[46px] w-[220px]">
-            Voltar
-          </button>
+          <div className="flex gap-11">
+            <InputTutor
+              label="Email"
+              type="text"
+              setter={setEmail}
+              value={email}
+            />
+            <InputTutor
+              label="Telefone"
+              type="text"
+              isBig
+              setter={setTelefone}
+              value={phoneMask(telefone)}
+            />
+          </div>
+          <div>
+            <label className="ml-4" htmlFor="obs">
+              Observação
+            </label>
+            <TextareaAutosize
+              onChange={(e) => {
+                setObs(e.target.value);
+              }}
+              value={obs}
+              className={`border ${
+                obs === "" ? "border-red-600" : "border-[#848484]"
+              }  rounded-[2px] h-[92px] p-2 text-base w-full resize-none`}
+            />
+          </div>
+        </div>
+        <div className="flex justify-end ml-4 mt-8">
           <button
             onClick={handleSubmit}
-            name={props.buttonName}
-            className="bg-[#100F49] text-white font-bold rounded-[10px] h-[46px] w-[220px]"
+            className={`${
+              !handleSubmit ? "cursor-not-allowed opacity-25 disabled" : ""
+            } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
             //set the button to disabled if any of the fields are empty
           >
-            {props.buttonName}
+            Confirmar
           </button>
         </div>
-      </div>
+      </form>
     </>
   );
-};
-
-InputConsulta.propTypes = {
-  label: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  isBig: PropTypes.bool,
-  setter: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
 };
 
 InputTutor.propTypes = {

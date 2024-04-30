@@ -71,14 +71,16 @@ const columns = [
   { field: "editIcon", headerName: "" },
 ];
 
+// TENTAR FAZER LÓGICA DE DELETAR DO ROW, UTILIZANDO STATES
+
 const MostrarProfessor = () => {
-  const [linha, setLinha] = useState('')
+  const [linha, setLinha] = useState("");
   const SpliceLinha = (index) => {
-    const dataLinha = [...linha]
-    dataLinha.splice(index, 1)
-    setLinha(dataLinha)
-    console.log(linha)
-  }
+    const dataLinha = [...linha];
+    dataLinha.splice(index, 1);
+    setLinha(dataLinha);
+    console.log(linha);
+  };
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
