@@ -1,0 +1,16 @@
+#free-solo-2-demo {
+    padding: 0;
+    width: 100%;
+}
+
+#textField {
+    width: 100%;
+}
+
+#temp::placeholder {
+    text-align: right;
+    margin-right: 2vh;
+    color: #484848;
+    opacity: 2;
+    font-size: 1.2em;
+}
