@@ -36,14 +36,11 @@ const TelaNovoTutor = () => {
   const [obs, setObs] = useState("");
   const [password, setPassword] = useState("");
   // OS STATES ABAIXO NÃO EXISTEM NA PÁGINA
-  const [cpf, setCpf] = useState("");
-  const [email, setEmail] = useState("");
-  const [animals, setAnimals] = useState("");
 
   const phoneMask = (value) => {
     return value
       .replace(/\D/g, "")
-      .replace(/(\d{2})(\d)/, "($1) $2")
+      .replace(/^(\d{2})(9\d{4})/, "($1)$2")
       .replace(/(\d{5})(\d)/, "$1-$2")
       .replace(/(-\d{4})\d+?$/, "$1");
   };
@@ -53,9 +50,6 @@ const TelaNovoTutor = () => {
     phone: z.string().min(1),
     obs: z.string().min(1),
     password: z.string().min(1),
-    email: z.string().min(1),
-    animals: z.string().min(1),
-    cpf: z.string().min(1),
   });
 
   const handleSubmit = async (e) => {
@@ -66,9 +60,6 @@ const TelaNovoTutor = () => {
         phone,
         obs,
         password: "jello",
-        cpf: "05065279136",
-        animals: "zeca pacotinho",
-        email: "filipegrodriguesreal@gmail.com",
       });
       postTutor(consulta);
       console.log(consulta);

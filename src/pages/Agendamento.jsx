@@ -44,7 +44,7 @@ const Agendamento = () => {
   const [data, setData] = useState("");
   const [hora, setHora] = useState("");
   const [obs, setObs] = useState("");
-  const [isTutorDisabled, setIsTutorDisabled] = useState(true);
+  const [Disabled, setDisabled] = useState(true);
 
   // const [pacientes, setPacientes] = useState("");
   // const [tutores, setTutores] = useState("");
@@ -124,6 +124,7 @@ const Agendamento = () => {
   // };
 
   const dataTutor = { value: "Joaquim Inácio" };
+  const dataTel = { value: "62982595874" };
 
   const handleChange = useCallback((value, setter) => {
     setter(value);
@@ -166,7 +167,7 @@ const Agendamento = () => {
                   type="text"
                   setter={setTutor}
                   value={dataTutor.value}
-                  isDisabled={isTutorDisabled}
+                  isDisabled={Disabled}
                 />
 
                 {/* <Dropdown
@@ -200,6 +201,7 @@ const Agendamento = () => {
                   isBig
                   setter={setTelefone}
                   value={phoneMask(telefone)}
+                  isDisabled={Disabled}
                 />
 
                 <InputConsulta
