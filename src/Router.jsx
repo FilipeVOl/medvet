@@ -10,7 +10,7 @@ import Agenda from "./pages/Agenda";
 import MostrarAluno from "./pages/MostrarAluno";
 import MostrarProfessor from "./pages/MostrarProfessor";
 import MostrarTutor from "./pages/MostrarTutor";
-import TelaNovoTutor from "./Component/TelaNovoTutor";
+import TelaNovoTutor from "./pages/TelaNovoTutor";
 
 export function Router() {
   return (

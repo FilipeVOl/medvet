@@ -7,8 +7,9 @@ import { Input, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
+import CreateConsult from "../services/agendamento";
 
-const InputConsulta = ({ label, type, setter, value }) => {
+const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
   const handleChange = useCallback(
     (e) => {
       setter(e.target.value);
@@ -24,7 +25,8 @@ const InputConsulta = ({ label, type, setter, value }) => {
         onChange={handleChange}
         type={type}
         value={value}
-        className={`${
+        disabled={isDisabled}
+        className={` ${
           value === "" ? "border-[#FF0000]" : "border-[#848484]"
         } border rounded-md h-[46px] p-2 text-base`}
       />
@@ -36,15 +38,16 @@ const Agendamento = () => {
   // const [open, setOpen] = useState(false);
   // const { user, setUser } = useContext(UserContext);
   const [telefone, setTelefone] = useState("");
-  const [Paciente, setPaciente] = useState("");
+  const [paciente, setPaciente] = useState("");
   const [tutor, setTutor] = useState("");
   const [especie, setEspecie] = useState("");
   const [data, setData] = useState("");
   const [hora, setHora] = useState("");
   const [obs, setObs] = useState("");
+  const [isTutorDisabled, setIsTutorDisabled] = useState(true);
 
-  const [pacientes, setPacientes] = useState("");
-  const [tutores, setTutores] = useState("");
+  // const [pacientes, setPacientes] = useState("");
+  // const [tutores, setTutores] = useState("");
 
   const phoneMask = (value) => {
     return value
@@ -70,15 +73,9 @@ const Agendamento = () => {
   };
 
   const ConsultaSchema = z.object({
-    Paciente: z.string().min(1),
-    tutor: z.string().min(1),
     especie: z.string().min(1),
-    data: z.string().min(1),
+    stringDate: z.string().min(1),
     hora: z.string().min(1),
-    contato: z.string().min(1),
-    nome: z.string().min(1),
-    cpf: z.string().min(1),
-    email: z.string().min(1),
     telefone: z.string().min(1),
     obs: z.string().min(1),
   });
@@ -87,48 +84,46 @@ const Agendamento = () => {
     e.preventDefault();
     try {
       const consulta = ConsultaSchema.parse({
-        Paciente: Paciente,
+        paciente: paciente,
         tutor: tutor,
         especie: especie,
-        data: data,
+        stringDate: data,
         hora: hora,
         telefone: telefone,
         obs: obs,
       });
+      CreateConsult(consulta);
+
       console.log(consulta);
     } catch (error) {
       console.error(error.errors);
     }
   };
 
-  const Dropdown = ({ label, options, onchange, value, width }) => {
-    return (
-      <div className={`flex flex-col w-full mb-4 w-${width}`}>
-        <InputLabel htmlFor={label} className="ml-4">
-          {label}
-        </InputLabel>
-        <select
-          onChange={(e) => {
-            onchange(e.target.value);
-          }}
-          value={value}
-          className="w-full h-[46px] rounded-[2px] p-2 border border-[#838383] bg-white"
-        >
-          {options.map((option) => (
-            <option key={option} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  };
+  // const Dropdown = ({ label, options, onchange, value, width }) => {
+  //   return (
+  //     <div className={`flex flex-col w-full mb-4 w-${width}`}>
+  //       <InputLabel htmlFor={label} className="ml-4">
+  //         {label}
+  //       </InputLabel>
+  //       <select
+  //         onChange={(e) => {
+  //           onchange(e.target.value);
+  //         }}
+  //         value={value}
+  //         className="w-full h-[46px] rounded-[2px] p-2 border border-[#838383] bg-white"
+  //       >
+  //         {options.map((option, index) => (
+  //           <option key={index} value={option.value}>
+  //             {option.label}
+  //           </option>
+  //         ))}
+  //       </select>
+  //     </div>
+  //   );
+  // };
 
-  const dataPacientes = [
-    { label: "Paciente 1", value: "paciente1" },
-    { label: "Paciente 2", value: "paciente2" },
-    { label: "Paciente 3", value: "paciente3" },
-  ];
+  const dataTutor = { value: "Joaquim Inácio" };
 
   const handleChange = useCallback((value, setter) => {
     setter(value);
@@ -150,23 +145,38 @@ const Agendamento = () => {
           <div className="pt-12 ml-4 w-auto">
             <div className="w-auto">
               <div className="gap-8 flex flex-col sm:grid sm:grid-cols-[40%_1fr]">
-                <Dropdown
+                {/* <Dropdown
                   label="Paciente"
                   options={dataPacientes}
                   value={pacientes}
                   onchange={(value) => {
                     handleChange(value, setPacientes);
                   }}
+                /> */}
+
+                <InputConsulta
+                  label="Paciente"
+                  type="text"
+                  setter={setPaciente}
+                  value={paciente}
                 />
 
-                <Dropdown
+                <InputConsulta
+                  label="Tutor"
+                  type="text"
+                  setter={setTutor}
+                  value={dataTutor.value}
+                  isDisabled={isTutorDisabled}
+                />
+
+                {/* <Dropdown
                   label="Tutor"
                   options={dataPacientes}
                   value={tutores}
                   onchange={(value) => {
                     handleChange(value, setTutores);
                   }}
-                />
+                /> */}
               </div>
 
               <div className="flex flex-col sm:grid sm:grid-cols-[25%_2fr_1fr_1fr] gap-8 ">
@@ -211,7 +221,9 @@ const Agendamento = () => {
                   minRows={7}
                   size="md"
                   variant="outlined"
-                  setter={setObs}
+                  onChange={(e) => {
+                    setObs(e.target.value);
+                  }}
                 />
               </div>
 
@@ -277,23 +289,23 @@ const Agendamento = () => {
 InputConsulta.propTypes = {
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  isBig: PropTypes.bool,
-  setter: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
+  setter: PropTypes.func,
+  isDisabled: PropTypes.bool,
 };
 
 Agendamento.propTypes = {
-  label: PropTypes.string.isRequired,
-  onchange: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  onchange: PropTypes.func,
+  type: PropTypes.string,
+  value: PropTypes.string,
   width: PropTypes.number,
   options: PropTypes.arrayOf(
     PropTypes.shape({
-      value: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
+      value: PropTypes.string,
+      label: PropTypes.string,
     })
-  ).isRequired,
+  ),
 };
 
 export default Agendamento;

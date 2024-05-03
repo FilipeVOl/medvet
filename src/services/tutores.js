@@ -11,4 +11,15 @@ const getTutor = (setData) => {
     });
 };
 
-export default getTutor;
+const postTutor = (consulta) => {
+  axios
+    .post("http://localhost:3333/tutor", consulta)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export { getTutor, postTutor };

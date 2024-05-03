@@ -76,8 +76,8 @@ const MostrarAluno = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
-  const handleButtonClick = () => setOpenEdit(!openEdit)
-  const handleDeleteClick = () => setOpenDelete(!openDelete)
+  const handleButtonClick = () => setOpenEdit(!openEdit);
+  const handleDeleteClick = () => setOpenDelete(!openDelete);
 
   let [data, setData] = useState("");
   useEffect(() => {
@@ -85,11 +85,9 @@ const MostrarAluno = () => {
     console.log(setData);
   }, []);
 
+  // const userData = data[0];
 
-  console.log(data[0])
-  const userData = data[0]
-
-  console.log(userData.id, userData.name)
+  // console.log(userData.id, userData.name);
   // const handleData = (setData) => {
   //   setData(data.nome)
   // }
@@ -111,7 +109,7 @@ const MostrarAluno = () => {
             <SearchIcon className="absolute p-4" />
           </div>
 
-          <Modal  
+          <Modal
             open={openEdit}
             onClose={handleButtonClick}
             aria-labelledby="modal-modal-title"

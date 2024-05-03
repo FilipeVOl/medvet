@@ -17,8 +17,8 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import axios from "axios";
-import Tutor from "../Component/TelaNovoTutor";
-import getTutor from "../services/tutores";
+import Tutor from "../pages/TelaNovoTutor";
+import { getTutor } from "../services/tutores";
 import tutores from "../mocks/tutor.mock";
 
 const style = {
