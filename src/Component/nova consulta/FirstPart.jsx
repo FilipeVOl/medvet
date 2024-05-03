@@ -1,4 +1,3 @@
-import professores from "../../mocks/professores.mock"
 import { useState, useContext, useEffect } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
@@ -6,6 +5,8 @@ import InputComponent from "./InputComponent";
 import { ConsultContext } from "../../pages/NovaConsulta";
 import PropTypes from "prop-types";
 import "./consultPages.css"
+import { getProfessores } from '../../services/professores';
+import { getTutores } from '../../services/tutores';
 
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
@@ -20,13 +21,16 @@ export default function FirstPart(props) {
   const [pelagem, setPelagem] = useState(pagOne.pelagem);
   const [historico, setHistorico] = useState(pagOne.historico);
   const [professor, setProfessor] = useState(pagOne.professor);
-  const [consult, setConst] = useState(pagOne.consult);
-  useEffect(() => {
-
-  }, [raca, paciente])
+  const [professores, setProfs] = useState([]);
+  const [tutores, setTutores] = useState([]);
+  const [motivo, setMotivo] = useState(pagOne.motivo);
   //Ajeitar lógica da vacina e desmerninação
   const [vacina1, setVacina1] = useState({ vacina1: pagOne.vacina1.vacina1, date: pagOne.vacina1.date });
   const [desmer, setDesmer] = useState({ desmer: pagOne.desmer.desmer, date: pagOne.desmer.date });
+  useEffect(() => {
+    getProfessores(setProfs)
+    getTutores(setTutores)
+  }, [])
 
   const sendDataContext = {
     data,
@@ -42,9 +46,14 @@ export default function FirstPart(props) {
     professor,
     vacina1,
     desmer,
-    consult
+    motivo
   }
-
+  const handleObjChange = ((objt, set, key, value) => {
+    let obj = { ...objt }
+    obj.id = value;
+    obj.name = value;
+    set(obj);
+  })
   const handleProx = (() => {
     setPagOne(sendDataContext)
     props.setSteps(2)
@@ -85,7 +94,7 @@ export default function FirstPart(props) {
                   disableClearable
                   options={professores.map((option) => option.name)}
                   value={professor}
-                  onChange={((_e, value) => setProfessor(value))}
+                  onChange={((_e, value) => handleObjChange(professor, setProfessor, ))}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -105,7 +114,7 @@ export default function FirstPart(props) {
                   freeSolo
                   id="free-solo-2-demo"
                   disableClearable
-                  options={professores.map((option) => option.name)}
+                  options={tutores.map((option) => option.name)}
                   value={tutor}
                   onChange={((_e, value) => setTutor(value))}
                   renderInput={(params) => (
@@ -119,7 +128,25 @@ export default function FirstPart(props) {
                   )}
                 />
               </label>
-              <InputComponent nome="Paciente" dataType="text" type={paciente} setDataCom={setPaciente} />
+              <label htmlFor="free-solo-2-demo" className="grow">Paciente
+                <Autocomplete
+                  freeSolo
+                  id="free-solo-2-demo"
+                  disableClearable
+                  options={tutores.map((option) => option.name)}
+                  value={paciente}
+                  onChange={((_e, value) => setPaciente(value))}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      InputProps={{
+                        ...params.InputProps,
+                        type: 'search',
+                      }}
+                    />
+                  )}
+                />
+              </label>
             </div>
             <div className="flex gap-8 justify-center" id="div-esp-rac-sex">
               <InputComponent nome="Espécie" dataType="text" type={especie} setDataCom={setEspecie} />
@@ -148,8 +175,8 @@ export default function FirstPart(props) {
                 Motivo da Consulta
                 <textarea name="consult" id="consult" cols="25" rows="3"
                   className="w-full border-solid border-2 order-border-gray rounded-lg p-1 resize-none"
-                  value={consult}
-                  onChange={((e) => setConst(e.target.value))}
+                  value={motivo}
+                  onChange={((e) => setMotivo(e.target.value))}
                 ></textarea>
               </label>
               <label htmlFor="historico" className="grow mx-8">
@@ -220,6 +247,6 @@ export default function FirstPart(props) {
   )
 }
 
-FirstPart.PropTypes = {
+FirstPart.propTypes = {
   setSteps: PropTypes.func.isRequired,
 }

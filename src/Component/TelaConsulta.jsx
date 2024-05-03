@@ -175,7 +175,7 @@ const TelaConsulta = () => {
   );
 };
 
-TelaConsulta.propTypes = {
+TelaConsulta.PropTypes = {
   label: PropTypes.string.isRequired,
   onchange: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,

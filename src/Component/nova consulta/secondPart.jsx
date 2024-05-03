@@ -3,6 +3,8 @@ import InputComponent from "./InputComponent"
 import "./consultPages.css"
 import TextAreaComponent from "./TextAreaComponent"
 import { ConsultContext } from "../../pages/NovaConsulta";
+import PropTypes from "prop-types";
+
 export default function SecondPart(props) {
   const { pagSec, setPagSec } = useContext(ConsultContext);
   const [temp, setTemp] = useState(pagSec.temp);
@@ -18,6 +20,14 @@ export default function SecondPart(props) {
   const [snervoso, setSnervoso] = useState(pagSec.snervoso);
   const [sgenit, setSgenit] = useState(pagSec.sgenit);
   const [outros, setOutros] = useState(pagSec.outros);
+  const [mucosas, setMucosas] = useState(pagSec.mucosas)
+  const [checkBox, setCheckBox] = useState({ 
+    check1: pagSec.checkBox.check1, 
+    check2: pagSec.checkBox.check2, 
+    check3: pagSec.checkBox.check3, 
+    check4: pagSec.checkBox.check4, 
+    check5: pagSec.checkBox.check5
+  });
 
   const renderTextArea = [
     { id: 'Pele e anexos', value: pele, setSomething: setPele },
@@ -29,6 +39,7 @@ export default function SecondPart(props) {
     { id: 'Sist. Genitourinário', value: sgenit, setSomething: setSgenit },
     { id: 'Outros', value: outros, setSomething: setOutros },
   ]
+
   const sendStateSec = {
     temp,
     freqCard,
@@ -43,15 +54,26 @@ export default function SecondPart(props) {
     snervoso,
     sgenit,
     outros,
+    checkBox,
+    mucosas
   }
+
   const handleProx = (() => {
     setPagSec(sendStateSec)
     props.setSteps(3)
   })
+
   const handleAnt = (() => {
     setPagSec(sendStateSec)
     props.setSteps(1)
   })
+
+  const handleCheckBox = ((e, inputCheck) => {
+    let obj = { ...checkBox }
+    obj[inputCheck] = e
+    setCheckBox(obj);
+  });
+
   return (
     <div className="font-Montserrat p-28 w-full">
       <div className="font-bold">
@@ -73,33 +95,59 @@ export default function SecondPart(props) {
         <div>
           <label className="w-full grid grid-cols-[repeat(5,1fr)]" htmlFor="">
             <label htmlFor="" className="flex w-full items-center justify-center">
-              <input type='checkbox' className={'w-1/5 border-solid border-2 border-gray rounded-lg h-12 p-1'} />
+              <input 
+              type='checkbox' 
+              className={'w-1/5 border-solid border-2 border-gray rounded-lg h-12 p-1'}
+              checked={checkBox.check1}
+              onChange={((e) => handleCheckBox(e.target.checked, 'check1'))}
+              />
               <p className="ml-4">Normocoradas</p>
             </label>
             <label htmlFor="" className="flex w-full  items-center pr-4 justify-center">
-              <input type='checkbox' className={'w-1/5 border-solid border-2 border-gray rounded-lg h-12 p-1'} />
+              <input 
+              type='checkbox' 
+              className={'w-1/5 border-solid border-2 border-gray rounded-lg h-12 p-1'}
+              checked={checkBox.check2}
+              onChange={((e) => handleCheckBox(e.target.checked, 'check2'))}
+              />
               <p className="ml-4">Pálidas</p>
             </label>
             <label htmlFor="" className="flex w-full items-center pr-4 justify-center">
-              <input type='checkbox' className={'w-1/5 border-solid border-2 border-gray rounded-lg h-12 p-1'} />
+              <input
+              type='checkbox'
+              className={'w-1/5 border-solid border-2 border-gray rounded-lg h-12 p-1'}
+              checked={checkBox.check3}
+              onChange={((e) => handleCheckBox(e.target.checked, 'check3'))}
+              />
               <p className="ml-4">Congestas</p>
             </label>
             <label htmlFor="" className="flex w-full items-center pr-4 justify-center">
-              <input type='checkbox' className={'w-1/5 border-solid border-2 border-gray rounded-lg h-12 p-1'} />
+              <input
+              type='checkbox'
+              className={'w-1/5 border-solid border-2 border-gray rounded-lg h-12 p-1'}
+              checked={checkBox.check4}
+              onChange={((e) => handleCheckBox(e.target.checked, 'check4'))}
+              />
               <p className="ml-4">Cianóticas</p>
             </label>
             <label htmlFor="" className="flex w-full items-center justify-center">
-              <input type='checkbox' className={'w-1/5 border-solid border-2 border-gray rounded-lg h-12 p-1'} />
+              <input
+              type='checkbox'
+              className={'w-1/5 border-solid border-2 border-gray rounded-lg h-12 p-1'}
+              checked={checkBox.check5}
+              onChange={((e) => handleCheckBox(e.target.checked, 'check5'))}
+              />
               <p className="ml-4">Icterícias</p>
             </label>
           </label>
           <div className="w-full my-16">
-            <label htmlFor="" className="grow m-12">Qual
+            <label className="grow m-12">Qual
               <input
                 type="text"
-                name="vacina1"
-                id="vacina1"
+                id="mucosas"
                 className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
+                value={mucosas}
+                onChange={(({ target }) => setMucosas(target.value))}
               />
             </label>
           </div>
@@ -127,4 +175,8 @@ export default function SecondPart(props) {
       </form>
     </div>
   )
+}
+
+SecondPart.propTypes = {
+  setSteps: PropTypes.func.isRequired,
 }

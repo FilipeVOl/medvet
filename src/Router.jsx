@@ -19,7 +19,7 @@ export function Router() {
           <Route path="agendamento" element={<Agendamento />} />
           <Route path="agenda" element={<Agenda/>} />
           <Route path="professor" element={ <Professor/>}/>
-          <Route path="showAluno" element={ <MostrarAluno />} />
+          {/* <Route path="showAluno" element={ <MostrarAluno />} /> */}
           <Route path="criarconsulta" element={<NovaConsulta/>}/>
         </Route>
       </Routes>

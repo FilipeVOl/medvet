@@ -1,22 +1,25 @@
 import { useState, createContext } from "react";
 import FirstPart from "../Component/nova consulta/FirstPart"
 import SecondPart from "../Component/nova consulta/secondPart";
+import ThirdPart from "../Component/nova consulta/ThirdPart";
+
 export const ConsultContext = createContext();
+
 const pagOneData = {
-  paciente: '',
+  paciente: { id: '', name: '' },
   data: '12022024',
-  tutor: '',
+  tutor: { id: '', name: '' },
   especie: '',
   raca: '',
   sexo: '',
   idade: '',
   peso: '',
   pelagem: '',
-  consult:'',
   historico: '',
   professor: '',
   vacina1: { vacina1: '', date: '' },
   desmer: { desmer: '', date: '' },
+  motivo: '',
 }
 
 const pagSecData = {
@@ -33,6 +36,16 @@ const pagSecData = {
   snervoso: '',
   sgenit: '',
   outros: '',
+  checkBox : { check1: false, check2: false, check3: false, check4: false, check5: false },
+  mucosas: '',
+}
+
+const pagThirdData = {
+  sExamesCompl: '',
+  sDiagnostico: '',
+  sTratamento: '',
+  sObs: '',
+  sResp: '',
 }
 
 const handleSteps = (steps, setSteps) => {
@@ -41,7 +54,7 @@ const handleSteps = (steps, setSteps) => {
   } else if (steps === 2) {
     return <SecondPart setSteps={setSteps} />
   } else if (steps === 3) {
-    <div>Oi</div>
+    return <ThirdPart setSteps={setSteps}/>
   } else {
     <div>OOOi 4</div>
   }
@@ -50,9 +63,10 @@ export default function NovaConsulta() {
   const [steps, setSteps] = useState(1)
   const [pagOne, setPagOne] = useState(pagOneData);
   const [pagSec, setPagSec] = useState(pagSecData);
+  const [pagTh, setPagTh] = useState(pagThirdData)
   return (
 
-    <ConsultContext.Provider value={{ pagOne, setPagOne, pagSec, setPagSec }}>
+    <ConsultContext.Provider value={{ pagOne, setPagOne, pagSec, setPagSec, pagTh, setPagTh }}>
       {handleSteps(steps, setSteps)}
     </ConsultContext.Provider>
   )

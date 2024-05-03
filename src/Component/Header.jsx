@@ -7,7 +7,7 @@ export default function Header() {
   const navigate = useNavigate();
   return (
     <>
-      <div className="header-container justify-between grid grid-cols-2 w-[99vw] items-center shadow-md py-5 px-8">
+      <div className="header-container justify-between grid grid-cols-2 items-center shadow-md py-5 px-8">
         <img
           onClick={() => navigate("/cadastro")}
           className="med-logo cursor-pointer"

@@ -14,4 +14,5 @@ InputComponent.propTypes = {
   setDataCom: PropTypes.func.isRequired,
   place: PropTypes.string,
   id: PropTypes.string,
+  type: PropTypes.string.isRequired,
 };

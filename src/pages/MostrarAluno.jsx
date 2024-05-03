@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '@mui/material/Button';
-import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
+import { createTheme, styled, ThemeProvider } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
