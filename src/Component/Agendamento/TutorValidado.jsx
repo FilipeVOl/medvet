@@ -6,7 +6,8 @@ import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
 import Tutor from "../../pages/TelaNovoTutor";
-import CreateConsult from "../../services/agendamento";
+import { CreateConsult } from "../../services/agendamento";
+import { ConsultTutorExist } from "../../services/agendamento";
 import Box from "@mui/material/Box";
 
 const style = {
@@ -23,20 +24,7 @@ const style = {
 };
 
 const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
-  // const phoneUnmask = (value) => {
-  //   return value
-  //     .replace(/\D/g, "")
-  //     .replace(/^(\d{2})\((\d{2})\)(\d{4})-(\d{4})$/, "$1$2$3$4");
-  // };
-
-  // const handleChange = useCallback(
-  //   (e) => {
-  //     setter(phoneUnmask(e.target.value));
-  //   },
-  //   [setter]
-  // );
-
-  const handleSetter = useCallback(
+  const handleChange = useCallback(
     (e) => {
       setter(e.target.value);
     },
@@ -49,7 +37,7 @@ const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
         {label}
       </InputLabel>
       <Input
-        onChange={handleSetter}
+        onChange={handleChange}
         type={type}
         value={value}
         disabled={isDisabled}
@@ -63,14 +51,15 @@ const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
 
 const TutorValidado = (props) => {
   const [phone, setPhone] = useState("");
-  const [phoneWMask, setMask] = useState("");
-  const [paciente, setPaciente] = useState("");
-  const [tutor, setTutor] = useState("");
-  const [especie, setEspecie] = useState("");
-  const [data, setData] = useState("");
+  const [phoneWMask, setMask] = useState(props.tel.phone);
+  const [nameAnimal, setName] = useState("");
+  const [nameTutor, setTutor] = useState("");
+  const [species, setEspecie] = useState("");
+  const [stringDate, setDate] = useState("");
   const [hora, setHora] = useState("");
-  const [obs, setObs] = useState("");
+  const [description, setDesc] = useState("");
   const [Disabled, setDisabled] = useState(true);
+  const [id, setId] = useState(props.tel.id)
 
   const dateMask = (value) => {
     return value
@@ -88,43 +77,54 @@ const TutorValidado = (props) => {
   };
 
   const ConsultaSchema = z.object({
-    especie: z.string().min(1),
+    species: z.string().min(1),
     stringDate: z.string().min(1),
     hora: z.string().min(1),
     phone: z.string().min(1),
-    obs: z.string().min(1),
+    description: z.string().min(1),
+    nameAnimal: z.string().min(1),
+    nameTutor: z.string().min(0)
   });
+
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const consulta = ConsultaSchema.parse({
-        paciente: paciente,
-        tutor: tutor,
-        especie: especie,
-        stringDate: data,
+        nameAnimal: nameAnimal,
+        species: species,
+        stringDate: stringDate,
         hora: hora,
+        description: description,
         phone: phoneWMask,
-        obs: obs,
+        nameTutor: nameTutor,
       });
-      CreateConsult(consulta);
+      ConsultTutorExist(props.tel.id, consulta);
 
-      console.log(consulta);
+      console.log();
     } catch (error) {
       console.error(error.errors);
     }
   };
 
-  const handleChange = (e) => {
-    
-  }
-
-  const phoneMask = (e) => {
-    return e
+  const phoneMask = (value) => {
+    return value
       .replace(/\D/g, "")
       .replace(/^(\d{2})(9\d{4})/, "($1)$2")
       .replace(/(\d{5})(\d)/, "$1-$2")
       .replace(/(-\d{4})\d+?$/, "$1");
+  };
+
+  const phoneUnmask = (value) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/^(\d{2})\((\d{2})\)(\d{4})-(\d{4})$/, "$1$2$3$4");
+  };
+
+  const handlePhone = (e) => {
+    setPhone(e.target.value);
+    setMask(e.target.value);
   };
 
   return (
@@ -138,8 +138,8 @@ const TutorValidado = (props) => {
                 <InputConsulta
                   label="Paciente"
                   type="text"
-                  setter={setPaciente}
-                  value={paciente}
+                  value={nameAnimal}
+                  setter={setName}
                 />
 
                 <InputConsulta
@@ -156,30 +156,39 @@ const TutorValidado = (props) => {
                   label="Espécie"
                   type="text"
                   setter={setEspecie}
-                  value={especie}
+                  value={species}
                 />
 
                 <InputConsulta
                   label="Hora"
                   type="text"
-                  setter={}
+                  setter={setHora}
                   value={hourMask(hora)}
                 />
 
-                <InputConsulta
-                  label="N° de telefone"
-                  type="text"
-                  isBig
-                  setter={setPhone}
-                  value={phoneMask(props.tel.phone)}
-                  isDisabled={Disabled}
-                />
+                <div className="flex flex-col mb-4">
+                  <label className="ml-4">
+                    Telefone
+                    <input
+                      type="text"
+                      onChange={handlePhone}
+                      value={phoneMask(props.tel.phone)}
+                      isDisabled={Disabled}
+                      className={` ${
+                        props.tel.phone === ""
+                          ? "border-[#FF0000]"
+                          : "border-[#848484]"
+                      } 
+                border rounded-md h-[46px] p-2 text-base`}
+                    />
+                  </label>
+                </div>
 
                 <InputConsulta
                   label="Data"
                   type="text"
-                  setter={setData}
-                  value={dateMask(data)}
+                  setter={setDate}
+                  value={dateMask(stringDate)}
                 >
                   <img src="" alt="" />
                 </InputConsulta>
@@ -195,7 +204,7 @@ const TutorValidado = (props) => {
                   size="md"
                   variant="outlined"
                   onChange={(e) => {
-                    setObs(e.target.value);
+                    setDesc(e.target.value);
                   }}
                 />
               </div>

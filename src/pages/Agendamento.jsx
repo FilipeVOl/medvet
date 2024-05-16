@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
 import Tutor from "../pages/TelaNovoTutor";
-import CreateConsult from "../services/agendamento";
+import { CreateConsult } from "../services/agendamento";
 import TutorValidado from "../Component/Agendamento/TutorValidado";
 import TutorInvalido from "../Component/Agendamento/TutorInvalido";
 import Box from "@mui/material/Box";
@@ -26,32 +26,47 @@ const Agendamento = () => {
     p: 4,
   };
 
-  const phoneMask = (value) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/(\d{2})(\d)/, "($1) $2")
-      .replace(/(\d{5})(\d)/, "$1-$2")
-      .replace(/(-\d{4})\d+?$/, "$1");
-  };
 
   const { user, setUser } = useContext(UserContext);
   const [data, setData] = useState([1]);
   const [telefone, setTelefone] = useState("");
   const [open, setOpen] = useState(true);
+  const [phoneWMask, setMask] = useState("");
   const [validate, setValidate] = useState(false);
+
+  const phoneMask = (value) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/^(\d{2})(9\d{4})/, "($1)$2")
+      .replace(/(\d{5})(\d)/, "$1-$2")
+      .replace(/(-\d{4})\d+?$/, "$1");
+  };
+  const phoneUnmask = (value) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/^(\d{2})\((\d{2})\)(\d{4})-(\d{4})$/, "$1$2$3$4");
+  };
 
   const handleClose = () => {
     setOpen(false);
   };
 
   useEffect(() => {
-    getTutorByNumber(telefone, setData);
+    try {
+      getTutorByNumber(telefone, setData);
+    } catch(e) {
+      console.log(e)
+    }
   }, [telefone]);
+
   const handleConfirmButton = () => {
-    getTutorByNumber(telefone, setData);
-    console.log(data.tutors[0].phone);
+    try {
+      getTutorByNumber(telefone, setData);
+    } catch(e) {
+      console.log(e)
+    }
     handleClose();
-    if (data.tutors[0].phone.includes(telefone)) {
+    if (data.tutors[0].phone == phoneUnmask(telefone)) {
       setValidate(true);
     }
   };
@@ -76,7 +91,7 @@ const Agendamento = () => {
                 setTelefone(e.target.value);
                 setUser({ ...user, phone: e.target.value });
               }}
-              value={telefone}
+              value={phoneMask(telefone)}
               className="border border-[#848484] rounded-[2px] h-[46px] p-2 text-base w-full"
             />
             <div className="flex justify-between">

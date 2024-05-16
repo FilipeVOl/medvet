@@ -1,23 +1,34 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
+import { getTutor } from "../../services/tutores";
+import Modal from "@mui/material/Modal";
 import { Input, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
-import CreateConsult from "../../services/agendamento";
+import Tutor from "../../pages/TelaNovoTutor";
+import { CreateConsult } from "../../services/agendamento";
+import { ConsultTutorExist } from "../../services/agendamento";
+import Box from "@mui/material/Box";
 
-const InputConsulta = ({ label, type, setter, value, isDisabled, setter2 }) => {
-  const phoneUnmask = (value) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/^(\d{2})\((\d{2})\)(\d{4})-(\d{4})$/, "$1$2$3$4");
-  };
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "auto",
+  height: "50%",
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
+const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
   const handleChange = useCallback(
     (e) => {
-      setter2(phoneUnmask(e.target.value));
       setter(e.target.value);
     },
-    [setter, setter2]
+    [setter]
   );
 
   return (
@@ -29,7 +40,6 @@ const InputConsulta = ({ label, type, setter, value, isDisabled, setter2 }) => {
         onChange={handleChange}
         type={type}
         value={value}
-        disabled={isDisabled}
         className={` ${
           value === "" ? "border-[#FF0000]" : "border-[#848484]"
         } border rounded-md h-[46px] p-2 text-base`}
@@ -38,16 +48,17 @@ const InputConsulta = ({ label, type, setter, value, isDisabled, setter2 }) => {
   );
 };
 
-const Agendamento = () => {
+const TutorInvalido = (props) => {
   const [phone, setPhone] = useState("");
-  const [paciente, setPaciente] = useState("");
-  const [tutor, setTutor] = useState("");
-  const [especie, setEspecie] = useState("");
-  const [data, setData] = useState("");
-  const [hora, setHora] = useState("");
-  const [obs, setObs] = useState("");
-  const [Disabled, setDisabled] = useState(true);
   const [phoneWMask, setMask] = useState("");
+  const [nameAnimal, setName] = useState("");
+  const [nameTutor, setTutor] = useState("");
+  const [species, setEspecie] = useState("");
+  const [stringDate, setDate] = useState("");
+  const [hora, setHora] = useState("");
+  const [description, setDesc] = useState("");
+  const [Disabled, setDisabled] = useState(true);
+  const [id, setId] = useState("");
 
   const dateMask = (value) => {
     return value
@@ -65,38 +76,54 @@ const Agendamento = () => {
   };
 
   const ConsultaSchema = z.object({
-    especie: z.string().min(1),
+    species: z.string().min(1),
     stringDate: z.string().min(1),
     hora: z.string().min(1),
     phone: z.string().min(1),
-    obs: z.string().min(1),
+    description: z.string().min(1),
+    nameAnimal: z.string().min(1),
+    nameTutor: z.string().min(0),
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const consulta = ConsultaSchema.parse({
-        paciente: paciente,
-        tutor: tutor,
-        especie: especie,
-        stringDate: data,
+        nameAnimal: nameAnimal,
+        species: species,
+        stringDate: stringDate,
         hora: hora,
+        description: description,
         phone: phoneWMask,
-        obs: obs,
+        nameTutor: nameTutor,
       });
       CreateConsult(consulta);
-      console.log(consulta);
+
+      console.log();
     } catch (error) {
       console.error(error.errors);
     }
   };
 
-  const phoneMask = (e) => {
-    return e
+  console.log(phoneWMask)
+
+  const phoneMask = (value) => {
+    return value
       .replace(/\D/g, "")
       .replace(/^(\d{2})(9\d{4})/, "($1)$2")
       .replace(/(\d{5})(\d)/, "$1-$2")
       .replace(/(-\d{4})\d+?$/, "$1");
+  };
+
+  const phoneUnmask = (value) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/^(\d{2})\((\d{2})\)(\d{4})-(\d{4})$/, "$1$2$3$4");
+  };
+
+   const handlePhone = (e) => {
+    setPhone(e.target.value);
+    setMask(e.target.value);
   };
 
   return (
@@ -110,16 +137,15 @@ const Agendamento = () => {
                 <InputConsulta
                   label="Paciente"
                   type="text"
-                  setter={setPaciente}
-                  value={paciente}
+                  value={nameAnimal}
+                  setter={setName}
                 />
 
                 <InputConsulta
                   label="Tutor"
                   type="text"
                   setter={setTutor}
-                  value={tutor}
-                  isDisabled={Disabled}
+                  value={nameTutor}
                 />
               </div>
 
@@ -128,7 +154,7 @@ const Agendamento = () => {
                   label="Espécie"
                   type="text"
                   setter={setEspecie}
-                  value={especie}
+                  value={species}
                 />
 
                 <InputConsulta
@@ -138,20 +164,28 @@ const Agendamento = () => {
                   value={hourMask(hora)}
                 />
 
-                <InputConsulta
-                  label="N° de telefone"
-                  type="text"
-                  isBig
-                  setter={setPhone}
-                  setter2={setMask}
-                  value={phoneMask(phone)}
-                />
+                <div className="flex flex-col mb-4">
+                  <label className="ml-4">
+                    Telefone
+                    <input
+                      type="text"
+                      onChange={handlePhone}
+                      value={phoneMask(phone)}
+                      className={` ${
+                        phone === ""
+                          ? "border-[#FF0000]"
+                          : "border-[#848484]"
+                      } 
+                border rounded-md h-[46px] p-2 text-base`}
+                    />
+                  </label>
+                </div>
 
                 <InputConsulta
                   label="Data"
                   type="text"
-                  setter={setData}
-                  value={dateMask(data)}
+                  setter={setDate}
+                  value={dateMask(stringDate)}
                 >
                   <img src="" alt="" />
                 </InputConsulta>
@@ -167,7 +201,7 @@ const Agendamento = () => {
                   size="md"
                   variant="outlined"
                   onChange={(e) => {
-                    setObs(e.target.value);
+                    setDesc(e.target.value);
                   }}
                 />
               </div>
@@ -202,12 +236,13 @@ InputConsulta.propTypes = {
   isDisabled: PropTypes.bool,
 };
 
-Agendamento.propTypes = {
+TutorInvalido.propTypes = {
   label: PropTypes.string,
   onchange: PropTypes.func,
   type: PropTypes.string,
   value: PropTypes.string,
   width: PropTypes.number,
+  tel: PropTypes.object,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string,
@@ -216,4 +251,4 @@ Agendamento.propTypes = {
   ),
 };
 
-export default Agendamento;
+export default TutorInvalido;
