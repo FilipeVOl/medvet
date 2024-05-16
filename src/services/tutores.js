@@ -1,5 +1,20 @@
 import axios from "axios";
 
+export const getTutorPatientById = (set, id) => {
+    try {
+        axios.get(`http://localhost:3333/get/animals/bytutor/${id}`)
+            .then(response => {
+                set(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    } catch (e) {
+        console.log(e, 'Problema na requisição de profesor.');
+    }
+}
+
+
 export const getTutores = (set) => {
     try {
         axios.get('http://localhost:3333/get/tutor?numberOfItems=5&page=1')

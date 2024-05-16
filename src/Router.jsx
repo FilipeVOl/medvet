@@ -7,7 +7,6 @@ import { DefaultLayout } from "./layouts/DefaultLayout";
 import { UserProvider } from "./contexts/userContext";
 import { Calendar } from "./Component/Calendar/Calendar";
 import Agenda from "./pages/Agenda";
-import MostrarAluno from "./pages/MostrarAluno";
 
 export function Router() {
   return (
