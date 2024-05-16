@@ -13,13 +13,13 @@ import EditIcon from "../images/edit.svg";
 import TrashIcon from "../images/trash.svg";
 import Novoaluno from "../images/novoaluno.png";
 import IconButton from "@mui/material/IconButton";
-import getAluno from "../services/alunos";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Cadastro from "./Cadastro";
 import axios from "axios";
 import { useEffect } from "react";
+import { filterReg, getAluno } from "../services/alunos";
 
 const style = {
   position: "absolute",
@@ -27,7 +27,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "auto",
-  height: "90%",
+  height: "50%",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -75,22 +75,23 @@ const columns = [
 const MostrarAluno = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openNew, setOpenNew] = useState(false);
 
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
+  const handleNewClick = () => setOpenNew(!openNew);
 
   let [data, setData] = useState("");
+  let [registration, setRegistration] = useState("");
+
   useEffect(() => {
     getAluno(setData);
     console.log(setData);
+  }, [openNew]);
+
+  useEffect(() => {
+    filterReg(registration, setRegistration);
   }, []);
-
-  // const userData = data[0];
-
-  // console.log(userData.id, userData.name);
-  // const handleData = (setData) => {
-  //   setData(data.nome)
-  // }
 
   return (
     <ThemeProvider theme={theme}>
@@ -104,10 +105,27 @@ const MostrarAluno = () => {
               placeholder="N° de matricula"
               name="searchRegist"
               type="text"
+              onChange={({ target }) =>
+                filterReg(target.value, setRegistration)
+              }
               className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
             />
+
             <SearchIcon className="absolute p-4" />
           </div>
+
+          <Modal
+            open={openNew}
+            onClose={handleNewClick}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                <Cadastro buttonName="Cadastrar" />
+              </Typography>
+            </Box>
+          </Modal>
 
           <Modal
             open={openEdit}
@@ -188,6 +206,7 @@ const MostrarAluno = () => {
           </Modal>
           <div className="flex justify-end">
             <Button
+              onClick={handleNewClick}
               sx={{
                 backgroundColor: "#100F49",
                 width: "200px",

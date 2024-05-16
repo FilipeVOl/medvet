@@ -2,15 +2,22 @@ import { useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { Input, InputLabel } from "@mui/material";
 import Textarea from "@mui/joy/Textarea";
-import z from "zod";
+import z, { set } from "zod";
 import { postTutor } from "../services/tutores";
 
-const InputTutor = ({ label, type, setter, value }) => {
+const InputTutor = ({ label, type, setter, value, setter2 }) => {
+  const phoneUnmask = (value) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/^(\d{2})\((\d{2})\)(\d{4})-(\d{4})$/, "$1$2$3$4");
+  };
+
   const handleChange = useCallback(
     (e) => {
+      setter2(phoneUnmask(e.target.value));
       setter(e.target.value);
     },
-    [setter]
+    [setter, setter2]
   );
 
   return (
@@ -32,24 +39,20 @@ const InputTutor = ({ label, type, setter, value }) => {
 
 const TelaNovoTutor = () => {
   const [name, setNome] = useState("");
-  const [phone, setTelefone] = useState("");
+  const [phone, setPhone] = useState("");
   const [obs, setObs] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // OS STATES ABAIXO NÃO EXISTEM NA PÁGINA
-
-  const phoneMask = (value) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/^(\d{2})(9\d{4})/, "($1)$2")
-      .replace(/(\d{5})(\d)/, "$1-$2")
-      .replace(/(-\d{4})\d+?$/, "$1");
-  };
+  const [phoneWMask, setMask] = useState("");
 
   const ConsultaSchema = z.object({
     name: z.string().min(1),
     phone: z.string().min(1),
     obs: z.string().min(1),
     password: z.string().min(1),
+    cpf: z.string().min(0),
+    email: z.string().min(0),
   });
 
   const handleSubmit = async (e) => {
@@ -57,15 +60,24 @@ const TelaNovoTutor = () => {
     try {
       const consulta = ConsultaSchema.parse({
         name,
-        phone,
+        phone: phoneWMask,
         obs,
         password: "jello",
+        cpf,
+        email,
       });
       postTutor(consulta);
-      console.log(consulta);
     } catch (error) {
       console.error(error.errors);
     }
+  };
+
+  const phoneMask = (e) => {
+    return e
+      .replace(/\D/g, "")
+      .replace(/^(\d{2})(9\d{4})/, "($1)$2")
+      .replace(/(\d{5})(\d)/, "$1-$2")
+      .replace(/(-\d{4})\d+?$/, "$1");
   };
 
   return (
@@ -79,13 +91,15 @@ const TelaNovoTutor = () => {
               type="text"
               isBig
               setter={setNome}
+              setter2={setPassword}
               value={name}
             />
             <InputTutor
               label="Telefone"
               type="text"
               isBig
-              setter={setTelefone}
+              setter={setPhone}
+              setter2={setMask}
               value={phoneMask(phone)}
             />
           </div>
@@ -124,6 +138,7 @@ InputTutor.propTypes = {
   type: PropTypes.string.isRequired,
   isBig: PropTypes.bool,
   setter: PropTypes.func.isRequired,
+  setter2: PropTypes.func,
   value: PropTypes.string.isRequired,
 };
 

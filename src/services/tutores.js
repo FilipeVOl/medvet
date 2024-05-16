@@ -1,13 +1,24 @@
 import axios from "axios";
 
-const getTutor = (setData) => {
+const getTutor = (set) => {
   axios
     .get("http://localhost:3333/get/tutor?numberOfItems=10&page=1")
     .then((response) => {
-      setData(response.data);
+      set(response.data);
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
+    });
+};
+
+const getTutorByNumber = (number, set) => {
+  axios
+    .get(`http://localhost:3333/get/tutor/searchphone?q=${number}&page=1`)
+    .then((response) => {
+      set(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching number:", error);
     });
 };
 
@@ -22,4 +33,4 @@ const postTutor = (consulta) => {
     });
 };
 
-export { getTutor, postTutor };
+export { getTutor, postTutor, getTutorByNumber };

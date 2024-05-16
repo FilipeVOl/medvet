@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export function CreateConsult(consulta) {
+function CreateConsult(consulta) {
   axios
     .post("http://localhost:3333/create/consults", consulta)
     .then((res) => {
