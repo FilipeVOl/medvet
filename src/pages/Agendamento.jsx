@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useCallback } from "react";
 import { UserContext } from "../contexts/userContext";
-import { getTutor, getTutorByNumber } from "../services/tutores";
+import { getTutorByNumber } from "../services/tutores";
 import Modal from "@mui/material/Modal";
 import { Input, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";

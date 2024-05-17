@@ -18,7 +18,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import axios from "axios";
 import Tutor from "../pages/TelaNovoTutor";
-import { getTutor } from "../services/tutores";
+import { getTutores } from "../services/tutores";
 import tutores from "../mocks/tutor.mock";
 
 const style = {
@@ -88,7 +88,7 @@ const MostrarProfessor = () => {
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   let [data, setData] = useState("");
   useEffect(() => {
-    getTutor(setData);
+    getTutores(setData);
   }, []);
 
   return (
