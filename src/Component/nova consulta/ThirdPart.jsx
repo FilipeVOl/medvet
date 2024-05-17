@@ -32,7 +32,7 @@ export default function ThirdPart(props) {
     sResp,
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     setPagTh(PageThirdData);
 
     const typeMucous = allPagesData.pagSec.checkboxValues.map((value) => {
@@ -40,25 +40,26 @@ export default function ThirdPart(props) {
     });
     console.log(allPagesData);
 
-    const replaceDate = (date) => {
+    const replaceDateToBrl = (date) => {
       const dateSplit = date.replace(/-/g, "/");
-      return dateSplit;
+      const dateBrl = new Date(dateSplit).toLocaleDateString("pt-BR");
+      return dateBrl;
     };
 
     const allDataState = {
-      stringDate: replaceDate(allPagesData.pagOne.data),
+      stringDate: replaceDateToBrl(allPagesData.pagOne.data),
       nameAnimal: allPagesData.pagOne.paciente,
       species: allPagesData.pagOne.especie,
       nameTutor: allPagesData.pagOne.tutor,
       description: " ",
-      animal_id: "",
-      teacher_id: "",
+      animal_id: "6643bcce83c13c2921891ae5",
+      teacher_id: "6643a9905108c219a1474426",
       history: allPagesData.pagOne.historico,
       reason_consult: allPagesData.pagOne.motivo,
       vaccination: allPagesData.pagOne.vacina1.vacina1,
-      date_vaccination: replaceDate(allPagesData.pagOne.vacina1.date),
+      date_vaccination: replaceDateToBrl(allPagesData.pagOne.vacina1.date),
       deworming: allPagesData.pagOne.desmer.desmer,
-      date_deworming: replaceDate(allPagesData.pagOne.desmer.date),
+      date_deworming: replaceDateToBrl(allPagesData.pagOne.desmer.date),
       temperature: allPagesData.pagSec.temp,
       frequency_cardiac: allPagesData.pagSec.freqCard,
       frequency_respiratory: allPagesData.pagSec.resp,
@@ -81,7 +82,7 @@ export default function ThirdPart(props) {
       responsible: allPagesData.pagTh.sResp,
     };
     console.log(allDataState);
-    axios
+    await axios
       .post("http://localhost:3333/create/enchiridion", allDataState)
       .then((response) => {
         console.log(response.data);
