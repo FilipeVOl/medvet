@@ -10,7 +10,7 @@ export const getTutorPatientById = (set, id) => {
                 console.error(error);
             });
     } catch (e) {
-        console.log(e, 'Problema na requisição de profesor por ID.');
+        console.log(e, 'Problema na requisição de tutor por ID.');
     }
 }
 
@@ -22,10 +22,10 @@ export const getTutores = (set) => {
                 set(response.data);
             })
             .catch(error => {
-                console.error('Não acessou os profesores no banco', error);
+                console.error('Não acessou os tutores no banco', error);
             });
     } catch (e) {
-        console.log(e, 'Problema na requisição de professores.');
+        console.log(e, 'Problema na requisição de tutores.');
     }
 }
 
@@ -47,10 +47,10 @@ export const getTutoresByName = (set, params) => {
                 set(response.data);
             })
             .catch(error => {
-                console.error('ERRO NO BUSCAR POR NOME DO PROFESSOR', error);
+                console.error('ERRO NO BUSCAR POR NOME DO TUTOR', error);
             });
     } catch (e) {
-        console.log(e, 'ERRO NO BUSCAR POR NOME DO PROFESSOR');
+        console.log(e, 'ERRO NO BUSCAR POR NOME DO TUTOR');
     }
 }
 

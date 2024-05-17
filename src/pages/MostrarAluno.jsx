@@ -19,7 +19,8 @@ import Box from "@mui/material/Box";
 import Cadastro from "./Cadastro";
 import axios from "axios";
 import { useEffect } from "react";
-import { filterReg, getAluno } from "../services/alunos";
+import { filterReg, getAluno, PutAluno } from "../services/alunos";
+
 
 const style = {
   position: "absolute",
@@ -27,7 +28,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "auto",
-  height: "50%",
+  height: "77%",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -41,6 +42,7 @@ const theme = createTheme({
     },
   },
 });
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -76,6 +78,8 @@ const MostrarAluno = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openNew, setOpenNew] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null)
+  const [att, setAtt] = useState("")
 
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
@@ -93,13 +97,20 @@ const MostrarAluno = () => {
     filterReg(registration, setRegistration);
   }, []);
 
+  const PutButton = () => {
+    useEffect(() => {
+      PutAluno(attdata)
+  }, [selectedUser])
+}
+
+
   return (
     <ThemeProvider theme={theme}>
       <div className="container">
         <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
           Alunos cadastrados
         </h1>
-        <div className="mid grid grid-cols-[2fr_1fr] ml-36">
+        <div className="mid grid grid-cols-[2fr_1fr] ml-36 sm:w-[80%]">
           <div className="flex items-center">
             <input
               placeholder="N° de matricula"
@@ -111,10 +122,98 @@ const MostrarAluno = () => {
               className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
             />
 
-            <SearchIcon className="absolute p-4" />
+            <SearchIcon 
+            style={{
+              color: "gray"
+            }}className="absolute translate-x-4" />
+
           </div>
 
-          <Modal
+          <div className="flex justify-end">
+            <Button
+              onClick={handleNewClick}
+              sx={{
+                backgroundColor: "#100F49",
+                width: "200px",
+                borderRadius: "0.5rem;",
+                "&:hover": {
+                  backgroundColor: "#2C2B60",
+                },
+              }}
+              variant="contained"
+            >
+              <div className="flex flex-row justify-center mr-auto gap-8">
+                <img src={Novoaluno} alt="imagem do botao" />
+                Novo aluno
+              </div>
+            </Button>
+          </div>
+        </div>
+        <div className="ml-36 sm:w-[80%] mt-16">
+          <TableContainer component={Paper}>
+            <Table aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) =>
+                    // <StyledTableCell
+                    // key={column.field}>{column.headerName}
+                    // </StyledTableCell>
+                    column.field == "editIcon" ? (
+                      <StyledTableCell
+                        style={{
+                          width: "100px",
+                        }}
+                        key={column.field}
+                      >
+                        {column.headerName}
+                      </StyledTableCell>
+                    ) : (
+                      <StyledTableCell key={column.field}>
+                        {column.headerName}
+                      </StyledTableCell>
+                    )
+                  )}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Object.values(data).map((row) => (
+                  <StyledTableRow key={row.id}>
+                    <StyledTableCell>{row.registration}</StyledTableCell>
+                    <StyledTableCell>{row.name}</StyledTableCell>
+                    <StyledTableCell>{row.phone}</StyledTableCell>
+                    <IconButton
+                      className="edit-button"
+                      onClick={() => {
+                        handleButtonClick()
+                        setSelectedUser(row)
+                        console.log(row)
+                      }}
+                      
+                    >
+                      <img src={EditIcon} />
+                    </IconButton>
+
+                    <IconButton
+                      className="delete-button"
+                      onClick={handleDeleteClick}
+                    >
+                      {/* // axios.delete(`http://localhost:3333/deletealuno/${row.id}`)
+                      // function removeRow () {
+                      //   const dataC = [...data]
+                      //   dataC.splice(TableBody.data, 0)
+                      //   console.log(dataC)
+                      // } */}
+
+                      <img src={TrashIcon} />
+                    </IconButton>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+
+        <Modal
             open={openNew}
             onClose={handleNewClick}
             aria-labelledby="modal-modal-title"
@@ -135,7 +234,7 @@ const MostrarAluno = () => {
           >
             <Box sx={style}>
               <Typography id="modal-modal-title" variant="h6" component="h2">
-                <Cadastro buttonName="Atualizar" />
+                <Cadastro props={selectedUser} attFunc={PutButton} buttonName="Atualizar" />
               </Typography>
             </Box>
           </Modal>
@@ -188,6 +287,7 @@ const MostrarAluno = () => {
                     Voltar
                   </IconButton>
                   <IconButton
+                    // onClick={}
                     style={{
                       backgroundColor: "#100F49",
                       width: "200px",
@@ -204,84 +304,6 @@ const MostrarAluno = () => {
               </Typography>
             </Box>
           </Modal>
-          <div className="flex justify-end">
-            <Button
-              onClick={handleNewClick}
-              sx={{
-                backgroundColor: "#100F49",
-                width: "200px",
-                borderRadius: "0.5rem;",
-                "&:hover": {
-                  backgroundColor: "#2C2B60",
-                },
-              }}
-              variant="contained"
-            >
-              <div className="flex flex-row justify-center mr-auto gap-8">
-                <img src={Novoaluno} alt="imagem do botao" />
-                Novo aluno
-              </div>
-            </Button>
-          </div>
-        </div>
-        <div className="ml-36 lg:w-auto sm:w-auto md:w-auto mt-16">
-          <TableContainer component={Paper}>
-            <Table aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) =>
-                    // <StyledTableCell
-                    // key={column.field}>{column.headerName}
-                    // </StyledTableCell>
-                    column.field == "editIcon" ? (
-                      <StyledTableCell
-                        style={{
-                          width: "100px",
-                        }}
-                        key={column.field}
-                      >
-                        {column.headerName}
-                      </StyledTableCell>
-                    ) : (
-                      <StyledTableCell key={column.field}>
-                        {column.headerName}
-                      </StyledTableCell>
-                    )
-                  )}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {Object.values(data).map((row) => (
-                  <StyledTableRow key={row.id}>
-                    <StyledTableCell>{row.registration}</StyledTableCell>
-                    <StyledTableCell>{row.name}</StyledTableCell>
-                    <StyledTableCell>{row.phone}</StyledTableCell>
-                    <IconButton
-                      className="edit-button"
-                      onClick={handleButtonClick}
-                    >
-                      <img src={EditIcon} />
-                    </IconButton>
-
-                    <IconButton
-                      className="delete-button"
-                      onClick={handleDeleteClick}
-                    >
-                      {/* // axios.delete(`http://localhost:3333/deletealuno/${row.id}`)
-                      // function removeRow () {
-                      //   const dataC = [...data]
-                      //   dataC.splice(TableBody.data, 0)
-                      //   console.log(dataC)
-                      // } */}
-
-                      <img src={TrashIcon} />
-                    </IconButton>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
       </div>
     </ThemeProvider>
   );

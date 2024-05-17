@@ -73,7 +73,7 @@ const columns = [
 
 // TENTAR FAZER LÓGICA DE DELETAR DO ROW, UTILIZANDO STATES
 
-const MostrarProfessor = () => {
+const MostrarTutor = () => {
   const [linha, setLinha] = useState("");
   const SpliceLinha = (index) => {
     const dataLinha = [...linha];
@@ -97,7 +97,7 @@ const MostrarProfessor = () => {
         <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
           Tutores cadastrados
         </h1>
-        <div className="mid grid grid-cols-[2fr_1fr] ml-36">
+        <div className="mid grid grid-cols-[2fr_1fr] ml-36 sm:w-[80%]">
           <div className="flex items-center">
             <input
               placeholder="N° de matricula"
@@ -127,7 +127,7 @@ const MostrarProfessor = () => {
             </Button>
           </div>
         </div>
-        <div className="ml-36 lg:w-auto sm:w-auto md:w-auto mt-16">
+        <div className="ml-36 sm:w-[80%] mt-16">
           <TableContainer component={Paper}>
             <Table aria-label="customized table">
               <TableHead>
@@ -177,6 +177,9 @@ const MostrarProfessor = () => {
 
                     <Modal
                       open={openDelete}
+                      style={{
+                        borderRadius: '0.375rem'
+                      }}
                       onClose={handleDeleteClick}
                       aria-labelledby="modal-modal-deletetitle"
                       aria-describedby="modal-modal-description2"
@@ -266,4 +269,4 @@ const MostrarProfessor = () => {
   );
 };
 
-export default MostrarProfessor;
+export default MostrarTutor;

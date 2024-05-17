@@ -93,7 +93,7 @@ const TutorInvalido = (props) => {
         stringDate: stringDate,
         hora: hora,
         description: description,
-        phone: phoneWMask,
+        phone: phoneUnmask(phoneWMask),
         nameTutor: nameTutor,
       });
       CreateConsult(consulta);

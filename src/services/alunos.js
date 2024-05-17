@@ -25,4 +25,15 @@ const filterReg = (registration, set) => {
     });
 };
 
-export { getAluno, filterReg };
+const PutAluno = (att) => {
+  axios
+    .put("http://localhost:3333/put/student", att)
+    .then((response) => {
+      console.log(response.data)
+    })
+      .catch((error) => {
+        console.error("Error fetching data:", error)
+      })
+}
+
+export { getAluno, filterReg, PutAluno };

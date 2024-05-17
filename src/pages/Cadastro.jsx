@@ -4,15 +4,15 @@ import { postAluno } from "../utils/MostrarAluno.utils";
 import PropTypes from "prop-types";
 
 export default function Cadastro(props) {
-  const [registration, setRegistration] = useState("");
-  const [nome, setNome] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [email, setEmail] = useState("");
+  const [registration, setRegistration] = useState(props.props.registration);
+  const [nome, setNome] = useState(props.props.name);
+  const [cpf, setCpf] = useState(props.props.cpf);
+  const [email, setEmail] = useState(props.props.email);
   const [course, setCourse] = useState("Medicina Veterinária");
-  const [period, setPeriod] = useState("");
-  const [shift, setShift] = useState("");
-  const [phone, setPhone] = useState("");
-
+  const [period, setPeriod] = useState(props.props.period);
+  const [shift, setShift] = useState(props.props.shift);
+  const [phone, setPhone] = useState(props.props.phone);
+  console.log(props.props.period)
   {
     Cadastro.propTypes = {
       buttonName: PropTypes.string,
@@ -174,6 +174,7 @@ export default function Cadastro(props) {
                 type="number"
                 required
                 name="period"
+                value={period}
                 id="period"
                 onChange={(e) => {
                   setPeriod(e.target.value);
@@ -217,6 +218,8 @@ export default function Cadastro(props) {
             onClick={(e) => {
               e.preventDefault();
               clickError();
+              {attfunc}
+              console.log(attfunc)
             }}
             className={`${
               !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
