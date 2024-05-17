@@ -15,6 +15,7 @@ export default {
         "text-gray": "#636363",
         "button-purple": "#2C2B60",
         'blue-button': '#100F49',
+        'white-med': '#FFFFFF'
       },
       backgroundImage: {
         search: "url('../images/search.png)",
