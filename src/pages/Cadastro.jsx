@@ -1,7 +1,7 @@
 import { useState } from "react";
 import InputMask from "react-input-mask";
-import { postAluno } from '../utils/MostrarAluno.utils';
-import PropTypes from 'prop-types'
+import { postAluno } from "../utils/MostrarAluno.utils";
+import PropTypes from "prop-types";
 
 export default function Cadastro(props) {
   const [registration, setRegistration] = useState("");
@@ -13,9 +13,11 @@ export default function Cadastro(props) {
   const [shift, setShift] = useState("");
   const [phone, setPhone] = useState("");
 
-  {Cadastro.propTypes = {
-    buttonName: PropTypes.string
-  }}
+  {
+    Cadastro.propTypes = {
+      buttonName: PropTypes.string,
+    };
+  }
 
   const cpfSemPonto = cpf.replace(/[.-]/g, "");
   const data = {
@@ -33,24 +35,20 @@ export default function Cadastro(props) {
   function clickError() {
     postAluno(data);
   }
-  
-
-  
 
   function ValidateInput() {
     return nome && registration && cpf && phone;
   }
 
-
-
   return (
     <div className="cadastro-container w-full">
-      <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">Novo aluno</h1>
+      <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
+        Novo aluno
+      </h1>
 
       <form>
         <div className="forms-container px-28 grid grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
           <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
-            
             <label htmlFor="nome" className="font-Montserrat">
               Nome completo *<br />
               <input
@@ -63,7 +61,9 @@ export default function Cadastro(props) {
                 name="name"
                 type="text"
                 className={`w-full border-[1px] ${
-                  !nome ? "border-red-600 outline-red-600" : "border-border-gray"
+                  !nome
+                    ? "border-red-600 outline-red-600"
+                    : "border-border-gray"
                 } rounded-md h-9 pl-2`}
               />
             </label>
@@ -76,10 +76,16 @@ export default function Cadastro(props) {
                 name="registration"
                 type="text"
                 onChange={(e) => {
+                  // setUserData(
+                  //   ...userData,
+                  //   (userData.registration = e.target.value)
+                  // );
                   setRegistration(e.target.value);
                 }}
                 className={`border-[1px] w-full rounded-md h-9 pl-2 ${
-                  !registration ? "outline-red-600 border-red-500" : "border-border-gray"
+                  !registration
+                    ? "outline-red-600 border-red-500"
+                    : "border-border-gray"
                 }`}
               />
             </label>
@@ -115,15 +121,15 @@ export default function Cadastro(props) {
                 id="email"
                 name="email"
                 className={`${
-                  !email ? "outline-red-600 border-red-500" : "border-border-gray"
+                  !email
+                    ? "outline-red-600 border-red-500"
+                    : "border-border-gray"
                 } w-full border-[1px] rounded-md h-9 pl-2`}
               />
             </label>
-            
           </div>
 
           <div className="box-3 grid grid-cols-[1fr_2fr] gap-[5%]">
-            
             <label htmlFor="phone" className="font-Montserrat">
               Contato *<br />
               <InputMask
@@ -136,7 +142,9 @@ export default function Cadastro(props) {
                   setPhone(e.target.value);
                 }}
                 className={`${
-                  !phone ? "outline-red-600 border-red-500" : "border-border-gray"
+                  !phone
+                    ? "outline-red-600 border-red-500"
+                    : "border-border-gray"
                 } border-[1px] w-full rounded-md h-9 pl-`}
               />
             </label>
@@ -156,12 +164,12 @@ export default function Cadastro(props) {
                 className="w-full border-[1px] rounded-md h-9 pl-2"
               />
             </label>
-            
           </div>
 
           <div className="box-4 grid grid-cols-[1fr_2fr] gap-[2%] md:gap-[5%]">
             <label htmlFor="period" className="font-Montserrat">
-              Período<br />
+              Período
+              <br />
               <input
                 type="number"
                 required
@@ -171,14 +179,17 @@ export default function Cadastro(props) {
                   setPeriod(e.target.value);
                 }}
                 className={`${
-                  !period ? "outline-red-600 border-red-500" : "border-border-gray"
+                  !period
+                    ? "outline-red-600 border-red-500"
+                    : "border-border-gray"
                 } border-[1px] rounded-md h-9 pl-2 max-w-63`}
                 maxLength={2}
               />
             </label>
-            
+
             <label htmlFor="shift" className="font-Montserrat">
-              Turno<br />
+              Turno
+              <br />
               <input
                 type="text"
                 required
@@ -189,7 +200,9 @@ export default function Cadastro(props) {
                   setShift(e.target.value);
                 }}
                 className={`${
-                  !shift ? "outline-red-600 border-red-500" : "border-border-gray"
+                  !shift
+                    ? "outline-red-600 border-red-500"
+                    : "border-border-gray"
                 } border-[1px] rounded-md h-9 pl-2 max-w-63`}
               />
             </label>
@@ -210,7 +223,6 @@ export default function Cadastro(props) {
             } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
           >
             {props.buttonName}
-       
           </button>
         </div>
       </form>
