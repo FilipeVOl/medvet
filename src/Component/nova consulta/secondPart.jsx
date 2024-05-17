@@ -7,42 +7,20 @@ import PropTypes from "prop-types";
 
 export default function SecondPart(props) {
   const { pagSec, setPagSec } = useContext(ConsultContext);
-  // const [temp, setTemp] = useState(pagSec.temp);
-  // const [freqCard, setFreq] = useState(pagSec.freqCard);
-  // const [resp, setResp] = useState(pagSec.resp);
-  // const [desidratacao, setDesidratacao] = useState(pagSec.desidratacao);
-  // const [linfonodos, setLinfonodos] = useState(pagSec.linfonodos);
-  // const [pele, setPele] = useState(pagSec.pele);
-  // const [circ, setCirc] = useState(pagSec.circ);
-  // const [sresp, setSresp] = useState(pagSec.sresp);
-  // const [sdiges, setSdiges] = useState(pagSec.sdiges);
-  // const [sloc, setSloc] = useState(pagSec.sloc);
-  // const [snervoso, setSnervoso] = useState(pagSec.snervoso);
-  // const [sgenit, setSgenit] = useState(pagSec.sgenit);
-  // const [outros, setOutros] = useState(pagSec.outros);
-  // const [mucosas, setMucosas] = useState(pagSec.mucosas);
-  // const [checkBox, setCheckBox] = useState({
-  //   check1: pagSec.checkBox.check1,
-  //   check2: pagSec.checkBox.check2,
-  //   check3: pagSec.checkBox.check3,
-  //   check4: pagSec.checkBox.check4,
-  //   check5: pagSec.checkBox.check5,
-  // });
-
-  const [temp, setTemp] = useState(0);
-  const [freqCard, setFreq] = useState(0);
-  const [resp, setResp] = useState(0);
-  const [desidratacao, setDesidratacao] = useState("");
-  const [linfonodos, setLinfonodos] = useState("");
-  const [pele, setPele] = useState("");
-  const [circ, setCirc] = useState("");
-  const [sresp, setSresp] = useState("");
-  const [sdiges, setSdiges] = useState("");
-  const [sloc, setSloc] = useState("");
-  const [snervoso, setSnervoso] = useState("");
-  const [sgenit, setSgenit] = useState("");
-  const [outros, setOutros] = useState("");
-  const [mucosas, setMucosas] = useState("");
+  const [temp, setTemp] = useState(pagSec.temp);
+  const [freqCard, setFreq] = useState(pagSec.freqCard);
+  const [resp, setResp] = useState(pagSec.resp);
+  const [desidratacao, setDesidratacao] = useState(pagSec.desidratacao);
+  const [linfonodos, setLinfonodos] = useState(pagSec.linfonodos);
+  const [pele, setPele] = useState(pagSec.pele);
+  const [circ, setCirc] = useState(pagSec.circ);
+  const [sresp, setSresp] = useState(pagSec.sresp);
+  const [sdiges, setSdiges] = useState(pagSec.sdiges);
+  const [sloc, setSloc] = useState(pagSec.sloc);
+  const [snervoso, setSnervoso] = useState(pagSec.snervoso);
+  const [sgenit, setSgenit] = useState(pagSec.sgenit);
+  const [outros, setOutros] = useState(pagSec.outros);
+  const [mucosas, setMucosas] = useState(pagSec.mucosas);
   const [checkBox, setCheckBox] = useState({
     check1: false,
     check2: false,
@@ -50,7 +28,7 @@ export default function SecondPart(props) {
     check4: false,
     check5: false,
   });
-  const [checkboxValues, setCheckboxValues] = useState([]);
+  const [checkboxValues, setCheckboxValues] = useState(pagSec.checkboxValues);
 
   const renderTextArea = [
     { id: "Pele e anexos", value: pele, setSomething: setPele },
@@ -82,12 +60,12 @@ export default function SecondPart(props) {
   };
 
   const handleProx = () => {
-    setPagSec(sendStateSec);
+    setPagSec(PageTwoData);
     props.setSteps(3);
   };
 
   const handleAnt = () => {
-    setPagSec(sendStateSec);
+    setPagSec(PageTwoData);
     props.setSteps(1);
   };
 
@@ -291,11 +269,7 @@ export default function SecondPart(props) {
         <button
           type="button"
           className="bg-blue-button py-2 px-16 my-32 rounded-lg text-white float-right"
-          onClick={() => {
-            handleProx();
-            setPagSec(PageTwoData);
-            console.log(PageTwoData);
-          }}
+          onClick={() => handleProx()}
         >
           Próximo
         </button>

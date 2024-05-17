@@ -53,16 +53,16 @@ export default function ThirdPart(props) {
       nameTutor: allPagesData.pagOne.tutor,
       description: " ",
       animal_id: "6643bcce83c13c2921891ae5",
-      teacher_id: "6643a9905108c219a1474426",
+      teacher_id: "6637125e3e59da9d72548f08",
       history: allPagesData.pagOne.historico,
       reason_consult: allPagesData.pagOne.motivo,
       vaccination: allPagesData.pagOne.vacina1.vacina1,
       date_vaccination: replaceDateToBrl(allPagesData.pagOne.vacina1.date),
       deworming: allPagesData.pagOne.desmer.desmer,
       date_deworming: replaceDateToBrl(allPagesData.pagOne.desmer.date),
-      temperature: allPagesData.pagSec.temp,
-      frequency_cardiac: allPagesData.pagSec.freqCard,
-      frequency_respiratory: allPagesData.pagSec.resp,
+      temperature: allPagesData.pagSec.temp.toString(),
+      frequency_cardiac: allPagesData.pagSec.freqCard.toString(),
+      frequency_respiratory: allPagesData.pagSec.resp.toString(),
       dehydration: allPagesData.pagSec.desidratacao,
       lymph_node: allPagesData.pagSec.linfonodos,
       type_mucous: typeMucous.toString(),
@@ -75,11 +75,11 @@ export default function ThirdPart(props) {
       system_nervous: allPagesData.pagSec.snervoso,
       system_genitourinary: allPagesData.pagSec.sgenit,
       others: allPagesData.pagSec.outros,
-      complementary_exams: allPagesData.pagTh.sExamesCompl,
-      diagnosis: allPagesData.pagTh.sDiagnostico,
-      trataments: allPagesData.pagTh.sTratamento,
-      observations: allPagesData.pagTh.sObs,
-      responsible: allPagesData.pagTh.sResp,
+      complementary_exams: sExamesCompl,
+      diagnosis: sDiagnostico,
+      trataments: sTratamento,
+      observations: sObs,
+      responsible: sResp,
     };
     console.log(allDataState);
     await axios
@@ -93,6 +93,7 @@ export default function ThirdPart(props) {
   };
 
   const handleAnt = () => {
+    setPagTh(PageThirdData);
     props.setSteps(2);
   };
 

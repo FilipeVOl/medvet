@@ -4,11 +4,10 @@ import SecondPart from "../Component/nova consulta/secondPart";
 import ThirdPart from "../Component/nova consulta/ThirdPart";
 
 export const ConsultContext = createContext();
-
 const pagOneData = {
-  paciente: { id: "", name: "" },
-  data: "12022024",
-  tutor: { id: "", name: "" },
+  paciente: "",
+  data: "2024-05-17",
+  tutor: "",
   especie: "",
   raca: "",
   sexo: "",
@@ -17,8 +16,8 @@ const pagOneData = {
   pelagem: "",
   historico: "",
   professor: "",
-  vacina1: { vacina1: "", date: "" },
-  desmer: { desmer: "", date: "" },
+  vacina1: { vacina1: "", date: "2024-05-17" },
+  desmer: { desmer: "", date: "2024-05-17" },
   motivo: "",
 };
 
@@ -36,13 +35,7 @@ const pagSecData = {
   snervoso: "",
   sgenit: "",
   outros: "",
-  checkBox: {
-    check1: false,
-    check2: false,
-    check3: false,
-    check4: false,
-    check5: false,
-  },
+  checkboxValues: ['sem'],
   mucosas: "",
 };
 
@@ -62,14 +55,14 @@ const handleSteps = (steps, setSteps) => {
   } else if (steps === 3) {
     return <ThirdPart setSteps={setSteps} />;
   } else {
-    <div>""</div>;
+    <div></div>;
   }
 };
 export default function NovaConsulta() {
   const [steps, setSteps] = useState(1);
-  const [pagOne, setPagOne] = useState({});
-  const [pagSec, setPagSec] = useState({});
-  const [pagTh, setPagTh] = useState({});
+  const [pagOne, setPagOne] = useState(pagOneData);
+  const [pagSec, setPagSec] = useState(pagSecData);
+  const [pagTh, setPagTh] = useState(pagThirdData);
   const allPagesData = {
     pagOne,
     pagSec,

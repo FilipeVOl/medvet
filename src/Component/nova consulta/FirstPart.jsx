@@ -10,34 +10,34 @@ import { getTutorPatientById, getTutores } from "../../services/tutores";
 
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
-  // const [data, setData] = useState(pagOne.data);
-  // const [paciente, setPaciente] = useState(pagOne.paciente.name);
-  // const [tutor, setTutor] = useState(pagOne.tutor.name);
-  // const [especie, setEspecie] = useState(pagOne.especie);
-  // const [raca, setRaca] = useState(pagOne.raca);
-  // const [sexo, setSexo] = useState(pagOne.sexo);
-  // const [idade, setIdade] = useState(pagOne.idade);
-  // const [peso, setPeso] = useState(pagOne.peso);
-  // const [pelagem, setPelagem] = useState(pagOne.pelagem);
-  // const [historico, setHistorico] = useState(pagOne.historico);
-  // const [professor, setProfessor] = useState(pagOne.professor);
-  // const [professores, setProfs] = useState([]);
-  // const [tutores, setTutores] = useState([]);
-  // const [motivo, setMotivo] = useState(pagOne.motivo);
-  const [data, setData] = useState("");
-  const [paciente, setPaciente] = useState("");
-  const [tutor, setTutor] = useState("");
-  const [especie, setEspecie] = useState("");
-  const [raca, setRaca] = useState("");
-  const [sexo, setSexo] = useState("");
-  const [idade, setIdade] = useState("");
-  const [peso, setPeso] = useState("");
-  const [pelagem, setPelagem] = useState("");
-  const [historico, setHistorico] = useState("");
-  const [professor, setProfessor] = useState("");
+  const [data, setData] = useState(pagOne.data);
+  const [paciente, setPaciente] = useState(pagOne.paciente);
+  const [tutor, setTutor] = useState(pagOne.tutor);
+  const [especie, setEspecie] = useState(pagOne.especie);
+  const [raca, setRaca] = useState(pagOne.raca);
+  const [sexo, setSexo] = useState(pagOne.sexo);
+  const [idade, setIdade] = useState(pagOne.idade);
+  const [peso, setPeso] = useState(pagOne.peso);
+  const [pelagem, setPelagem] = useState(pagOne.pelagem);
+  const [historico, setHistorico] = useState(pagOne.historico);
+  const [professor, setProfessor] = useState(pagOne.professor);
   const [professores, setProfs] = useState([]);
   const [tutores, setTutores] = useState([]);
-  const [motivo, setMotivo] = useState("");
+  const [motivo, setMotivo] = useState(pagOne.motivo);
+  // const [data, setData] = useState("");
+  // const [paciente, setPaciente] = useState("");
+  // const [tutor, setTutor] = useState("");
+  // const [especie, setEspecie] = useState("");
+  // const [raca, setRaca] = useState("");
+  // const [sexo, setSexo] = useState("");
+  // const [idade, setIdade] = useState("");
+  // const [peso, setPeso] = useState("");
+  // const [pelagem, setPelagem] = useState("");
+  // const [historico, setHistorico] = useState("");
+  // const [professor, setProfessor] = useState("");
+  // const [professores, setProfs] = useState([]);
+  // const [tutores, setTutores] = useState([]);
+  // const [motivo, setMotivo] = useState("");
 
   //Ajeitar lógica da vacina e desmerninação
   const [vacina1, setVacina1] = useState({
@@ -76,7 +76,6 @@ export default function FirstPart(props) {
     set(obj);
   };
   const handleProx = () => {
-    setPagOne(sendDataContext);
     props.setSteps(2);
   };
   const handleVacina = (e) => {
