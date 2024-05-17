@@ -1,11 +1,12 @@
-import professores from "../../mocks/professores.mock"
-import { useState, useContext } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
+import { useState, useContext, useEffect } from "react";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 import InputComponent from "./InputComponent";
 import { ConsultContext } from "../../pages/NovaConsulta";
 import PropTypes from "prop-types";
-import "./consultPages.css"
+import "./consultPages.css";
+import { getProfessores } from "../../services/professores";
+import { getTutorPatientById, getTutores } from "../../services/tutores";
 
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
@@ -20,10 +21,37 @@ export default function FirstPart(props) {
   const [pelagem, setPelagem] = useState(pagOne.pelagem);
   const [historico, setHistorico] = useState(pagOne.historico);
   const [professor, setProfessor] = useState(pagOne.professor);
+  const [professores, setProfs] = useState([]);
+  const [tutores, setTutores] = useState([]);
+  const [motivo, setMotivo] = useState(pagOne.motivo);
+  // const [data, setData] = useState("");
+  // const [paciente, setPaciente] = useState("");
+  // const [tutor, setTutor] = useState("");
+  // const [especie, setEspecie] = useState("");
+  // const [raca, setRaca] = useState("");
+  // const [sexo, setSexo] = useState("");
+  // const [idade, setIdade] = useState("");
+  // const [peso, setPeso] = useState("");
+  // const [pelagem, setPelagem] = useState("");
+  // const [historico, setHistorico] = useState("");
+  // const [professor, setProfessor] = useState("");
+  // const [professores, setProfs] = useState([]);
+  // const [tutores, setTutores] = useState([]);
+  // const [motivo, setMotivo] = useState("");
 
   //Ajeitar lógica da vacina e desmerninação
-  const [vacina1, setVacina1] = useState({ vacina1: '', date: '' });
-  const [desmer, setDesmer] = useState({ desmer: '', date: '' });
+  const [vacina1, setVacina1] = useState({
+    vacina1: "",
+    date: "",
+  });
+  const [desmer, setDesmer] = useState({
+    desmer: "",
+    date: " ",
+  });
+  useEffect(() => {
+    getProfessores(setProfs);
+    getTutores(setTutores);
+  }, []);
 
   const sendDataContext = {
     data,
@@ -38,33 +66,59 @@ export default function FirstPart(props) {
     historico,
     professor,
     vacina1,
-    desmer
-  }
-
-  const handleProx = (() => {
-    setPagOne(sendDataContext)
-    props.setSteps(2)
-  })
-  const handleVacina = ((e) => {
-    let obj = { ...vacina1 }
+    desmer,
+    motivo,
+  };
+  const handleObjChange = (objt, set, key, value) => {
+    let obj = { ...objt };
+    obj.id = value;
+    obj.name = value;
+    set(obj);
+  };
+  const handleProx = () => {
+    props.setSteps(2);
+  };
+  const handleVacina = (e) => {
+    let obj = { ...vacina1 };
     obj.vacina1 = e;
     setVacina1(obj);
-  });
-  const handleDataVacina = ((e) => {
-    let obj = { ...vacina1 }
+  };
+  const handleDataVacina = (e) => {
+    let obj = { ...vacina1 };
     obj.date = e;
-    setVacina1(obj)
-  });
-  const handleDesmer = ((e) => {
-    let obj = { ...desmer }
+    setVacina1(obj);
+  };
+  const handleDesmer = (e) => {
+    let obj = { ...desmer };
     obj.desmer = e;
     setDesmer(obj);
-  });
-  const handleDataDesmer = ((e) => {
-    let obj = { ...desmer }
+  };
+  const handleDataDesmer = (e) => {
+    let obj = { ...desmer };
     obj.date = e;
-    setDesmer(obj)
-  });
+    setDesmer(obj);
+  };
+  const handleChangeTutorId = (e) => {
+    handleObjChange(pagOne.tutor, setTutor, "id", e);
+  };
+
+  const PageOneData = {
+    data,
+    paciente,
+    tutor,
+    especie,
+    raca,
+    sexo,
+    idade,
+    peso,
+    pelagem,
+    historico,
+    professor,
+    vacina1,
+    desmer,
+    motivo,
+  };
+
   return (
     <div className="font-Montserrat p-28 w-full">
       <div className="font-bold">
@@ -74,65 +128,128 @@ export default function FirstPart(props) {
         <form action="" className="text-[18px]">
           <div className="py-8 w-full">
             <div className="flex gap-8" id="div-prof-data">
-              <label htmlFor="free-solo-2-demo" className="w-full">Professor
+              <label htmlFor="free-solo-2-demo" className="w-full">
+                Professor
                 <Autocomplete
                   freeSolo
                   id="free-solo-2-demo"
                   disableClearable
                   options={professores.map((option) => option.name)}
                   value={professor}
-                  onChange={((_e, value) => setProfessor(value))}
+                  onChange={(_e, value) => setProfessor(value)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       InputProps={{
                         ...params.InputProps,
-                        type: 'search',
+                        type: "search",
                       }}
                     />
                   )}
                 />
               </label>
-              <InputComponent nome="Data" dataType="date" type={data} setDataCom={setData} />
+              <InputComponent
+                nome="Data"
+                dataType="date"
+                type={data}
+                setDataCom={setData}
+              />
             </div>
             <div id="div-pac-tut" className="flex gap-8 my-4 justify-center">
-              <label htmlFor="free-solo-2-demo" className="grow">Tutor
+              <label htmlFor="free-solo-2-demo" className="grow">
+                Tutor
                 <Autocomplete
                   freeSolo
                   id="free-solo-2-demo"
                   disableClearable
-                  options={professores.map((option) => option.name)}
+                  options={tutores.map((option) => option.name)} // Assuming tutores is an array of objects with a name property
                   value={tutor}
-                  onChange={((_e, value) => setTutor(value))}
+                  onChange={(_event, newValue) => {
+                    handleObjChange(pagOne.tutor, setTutor, "name", newValue);
+                    handleChangeTutorId(newValue);
+                    setTutor(newValue); // Update the state with the new value
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       InputProps={{
                         ...params.InputProps,
-                        type: 'search',
+                        type: "search",
                       }}
                     />
                   )}
                 />
               </label>
-              <InputComponent nome="Paciente" dataType="text" type={paciente} setDataCom={setPaciente} />
+              <label htmlFor="free-solo-2-demo" className="grow">
+                Paciente
+                <Autocomplete
+                  freeSolo
+                  id="free-solo-2-demo"
+                  disableClearable
+                  options={tutores.map((option) => option.name)} // Assuming you want to use the name property as the label
+                  value={paciente}
+                  onChange={(_event, newValue) => {
+                    setPaciente(newValue); // Update the state with the new value
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      InputProps={{
+                        ...params.InputProps,
+                        type: "search",
+                      }}
+                    />
+                  )}
+                />
+              </label>
             </div>
             <div className="flex gap-8 justify-center" id="div-esp-rac-sex">
-              <InputComponent nome="Espécie" dataType="text" type={especie} setDataCom={setEspecie} />
-              <InputComponent nome="Raça" dataType="text" type={raca} setDataCom={setRaca} />
+              <InputComponent
+                nome="Espécie"
+                dataType="text"
+                type={especie}
+                setDataCom={setEspecie}
+              />
+              <InputComponent
+                nome="Raça"
+                dataType="text"
+                type={raca}
+                setDataCom={setRaca}
+              />
               <label className="grid h-full grow">
                 Sexo
-                <select value={sexo} onChange={((e) => setSexo(e.target.value))} className="w-full grow p-1 py-2 rounded-lg bg-white border-solid border-2 border-gray">
-                  <option className="bg-white-500" value="M">Masculino</option>
+                <select
+                  value={sexo}
+                  onChange={(e) => setSexo(e.target.value)}
+                  className="w-full grow p-1 py-2 rounded-lg bg-white border-solid border-2 border-gray"
+                >
+                  <option className="bg-white-500" value="M">
+                    Masculino
+                  </option>
                   <option value="F">Feminino</option>
                   <option value="INDEFINIDO">Indefinido</option>
                 </select>
               </label>
             </div>
             <div id="ida-pes-pela" className="flex gap-8 my-4 justify-center">
-              <InputComponent nome="Idade" dataType="text" type={idade} setDataCom={setIdade} />
-              <InputComponent nome="Peso" dataType="text" type={peso} setDataCom={setPeso} />
-              <InputComponent nome="Pelagem" dataType="text" type={pelagem} setDataCom={setPelagem} />
+              <InputComponent
+                nome="Idade"
+                dataType="text"
+                type={idade}
+                setDataCom={setIdade}
+              />
+              <InputComponent
+                nome="Peso"
+                dataType="text"
+                type={peso}
+                setDataCom={setPeso}
+              />
+              <InputComponent
+                nome="Pelagem"
+                dataType="text"
+                type={pelagem}
+                setDataCom={setPelagem}
+              />
             </div>
           </div>
           <div>
@@ -142,16 +259,27 @@ export default function FirstPart(props) {
             <div id="div-cons-hist" className="gap-8 my-8">
               <label htmlFor="motivo" className="grow my-2 mx-8">
                 Motivo da Consulta
-                <textarea name="" id="" cols="25" rows="3" 
-                className="w-full border-solid border-2 order-border-gray rounded-lg p-1 resize-none"
+                <textarea
+                  name="consult"
+                  id="consult"
+                  cols="25"
+                  rows="3"
+                  className="w-full border-solid border-2 order-border-gray rounded-lg p-1 resize-none"
+                  value={motivo}
+                  onChange={(e) => setMotivo(e.target.value)}
                 ></textarea>
               </label>
               <label htmlFor="historico" className="grow mx-8">
                 Histórico
                 <textarea
-                  id="historico" name="historico" rows="3" cols="25" className="w-full border-solid border-2 order-border-gray rounded-lg p-1 resize-none"
+                  id="historico"
+                  name="historico"
+                  rows="3"
+                  cols="25"
+                  className="w-full border-solid border-2 order-border-gray rounded-lg p-1 resize-none"
                   value={historico}
-                  onChange={((e) => setHistorico(e.target.value))}></textarea>
+                  onChange={(e) => setHistorico(e.target.value)}
+                ></textarea>
               </label>
             </div>
           </div>
@@ -160,23 +288,26 @@ export default function FirstPart(props) {
               <h1 className="text-[30px]">Vacinação</h1>
             </div>
             <div id="div-vac" className="gap-8 flex justify-center my-8">
-              <label htmlFor="" className="grow">Qual
+              <label htmlFor="" className="grow">
+                Qual
                 <input
                   type="text"
                   name="vacina1"
                   id="vacina1"
                   className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
                   value={vacina1.vacina1}
-                  onChange={((e) => handleVacina(e.target.value))} />
+                  onChange={(e) => handleVacina(e.target.value)}
+                />
               </label>
-              <label htmlFor="">Data da Última
+              <label htmlFor="">
+                Data da Última
                 <input
                   type="date"
                   name="data1"
                   id="data1"
                   className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
                   value={vacina1.date}
-                  onChange={((e) => handleDataVacina(e.target.value))}
+                  onChange={(e) => handleDataVacina(e.target.value)}
                 />
               </label>
             </div>
@@ -184,36 +315,46 @@ export default function FirstPart(props) {
               <h1 className="text-[30px]">Desverminação</h1>
             </div>
             <div id="div-vac" className="gap-8 flex justify-center my-8">
-              <label htmlFor="" className="grow">Qual
+              <label htmlFor="" className="grow">
+                Qual
                 <input
                   type="text"
                   name="vacina1"
                   id="vacina1"
                   className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
                   value={desmer.desmer}
-                  onChange={((i) => handleDesmer(i.target.value))} />
+                  onChange={(i) => handleDesmer(i.target.value)}
+                />
               </label>
-              <label htmlFor="">Data da Última
+              <label htmlFor="">
+                Data da Última
                 <input
                   type="date"
                   name="data1"
                   id="data1"
                   className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
                   value={desmer.date}
-                  onChange={((i) => handleDataDesmer(i.target.value))} />
+                  onChange={(i) => handleDataDesmer(i.target.value)}
+                />
               </label>
             </div>
           </div>
           <button
             type="button"
             className="bg-blue-button py-2 px-16 my-32 rounded-lg text-white float-right"
-            onClick={(() => handleProx())}>Próximo</button>
+            onClick={() => {
+              handleProx();
+              setPagOne(PageOneData);
+            }}
+          >
+            Próximo
+          </button>
         </form>
       </div>
     </div>
-  )
+  );
 }
 
-FirstPart.PropTypes = {
+FirstPart.propTypes = {
   setSteps: PropTypes.func.isRequired,
-}
+};

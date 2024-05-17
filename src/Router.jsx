@@ -20,6 +20,7 @@ export function Router() {
           <Route path="aluno" element={<Cadastro buttonName="Cadastrar" />} />
           <Route path="calendario" element={<Calendar />} />
           <Route path="agendamento" element={<Agendamento />} />
+          <Route path="criarconsulta" element={<NovaConsulta/>}/>
           <Route
             path="tutor"
             element={<TelaNovoTutor buttonName="Confirmar" />}
