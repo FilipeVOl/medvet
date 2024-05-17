@@ -1,25 +1,34 @@
 import React, { useState } from "react";
 import InputMask from "react-input-mask";
 import axios from "axios";
+import PropTypes from 'prop-types'
 
-export default function Professor() {
+export default function Professor(props) {
   const [nome, setNome] = useState("");
   const [registration, setRegistration] = useState("");
   const [cpf, setCpf] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [course, setCourse] = useState("Medicina Veterinária");
+  const [shift, setShift] = useState("Vespertino")
+
+  {Professor.propTypes = {
+    buttonName: PropTypes.string
+  }}
+
+
 
   function clickError() {
     const cpfSemPonto = cpf.replace(/[.-]/g, "");
     const data = {
       name: nome,
       registration,
-      cpf,
+      cpf: cpfSemPonto,
       course,
       phone,
       email,
       password: cpfSemPonto,
+      shift
     };
 
     axios
@@ -157,7 +166,7 @@ export default function Professor() {
           <div className="button-container flex justify-end px-10 lg:px-28">
             <button
               id="cadastrar"
-              name="cadastrar"
+              name={props.buttonName}
               type="submit"
               onClick={(e) => {
                 e.preventDefault();
@@ -167,7 +176,7 @@ export default function Professor() {
                 !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
               } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
             >
-              Cadastrar
+              {props.buttonName}
             </button>
           </div>
         </form>

@@ -10,7 +10,7 @@ export const getTutorPatientById = (set, id) => {
                 console.error(error);
             });
     } catch (e) {
-        console.log(e, 'Problema na requisição de profesor.');
+        console.log(e, 'Problema na requisição de profesor por ID.');
     }
 }
 
