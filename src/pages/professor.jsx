@@ -49,7 +49,7 @@ export default function Professor(props) {
     <>
       <div
         style={{ height: "calc(100vh - 116px)" }}
-        className="cadastro-container w-full flex flex-col "
+        className="cadastro-container w-full flex flex-col font-Montserrat "
       >
         <h1 className="font-Montserrat p-20 h-10 font-bold text-xl">
           Novo Professor

@@ -42,9 +42,9 @@ export const postTutor = (consulta) => {
 
 export const getTutoresByName = (set, params) => {
     try {
-        axios.get(`http://localhost:3333/get/tutor/name${params}`)
+        axios.get(`http://localhost:3333/get/tutor/name?q=${params}`)
             .then(response => {
-                set(response.data);
+                set(response.data.tutors);
             })
             .catch(error => {
                 console.error('ERRO NO BUSCAR POR NOME DO PROFESSOR', error);

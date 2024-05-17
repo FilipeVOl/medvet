@@ -5,9 +5,9 @@ import InputComponent from "./InputComponent";
 import { ConsultContext } from "../../pages/NovaConsulta";
 import PropTypes from "prop-types";
 import "./consultPages.css";
-import { getProfessores } from "../../services/professores";
-import { getTutorPatientById, getTutores } from "../../services/tutores";
-
+import { getProfessores, getTeacherByName } from "../../services/professores";
+import { getTutorPatientById, getTutores, getTutoresByName } from "../../services/tutores";
+//http://localhost:3333/create/animals/6642665489ca79115fafff8c rota CREATE ANIMAL
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
   const [data, setData] = useState(pagOne.data);
@@ -23,21 +23,8 @@ export default function FirstPart(props) {
   const [professor, setProfessor] = useState(pagOne.professor);
   const [professores, setProfs] = useState([]);
   const [tutores, setTutores] = useState([]);
+  const [pacientes, setPacientes] = useState([]);
   const [motivo, setMotivo] = useState(pagOne.motivo);
-  // const [data, setData] = useState("");
-  // const [paciente, setPaciente] = useState("");
-  // const [tutor, setTutor] = useState("");
-  // const [especie, setEspecie] = useState("");
-  // const [raca, setRaca] = useState("");
-  // const [sexo, setSexo] = useState("");
-  // const [idade, setIdade] = useState("");
-  // const [peso, setPeso] = useState("");
-  // const [pelagem, setPelagem] = useState("");
-  // const [historico, setHistorico] = useState("");
-  // const [professor, setProfessor] = useState("");
-  // const [professores, setProfs] = useState([]);
-  // const [tutores, setTutores] = useState([]);
-  // const [motivo, setMotivo] = useState("");
 
   //Ajeitar lógica da vacina e desmerninação
   const [vacina1, setVacina1] = useState({
@@ -53,22 +40,6 @@ export default function FirstPart(props) {
     getTutores(setTutores);
   }, []);
 
-  const sendDataContext = {
-    data,
-    paciente,
-    tutor,
-    especie,
-    raca,
-    sexo,
-    idade,
-    peso,
-    pelagem,
-    historico,
-    professor,
-    vacina1,
-    desmer,
-    motivo,
-  };
   const handleObjChange = (objt, set, key, value) => {
     let obj = { ...objt };
     obj.id = value;
@@ -135,10 +106,13 @@ export default function FirstPart(props) {
                   id="free-solo-2-demo"
                   disableClearable
                   options={professores.map((option) => option.name)}
-                  value={professor}
-                  onChange={(_e, value) => setProfessor(value)}
                   renderInput={(params) => (
                     <TextField
+                      value={professor}
+                      onChange={(e, value) => {
+                        setProfessor(value)
+                        getTeacherByName(setProfs, e.target.value)
+                      }}
                       {...params}
                       InputProps={{
                         ...params.InputProps,
@@ -164,13 +138,12 @@ export default function FirstPart(props) {
                   disableClearable
                   options={tutores.map((option) => option.name)} // Assuming tutores is an array of objects with a name property
                   value={tutor}
-                  onChange={(_event, newValue) => {
-                    handleObjChange(pagOne.tutor, setTutor, "name", newValue);
-                    handleChangeTutorId(newValue);
-                    setTutor(newValue); // Update the state with the new value
-                  }}
                   renderInput={(params) => (
                     <TextField
+                      onChange={(e, value) => {
+                        setTutor(value)
+                        getTutoresByName(setTutores, e.target.value)
+                      }}
                       {...params}
                       InputProps={{
                         ...params.InputProps,
@@ -186,13 +159,17 @@ export default function FirstPart(props) {
                   freeSolo
                   id="free-solo-2-demo"
                   disableClearable
-                  options={tutores.map((option) => option.name)} // Assuming you want to use the name property as the label
-                  value={paciente}
-                  onChange={(_event, newValue) => {
-                    setPaciente(newValue); // Update the state with the new value
-                  }}
+                  options={pacientes.map((option) => option.name)} // Assuming you want to use the name property as the label
                   renderInput={(params) => (
                     <TextField
+                      value={paciente}
+                      onChange={(e, newValue) => { 
+                        const verify_string = tutores.some((e) => e.name == tutor)
+                        if (verify_string) {
+                          getTutorPatientById(setPacientes, e.target.value)
+                        }
+                        setPaciente(newValue); // Update the state with the new value
+                      }}
                       {...params}
                       InputProps={{
                         ...params.InputProps,
