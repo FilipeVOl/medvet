@@ -98,10 +98,8 @@ const MostrarAluno = () => {
   }, []);
 
   const PutButton = () => {
-    useEffect(() => {
-      PutAluno(attdata)
-  }, [selectedUser])
-}
+      PutAluno(att)
+  }
 
 
   return (

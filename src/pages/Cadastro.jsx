@@ -33,7 +33,7 @@ export default function Cadastro(props) {
   };
 
   function clickError() {
-    postAluno(data);
+    props.attFunc(data)
   }
 
   function ValidateInput() {
@@ -218,8 +218,8 @@ export default function Cadastro(props) {
             onClick={(e) => {
               e.preventDefault();
               clickError();
-              {attfunc}
-              console.log(attfunc)
+              // TA PASSANDO COMO OBJETO E TEM QUE SER STRING
+              props.attFunc(data)
             }}
             className={`${
               !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
