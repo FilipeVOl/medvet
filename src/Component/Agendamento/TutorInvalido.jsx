@@ -56,7 +56,6 @@ const TutorInvalido = (props) => {
   const [stringDate, setDate] = useState("");
   const [hora, setHora] = useState("");
   const [description, setDesc] = useState("");
-  const [Disabled, setDisabled] = useState(true);
   const [id, setId] = useState("");
 
   const dateMask = (value) => {
@@ -93,7 +92,7 @@ const TutorInvalido = (props) => {
         stringDate: stringDate,
         hora: hora,
         description: description,
-        phone: phoneWMask,
+        phone: phoneUnmask(phoneWMask),
         nameTutor: nameTutor,
       });
       CreateConsult(consulta);
