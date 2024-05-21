@@ -11,13 +11,14 @@ import MostrarAluno from "./pages/MostrarAluno";
 import MostrarProfessor from "./pages/MostrarProfessor";
 import MostrarTutor from "./pages/MostrarTutor";
 import TelaNovoTutor from "./pages/TelaNovoTutor";
+import { postAluno } from "./utils/MostrarAluno.utils";
 
 export function Router() {
   return (
     <UserProvider>
       <Routes>
         <Route path="/" element={<DefaultLayout />}>
-          <Route path="aluno" element={<Cadastro buttonName="Cadastrar" />} />
+          <Route path="aluno" element={<Cadastro buttonName="Cadastrar"/>} />
           <Route path="calendario" element={<Calendar />} />
           <Route path="agendamento" element={<Agendamento />} />
           <Route path="criarconsulta" element={<NovaConsulta/>}/>
