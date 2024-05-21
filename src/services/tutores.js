@@ -64,3 +64,14 @@ export const getTutorByNumber = (number, set) => {
       console.error("Error fetching number:", error);
     });
 };
+
+export const getAnimalsAndTutorByTutorName = (set, name) => {
+    axios
+    .get(`http://localhost:3333/get/animal/tutor/name/${name}`)
+    .then((response) => {
+      set(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching number:", error);
+    });
+}

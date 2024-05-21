@@ -6,7 +6,7 @@ import { ConsultContext } from "../../pages/NovaConsulta";
 import PropTypes from "prop-types";
 import "./consultPages.css";
 import { getProfessores, getTeacherByName } from "../../services/professores";
-import { getTutorPatientById, getTutores, getTutoresByName } from "../../services/tutores";
+import { getTutorPatientById, getTutores, getTutoresByName, getAnimalsAndTutorByTutorName } from "../../services/tutores";
 //http://localhost:3333/create/animals/6642665489ca79115fafff8c rota CREATE ANIMAL
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
@@ -132,17 +132,19 @@ export default function FirstPart(props) {
             <div id="div-pac-tut" className="flex gap-8 my-4 justify-center">
               <label htmlFor="free-solo-2-demo" className="grow">
                 Tutor
+                {console.log(tutores[0])}
                 <Autocomplete
                   freeSolo
                   id="free-solo-2-demo"
                   disableClearable
+                  onClick={(_e, newValue) => getAnimalsAndTutorByTutorName(setTutores, newValue)}
                   options={tutores.map((option) => option.name)} // Assuming tutores is an array of objects with a name property
                   value={tutor}
                   renderInput={(params) => (
                     <TextField
-                      onChange={(e, value) => {
-                        setTutor(value)
-                        getTutoresByName(setTutores, e.target.value)
+                      onChange={(e) => {
+                        setTutor(e.target.value)
+                        getAnimalsAndTutorByTutorName(setTutores, e.target.value)
                       }}
                       {...params}
                       InputProps={{
