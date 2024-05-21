@@ -2,17 +2,18 @@ import { useState } from "react";
 import InputMask from "react-input-mask";
 import { postAluno } from "../utils/MostrarAluno.utils";
 import PropTypes from "prop-types";
+import { PutAluno } from "../services/alunos";
 
 export default function Cadastro(props) {
-  const [registration, setRegistration] = useState(props.props.registration);
-  const [nome, setNome] = useState(props.props.name);
-  const [cpf, setCpf] = useState(props.props.cpf);
-  const [email, setEmail] = useState(props.props.email);
+  const [registration, setRegistration] = useState(props.selected ? props.selected.registration : "");
+  const [nome, setNome] = useState(props.selected ? props.selected.name : "");
+  const [cpf, setCpf] = useState(props.selected ? props.selected.cpf : "");
+  const [email, setEmail] = useState(props.selected ? props.selected.email : "");
   const [course, setCourse] = useState("Medicina Veterinária");
-  const [period, setPeriod] = useState(props.props.period);
-  const [shift, setShift] = useState(props.props.shift);
-  const [phone, setPhone] = useState(props.props.phone);
-  console.log(props.props.period)
+  const [period, setPeriod] = useState(props.selected ? props.selected.period : "");
+  const [shift, setShift] = useState(props.selected ? props.selected.shift : "");
+  const [phone, setPhone] = useState(props.selected ? props.selected.phone : "");
+  const [id, setId] = useState(props.selected ? props.selected.id : "");
   {
     Cadastro.propTypes = {
       buttonName: PropTypes.string,
@@ -30,10 +31,16 @@ export default function Cadastro(props) {
     period,
     phone,
     name: nome,
+    id: id
   };
 
   function clickError() {
-    props.attFunc(data)
+    if (props.selected == null) {
+      postAluno(data);
+      console.log(props.props);
+    } else {
+      PutAluno(data);
+    }
   }
 
   function ValidateInput() {
@@ -42,7 +49,7 @@ export default function Cadastro(props) {
 
   return (
     <div className="cadastro-container w-full">
-      <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
+      <h1 className="font-Montserrat p-14 h-10 text-2xl font-bold">
         Novo aluno
       </h1>
 
@@ -218,12 +225,10 @@ export default function Cadastro(props) {
             onClick={(e) => {
               e.preventDefault();
               clickError();
-              // TA PASSANDO COMO OBJETO E TEM QUE SER STRING
-              props.attFunc(data)
             }}
             className={`${
               !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
-            } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
+            } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-20 bg-border-blue text-white`}
           >
             {props.buttonName}
           </button>

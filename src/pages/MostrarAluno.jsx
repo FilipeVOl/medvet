@@ -20,7 +20,7 @@ import Cadastro from "./Cadastro";
 import axios from "axios";
 import { useEffect } from "react";
 import { filterReg, getAluno, PutAluno } from "../services/alunos";
-
+import { postAluno } from "../utils/MostrarAluno.utils";
 
 const style = {
   position: "absolute",
@@ -28,7 +28,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "auto",
-  height: "77%",
+  height: "95%",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -42,7 +42,6 @@ const theme = createTheme({
     },
   },
 });
-
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -78,8 +77,8 @@ const MostrarAluno = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openNew, setOpenNew] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null)
-  const [att, setAtt] = useState("")
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [att, setAtt] = useState({});
 
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
@@ -90,17 +89,16 @@ const MostrarAluno = () => {
 
   useEffect(() => {
     getAluno(setData);
-    console.log(setData);
   }, [openNew]);
 
-  useEffect(() => {
-    filterReg(registration, setRegistration);
-  }, []);
+
+  // useEffect(() => {
+  //   filterReg(registration, setRegistration);
+  // }, []);
 
   const PutButton = () => {
-      PutAluno(att)
-  }
-
+    PutAluno(att);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -120,11 +118,12 @@ const MostrarAluno = () => {
               className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
             />
 
-            <SearchIcon 
-            style={{
-              color: "gray"
-            }}className="absolute translate-x-4" />
-
+            <SearchIcon
+              style={{
+                color: "gray",
+              }}
+              className="absolute translate-x-4"
+            />
           </div>
 
           <div className="flex justify-end">
@@ -145,6 +144,19 @@ const MostrarAluno = () => {
                 Novo aluno
               </div>
             </Button>
+
+            <Modal
+              open={openNew}
+              onClose={handleNewClick}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  <Cadastro buttonName="Cadastrar"/>
+                </Typography>
+              </Box>
+            </Modal>
           </div>
         </div>
         <div className="ml-36 sm:w-[80%] mt-16">
@@ -182,11 +194,10 @@ const MostrarAluno = () => {
                     <IconButton
                       className="edit-button"
                       onClick={() => {
-                        handleButtonClick()
-                        setSelectedUser(row)
-                        console.log(row)
+                        handleButtonClick();
+                        setSelectedUser(row);
+
                       }}
-                      
                     >
                       <img src={EditIcon} />
                     </IconButton>
@@ -212,96 +223,87 @@ const MostrarAluno = () => {
         </div>
 
         <Modal
-            open={openNew}
-            onClose={handleNewClick}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                <Cadastro buttonName="Cadastrar" />
-              </Typography>
-            </Box>
-          </Modal>
+          open={openEdit}
+          onClose={handleButtonClick}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              <Cadastro
+                selected={selectedUser}
+                attFunc={PutButton}
+                buttonName="Atualizar"
+              />
+            </Typography>
+          </Box>
+        </Modal>
 
-          <Modal
-            open={openEdit}
-            onClose={handleButtonClick}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+        <Modal
+          open={openDelete}
+          onClose={handleDeleteClick}
+          aria-labelledby="modal-modal-deletetitle"
+          aria-describedby="modal-modal-description2"
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "500px",
+              height: "20%",
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+            }}
           >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                <Cadastro props={selectedUser} attFunc={PutButton} buttonName="Atualizar" />
-              </Typography>
-            </Box>
-          </Modal>
-
-          <Modal
-            open={openDelete}
-            onClose={handleDeleteClick}
-            aria-labelledby="modal-modal-deletetitle"
-            aria-describedby="modal-modal-description2"
-          >
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "500px",
-                height: "20%",
-                bgcolor: "background.paper",
-                border: "2px solid #000",
-                boxShadow: 24,
-                p: 4,
+            <Typography
+              style={{
+                fontSize: "27px",
               }}
+              className="font-Montserrat flex flex-col gap-12"
+              id="modal-modal-deletetitle"
+              variant="h6"
+              component="h1"
             >
-              <Typography
-                style={{
-                  fontSize: "27px",
-                }}
-                className="font-Montserrat flex flex-col gap-12"
-                id="modal-modal-deletetitle"
-                variant="h6"
-                component="h1"
-              >
-                Excluir cadastro?
-                <p>Tem certeza de que quer excluir?</p>
-                <div className="grid grid-cols-2">
-                  <IconButton
-                    style={{
-                      backgroundColor: "white",
-                      width: "200px",
-                      borderRadius: "6px",
-                      border: "1px solid black",
-                      color: "black",
-                      "&:hover": {
-                        backgroundColor: "#2C2B60",
-                      },
-                    }}
-                    onClick={handleDeleteClick}
-                  >
-                    Voltar
-                  </IconButton>
-                  <IconButton
-                    // onClick={}
-                    style={{
-                      backgroundColor: "#100F49",
-                      width: "200px",
-                      borderRadius: "6px",
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "#2C2B60",
-                      },
-                    }}
-                  >
-                    Excluir
-                  </IconButton>
-                </div>
-              </Typography>
-            </Box>
-          </Modal>
+              Excluir cadastro?
+              <p>Tem certeza de que quer excluir?</p>
+              <div className="grid grid-cols-2">
+                <IconButton
+                  style={{
+                    backgroundColor: "white",
+                    width: "200px",
+                    borderRadius: "6px",
+                    border: "1px solid black",
+                    color: "black",
+                    "&:hover": {
+                      backgroundColor: "#2C2B60",
+                    },
+                  }}
+                  onClick={handleDeleteClick}
+                >
+                  Voltar
+                </IconButton>
+                <IconButton
+                  // onClick={}
+                  style={{
+                    backgroundColor: "#100F49",
+                    width: "200px",
+                    borderRadius: "6px",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#2C2B60",
+                    },
+                  }}
+                >
+                  Excluir
+                </IconButton>
+              </div>
+            </Typography>
+          </Box>
+        </Modal>
       </div>
     </ThemeProvider>
   );

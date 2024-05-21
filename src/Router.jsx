@@ -18,7 +18,7 @@ export function Router() {
     <UserProvider>
       <Routes>
         <Route path="/" element={<DefaultLayout />}>
-          <Route path="aluno" element={<Cadastro buttonName="Cadastrar" attFunc={postAluno}/>} />
+          <Route path="aluno" element={<Cadastro buttonName="Cadastrar"/>} />
           <Route path="calendario" element={<Calendar />} />
           <Route path="agendamento" element={<Agendamento />} />
           <Route path="criarconsulta" element={<NovaConsulta/>}/>
