@@ -11,7 +11,7 @@ import cadastrados from '../images/cadastrados.svg'
 import { Link } from "react-router-dom";
 const Navbar = () => {
   return (
-    <div className='shadow-md min-w-60 h-[100] min-h-screen bg-[#007448] p-10 w-96 text-white-med'>
+    <div className='shadow-md min-w-60 h-[100] min-h-screen bg-[#007448] p-10 w-80 text-white-med'>
       <div id="inicio" className='flex py-4'>
         <img src={house} className='pr-4 '/>
         <Link to="">Início</Link>
@@ -21,10 +21,10 @@ const Navbar = () => {
         <Link to="agendamento">Agendar</Link>
       </div>
       <div id="novo-cadastro" className='flex bg-[#007448]'>
-        <img src={novoCadastro} />
-        <Accordion sx={{ backgroundColor: '#007448', color: '#FFFFFF', boxShadow: "none", paddingRight:"20px" }}>
+        <img src={novoCadastro} className='self-start my-4'/>
+        <Accordion sx={{ backgroundColor: '#007448', color: '#FFFFFF', boxShadow: "none" }}>
           <AccordionSummary
-            expandIcon={<img src={arrow} />}
+            expandIcon={<img src={arrow} className='pl-5'/>}
             aria-controls="panel2-content"
             id="panel2-header"
           >
@@ -44,10 +44,10 @@ const Navbar = () => {
         <Link to="agenda">Agendamento</Link>
       </div>
       <div id="cadastrados" className='flex bg-[#007448]'>
-        <img src={cadastrados} className='sticky top-0' />
+        <img src={cadastrados} className='self-start my-4' />
         <Accordion sx={{ backgroundColor: '#007448', color: '#FFFFFF', boxShadow: "none", paddingRight:"20px" }}>
           <AccordionSummary
-            expandIcon={<img src={arrow} />}
+            expandIcon={<img src={arrow} className='pl-8'/>}
             aria-controls="panel2-content"
             id="panel2-header"
           >
