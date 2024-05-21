@@ -55,9 +55,9 @@ export default function Professor(props) {
           Novo Professor
         </h1>
         <form>
-          <div className="forms-container px-10 lg:px-28 gap-8">
+          <div className="forms-container px-10 lg:px-28">
 
-            <div className="box-1 grid grid-cols-2 gap-8">
+            <div className="box-1 grid grid-cols-2 mb-8 gap-8">
               <label htmlFor="nome" className="font-Montserrat">
                 Nome completo *<br />
                 <input
@@ -93,7 +93,7 @@ export default function Professor(props) {
               </label>
             </div>
 
-            <div className="box-2 grid grid-cols-2 gap-8">
+            <div className="box-2 grid grid-cols-2 mb-8 gap-8">
               <label htmlFor="cpf" className="font-Montserrat">
                 CPF *<br />
                 <InputMask
@@ -129,7 +129,7 @@ export default function Professor(props) {
               </label>
             </div>
 
-            <div className="box-3 grid grid-cols-2 gap-8">
+            <div className="box-3 grid grid-cols-2 mb-8 gap-8">
               <label htmlFor="phone" className="font-Montserrat">
                 N° de contato *<br />
                 <InputMask
