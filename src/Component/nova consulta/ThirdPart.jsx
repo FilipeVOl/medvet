@@ -12,6 +12,7 @@ export default function ThirdPart(props) {
   const [sTratamento, setTrata] = useState(pagTh.sTratamento);
   const [sObs, setObs] = useState(pagTh.sObs);
   const [sResp, setResp] = useState(pagTh.sResp);
+  const [ative, setAtive] = useState(false);
 
   const renderTextArea = [
     {
@@ -34,7 +35,6 @@ export default function ThirdPart(props) {
 
   const handleFinish = async () => {
     setPagTh(PageThirdData);
-
     const typeMucous = allPagesData.pagSec.checkboxValues.map((value) => {
       return value;
     });
@@ -52,8 +52,8 @@ export default function ThirdPart(props) {
       species: allPagesData.pagOne.especie,
       nameTutor: allPagesData.pagOne.tutor,
       description: " ",
-      animal_id: "6643bcce83c13c2921891ae5",
-      teacher_id: "6637125e3e59da9d72548f08",
+      animal_id: allPagesData.pagOne.idAnimal[0].id,
+      teacher_id: "664b8a1208b0fd741bed4c50",
       history: allPagesData.pagOne.historico,
       reason_consult: allPagesData.pagOne.motivo,
       vaccination: allPagesData.pagOne.vacina1.vacina1,
@@ -81,7 +81,6 @@ export default function ThirdPart(props) {
       observations: sObs,
       responsible: sResp,
     };
-    console.log(allDataState);
     await axios
       .post("http://localhost:3333/create/enchiridion", allDataState)
       .then((response) => {
@@ -90,13 +89,19 @@ export default function ThirdPart(props) {
       .catch((error) => {
         console.error(error);
       });
+      dispararNoti()
   };
 
   const handleAnt = () => {
     setPagTh(PageThirdData);
     props.setSteps(2);
   };
-
+const dispararNoti = () => {
+  setAtive(true)
+  setTimeout(() => {
+    setAtive(false)
+  }, 3000); 
+}
   return (
     <div className="font-Montserrat p-28 w-full">
       <div className="font-bold">
@@ -141,6 +146,7 @@ export default function ThirdPart(props) {
         >
           Finalizar
         </button>
+        {ative ? <p>Cadastrado realizado com Sucesso</p> : <></>}
       </form>
     </div>
   );

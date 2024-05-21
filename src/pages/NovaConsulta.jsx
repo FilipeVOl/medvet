@@ -19,6 +19,7 @@ const pagOneData = {
   vacina1: { vacina1: "", date: "2024-05-17" },
   desmer: { desmer: "", date: "2024-05-17" },
   motivo: "",
+  idAnimal: [],
 };
 
 const pagSecData = {

@@ -6,7 +6,7 @@ import { ConsultContext } from "../../pages/NovaConsulta";
 import PropTypes from "prop-types";
 import "./consultPages.css";
 import { getProfessores, getTeacherByName } from "../../services/professores";
-import { getTutorPatientById, getTutores, getTutoresByName, getAnimalsAndTutorByTutorName } from "../../services/tutores";
+import { getAnimalsAndTutorByTutorName } from "../../services/tutores";
 //http://localhost:3333/create/animals/6642665489ca79115fafff8c rota CREATE ANIMAL
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
@@ -27,28 +27,18 @@ export default function FirstPart(props) {
   const [motivo, setMotivo] = useState(pagOne.motivo);
 
   //Ajeitar lógica da vacina e desmerninação
-  const [vacina1, setVacina1] = useState({
-    vacina1: "",
-    date: "",
-  });
-  const [desmer, setDesmer] = useState({
-    desmer: "",
-    date: " ",
-  });
+  const [vacina1, setVacina1] = useState(pagOne.vacina1);
+  const [desmer, setDesmer] = useState(pagOne.desmer);
+  useEffect(() => {
+    if (typeof tutores[0] === 'object' && 'animals' in tutores[0]) {
+      setPacientes(tutores[0].animals)
+    }
+  }, [tutores]);
   useEffect(() => {
     getProfessores(setProfs);
-    getTutores(setTutores);
+    getAnimalsAndTutorByTutorName(setTutores, '');
   }, []);
 
-  const handleObjChange = (objt, set, key, value) => {
-    let obj = { ...objt };
-    obj.id = value;
-    obj.name = value;
-    set(obj);
-  };
-  const handleProx = () => {
-    props.setSteps(2);
-  };
   const handleVacina = (e) => {
     let obj = { ...vacina1 };
     obj.vacina1 = e;
@@ -69,10 +59,6 @@ export default function FirstPart(props) {
     obj.date = e;
     setDesmer(obj);
   };
-  const handleChangeTutorId = (e) => {
-    handleObjChange(pagOne.tutor, setTutor, "id", e);
-  };
-
   const PageOneData = {
     data,
     paciente,
@@ -88,10 +74,15 @@ export default function FirstPart(props) {
     vacina1,
     desmer,
     motivo,
+    idAnimal: pacientes.filter((e) => e.name == paciente),
   };
-
+  const handleProx = () => {
+    props.setSteps(2);
+    setPagOne(PageOneData);
+  };
   return (
     <div className="font-Montserrat p-28 w-full">
+          {console.log(pagOne.paciente, pagOne.professor)}
       <div className="font-bold">
         <h1 className="text-[30px]">Identificação</h1>
       </div>
@@ -106,6 +97,8 @@ export default function FirstPart(props) {
                   id="free-solo-2-demo"
                   disableClearable
                   options={professores.map((option) => option.name)}
+                  onChange={(_e, newValue) => setProfessor(newValue)}
+                  value={professor}
                   renderInput={(params) => (
                     <TextField
                       value={professor}
@@ -132,13 +125,15 @@ export default function FirstPart(props) {
             <div id="div-pac-tut" className="flex gap-8 my-4 justify-center">
               <label htmlFor="free-solo-2-demo" className="grow">
                 Tutor
-                {console.log(tutores[0])}
                 <Autocomplete
                   freeSolo
                   id="free-solo-2-demo"
                   disableClearable
-                  onClick={(_e, newValue) => getAnimalsAndTutorByTutorName(setTutores, newValue)}
-                  options={tutores.map((option) => option.name)} // Assuming tutores is an array of objects with a name property
+                  onChange={(_e, newValue) => {
+                    setTutor(newValue)
+                    getAnimalsAndTutorByTutorName(setTutores, newValue)
+                  }}
+                  options={tutores.map((option) => option.name)}
                   value={tutor}
                   renderInput={(params) => (
                     <TextField
@@ -160,16 +155,24 @@ export default function FirstPart(props) {
                 <Autocomplete
                   freeSolo
                   id="free-solo-2-demo"
+                  value={paciente}
+                  onChange={(_e, newValue) => {
+                    setPaciente(newValue)
+                    const filter = pacientes.filter((e) => e.name == newValue)
+                    console.log(filter[0])
+                    setEspecie(filter[0].species)
+                    setRaca(filter[0].race)
+                    setSexo(filter[0].gender)
+                    setIdade(filter[0].age)
+                    // setPeso()
+                    setPelagem(filter[0].coat)
+                  }}
                   disableClearable
                   options={pacientes.map((option) => option.name)} // Assuming you want to use the name property as the label
                   renderInput={(params) => (
                     <TextField
                       value={paciente}
-                      onChange={(e, newValue) => { 
-                        const verify_string = tutores.some((e) => e.name == tutor)
-                        if (verify_string) {
-                          getTutorPatientById(setPacientes, e.target.value)
-                        }
+                      onChange={(_e, newValue) => {
                         setPaciente(newValue); // Update the state with the new value
                       }}
                       {...params}
@@ -323,7 +326,6 @@ export default function FirstPart(props) {
             className="bg-blue-button py-2 px-16 my-32 rounded-lg text-white float-right"
             onClick={() => {
               handleProx();
-              setPagOne(PageOneData);
             }}
           >
             Próximo
