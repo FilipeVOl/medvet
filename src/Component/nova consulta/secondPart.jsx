@@ -21,13 +21,6 @@ export default function SecondPart(props) {
   const [sgenit, setSgenit] = useState(pagSec.sgenit);
   const [outros, setOutros] = useState(pagSec.outros);
   const [mucosas, setMucosas] = useState(pagSec.mucosas);
-  const [checkBox, setCheckBox] = useState({
-    check1: false,
-    check2: false,
-    check3: false,
-    check4: false,
-    check5: false,
-  });
   const [checkboxValues, setCheckboxValues] = useState(pagSec.checkboxValues);
 
   const renderTextArea = [
@@ -40,24 +33,6 @@ export default function SecondPart(props) {
     { id: "Sist. Genitourinário", value: sgenit, setSomething: setSgenit },
     { id: "Outros", value: outros, setSomething: setOutros },
   ];
-
-  const sendStateSec = {
-    temp,
-    freqCard,
-    resp,
-    desidratacao,
-    linfonodos,
-    pele,
-    circ,
-    sresp,
-    sdiges,
-    sloc,
-    snervoso,
-    sgenit,
-    outros,
-    checkBox,
-    mucosas,
-  };
 
   const handleProx = () => {
     setPagSec(PageTwoData);

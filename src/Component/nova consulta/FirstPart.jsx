@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import "./consultPages.css";
 import { getProfessores, getTeacherByName } from "../../services/professores";
 import { getAnimalsAndTutorByTutorName } from "../../services/tutores";
-//http://localhost:3333/create/animals/6642665489ca79115fafff8c rota CREATE ANIMAL
+
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
   const [data, setData] = useState(pagOne.data);

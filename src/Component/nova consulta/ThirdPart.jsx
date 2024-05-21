@@ -3,7 +3,7 @@ import "./consultPages.css";
 import TextAreaComponent from "./TextAreaComponent";
 import { ConsultContext } from "../../pages/NovaConsulta";
 import PropTypes from "prop-types";
-import axios, { all } from "axios";
+import axios from "axios";
 
 export default function ThirdPart(props) {
   const { pagTh, setPagTh, allPagesData } = useContext(ConsultContext);
