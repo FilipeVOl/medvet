@@ -29,6 +29,7 @@ export default function FirstPart(props) {
   //Ajeitar lógica da vacina e desmerninação
   const [vacina1, setVacina1] = useState(pagOne.vacina1);
   const [desmer, setDesmer] = useState(pagOne.desmer);
+
   useEffect(() => {
     if (typeof tutores[0] === 'object' && 'animals' in tutores[0]) {
       setPacientes(tutores[0].animals)
@@ -39,26 +40,14 @@ export default function FirstPart(props) {
     getAnimalsAndTutorByTutorName(setTutores, '');
   }, []);
 
-  const handleVacina = (e) => {
-    let obj = { ...vacina1 };
-    obj.vacina1 = e;
-    setVacina1(obj);
-  };
-  const handleDataVacina = (e) => {
-    let obj = { ...vacina1 };
-    obj.date = e;
-    setVacina1(obj);
-  };
-  const handleDesmer = (e) => {
-    let obj = { ...desmer };
-    obj.desmer = e;
-    setDesmer(obj);
-  };
-  const handleDataDesmer = (e) => {
-    let obj = { ...desmer };
-    obj.date = e;
-    setDesmer(obj);
-  };
+  //tipo de obj, qual chave e setter
+  const handleInput = (objReceived, chave, valor, set) => {
+    let obj = { ...objReceived }
+    obj[chave] = valor;
+    console.log(obj)
+    set(obj);
+  }
+
   const PageOneData = {
     data,
     paciente,
@@ -82,7 +71,6 @@ export default function FirstPart(props) {
   };
   return (
     <div className="font-Montserrat p-28 w-full">
-          {console.log(pagOne.paciente, pagOne.professor)}
       <div className="font-bold">
         <h1 className="text-[30px]">Identificação</h1>
       </div>
@@ -278,7 +266,7 @@ export default function FirstPart(props) {
                   id="vacina1"
                   className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
                   value={vacina1.vacina1}
-                  onChange={(e) => handleVacina(e.target.value)}
+                  onChange={(e) => handleInput(vacina1, 'vacina1', e.target.value, setVacina1)}
                 />
               </label>
               <label htmlFor="">
@@ -289,7 +277,7 @@ export default function FirstPart(props) {
                   id="data1"
                   className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
                   value={vacina1.date}
-                  onChange={(e) => handleDataVacina(e.target.value)}
+                  onChange={(e) => handleInput(vacina1, 'date', e.target.value, setVacina1)}
                 />
               </label>
             </div>
@@ -305,7 +293,7 @@ export default function FirstPart(props) {
                   id="vacina1"
                   className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
                   value={desmer.desmer}
-                  onChange={(i) => handleDesmer(i.target.value)}
+                  onChange={(i) => handleInput(desmer, 'desmer', i.target.value, setDesmer)}
                 />
               </label>
               <label htmlFor="">
@@ -316,7 +304,7 @@ export default function FirstPart(props) {
                   id="data1"
                   className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
                   value={desmer.date}
-                  onChange={(i) => handleDataDesmer(i.target.value)}
+                  onChange={(i) => handleInput(desmer, 'date', i.target.value, setDesmer)}
                 />
               </label>
             </div>
