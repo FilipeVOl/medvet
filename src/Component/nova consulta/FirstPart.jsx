@@ -30,7 +30,7 @@ export default function FirstPart(props) {
   const [motivo, setMotivo] = useState(pagOne.motivo);
 
   //Ajeitar lógica da vacina e desmerninação
-  const [vacina1, setVacina1] = useState(pagOne.vacina1);
+  const [vacina, setVacina] = useState([{ vacina: '', date: '' }]);
   const [desmer, setDesmer] = useState(pagOne.desmer);
 
   useEffect(() => {
@@ -50,6 +50,12 @@ export default function FirstPart(props) {
     set(obj);
   }
 
+  const handleVacina = (arr, index, valor, key) => {
+    const array = [...arr]
+    array[index] = { ...array[index], [key]: valor }
+    setVacina(array)
+  }
+
   const PageOneData = {
     data,
     paciente,
@@ -62,7 +68,7 @@ export default function FirstPart(props) {
     pelagem,
     historico,
     professor,
-    vacina1,
+    vacina,
     desmer,
     motivo,
     idAnimal: pacientes.filter((e) => e.name == paciente),
@@ -259,35 +265,40 @@ export default function FirstPart(props) {
             <div className="font-bold">
               <h1 className="text-[30px]">Vacinação</h1>
             </div>
-            <div id="div-vac" className="gap-8 flex justify-center my-8">
-              <label  className="grow">
-                Qual
-                <input
-                  type="text"
-                  name="vacina1"
-                  id="vacina1"
-                  className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
-                  value={vacina1.vacina1}
-                  onChange={(e) => handleInput(vacina1, 'vacina1', e.target.value, setVacina1)}
-                />
-              </label>
-              <label >
-                Data da Última
-                <input
-                  type="date"
-                  name="data1"
-                  id="data1"
-                  className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
-                  value={vacina1.date}
-                  onChange={(e) => handleInput(vacina1, 'date', e.target.value, setVacina1)}
-                />
-              </label>
+            <div id="div-vac" className="gap-8 flex justify-center my-4">
+              {vacina.map((e, index) => {
+                return (
+                  <>
+                    <label className="grow">
+                      Qual
+                      <input
+                        type="text"
+                        className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
+                        value={e.vacina}
+                        onChange={(e) => handleVacina(vacina, index, e.target.value, 'vacina')}
+                      />
+                    </label>
+                    <label >
+                      Data da Última
+                      <input
+                        type="date"
+                        name="data1"
+                        id="data1"
+                        className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
+                        value={e.date}
+                        onChange={(e) => handleVacina(vacina, index, e.target.value, 'date')}
+                      />
+                    </label>
+                  </>
+                )
+              })}
+               <button className="w-100 bg-gray-500 p-4 border-solid border-2 order-border-gray rounded-lg" type="button">Adicionar Vacina</button>
             </div>
             <div className="font-bold">
               <h1 className="text-[30px]">Desverminação</h1>
             </div>
             <div id="div-vac" className="gap-8 flex justify-center my-8">
-              <label  className="grow">
+              <label className="grow">
                 Qual
                 <input
                   type="text"
