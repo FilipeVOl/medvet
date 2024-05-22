@@ -72,6 +72,6 @@ export const getAnimalsAndTutorByTutorName = (set, name) => {
       set(response.data);
     })
     .catch((error) => {
-      console.error("Error fetching number:", error);
+      return error
     });
 }

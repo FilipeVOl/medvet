@@ -127,9 +127,9 @@ export default function SecondPart(props) {
           <h1 className="text-[30px]">Mucosas</h1>
         </div>
         <div>
-          <label className="w-full grid grid-cols-[repeat(5,1fr)]" htmlFor="">
+          <label className="w-full grid grid-cols-[repeat(5,1fr)]" >
             <label
-              htmlFor=""
+              
               className="flex w-full items-center justify-center"
             >
               <input
@@ -144,7 +144,7 @@ export default function SecondPart(props) {
               <p className="ml-4">Normocoradas</p>
             </label>
             <label
-              htmlFor=""
+              
               className="flex w-full  items-center pr-4 justify-center"
             >
               <input
@@ -159,7 +159,7 @@ export default function SecondPart(props) {
               <p className="ml-4">Pálidas</p>
             </label>
             <label
-              htmlFor=""
+              
               className="flex w-full items-center pr-4 justify-center"
             >
               <input
@@ -174,7 +174,7 @@ export default function SecondPart(props) {
               <p className="ml-4">Congestas</p>
             </label>
             <label
-              htmlFor=""
+              
               className="flex w-full items-center pr-4 justify-center"
             >
               <input
@@ -189,7 +189,7 @@ export default function SecondPart(props) {
               <p className="ml-4">Cianóticas</p>
             </label>
             <label
-              htmlFor=""
+              
               className="flex w-full items-center justify-center"
             >
               <input

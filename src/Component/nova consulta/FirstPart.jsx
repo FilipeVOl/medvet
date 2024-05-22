@@ -8,6 +8,9 @@ import "./consultPages.css";
 import { getProfessores, getTeacherByName } from "../../services/professores";
 import { getAnimalsAndTutorByTutorName } from "../../services/tutores";
 
+//criar animal
+//ajeitar desmer, vacinacao
+
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
   const [data, setData] = useState(pagOne.data);
@@ -44,7 +47,6 @@ export default function FirstPart(props) {
   const handleInput = (objReceived, chave, valor, set) => {
     let obj = { ...objReceived }
     obj[chave] = valor;
-    console.log(obj)
     set(obj);
   }
 
@@ -75,7 +77,7 @@ export default function FirstPart(props) {
         <h1 className="text-[30px]">Identificação</h1>
       </div>
       <div>
-        <form action="" className="text-[18px]">
+        <form className="text-[18px]">
           <div className="py-8 w-full">
             <div className="flex gap-8" id="div-prof-data">
               <label htmlFor="free-solo-2-demo" className="w-full">
@@ -92,7 +94,7 @@ export default function FirstPart(props) {
                       value={professor}
                       onChange={(e, value) => {
                         setProfessor(value)
-                        getTeacherByName(setProfs, e.target.value)
+                        e.target.value.length == 0 ? getProfessores(setProfs) : getTeacherByName(setProfs, e.target.value)
                       }}
                       {...params}
                       InputProps={{
@@ -258,7 +260,7 @@ export default function FirstPart(props) {
               <h1 className="text-[30px]">Vacinação</h1>
             </div>
             <div id="div-vac" className="gap-8 flex justify-center my-8">
-              <label htmlFor="" className="grow">
+              <label  className="grow">
                 Qual
                 <input
                   type="text"
@@ -269,7 +271,7 @@ export default function FirstPart(props) {
                   onChange={(e) => handleInput(vacina1, 'vacina1', e.target.value, setVacina1)}
                 />
               </label>
-              <label htmlFor="">
+              <label >
                 Data da Última
                 <input
                   type="date"
@@ -285,7 +287,7 @@ export default function FirstPart(props) {
               <h1 className="text-[30px]">Desverminação</h1>
             </div>
             <div id="div-vac" className="gap-8 flex justify-center my-8">
-              <label htmlFor="" className="grow">
+              <label  className="grow">
                 Qual
                 <input
                   type="text"
@@ -296,7 +298,7 @@ export default function FirstPart(props) {
                   onChange={(i) => handleInput(desmer, 'desmer', i.target.value, setDesmer)}
                 />
               </label>
-              <label htmlFor="">
+              <label >
                 Data da Última
                 <input
                   type="date"

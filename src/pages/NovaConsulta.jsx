@@ -6,7 +6,7 @@ import ThirdPart from "../Component/nova consulta/ThirdPart";
 export const ConsultContext = createContext();
 const pagOneData = {
   paciente: "",
-  data: "2024-05-17",
+  data: "2024-17-05",
   tutor: "",
   especie: "",
   raca: "",
@@ -16,8 +16,8 @@ const pagOneData = {
   pelagem: "",
   historico: "",
   professor: "",
-  vacina1: { vacina1: "", date: "2024-05-17" },
-  desmer: { desmer: "", date: "2024-05-17" },
+  vacina1: { vacina1: "", date: "2024-17-05" },
+  desmer: { desmer: "", date: "2024-17-05" },
   motivo: "",
   idAnimal: [],
 };
@@ -45,7 +45,6 @@ const pagThirdData = {
   sDiagnostico: "",
   sTratamento: "",
   sObs: "",
-  sResp: "",
 };
 
 const handleSteps = (steps, setSteps) => {

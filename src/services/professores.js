@@ -10,21 +10,21 @@ export const getProfessores = (set) => {
           console.error('Não acessou os profesores no banco', error);
         });
     } catch(e) {
-        console.log(e, 'Problema na requisição de professores.');
+        console.log(e, 'Problema na requisição de all professores.');
     }
 }
 
-export const getTeacherByName = async (set, name) => {
+
+export const getTeacherByName = (set, name) => {
   try {
-    await axios.get(`http://localhost:3333/get/teacher/name?q=${name}`)
-    .then(response => {
-      console.log(response.data.teachers)
-      // set(response.data.teachers);
-    })
-    .catch(error => {
-      console.error('Não acessou os profesores no banco', error);
-    });
+      axios.get(`http://localhost:3333/get/teacher/name?q=${name}`)
+      .then(response => {
+        set(response.data.teachers);
+      })
+      .catch(error => {
+        console.error('Não acessou os profesores no banco', error);
+      });
   } catch(e) {
-    console.log(e)
+      console.log(e, 'Problema na requisição de professores pelo nome.');
   }
 }

@@ -11,7 +11,6 @@ export default function ThirdPart(props) {
   const [sDiagnostico, setDiag] = useState(pagTh.sDiagnostico);
   const [sTratamento, setTrata] = useState(pagTh.sTratamento);
   const [sObs, setObs] = useState(pagTh.sObs);
-  const [sResp, setResp] = useState(pagTh.sResp);
   const [ative, setAtive] = useState(false);
 
   const renderTextArea = [
@@ -30,7 +29,6 @@ export default function ThirdPart(props) {
     sDiagnostico,
     sTratamento,
     sObs,
-    sResp,
   };
 
   const handleFinish = async () => {
@@ -79,7 +77,7 @@ export default function ThirdPart(props) {
       diagnosis: sDiagnostico,
       trataments: sTratamento,
       observations: sObs,
-      responsible: sResp,
+      responsible: allPagesData.pagOne.tutor,
     };
     await axios
       .post("http://localhost:3333/create/enchiridion", allDataState)
@@ -119,18 +117,6 @@ const dispararNoti = () => {
               />
             );
           })}
-          <div className="my-8">
-            <label className="grow mx-8 my-8">
-              Responsável (Nome completo)
-              <textarea
-                rows="2"
-                cols="25"
-                className="w-full border-solid border-2 order-border-gray rounded-lg p-1 resize-none"
-                value={sResp}
-                onChange={(e) => setResp(e.target.value)}
-              ></textarea>
-            </label>
-          </div>
         </div>
         <button
           type="button"
