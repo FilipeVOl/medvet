@@ -46,9 +46,9 @@ export default function ThirdPart(props) {
 
     const allDataState = {
       stringDate: replaceDateToBrl(allPagesData.pagOne.data),
-      nameAnimal: allPagesData.pagOne.paciente,
+      //nameAnimal: allPagesData.pagOne.paciente,
       species: allPagesData.pagOne.especie,
-      nameTutor: allPagesData.pagOne.tutor,
+      //nameTutor: allPagesData.pagOne.tutor,
       description: " ",
       animal_id: allPagesData.pagOne.idAnimal[0].id,
       teacher_id: "664b8a1208b0fd741bed4c50",

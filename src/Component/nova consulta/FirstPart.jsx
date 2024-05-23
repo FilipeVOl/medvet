@@ -8,8 +8,12 @@ import "./consultPages.css";
 import { getProfessores, getTeacherByName } from "../../services/professores";
 import { getAnimalsAndTutorByTutorName } from "../../services/tutores";
 import mais from '../../images/mais.svg'
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import { preventDefault } from "@fullcalendar/core/internal";
 //criar animal
-//ajeitar desmer, vacinacao
 
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
@@ -28,9 +32,13 @@ export default function FirstPart(props) {
   const [tutores, setTutores] = useState([]);
   const [pacientes, setPacientes] = useState([]);
   const [motivo, setMotivo] = useState(pagOne.motivo);
-
+  const [viewtutor, setViewTutor] = useState(false);
   const [vacina, setVacina] = useState(pagOne.vacina);
   const [desmer, setDesmer] = useState(pagOne.desmer);
+  const [animalSelecionado, setAnimalSelecionado] = useState(true);
+  const [viewAnimal, setViewAnimal] = useState(true)
+  const [openModal, setOpenModal] = useState(!open);
+  const handleButtonClick = () => setOpenModal(!openModal);
 
   useEffect(() => {
     if (typeof tutores[0] === 'object' && 'animals' in tutores[0] && tutores[0].animals.length > 0) {
@@ -59,7 +67,7 @@ export default function FirstPart(props) {
   }
   const addVacina = () => {
     const array = [...vacina]
-    const obj = {name:'', date: ''}
+    const obj = { name: '', date: '' }
     array.push(obj)
     setVacina(array)
   }
@@ -81,9 +89,17 @@ export default function FirstPart(props) {
     idAnimal: pacientes.filter((e) => e.name == paciente),
   };
   const handleProx = () => {
-    props.setSteps(2);
-    setPagOne(PageOneData);
+    if (pacientes.some((e) => e.name == paciente)) {
+      // props.setSteps(2);
+      // setPagOne(PageOneData);
+      setOpenModal(!open)
+    } else {
+      handleButtonClick()
+      // props.setSteps(2);
+      // setPagOne(PageOneData);
+    }
   };
+
   return (
     <div className="font-Montserrat p-28 w-full">
       <div className="font-bold">
@@ -120,7 +136,6 @@ export default function FirstPart(props) {
               </label>
               <InputComponent
                 nome="Data"
-                pattern="\d{4}-\d{2}-\d{2}"
                 dataType="date"
                 type={data}
                 setDataCom={setData}
@@ -131,11 +146,14 @@ export default function FirstPart(props) {
                 Tutor
                 <Autocomplete
                   freeSolo
-                  id="free-solo-2-demo"
                   disableClearable
+                  id="free-solo-2-demo"
+                  disabled={viewtutor}
                   onChange={(_e, newValue) => {
                     setTutor(newValue)
                     getAnimalsAndTutorByTutorName(setTutores, newValue)
+                    setViewAnimal(false)
+                    setPaciente('')
                   }}
                   options={tutores.map((option) => option.name)}
                   value={tutor}
@@ -160,24 +178,37 @@ export default function FirstPart(props) {
                   freeSolo
                   id="free-solo-2-demo"
                   value={paciente}
+                  disabled={viewAnimal}
                   onChange={(_e, newValue) => {
                     setPaciente(newValue)
                     const filter = pacientes.filter((e) => e.name == newValue)
-                    console.log(filter[0])
+                    setViewTutor(true)
                     setEspecie(filter[0].species)
                     setRaca(filter[0].race)
+                    setAnimalSelecionado(true)
                     setSexo(filter[0].gender)
                     setIdade(filter[0].age)
                     // setPeso()
                     setPelagem(filter[0].coat)
+                    setAnimalSelecionado(true)
                   }}
                   disableClearable
                   options={pacientes.map((option) => option.name)} // Assuming you want to use the name property as the label
                   renderInput={(params) => (
                     <TextField
                       value={paciente}
-                      onChange={(_e, newValue) => {
-                        setPaciente(newValue); // Update the state with the new value
+                      onChange={(e) => {
+                        setPaciente(e.target.value); // Update the state with the new value
+                        setViewTutor(false)
+                        setAnimalSelecionado(false)
+                        if (animalSelecionado) {
+                          setEspecie('')
+                          setRaca('')
+                          setSexo('')
+                          setIdade('')
+                          // setPeso()
+                          setPelagem('')
+                        }
                       }}
                       {...params}
                       InputProps={{
@@ -300,13 +331,13 @@ export default function FirstPart(props) {
                   </div>
                 )
               })}
-              <div className="flex gap-12 justify-center bg-gray-input p-2 rounded-lg text-white-med shadow-xl cursor-pointer" onClick={()=> addVacina()}>
+              <div className="flex gap-12 justify-center bg-gray-input p-2 rounded-lg text-white-med shadow-xl cursor-pointer" onClick={() => addVacina()}>
                 <div className="flex gap-4">
-                  <img srcSet={mais} alt="mais" className=""/>
+                  <img srcSet={mais} alt="mais" className="" />
                   <button className="grow font-semibold" type="button">Adicionar Vacina</button>
                 </div>
               </div>
-               
+
             </div>
             <div className="font-bold">
               <h1 className="text-[30px]">Desverminação</h1>
@@ -346,6 +377,76 @@ export default function FirstPart(props) {
             Próximo
           </button>
         </form>
+      </div>
+      <div>
+        <Modal
+          open={openModal}
+          onClose={"teste"}
+          aria-labelledby="modal-modal-deletetitle"
+          aria-describedby="modal-modal-description2"
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "500px",
+              height: "20%",
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            <Typography
+              style={{
+                fontSize: "15px",
+              }}
+              className="font-Montserrat flex flex-col gap-12"
+              id="modal-modal-deletetitle"
+              variant="h6"
+              component="h1"
+            >
+              O animal inserido ainda não está cadastrado.  
+              <p>Deseja cadastrar o animal?</p>
+              <div className="grid grid-cols-2">
+                <IconButton
+                  style={{
+                    backgroundColor: "white",
+                    width: "200px",
+                    borderRadius: "6px",
+                    border: "1px solid black",
+                    color: "black",
+                    "&:hover": {
+                      backgroundColor: "#2C2B60",
+                    },
+                  }}
+                  onClick={handleButtonClick}
+                >
+                  Não
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    props.setSteps(2);
+                    setPagOne(PageOneData);
+                  }}
+                  style={{
+                    backgroundColor: "#100F49",
+                    width: "200px",
+                    borderRadius: "6px",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#2C2B60",
+                    },
+                  }}
+                >
+                  Sim
+                </IconButton>
+              </div>
+            </Typography>
+          </Box>
+        </Modal>
       </div>
     </div>
   );
