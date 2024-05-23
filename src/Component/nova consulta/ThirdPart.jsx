@@ -54,9 +54,9 @@ export default function ThirdPart(props) {
       teacher_id: "664b8a1208b0fd741bed4c50",
       history: allPagesData.pagOne.historico,
       reason_consult: allPagesData.pagOne.motivo,
-      vaccination: allPagesData.pagOne.vacina1.vacina1,
-      date_vaccination: replaceDateToBrl(allPagesData.pagOne.vacina1.date),
-      deworming: allPagesData.pagOne.desmer.desmer,
+      vaccination: allPagesData.pagOne.vacina,
+      //vacina date - mudar lógica do back
+      deworming: allPagesData.pagOne.desmer.name,
       date_deworming: replaceDateToBrl(allPagesData.pagOne.desmer.date),
       temperature: allPagesData.pagSec.temp.toString(),
       frequency_cardiac: allPagesData.pagSec.freqCard.toString(),
@@ -77,8 +77,10 @@ export default function ThirdPart(props) {
       diagnosis: sDiagnostico,
       trataments: sTratamento,
       observations: sObs,
+      //tirar do back responsible
       responsible: allPagesData.pagOne.tutor,
     };
+    //tirar axios daqui e passar para services
     await axios
       .post("http://localhost:3333/create/enchiridion", allDataState)
       .then((response) => {

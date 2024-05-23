@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import "./consultPages.css";
 import { getProfessores, getTeacherByName } from "../../services/professores";
 import { getAnimalsAndTutorByTutorName } from "../../services/tutores";
-
+import mais from '../../images/mais.svg'
 //criar animal
 //ajeitar desmer, vacinacao
 
@@ -29,13 +29,15 @@ export default function FirstPart(props) {
   const [pacientes, setPacientes] = useState([]);
   const [motivo, setMotivo] = useState(pagOne.motivo);
 
-  //Ajeitar lógica da vacina e desmerninação
-  const [vacina, setVacina] = useState([{ vacina: '', date: '' }]);
+  const [vacina, setVacina] = useState(pagOne.vacina);
   const [desmer, setDesmer] = useState(pagOne.desmer);
 
   useEffect(() => {
-    if (typeof tutores[0] === 'object' && 'animals' in tutores[0]) {
+    if (typeof tutores[0] === 'object' && 'animals' in tutores[0] && tutores[0].animals.length > 0) {
       setPacientes(tutores[0].animals)
+    }
+    else {
+      setPacientes([])
     }
   }, [tutores]);
   useEffect(() => {
@@ -55,7 +57,12 @@ export default function FirstPart(props) {
     array[index] = { ...array[index], [key]: valor }
     setVacina(array)
   }
-
+  const addVacina = () => {
+    const array = [...vacina]
+    const obj = {name:'', date: ''}
+    array.push(obj)
+    setVacina(array)
+  }
   const PageOneData = {
     data,
     paciente,
@@ -113,6 +120,7 @@ export default function FirstPart(props) {
               </label>
               <InputComponent
                 nome="Data"
+                pattern="\d{4}-\d{2}-\d{2}"
                 dataType="date"
                 type={data}
                 setDataCom={setData}
@@ -265,17 +273,17 @@ export default function FirstPart(props) {
             <div className="font-bold">
               <h1 className="text-[30px]">Vacinação</h1>
             </div>
-            <div id="div-vac" className="gap-8 flex justify-center my-4">
+            <div id="div-vac" className="w-full my-4 flex flex-col gap-8">
               {vacina.map((e, index) => {
                 return (
-                  <>
+                  <div className="flex gap-12 justify-center" key={index}>
                     <label className="grow">
                       Qual
                       <input
                         type="text"
                         className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
-                        value={e.vacina}
-                        onChange={(e) => handleVacina(vacina, index, e.target.value, 'vacina')}
+                        value={e.name}
+                        onChange={(e) => handleVacina(vacina, index, e.target.value, 'name')}
                       />
                     </label>
                     <label >
@@ -289,10 +297,16 @@ export default function FirstPart(props) {
                         onChange={(e) => handleVacina(vacina, index, e.target.value, 'date')}
                       />
                     </label>
-                  </>
+                  </div>
                 )
               })}
-               <button className="w-100 bg-gray-500 p-4 border-solid border-2 order-border-gray rounded-lg" type="button">Adicionar Vacina</button>
+              <div className="flex gap-12 justify-center bg-gray-input p-2 rounded-lg text-white-med shadow-xl cursor-pointer" onClick={()=> addVacina()}>
+                <div className="flex gap-4">
+                  <img srcSet={mais} alt="mais" className=""/>
+                  <button className="grow font-semibold" type="button">Adicionar Vacina</button>
+                </div>
+              </div>
+               
             </div>
             <div className="font-bold">
               <h1 className="text-[30px]">Desverminação</h1>
@@ -305,8 +319,8 @@ export default function FirstPart(props) {
                   name="vacina1"
                   id="vacina1"
                   className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
-                  value={desmer.desmer}
-                  onChange={(i) => handleInput(desmer, 'desmer', i.target.value, setDesmer)}
+                  value={desmer.name}
+                  onChange={(i) => handleInput(desmer, 'name', i.target.value, setDesmer)}
                 />
               </label>
               <label >
