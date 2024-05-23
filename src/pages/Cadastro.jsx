@@ -37,9 +37,9 @@ export default function Cadastro(props) {
   function clickError() {
     if (props.selected == null) {
       postAluno(data);
-      console.log(props.props);
     } else {
       PutAluno(data);
+      props.openEdit();
     }
   }
 
@@ -152,7 +152,7 @@ export default function Cadastro(props) {
                   !phone
                     ? "outline-red-600 border-red-500"
                     : "border-border-gray"
-                } border-[1px] w-full rounded-md h-9 pl-`}
+                } border-[1px] w-full rounded-md h-9`}
               />
             </label>
 

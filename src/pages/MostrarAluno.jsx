@@ -29,7 +29,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "auto",
-  height: "calc(100vh - 130px)",
+  height: "calc(99vh - 130px)",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -90,11 +90,11 @@ const MostrarAluno = () => {
 
   useEffect(() => {
     getAluno(setData);
-  }, []);
+  }, [openNew]);
 
   useEffect(() => {
     getAluno(setData)  
-  }, [openEdit]);
+  }, [data]);
 
 
   return (
@@ -227,7 +227,7 @@ const MostrarAluno = () => {
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              <Cadastro selected={selectedUser} buttonName="Atualizar" />
+              <Cadastro selected={selectedUser} openEdit={setOpenEdit} buttonName="Atualizar" />
             </Typography>
           </Box>
         </Modal>

@@ -1,44 +1,53 @@
 import React, { useState } from "react";
 import InputMask from "react-input-mask";
 import axios from "axios";
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
+import { postProf, PutProf } from "../services/professores";
 
 export default function Professor(props) {
-  const [nome, setNome] = useState("");
-  const [registration, setRegistration] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
+  const [nome, setNome] = useState(props.selected ? props.selected.name : "");
+  const [registration, setRegistration] = useState(
+    props.selected ? props.selected.registration : ""
+  );
+  const [cpf, setCpf] = useState(props.selected ? props.selected.cpf : "");
+  const [phone, setPhone] = useState(
+    props.selected ? props.selected.phone : ""
+  );
+  const [email, setEmail] = useState(
+    props.selected ? props.selected.email : ""
+  );
   const [course, setCourse] = useState("Medicina Veterinária");
-  const [shift, setShift] = useState("Vespertino")
+  const [shift, setShift] = useState(
+    props.selected ? props.selected.shift : ""
+  );
+  const [id, setId] = useState(props.selected ? props.selected.id : "");
 
-  {Professor.propTypes = {
-    buttonName: PropTypes.string
-  }}
+  {
+    Professor.propTypes = {
+      buttonName: PropTypes.string,
+    };
+  }
 
-
+  const cpfSemPonto = cpf.replace(/[.-]/g, "");
+  const data = {
+    name: nome,
+    registration,
+    cpf: cpfSemPonto,
+    course,
+    phone,
+    email,
+    password: cpfSemPonto,
+    shift,
+    id: id,
+  };
 
   function clickError() {
-    const cpfSemPonto = cpf.replace(/[.-]/g, "");
-    const data = {
-      name: nome,
-      registration,
-      cpf: cpfSemPonto,
-      course,
-      phone,
-      email,
-      password: cpfSemPonto,
-      shift
-    };
-
-    axios
-      .post("http://localhost:3333/users/teacher", data)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (props.selected == null) {
+      postProf(data);
+    } else {
+      props.openEdit();
+      PutProf(data);
+    }
   }
 
   function ValidateInput() {
@@ -46,18 +55,13 @@ export default function Professor(props) {
   }
 
   return (
-    <>
-      <div
-        style={{ height: "calc(100vh - 116px)" }}
-        className="cadastro-container w-full flex flex-col font-Montserrat "
-      >
-        <h1 className="font-Montserrat p-20 h-10 font-bold text-xl">
-          Novo Professor
-        </h1>
+    <div className="cadastro-container w-full ">
+    <h1 className="font-Montserrat p-14 h-10 font-bold text-2xl">
+        Novo Professor
+      </h1>
         <form>
-          <div className="forms-container px-10 lg:px-28">
-
-            <div className="box-1 grid grid-cols-2 mb-8 gap-8">
+          <div className="forms-container px-28 grid grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
+            <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
               <label htmlFor="nome" className="font-Montserrat">
                 Nome completo *<br />
                 <input
@@ -70,13 +74,16 @@ export default function Professor(props) {
                   name="nome"
                   type="text"
                   className={`w-full border-[1px] ${
-                    !nome ? "border-red-600 outline-red-600" : "border-border-gray"
+                    !nome
+                      ? "border-red-600 outline-red-600"
+                      : "border-border-gray"
                   } rounded-md h-9 pl-2`}
                 />
               </label>
 
               <label htmlFor="registration" className="font-Montserrat">
-                CRMV<br />
+                CRMV
+                <br />
                 <input
                   id="registration"
                   required
@@ -87,13 +94,15 @@ export default function Professor(props) {
                     setRegistration(e.target.value);
                   }}
                   className={`border-[1px] w-full rounded-md h-9 pl-2 ${
-                    !registration ? "outline-red-600 border-red-500" : "border-border-gray"
+                    !registration
+                      ? "outline-red-600 border-red-500"
+                      : "border-border-gray"
                   }`}
                 />
               </label>
             </div>
 
-            <div className="box-2 grid grid-cols-2 mb-8 gap-8">
+            <div className="box-2 grid grid-cols-[1fr_2fr] gap-[5%]">
               <label htmlFor="cpf" className="font-Montserrat">
                 CPF *<br />
                 <InputMask
@@ -106,7 +115,9 @@ export default function Professor(props) {
                     setCpf(e.target.value);
                   }}
                   className={`${
-                    !cpf ? "outline-red-600 border-red-500" : "border-border-gray"
+                    !cpf
+                      ? "outline-red-600 border-red-500"
+                      : "border-border-gray"
                   } border-[1px] w-full rounded-md h-9 pl-2`}
                 />
               </label>
@@ -123,15 +134,17 @@ export default function Professor(props) {
                   id="email"
                   name="email"
                   className={`${
-                    !email ? "outline-red-600 border-red-500" : "border-border-gray"
+                    !email
+                      ? "outline-red-600 border-red-500"
+                      : "border-border-gray"
                   } w-full border-[1px] rounded-md h-9 pl-2`}
                 />
               </label>
             </div>
 
-            <div className="box-3 grid grid-cols-2 mb-8 gap-8">
+            <div className="box-3 grid grid-cols-[1fr_2fr] gap-[5%]">
               <label htmlFor="phone" className="font-Montserrat">
-                N° de contato *<br />
+                Contato *<br />
                 <InputMask
                   mask="(99)99999-9999"
                   required
@@ -142,7 +155,9 @@ export default function Professor(props) {
                     setPhone(e.target.value);
                   }}
                   className={`${
-                    !phone ? "outline-red-600 border-red-500" : "border-border-gray"
+                    !phone
+                      ? "outline-red-600 border-red-500"
+                      : "border-border-gray"
                   } border-[1px] w-full rounded-md h-9 pl-`}
                 />
               </label>
@@ -163,7 +178,7 @@ export default function Professor(props) {
               </label>
             </div>
           </div>
-          <div className="button-container flex justify-end px-10 lg:px-28">
+          <div className="button-container flex justify-end px-28 h-[28rem]">
             <button
               id="cadastrar"
               name={props.buttonName}
@@ -174,13 +189,12 @@ export default function Professor(props) {
               }}
               className={`${
                 !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
-              } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
+              } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-20 bg-border-blue text-white`}
             >
               {props.buttonName}
             </button>
           </div>
         </form>
       </div>
-    </>
   );
 }
