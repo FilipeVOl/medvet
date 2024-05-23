@@ -12,8 +12,9 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import { preventDefault } from "@fullcalendar/core/internal";
+
 //criar animal
+//ajeitar visualização paciente e tutor disabled, passar como context os status que controlam sua visualização
 
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
@@ -90,13 +91,10 @@ export default function FirstPart(props) {
   };
   const handleProx = () => {
     if (pacientes.some((e) => e.name == paciente)) {
-      // props.setSteps(2);
-      // setPagOne(PageOneData);
-      setOpenModal(!open)
+      props.setSteps(2);
+      setPagOne(PageOneData);
     } else {
       handleButtonClick()
-      // props.setSteps(2);
-      // setPagOne(PageOneData);
     }
   };
 
@@ -381,7 +379,6 @@ export default function FirstPart(props) {
       <div>
         <Modal
           open={openModal}
-          onClose={"teste"}
           aria-labelledby="modal-modal-deletetitle"
           aria-describedby="modal-modal-description2"
         >
