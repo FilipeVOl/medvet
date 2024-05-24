@@ -141,7 +141,6 @@ export default function FirstPart(props) {
     let obj = { ...required }
     const keys = Object.keys(obj)
     keys.forEach((e) => {
-      console.log(e, chaves)
       if (e == chaves) {
         obj[e] = false;
       }
