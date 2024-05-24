@@ -92,9 +92,9 @@ const MostrarProf = () => {
     getProfessores(setData);
   }, [openNew]);
 
-  useEffect(() => {
-    getProfessores(setData)  
-  }, [data]);
+  // useEffect(() => {
+  //   getProfessores(setData)  
+  // }, [data]);
 
 
   return (

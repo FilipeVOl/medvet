@@ -20,6 +20,9 @@ import axios from "axios";
 import Tutor from "../pages/TelaNovoTutor";
 import { getTutores } from "../services/tutores";
 import tutores from "../mocks/tutor.mock";
+import TelaNovoTutor from "../pages/TelaNovoTutor";
+import Textarea from "@mui/joy/Textarea";
+
 
 const style = {
   position: "absolute",
@@ -71,25 +74,23 @@ const columns = [
   { field: "editIcon", headerName: "" },
 ];
 
-// TENTAR FAZER LÓGICA DE DELETAR DO ROW, UTILIZANDO STATES
-
 const MostrarTutor = () => {
-  const [linha, setLinha] = useState("");
-  const SpliceLinha = (index) => {
-    const dataLinha = [...linha];
-    dataLinha.splice(index, 1);
-    setLinha(dataLinha);
-    console.log(linha);
-  };
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openNew, setOpenNew] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [registration, setRegistration] = useState("");
 
-  const handleButtonClick = () => setOpenEdit(!openEdit);
+  const  handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
-  let [data, setData] = useState("");
+  const handleNewClick = () => setOpenNew(!openNew);
+
+  const [data, setData] = useState("");
+  const [users, setUsers] = useState([data]);
+
   useEffect(() => {
     getTutores(setData);
-  }, []);
+  }, [openNew]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -110,6 +111,7 @@ const MostrarTutor = () => {
 
           <div className="flex justify-end">
             <Button
+            onClick={handleNewClick}
               sx={{
                 backgroundColor: "#100F49",
                 width: "200px",
@@ -125,6 +127,18 @@ const MostrarTutor = () => {
                 Novo Tutor
               </div>
             </Button>
+            <Modal
+              open={openNew}
+              onClose={handleNewClick}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  <TelaNovoTutor buttonName="Cadastrar" />
+                </Typography>
+              </Box>
+            </Modal>
           </div>
         </div>
         <div className="ml-36 sm:w-[80%] mt-16">
@@ -133,9 +147,6 @@ const MostrarTutor = () => {
               <TableHead>
                 <TableRow>
                   {columns.map((column) =>
-                    // <StyledTableCell
-                    // key={column.field}>{column.headerName}
-                    // </StyledTableCell>
                     column.field == "editIcon" ? (
                       <StyledTableCell
                         style={{
@@ -154,10 +165,35 @@ const MostrarTutor = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tutores.map((linha) => (
-                  <StyledTableRow key={linha.id}>
-                    <StyledTableCell>{linha.name}</StyledTableCell>
-                    <StyledTableCell>{linha.phone}</StyledTableCell>
+                {Object.values(data).map((row) => (
+                  <StyledTableRow key={row.id}>
+                    <StyledTableCell>{row.name}</StyledTableCell>
+                    <StyledTableCell>{row.phone}</StyledTableCell>
+
+                    <IconButton
+                      className="edit-button"
+                      onClick={() => {
+                        handleButtonClick();
+                        setSelectedUser(row);
+                      }}
+                    >
+                      <img src={EditIcon} />
+                    </IconButton>
+                    <IconButton
+                      className="delete-button"
+                      onClick={ () => {
+                      handleButtonClick();
+                      setSelectedUser(row)}}
+                    >
+                      {/* // axios.delete(`http://localhost:3333/deletealuno/${row.id}`)
+                      // function removeRow () {
+                      //   const dataC = [...data]
+                      //   dataC.splice(TableBody.data, 0)
+                      //   console.log(dataC)
+                      // } */}
+
+                      <img src={TrashIcon} />
+                    </IconButton>
                     <Modal
                       open={openEdit}
                       onClose={handleButtonClick}
@@ -170,7 +206,7 @@ const MostrarTutor = () => {
                           variant="h6"
                           component="h2"
                         >
-                          <Tutor buttonName="Atualizar" />
+                          <TelaNovoTutor selected={selectedUser} openEdit={setOpenEdit} buttonName="Atualizar" />
                         </Typography>
                       </Box>
                     </Modal>
@@ -226,7 +262,7 @@ const MostrarTutor = () => {
                               Voltar
                             </IconButton>
                             <IconButton
-                              onClick={SpliceLinha}
+                              onClick={handleDeleteClick}
                               style={{
                                 backgroundColor: "#100F49",
                                 width: "200px",
@@ -243,21 +279,6 @@ const MostrarTutor = () => {
                         </Typography>
                       </Box>
                     </Modal>
-
-                    <IconButton onClick={handleButtonClick}>
-                      <img src={EditIcon} />
-                    </IconButton>
-
-                    <IconButton onClick={handleDeleteClick}>
-                      {/* axios.delete(`http://localhost:3333/deletealuno/${row.id}`)
-                      function removeRow () {
-                      const dataC = [...data]
-                         dataC.splice(TableBody.data, 0)
-                      console.log(dataC)
-                      } */}
-
-                      <img src={TrashIcon} />
-                    </IconButton>
                   </StyledTableRow>
                 ))}
               </TableBody>

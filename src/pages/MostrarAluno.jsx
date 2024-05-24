@@ -92,9 +92,9 @@ const MostrarAluno = () => {
     getAluno(setData);
   }, [openNew]);
 
-  useEffect(() => {
-    getAluno(setData)  
-  }, [data]);
+  // useEffect(() => {
+  //   getAluno(setData)  
+  // }, [data]);
 
 
   return (
@@ -161,9 +161,6 @@ const MostrarAluno = () => {
               <TableHead>
                 <TableRow>
                   {columns.map((column) =>
-                    // <StyledTableCell
-                    // key={column.field}>{column.headerName}
-                    // </StyledTableCell>
                     column.field == "editIcon" ? (
                       <StyledTableCell
                         style={{

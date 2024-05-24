@@ -75,3 +75,14 @@ export const getAnimalsAndTutorByTutorName = (set, name) => {
       return error
     });
 }
+
+export const PutTutor = (att) => {
+    axios
+      .put("http://localhost:3333/put/tutor", att)
+      .then((response) => {
+        console.log(response.data)
+      })
+        .catch((error) => {
+          console.error("Error updating data:", error)
+        })
+  }
