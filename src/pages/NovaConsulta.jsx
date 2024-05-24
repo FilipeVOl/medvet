@@ -20,6 +20,8 @@ const pagOneData = {
   desmer: { name: "", date: "2024-17-05" },
   motivo: "",
   idAnimal: [],
+  viewAnimal: true,
+  viewTutor: false 
 };
 
 const pagSecData = {

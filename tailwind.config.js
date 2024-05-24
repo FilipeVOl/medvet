@@ -17,6 +17,7 @@ export default {
         'blue-button': '#100F49',
         'white-med': '#FFFFFF',
         'gray-input': '#9F9F9F',
+        'remove': '#D03939'
       },
       backgroundImage: {
         search: "url('../images/search.png)",

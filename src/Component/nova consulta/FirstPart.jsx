@@ -12,12 +12,13 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-
+import fundo from '../../images/fundo.svg'
 //criar animal
-//ajeitar visualização paciente e tutor disabled, passar como context os status que controlam sua visualização
 
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
+
+  //alterar para reducer, ou criar um só state que é um objetivo.
   const [data, setData] = useState(pagOne.data);
   const [paciente, setPaciente] = useState(pagOne.paciente);
   const [tutor, setTutor] = useState(pagOne.tutor);
@@ -33,14 +34,17 @@ export default function FirstPart(props) {
   const [tutores, setTutores] = useState([]);
   const [pacientes, setPacientes] = useState([]);
   const [motivo, setMotivo] = useState(pagOne.motivo);
-  const [viewtutor, setViewTutor] = useState(false);
+  const [viewTutor, setviewTutor] = useState(pagOne.viewTutor);
   const [vacina, setVacina] = useState(pagOne.vacina);
   const [desmer, setDesmer] = useState(pagOne.desmer);
   const [animalSelecionado, setAnimalSelecionado] = useState(true);
-  const [viewAnimal, setViewAnimal] = useState(true)
+  const [viewAnimal, setViewAnimal] = useState(pagOne.viewAnimal)
   const [openModal, setOpenModal] = useState(!open);
+
+  //muda o state do modal
   const handleButtonClick = () => setOpenModal(!openModal);
 
+  //seta os animais baseado no tutor.
   useEffect(() => {
     if (typeof tutores[0] === 'object' && 'animals' in tutores[0] && tutores[0].animals.length > 0) {
       setPacientes(tutores[0].animals)
@@ -49,6 +53,12 @@ export default function FirstPart(props) {
       setPacientes([])
     }
   }, [tutores]);
+
+  useEffect(() => {
+    paciente == "" || paciente == 'Preencha Tutor' ? setviewTutor(false) : setviewTutor(true)
+  }, [paciente])
+
+  //carrega os autoCompletes ao abrir a página.
   useEffect(() => {
     getProfessores(setProfs);
     getAnimalsAndTutorByTutorName(setTutores, '');
@@ -61,17 +71,25 @@ export default function FirstPart(props) {
     set(obj);
   }
 
+  //usa o set para vacina que modifica o array de vacinas
   const handleVacina = (arr, index, valor, key) => {
     const array = [...arr]
     array[index] = { ...array[index], [key]: valor }
     setVacina(array)
   }
+
+  //botão que adiciona vacinas
   const addVacina = () => {
     const array = [...vacina]
     const obj = { name: '', date: '' }
     array.push(obj)
     setVacina(array)
   }
+  const removeVacina = (e) => {
+    const arr = [...vacina]
+    setVacina(arr.filter((_i, index) => index != e))
+  }
+
   const PageOneData = {
     data,
     paciente,
@@ -88,7 +106,11 @@ export default function FirstPart(props) {
     desmer,
     motivo,
     idAnimal: pacientes.filter((e) => e.name == paciente),
+    viewAnimal,
+    viewTutor
   };
+
+  //botao de Proximo validando lógica se o animal colocado existe
   const handleProx = () => {
     if (pacientes.some((e) => e.name == paciente)) {
       props.setSteps(2);
@@ -146,7 +168,7 @@ export default function FirstPart(props) {
                   freeSolo
                   disableClearable
                   id="free-solo-2-demo"
-                  disabled={viewtutor}
+                  disabled={viewTutor}
                   onChange={(_e, newValue) => {
                     setTutor(newValue)
                     getAnimalsAndTutorByTutorName(setTutores, newValue)
@@ -180,13 +202,10 @@ export default function FirstPart(props) {
                   onChange={(_e, newValue) => {
                     setPaciente(newValue)
                     const filter = pacientes.filter((e) => e.name == newValue)
-                    setViewTutor(true)
                     setEspecie(filter[0].species)
                     setRaca(filter[0].race)
-                    setAnimalSelecionado(true)
                     setSexo(filter[0].gender)
                     setIdade(filter[0].age)
-                    // setPeso()
                     setPelagem(filter[0].coat)
                     setAnimalSelecionado(true)
                   }}
@@ -197,14 +216,12 @@ export default function FirstPart(props) {
                       value={paciente}
                       onChange={(e) => {
                         setPaciente(e.target.value); // Update the state with the new value
-                        setViewTutor(false)
                         setAnimalSelecionado(false)
                         if (animalSelecionado) {
                           setEspecie('')
                           setRaca('')
                           setSexo('')
                           setIdade('')
-                          // setPeso()
                           setPelagem('')
                         }
                       }}
@@ -305,7 +322,7 @@ export default function FirstPart(props) {
             <div id="div-vac" className="w-full my-4 flex flex-col gap-8">
               {vacina.map((e, index) => {
                 return (
-                  <div className="flex gap-12 justify-center" key={index}>
+                  <div className="flex gap-12 justify-center items-center" key={index}>
                     <label className="grow">
                       Qual
                       <input
@@ -315,7 +332,7 @@ export default function FirstPart(props) {
                         onChange={(e) => handleVacina(vacina, index, e.target.value, 'name')}
                       />
                     </label>
-                    <label >
+                    <label className="">
                       Data da Última
                       <input
                         type="date"
@@ -326,6 +343,9 @@ export default function FirstPart(props) {
                         onChange={(e) => handleVacina(vacina, index, e.target.value, 'date')}
                       />
                     </label>
+                    <div className="bg-remove p-[8px] rounded-lg self-end cursor-pointer" onClick={() => removeVacina(index)}>
+                      <img srcSet={fundo}></img>
+                    </div>
                   </div>
                 )
               })}
@@ -405,7 +425,7 @@ export default function FirstPart(props) {
               variant="h6"
               component="h1"
             >
-              O animal inserido ainda não está cadastrado.  
+              O animal inserido ainda não está cadastrado.
               <p>Deseja cadastrar o animal?</p>
               <div className="grid grid-cols-2">
                 <IconButton
