@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import fundo from '../../images/fundo.svg'
+import { postAnimal } from "../../services/animals";
 //criar animal
 
 export default function FirstPart(props) {
@@ -54,6 +55,7 @@ export default function FirstPart(props) {
     }
   }, [tutores]);
 
+  //controla o disable do tutor baseado no state do input paciente
   useEffect(() => {
     paciente == "" || paciente == 'Preencha Tutor' ? setviewTutor(false) : setviewTutor(true)
   }, [paciente])
@@ -109,6 +111,20 @@ export default function FirstPart(props) {
     viewAnimal,
     viewTutor
   };
+
+  const animal = () => {
+    const animalObj = {
+      name: paciente,
+      species: especie,
+      race: raca,
+      gender: sexo,
+      age: idade,
+      weight: peso,
+      coat: pelagem,
+      tutor_id: tutores[0].id,
+    }
+    return animalObj
+  }
 
   //botao de Proximo validando lógica se o animal colocado existe
   const handleProx = () => {
@@ -255,10 +271,10 @@ export default function FirstPart(props) {
                   onChange={(e) => setSexo(e.target.value)}
                   className="w-full grow p-1 py-2 rounded-lg bg-white border-solid border-2 border-gray"
                 >
-                  <option className="bg-white-500" value="M">
-                    Masculino
+                  <option className="bg-white-500" value="Macho">
+                    Macho
                   </option>
-                  <option value="F">Feminino</option>
+                  <option value="Fêmea">Fêmea</option>
                   <option value="INDEFINIDO">Indefinido</option>
                 </select>
               </label>
@@ -322,7 +338,7 @@ export default function FirstPart(props) {
             <div id="div-vac" className="w-full my-4 flex flex-col gap-8">
               {vacina.map((e, index) => {
                 return (
-                  <div className="flex gap-12 justify-center items-center" key={index}>
+                  <div className="flex gap-8 justify-center items-center" key={index}>
                     <label className="grow">
                       Qual
                       <input
@@ -357,7 +373,7 @@ export default function FirstPart(props) {
               </div>
 
             </div>
-            <div className="font-bold">
+            <div className="font-bold mt-16">
               <h1 className="text-[30px]">Desverminação</h1>
             </div>
             <div id="div-vac" className="gap-8 flex justify-center my-8">
@@ -447,6 +463,7 @@ export default function FirstPart(props) {
                   onClick={() => {
                     props.setSteps(2);
                     setPagOne(PageOneData);
+                    postAnimal(animal(), tutores[0].id,)
                   }}
                   style={{
                     backgroundColor: "#100F49",

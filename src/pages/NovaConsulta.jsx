@@ -10,7 +10,7 @@ const pagOneData = {
   tutor: "",
   especie: "",
   raca: "",
-  sexo: "",
+  sexo: "Macho",
   idade: "",
   peso: "",
   pelagem: "",
