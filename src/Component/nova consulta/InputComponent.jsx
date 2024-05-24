@@ -4,6 +4,7 @@ export default function InputComponent(props) {
   return (
     <label className="grow" htmlFor="">{props.nome}
       <input id={props.id} placeholder={props.place} type={props.dataType} value={props.type} 
+      onClick={ () => props.handleButton(props.descrHandle)}
       className={`${props.requireVal
         ? "outline-red-600 border-red-500"
         : "outline-gray-input"
@@ -21,4 +22,6 @@ InputComponent.propTypes = {
   id: PropTypes.string,
   type: PropTypes.string.isRequired,
   requireVal: PropTypes.bool,
+  handleButton: PropTypes.func,
+  descrHandle: PropTypes.string,
 };

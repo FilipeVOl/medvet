@@ -14,6 +14,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import fundo from '../../images/fundo.svg'
 import { postAnimal } from "../../services/animals";
+
 //criar animal
 
 export default function FirstPart(props) {
@@ -52,6 +53,9 @@ export default function FirstPart(props) {
     }
     else {
       setPacientes([])
+    }
+    if(sexo == "") {
+      setSexo('Macho')
     }
   }, [tutores]);
 
@@ -133,25 +137,51 @@ export default function FirstPart(props) {
     idade,
     peso
   }
+  const validateTrue = (chaves) => {
+    let obj = { ...required }
+    const keys = Object.keys(obj)
+    keys.forEach((e) => {
+      console.log(e, chaves)
+      if (e == chaves) {
+        obj[e] = false;
+      }
+    })
+    setRequired(obj)
+  }
   //botao de Proximo validando lógica se o animal colocado existe
   const validateInputs = () => {
     const keys = Object.keys(fullfillValidate)
     const values = Object.values(fullfillValidate)
-    let validation = true
+    let validation = false
     let obj = { ...required }
     values.map((e, index) => {
-      if (e == "") {
+      if (e == '') {
         const chaves = keys[index]
         obj[chaves] = true;
-        validation = false
+        validation = true
       }
     })
     setRequired(obj)
     return validation
   }
 
+  //botao de Proximo validando lógica se o animal colocado existe
   const handleProx = () => {
-    validateInputs()
+    const validacaoCampos = validateInputs()
+    if(validacaoCampos) {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+      return 
+    }
+      if (pacientes.some((e) => e.name == paciente)) {
+        props.setSteps(2);
+        setPagOne(PageOneData);
+      } else {
+        handleButtonClick()
+      };
   };
 
   return (
@@ -226,15 +256,13 @@ export default function FirstPart(props) {
                   )}
                 />
               </label>
-              <label htmlFor="free-solo-2-demo" className="grow">
+              <label htmlFor="free-solo-2-demo" className={"grow"}>
                 Paciente
                 <Autocomplete
                   freeSolo
+                  border={1}
+                  borderColor="error.main"
                   id="free-solo-2-demo"
-                  className={`${required.paciente
-                      ? "outline-paciente-gray"
-                      : "outline-paciente-red"
-                    }`}
                   value={paciente}
                   disabled={viewAnimal}
                   onChange={(_e, newValue) => {
@@ -251,12 +279,6 @@ export default function FirstPart(props) {
                   options={pacientes.map((option) => option.name)} // Assuming you want to use the name property as the label
                   renderInput={(params) => (
                     <TextField
-                      className={
-                        `${required.paciente
-                          ? "bg-red-500"
-                          : "bg-white-500"
-                        }`
-                      }
                       value={paciente}
                       onChange={(e) => {
                         setPaciente(e.target.value); // Update the state with the new value
@@ -285,26 +307,34 @@ export default function FirstPart(props) {
                 dataType="text"
                 type={especie}
                 setDataCom={setEspecie}
-                requireVal ={required.especie}
+                requireVal={required.especie}
+                handleButton={validateTrue}
+                descrHandle="especie"
               />
               <InputComponent
                 nome="Raça"
                 dataType="text"
                 type={raca}
                 setDataCom={setRaca}
-                requireVal ={required.raca}
+                requireVal={required.raca}
+                handleButton={validateTrue}
+                descrHandle="raca"
               />
               <label className="grid h-full grow">
-                
+
                 Sexo
                 <select
                   value={sexo}
                   onChange={(e) => {
                     setSexo(e.target.value)
                   }}
-                  onClick={() => setRequired(false)}
-                  className={"w-full grow p-1 py-2 rounded-lg bg-white border-solid border-2 border-gray}"}
+                  className={`${required.sexo
+                    ? "outline-red-600 border-red-500"
+                    : "outline-gray-input"
+                  } w-full grow p-1 py-2 rounded-lg bg-white border-solid border-2 border-gray`}
                 >
+                  <option className="bg-white-500" value="" selected> 
+                  </option>
                   <option className="bg-white-500" value="Macho">
                     Macho
                   </option>
@@ -319,14 +349,18 @@ export default function FirstPart(props) {
                 dataType="text"
                 type={idade}
                 setDataCom={setIdade}
-                requireVal ={required.idade}
+                requireVal={required.idade}
+                handleButton={validateTrue}
+                descrHandle="idade"
               />
               <InputComponent
                 nome="Peso"
                 dataType="text"
                 type={peso}
                 setDataCom={setPeso}
-                requireVal ={required.peso}
+                requireVal={required.peso}
+                handleButton={validateTrue}
+                descrHandle="peso"
               />
               <InputComponent
                 nome="Pelagem"
@@ -440,9 +474,7 @@ export default function FirstPart(props) {
           <button
             type="button"
             className="bg-blue-button py-2 px-16 my-32 rounded-lg text-white float-right"
-            onClick={() => {
-              handleProx();
-            }}
+            onClick={handleProx}
           >
             Próximo
           </button>
@@ -476,12 +508,8 @@ export default function FirstPart(props) {
                     if (validyCreateAnimal) {
                       //passar animal id
                       props.setSteps(2);
-                      setPagOne(PageOneData);
-                    } else {
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                      setRequired(true)
-                      handleButtonClick()
-                    }
+                      setPagOne(PageOneData)
+                    };
                   }}
                 >
                   Cadastrar
