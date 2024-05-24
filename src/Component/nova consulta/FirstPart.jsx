@@ -418,64 +418,30 @@ export default function FirstPart(props) {
           aria-labelledby="modal-modal-deletetitle"
           aria-describedby="modal-modal-description2"
         >
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "500px",
-              height: "20%",
-              bgcolor: "background.paper",
-              border: "2px solid #000",
-              boxShadow: 24,
-              p: 4,
-            }}
-          >
+          <Box id="box-modal-pag1">
             <Typography
-              style={{
-                fontSize: "15px",
-              }}
-              className="font-Montserrat flex flex-col gap-12"
               id="modal-modal-deletetitle"
               variant="h6"
               component="h1"
             >
-              O animal inserido ainda não está cadastrado.
-              <p>Deseja cadastrar o animal?</p>
-              <div className="grid grid-cols-2">
+              Cadastrar animal?
+              <p id="descri-modal">O animal inserido ainda não possui cadastro, deseja cadastrá-lo?</p>
+              <div className="flex justify-between my-12">
                 <IconButton
-                  style={{
-                    backgroundColor: "white",
-                    width: "200px",
-                    borderRadius: "6px",
-                    border: "1px solid black",
-                    color: "black",
-                    "&:hover": {
-                      backgroundColor: "#2C2B60",
-                    },
-                  }}
+                  id="voltar-animal"
                   onClick={handleButtonClick}
                 >
-                  Não
+                  Voltar
                 </IconButton>
                 <IconButton
+                id="cadastrar-animal"
                   onClick={() => {
                     props.setSteps(2);
                     setPagOne(PageOneData);
                     postAnimal(animal(), tutores[0].id,)
                   }}
-                  style={{
-                    backgroundColor: "#100F49",
-                    width: "200px",
-                    borderRadius: "6px",
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "#2C2B60",
-                    },
-                  }}
                 >
-                  Sim
+                  Cadastrar
                 </IconButton>
               </div>
             </Typography>
