@@ -41,7 +41,7 @@ export default function FirstPart(props) {
   const [animalSelecionado, setAnimalSelecionado] = useState(true);
   const [viewAnimal, setViewAnimal] = useState(pagOne.viewAnimal)
   const [openModal, setOpenModal] = useState(!open);
-
+  const [required, setRequired] = useState({ paciente: false, especie: false, raca: false, sexo: false, idade: false, peso: false });
   //muda o state do modal
   const handleButtonClick = () => setOpenModal(!openModal);
 
@@ -125,15 +125,33 @@ export default function FirstPart(props) {
     }
     return animalObj
   }
-
+  const fullfillValidate = {
+    paciente,
+    especie,
+    raca,
+    sexo,
+    idade,
+    peso
+  }
   //botao de Proximo validando lógica se o animal colocado existe
+  const validateInputs = () => {
+    const keys = Object.keys(fullfillValidate)
+    const values = Object.values(fullfillValidate)
+    let validation = true
+    let obj = { ...required }
+    values.map((e, index) => {
+      if (e == "") {
+        const chaves = keys[index]
+        obj[chaves] = true;
+        validation = false
+      }
+    })
+    setRequired(obj)
+    return validation
+  }
+
   const handleProx = () => {
-    if (pacientes.some((e) => e.name == paciente)) {
-      props.setSteps(2);
-      setPagOne(PageOneData);
-    } else {
-      handleButtonClick()
-    }
+    validateInputs()
   };
 
   return (
@@ -213,6 +231,10 @@ export default function FirstPart(props) {
                 <Autocomplete
                   freeSolo
                   id="free-solo-2-demo"
+                  className={`${required.paciente
+                      ? "outline-paciente-gray"
+                      : "outline-paciente-red"
+                    }`}
                   value={paciente}
                   disabled={viewAnimal}
                   onChange={(_e, newValue) => {
@@ -229,6 +251,12 @@ export default function FirstPart(props) {
                   options={pacientes.map((option) => option.name)} // Assuming you want to use the name property as the label
                   renderInput={(params) => (
                     <TextField
+                      className={
+                        `${required.paciente
+                          ? "bg-red-500"
+                          : "bg-white-500"
+                        }`
+                      }
                       value={paciente}
                       onChange={(e) => {
                         setPaciente(e.target.value); // Update the state with the new value
@@ -257,19 +285,25 @@ export default function FirstPart(props) {
                 dataType="text"
                 type={especie}
                 setDataCom={setEspecie}
+                requireVal ={required.especie}
               />
               <InputComponent
                 nome="Raça"
                 dataType="text"
                 type={raca}
                 setDataCom={setRaca}
+                requireVal ={required.raca}
               />
               <label className="grid h-full grow">
+                
                 Sexo
                 <select
                   value={sexo}
-                  onChange={(e) => setSexo(e.target.value)}
-                  className="w-full grow p-1 py-2 rounded-lg bg-white border-solid border-2 border-gray"
+                  onChange={(e) => {
+                    setSexo(e.target.value)
+                  }}
+                  onClick={() => setRequired(false)}
+                  className={"w-full grow p-1 py-2 rounded-lg bg-white border-solid border-2 border-gray}"}
                 >
                   <option className="bg-white-500" value="Macho">
                     Macho
@@ -285,12 +319,14 @@ export default function FirstPart(props) {
                 dataType="text"
                 type={idade}
                 setDataCom={setIdade}
+                requireVal ={required.idade}
               />
               <InputComponent
                 nome="Peso"
                 dataType="text"
                 type={peso}
                 setDataCom={setPeso}
+                requireVal ={required.peso}
               />
               <InputComponent
                 nome="Pelagem"
@@ -434,11 +470,18 @@ export default function FirstPart(props) {
                   Voltar
                 </IconButton>
                 <IconButton
-                id="cadastrar-animal"
-                  onClick={() => {
-                    props.setSteps(2);
-                    setPagOne(PageOneData);
-                    postAnimal(animal(), tutores[0].id,)
+                  id="cadastrar-animal"
+                  onClick={async () => {
+                    const validyCreateAnimal = await postAnimal(animal(), tutores[0].id)
+                    if (validyCreateAnimal) {
+                      //passar animal id
+                      props.setSteps(2);
+                      setPagOne(PageOneData);
+                    } else {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      setRequired(true)
+                      handleButtonClick()
+                    }
                   }}
                 >
                   Cadastrar
