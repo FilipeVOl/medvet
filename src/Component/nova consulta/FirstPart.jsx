@@ -14,7 +14,6 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import fundo from '../../images/fundo.svg'
 import { postAnimal } from "../../services/animals";
-
 //criar animal
 
 export default function FirstPart(props) {
@@ -43,6 +42,8 @@ export default function FirstPart(props) {
   const [viewAnimal, setViewAnimal] = useState(pagOne.viewAnimal)
   const [openModal, setOpenModal] = useState(!open);
   const [required, setRequired] = useState({ paciente: false, especie: false, raca: false, sexo: false, idade: false, peso: false });
+  const [openSucess, setOpenSucess] = useState(false);
+
   //muda o state do modal
   const handleButtonClick = () => setOpenModal(!openModal);
 
@@ -54,7 +55,7 @@ export default function FirstPart(props) {
     else {
       setPacientes([])
     }
-    if(sexo == "") {
+    if (sexo == "") {
       setSexo('Macho')
     }
   }, [tutores]);
@@ -125,7 +126,6 @@ export default function FirstPart(props) {
       age: idade,
       weight: peso,
       coat: pelagem,
-      tutor_id: tutores[0].id,
     }
     return animalObj
   }
@@ -167,21 +167,28 @@ export default function FirstPart(props) {
   //botao de Proximo validando lógica se o animal colocado existe
   const handleProx = () => {
     const validacaoCampos = validateInputs()
-    if(validacaoCampos) {
+    if (validacaoCampos) {
       window.scrollTo({
         top: 0,
         left: 0,
         behavior: "smooth",
       });
-      return 
+      return
     }
-      if (pacientes.some((e) => e.name == paciente)) {
-        props.setSteps(2);
-        setPagOne(PageOneData);
-      } else {
-        handleButtonClick()
-      };
+    if (pacientes.some((e) => e.name == paciente)) {
+      props.setSteps(2);
+      setPagOne(PageOneData);
+    } else {
+      handleButtonClick()
+    };
   };
+
+  const notification = () => {
+    alert('Animal adicionado com sucesso!');
+  }
+  const erroNotification = () => {
+    alert('Animal não pode ser criado.');
+  }
 
   return (
     <div className="font-Montserrat p-28 w-full">
@@ -259,8 +266,6 @@ export default function FirstPart(props) {
                 Paciente
                 <Autocomplete
                   freeSolo
-                  border={1}
-                  borderColor="error.main"
                   id="free-solo-2-demo"
                   value={paciente}
                   disabled={viewAnimal}
@@ -330,11 +335,11 @@ export default function FirstPart(props) {
                   className={`${required.sexo
                     ? "outline-red-600 border-red-500"
                     : "outline-gray-input"
-                  } w-full grow p-1 py-2 rounded-lg bg-white border-solid border-2 border-gray`}
+                    } w-full grow p-1 py-2 rounded-lg bg-white border-solid border-2 border-gray`}
                 >
-                  <option className="bg-white-500" value="" selected> 
+                  <option className="bg-white-500" value="">
                   </option>
-                  <option className="bg-white-500" value="Macho">
+                  <option className="bg-white-500" value="Macho" defaultValue={true}>
                     Macho
                   </option>
                   <option value="Fêmea">Fêmea</option>
@@ -506,9 +511,12 @@ export default function FirstPart(props) {
                     const validyCreateAnimal = await postAnimal(animal(), tutores[0].id)
                     if (validyCreateAnimal) {
                       //passar animal id
+                      notification()
                       props.setSteps(2);
                       setPagOne(PageOneData)
-                    };
+                    } else {
+                      erroNotification()
+                    }
                   }}
                 >
                   Cadastrar
