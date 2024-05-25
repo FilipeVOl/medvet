@@ -45,17 +45,14 @@ export default function ThirdPart(props) {
     };
 
     const allDataState = {
+      vaccination: allPagesData.pagOne.vacina,
       stringDate: replaceDateToBrl(allPagesData.pagOne.data),
-      //nameAnimal: allPagesData.pagOne.paciente,
-      species: allPagesData.pagOne.especie,
-      //nameTutor: allPagesData.pagOne.tutor,
-      description: " ",
       animal_id: allPagesData.pagOne.idAnimal[0].id,
-      teacher_id: "664b8a1208b0fd741bed4c50",
+      species: allPagesData.pagOne.especie,
+      nameTutor: allPagesData.pagOne.tutor,
+      teacher_id: allPagesData.pagOne.tutor_id.id,
       history: allPagesData.pagOne.historico,
       reason_consult: allPagesData.pagOne.motivo,
-      vaccination: allPagesData.pagOne.vacina,
-      //vacina date - mudar lógica do back
       deworming: allPagesData.pagOne.desmer.name,
       date_deworming: replaceDateToBrl(allPagesData.pagOne.desmer.date),
       temperature: allPagesData.pagSec.temp.toString(),
@@ -77,9 +74,8 @@ export default function ThirdPart(props) {
       diagnosis: sDiagnostico,
       trataments: sTratamento,
       observations: sObs,
-      //tirar do back responsible
-      responsible: allPagesData.pagOne.tutor,
     };
+    
     //tirar axios daqui e passar para services
     await axios
       .post("http://localhost:3333/create/enchiridion", allDataState)

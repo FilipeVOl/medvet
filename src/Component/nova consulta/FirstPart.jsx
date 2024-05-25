@@ -114,21 +114,11 @@ export default function FirstPart(props) {
     motivo,
     idAnimal: pacientes.filter((e) => e.name == paciente),
     viewAnimal,
-    viewTutor
+    viewTutor,
+    teacher_id: professores.filter((e) => e.name == professor)[0]
   };
 
-  const animal = () => {
-    const animalObj = {
-      name: paciente,
-      species: especie,
-      race: raca,
-      gender: sexo,
-      age: idade,
-      weight: peso,
-      coat: pelagem,
-    }
-    return animalObj
-  }
+
   const fullfillValidate = {
     paciente,
     especie,
@@ -508,9 +498,18 @@ export default function FirstPart(props) {
                 <IconButton
                   id="cadastrar-animal"
                   onClick={async () => {
-                    const validyCreateAnimal = await postAnimal(animal(), tutores[0].id)
+                    const animal = {
+                        name: paciente,
+                        species: especie,
+                        race: raca,
+                        gender: sexo,
+                        age: idade,
+                        weight: peso,
+                        coat: pelagem,
+                        tutor_id: tutores[0].id
+                      }
+                    const validyCreateAnimal = await postAnimal(animal, tutores[0].id)
                     if (validyCreateAnimal) {
-                      //passar animal id
                       notification()
                       props.setSteps(2);
                       setPagOne(PageOneData)

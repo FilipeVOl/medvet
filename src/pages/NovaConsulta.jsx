@@ -21,13 +21,14 @@ const pagOneData = {
   motivo: "",
   idAnimal: [],
   viewAnimal: true,
-  viewTutor: false 
+  viewTutor: false,
+  tutor_id: "",
 };
 
 const pagSecData = {
-  temp: 0,
-  freqCard: 0,
-  resp: 0,
+  temp: "",
+  freqCard: "",
+  resp: "",
   desidratacao: "",
   linfonodos: "",
   pele: "",
