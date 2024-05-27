@@ -39,7 +39,7 @@ const PutAluno = (att) => {
 const getAlunoByReg = (set, registration) => {
   axios
     .get(
-      `http://localhost:3333/get/student/registration/${Number(registration)}`
+      `http://localhost:3333/get/student/registration/${registration}`
     )
     .then((response) => {
       set(response.data);

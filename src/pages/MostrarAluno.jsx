@@ -18,7 +18,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Cadastro from "./Cadastro";
 import { useEffect } from "react";
-import { getAluno } from "../services/alunos";
+import { getAluno, getAlunoByReg } from "../services/alunos";
 import { UpdateEditContext, UpdateEditProvider } from "../contexts/updateEditContext";
 
 
@@ -79,6 +79,7 @@ const MostrarAluno = () => {
   const [openNew, setOpenNew] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [registration, setRegistration] = useState("");
+  const [query, setQuery] = useState("");
 
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
@@ -104,9 +105,10 @@ const MostrarAluno = () => {
               placeholder="N° de matricula"
               name="searchRegist"
               type="text"
-              onChange={({ target }) =>
-                filterReg(target.value, setRegistration)
-              }
+              onChange={({ target }) =>{
+                setQuery(target.value)
+                getAlunoByReg(setData, target.value)
+              }}
               className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
             />
             <SearchIcon
@@ -299,5 +301,6 @@ const MostrarAluno = () => {
     </ThemeProvider>
   );
 };
+
 
 export default MostrarAluno;
