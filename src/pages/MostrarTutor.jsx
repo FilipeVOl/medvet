@@ -22,6 +22,7 @@ import { getTutores } from "../services/tutores";
 import tutores from "../mocks/tutor.mock";
 import TelaNovoTutor from "../pages/TelaNovoTutor";
 import Textarea from "@mui/joy/Textarea";
+import { UpdateEditContext, UpdateEditProvider } from "../contexts/updateEditContext";
 
 
 const style = {
@@ -80,7 +81,6 @@ const MostrarTutor = () => {
   const [openNew, setOpenNew] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [registration, setRegistration] = useState("");
-
   const  handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   const handleNewClick = () => setOpenNew(!openNew);
@@ -90,10 +90,11 @@ const MostrarTutor = () => {
 
   useEffect(() => {
     getTutores(setData);
-  }, [openNew]);
+  }, [selectedUser, openNew]);
 
   return (
     <ThemeProvider theme={theme}>
+      <UpdateEditContext.Provider value={{ openEdit, setOpenEdit, openNew, setOpenNew, selectedUser, setSelectedUser }}>
       <div className="container">
         <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
           Tutores cadastrados
@@ -206,7 +207,7 @@ const MostrarTutor = () => {
                           variant="h6"
                           component="h2"
                         >
-                          <TelaNovoTutor selected={selectedUser} openEdit={setOpenEdit} buttonName="Atualizar" />
+                          <TelaNovoTutor buttonName="Atualizar" />
                         </Typography>
                       </Box>
                     </Modal>
@@ -286,6 +287,7 @@ const MostrarTutor = () => {
           </TableContainer>
         </div>
       </div>
+      </UpdateEditContext.Provider>
     </ThemeProvider>
   );
 };

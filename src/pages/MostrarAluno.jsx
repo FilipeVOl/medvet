@@ -17,11 +17,10 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Cadastro from "./Cadastro";
-import { Autocomplete } from "@mui/material";
 import { useEffect } from "react";
-import { getAlunoByReg, getAluno, PutAluno } from "../services/alunos";
-import TextField from "@mui/material/TextField";
-import { postAluno } from "../utils/MostrarAluno.utils";
+import { getAluno } from "../services/alunos";
+import { UpdateEditContext, UpdateEditProvider } from "../contexts/updateEditContext";
+
 
 const style = {
   position: "absolute",
@@ -90,15 +89,11 @@ const MostrarAluno = () => {
 
   useEffect(() => {
     getAluno(setData);
-  }, [openNew]);
-
-  // useEffect(() => {
-  //   getAluno(setData)  
-  // }, [data]);
-
+  }, [selectedUser, openNew]);
 
   return (
     <ThemeProvider theme={theme}>
+      <UpdateEditContext.Provider value={{ openEdit, setOpenEdit, openNew, setOpenNew, selectedUser, setSelectedUser }}>
       <div className="container">
         <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
           Alunos cadastrados
@@ -300,6 +295,7 @@ const MostrarAluno = () => {
           </Box>
         </Modal>
       </div>
+      </UpdateEditContext.Provider>
     </ThemeProvider>
   );
 };

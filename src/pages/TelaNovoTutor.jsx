@@ -1,8 +1,9 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useContext } from "react";
 import PropTypes from "prop-types";
 import { Input, InputLabel, TextField } from "@mui/material";
 import z, { set } from "zod";
 import { postTutor, PutTutor } from "../services/tutores";
+import { UpdateEditContext } from "../contexts/updateEditContext";
 
 const InputTutor = ({ label, type, setter, value, setter2 }) => {
 
@@ -31,13 +32,16 @@ const InputTutor = ({ label, type, setter, value, setter2 }) => {
 };
 
 const TelaNovoTutor = (props) => {
-  const [name, setNome] = useState(props.selected ? props.selected.name : "");
-  const [phone, setPhone] = useState(props.selected ? props.selected.phone : "");
-  const [cpf, setCpf] = useState(props.selected ? props.selected.cpf : "");
-  const [email, setEmail] = useState(props.selected ? props.selected.email : "");
-  const [password, setPassword] = useState(props.selected ? props.selected.password : "");
-  const [phoneWMask, setMask] = useState(props.selected ? props.selected.phone : "");
-  const [id, setId] = useState(props.selected ? props.selected.id : "");
+  const {selectedUser, setSelectedUser} = useContext(UpdateEditContext);
+  const {openEdit, setOpenEdit} = useContext(UpdateEditContext);
+  const {openNew, setOpenNew} = useContext(UpdateEditContext);
+  const [name, setNome] = useState(selectedUser ? selectedUser.name : "");
+  const [phone, setPhone] = useState(selectedUser ? selectedUser.phone : "");
+  const [cpf, setCpf] = useState(selectedUser ? selectedUser.cpf : "");
+  const [email, setEmail] = useState(selectedUser ? selectedUser.email : "");
+  const [password, setPassword] = useState(selectedUser ? selectedUser.password : "");
+  const [phoneWMask, setMask] = useState(selectedUser ? selectedUser.phone : "");
+  const [id, setId] = useState(selectedUser ? selectedUser.id : "");
 
   const ConsultaSchema = z.object({
     name: z.string().min(1),
@@ -45,6 +49,7 @@ const TelaNovoTutor = (props) => {
     password: z.string().min(1),
     cpf: z.string().min(0),
     email: z.string().min(0),
+    id: z.string().min(0),
   });
 
   const handleSubmit = async (e) => {
@@ -56,12 +61,16 @@ const TelaNovoTutor = (props) => {
         password: "jello",
         cpf,
         email,
+        id: id
       });
-      if (props.selected == null) {
+      if (selectedUser === null) {
         postTutor(consulta);
+        setOpenNew(!openNew)
+        window.location.reload();
       } else {
         PutTutor(consulta);
-        props.openEdit();
+        setOpenEdit(!openEdit)
+        window.location.reload();
       }
     } catch (error) {
       console.error(error.errors);

@@ -22,6 +22,7 @@ import { useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import { getProfessores } from "../services/professores";
 import Professor from "./professor";
+import { UpdateEditContext, UpdateEditProvider } from "../contexts/updateEditContext";
 
 const style = {
   position: "absolute",
@@ -90,15 +91,12 @@ const MostrarProf = () => {
 
   useEffect(() => {
     getProfessores(setData);
-  }, [openNew]);
-
-  // useEffect(() => {
-  //   getProfessores(setData)  
-  // }, [data]);
+  }, [selectedUser, openNew]);
 
 
   return (
     <ThemeProvider theme={theme}>
+      <UpdateEditContext.Provider value={{ openEdit, setOpenEdit, openNew, setOpenNew, selectedUser, setSelectedUser }}>
       <div className="container">
         <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
           Professores cadastrados
@@ -227,7 +225,7 @@ const MostrarProf = () => {
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              <Professor selected={selectedUser} openEdit={setOpenEdit} buttonName="Atualizar" />
+              <Professor buttonName="Atualizar" />
             </Typography>
           </Box>
         </Modal>
@@ -303,6 +301,7 @@ const MostrarProf = () => {
           </Box>
         </Modal>
       </div>
+      </UpdateEditContext.Provider>
     </ThemeProvider>
   );
 };

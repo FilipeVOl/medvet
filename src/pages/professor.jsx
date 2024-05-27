@@ -1,26 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import InputMask from "react-input-mask";
 import axios from "axios";
 import PropTypes from "prop-types";
+import { UpdateEditContext } from "../contexts/updateEditContext";
 import { postProf, PutProf } from "../services/professores";
 
 export default function Professor(props) {
-  const [nome, setNome] = useState(props.selected ? props.selected.name : "");
-  const [registration, setRegistration] = useState(
-    props.selected ? props.selected.registration : ""
-  );
-  const [cpf, setCpf] = useState(props.selected ? props.selected.cpf : "");
-  const [phone, setPhone] = useState(
-    props.selected ? props.selected.phone : ""
-  );
-  const [email, setEmail] = useState(
-    props.selected ? props.selected.email : ""
-  );
+  const {selectedUser, setSelectedUser} = useContext(UpdateEditContext);
+  const {openEdit, setOpenEdit} = useContext(UpdateEditContext);
+  const {openNew, setOpenNew} = useContext(UpdateEditContext);
+  const [nome, setNome] = useState(selectedUser ? selectedUser.name : "");
+  const [registration, setRegistration] = useState(selectedUser ? selectedUser.registration : "");
+  const [cpf, setCpf] = useState(selectedUser ? selectedUser.cpf : "");
+  const [phone, setPhone] = useState(selectedUser ? selectedUser.phone : "");
+  const [email, setEmail] = useState(selectedUser ? selectedUser.email : ""  );
   const [course, setCourse] = useState("Medicina Veterinária");
-  const [shift, setShift] = useState(
-    props.selected ? props.selected.shift : ""
-  );
-  const [id, setId] = useState(props.selected ? props.selected.id : "");
+  const [shift, setShift] = useState(selectedUser ? selectedUser.shift : "");
+  const [id, setId] = useState(selectedUser ? selectedUser.id : "");
 
   {
     Professor.propTypes = {
@@ -42,11 +38,14 @@ export default function Professor(props) {
   };
 
   function clickError() {
-    if (props.selected == null) {
+    if (selectedUser == null) {
       postProf(data);
+      setOpenNew(!openNew);
+      window.location.reload();
     } else {
-      props.openEdit();
       PutProf(data);
+      setOpenEdit(!openEdit);
+      window.location.reload();
     }
   }
 
