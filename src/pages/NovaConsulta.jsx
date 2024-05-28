@@ -22,7 +22,7 @@ const pagOneData = {
   idAnimal: [],
   viewAnimal: true,
   viewTutor: false,
-  tutor_id: "",
+  teacher_id: [],
 };
 
 const pagSecData = {

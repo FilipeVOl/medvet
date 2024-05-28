@@ -42,21 +42,18 @@ export default function FirstPart(props) {
   const [viewAnimal, setViewAnimal] = useState(pagOne.viewAnimal)
   const [openModal, setOpenModal] = useState(!open);
   const [required, setRequired] = useState({ paciente: false, especie: false, raca: false, sexo: false, idade: false, peso: false });
-  const [openSucess, setOpenSucess] = useState(false);
 
   //muda o state do modal
   const handleButtonClick = () => setOpenModal(!openModal);
 
   //seta os animais baseado no tutor.
   useEffect(() => {
+    console.log('oi')
     if (typeof tutores[0] === 'object' && 'animals' in tutores[0] && tutores[0].animals.length > 0) {
       setPacientes(tutores[0].animals)
     }
     else {
       setPacientes([])
-    }
-    if (sexo == "") {
-      setSexo('Macho')
     }
   }, [tutores]);
 
@@ -115,9 +112,8 @@ export default function FirstPart(props) {
     idAnimal: pacientes.filter((e) => e.name == paciente),
     viewAnimal,
     viewTutor,
-    teacher_id: professores.filter((e) => e.name == professor)[0]
+    teacher_id: professores.filter((e) => e.name == professor)[0],
   };
-
 
   const fullfillValidate = {
     paciente,
@@ -127,6 +123,7 @@ export default function FirstPart(props) {
     idade,
     peso
   }
+  
   const validateTrue = (chaves) => {
     let obj = { ...required }
     const keys = Object.keys(obj)
@@ -169,8 +166,8 @@ export default function FirstPart(props) {
       props.setSteps(2);
       setPagOne(PageOneData);
     } else {
-      handleButtonClick()
-    };
+      handleButtonClick();
+    }
   };
 
   const notification = () => {

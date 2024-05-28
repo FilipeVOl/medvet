@@ -4,6 +4,10 @@ import TextAreaComponent from "./TextAreaComponent";
 import { ConsultContext } from "../../pages/NovaConsulta";
 import PropTypes from "prop-types";
 import axios from "axios";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 
 export default function ThirdPart(props) {
   const { pagTh, setPagTh, allPagesData } = useContext(ConsultContext);
@@ -11,7 +15,9 @@ export default function ThirdPart(props) {
   const [sDiagnostico, setDiag] = useState(pagTh.sDiagnostico);
   const [sTratamento, setTrata] = useState(pagTh.sTratamento);
   const [sObs, setObs] = useState(pagTh.sObs);
-  const [ative, setAtive] = useState(false);
+  const [openModal, setOpenModal] = useState(!open);
+
+  const handleButtonClick = () => setOpenModal(!openModal);
 
   const renderTextArea = [
     {
@@ -36,8 +42,6 @@ export default function ThirdPart(props) {
     const typeMucous = allPagesData.pagSec.checkboxValues.map((value) => {
       return value;
     });
-    console.log(allPagesData);
-
     const replaceDateToBrl = (date) => {
       const dateSplit = date.replace(/-/g, "/");
       const dateBrl = new Date(dateSplit).toLocaleDateString("pt-BR");
@@ -48,9 +52,7 @@ export default function ThirdPart(props) {
       vaccination: allPagesData.pagOne.vacina,
       stringDate: replaceDateToBrl(allPagesData.pagOne.data),
       animal_id: allPagesData.pagOne.idAnimal[0].id,
-      species: allPagesData.pagOne.especie,
-      nameTutor: allPagesData.pagOne.tutor,
-      teacher_id: allPagesData.pagOne.tutor_id.id,
+      teacher_id: allPagesData.pagOne.teacher_id.id,
       history: allPagesData.pagOne.historico,
       reason_consult: allPagesData.pagOne.motivo,
       deworming: allPagesData.pagOne.desmer.name,
@@ -85,19 +87,14 @@ export default function ThirdPart(props) {
       .catch((error) => {
         console.error(error);
       });
-      dispararNoti()
+      handleButtonClick()
   };
 
   const handleAnt = () => {
     setPagTh(PageThirdData);
     props.setSteps(2);
   };
-const dispararNoti = () => {
-  setAtive(true)
-  setTimeout(() => {
-    setAtive(false)
-  }, 3000); 
-}
+
   return (
     <div className="font-Montserrat p-28 w-full">
       <div className="font-bold">
@@ -130,8 +127,31 @@ const dispararNoti = () => {
         >
           Finalizar
         </button>
-        {ative ? <p>Cadastrado realizado com Sucesso</p> : <></>}
       </form>
+      <Modal
+          open={openModal}
+          aria-labelledby="modal-modal-deletetitle"
+          aria-describedby="modal-modal-description2"
+        >
+          <Box id="box-modal-pag1">
+            <Typography
+              id="modal-modal-deletetitle"
+              variant="h6"
+              component="h1"
+            >
+              Consulta Criada
+              <p id="descri-modal">Consulta Criada com Sucesso</p>
+              <div className="flex justify-between my-12">
+                <IconButton
+                  id="fechar-modal"
+                  onClick={handleButtonClick}
+                >
+                  OK
+                </IconButton>
+              </div>
+            </Typography>
+          </Box>
+        </Modal>
     </div>
   );
 }
