@@ -18,7 +18,8 @@ export default function Cadastro(props) {
   const [course, setCourse] = useState("Medicina Veterinária");
   const [shift, setShift] = useState(selectedUser ? selectedUser.shift : "");
   const [period, setPeriod] = useState(selectedUser ? selectedUser.period : "" );
-  const [id, setId] = useState(selectedUser ? selectedUser.id : "");
+  const [id, setId] = useState(selectedUser ? selectedUser.id : ""); 
+  
   {
     Cadastro.propTypes = {
       buttonName: PropTypes.string,
@@ -43,7 +44,6 @@ export default function Cadastro(props) {
     if (selectedUser == null) {
       postAluno(data);
       setOpenNew(!openNew);
-      window.location.reload();
     } else {
       PutAluno(data);
       setOpenEdit(!openEdit);
