@@ -51,5 +51,19 @@ const PutProf = (att) => {
       })
 }
 
+const getProfByReg = (set, registration) => {
+  axios
+    .get(
+      `http://localhost:3333/get/teacher/registration?q=${registration}&page=1`
+    )
+    .then((response) => {
+      set(response.data);
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
+}
 
-export { getProfessores, getTeacherByName, postProf, PutProf }
+
+export { getProfessores, getTeacherByName, postProf, PutProf, getProfByReg }

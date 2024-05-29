@@ -18,7 +18,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import axios from "axios";
 import Tutor from "../pages/TelaNovoTutor";
-import { getTutores } from "../services/tutores";
+import { getTutores, getTutoresByName } from "../services/tutores";
 import tutores from "../mocks/tutor.mock";
 import TelaNovoTutor from "../pages/TelaNovoTutor";
 import Textarea from "@mui/joy/Textarea";
@@ -81,6 +81,7 @@ const MostrarTutor = () => {
   const [openNew, setOpenNew] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [registration, setRegistration] = useState("");
+  const [query, setQuery] = useState("");
   const  handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   const handleNewClick = () => setOpenNew(!openNew);
@@ -102,10 +103,14 @@ const MostrarTutor = () => {
         <div className="mid grid grid-cols-[2fr_1fr] ml-36 sm:w-[80%]">
           <div className="flex items-center">
             <input
-              placeholder="N° de matricula"
+              placeholder="Nome"
               name="searchRegist"
               type="text"
               className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
+              onChange={({target}) => {
+                setQuery(target.value)
+                getTutoresByName(setData, target.value)
+              }} 
             />
             <SearchIcon className="absolute p-4" />
           </div>

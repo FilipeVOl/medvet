@@ -59,7 +59,7 @@ export default function Professor(props) {
         Novo Professor
       </h1>
         <form>
-          <div className="forms-container px-28 grid grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
+          <div className="forms-container px-28 h-auto grid grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
             <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
               <label htmlFor="nome" className="font-Montserrat">
                 Nome completo *<br />
@@ -188,7 +188,7 @@ export default function Professor(props) {
               }}
               className={`${
                 !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
-              } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-20 bg-border-blue text-white`}
+              } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-10 bg-border-blue text-white`}
             >
               {props.buttonName}
             </button>

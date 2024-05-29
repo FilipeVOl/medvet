@@ -11,20 +11,6 @@ const getAluno = (setData) => {
     });
 };
 
-const filterReg = (registration, set) => {
-  axios
-    .get(
-      `http://localhost:3333/get/student/registration/${Number(registration)}`
-    )
-    .then((response) => {
-      set(response.data);
-      console.log(response.data);
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
-};
-
 const PutAluno = (att) => {
   axios
     .put("http://localhost:3333/put/student", att)
@@ -39,7 +25,7 @@ const PutAluno = (att) => {
 const getAlunoByReg = (set, registration) => {
   axios
     .get(
-      `http://localhost:3333/get/student/registration/${registration}`
+      `http://localhost:3333/get/student/registration?q=${registration}&page=1`
     )
     .then((response) => {
       set(response.data);
@@ -50,4 +36,4 @@ const getAlunoByReg = (set, registration) => {
     });
 }
 
-export { getAluno, filterReg, PutAluno, getAlunoByReg };
+export { getAluno, PutAluno, getAlunoByReg };

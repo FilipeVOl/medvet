@@ -20,7 +20,7 @@ import Cadastro from "./Cadastro";
 import { Autocomplete } from "@mui/material";
 import { useEffect } from "react";
 import TextField from "@mui/material/TextField";
-import { getProfessores } from "../services/professores";
+import { getProfessores, getProfByReg } from "../services/professores";
 import Professor from "./professor";
 import { UpdateEditContext, UpdateEditProvider } from "../contexts/updateEditContext";
 
@@ -29,8 +29,8 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "calc(220px + 50vw)",
-  height: "calc(99vh - 130px)",
+  width: "70%",
+  height: "calc(100vh - 50px)",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -81,6 +81,7 @@ const MostrarProf = () => {
   const [openNew, setOpenNew] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [registration, setRegistration] = useState("");
+  const [query, setQuery] = useState("");
 
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
@@ -107,9 +108,10 @@ const MostrarProf = () => {
               placeholder="N° de matricula"
               name="searchRegist"
               type="text"
-              onChange={({ target }) =>
-                filterReg(target.value, setRegistration)
-              }
+              onChange={({ target }) =>{
+                setQuery(target.value)
+                getProfByReg(setData, target.value)
+              }}
               className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
             />
             <SearchIcon

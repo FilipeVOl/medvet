@@ -5,7 +5,7 @@ import z, { set } from "zod";
 import { postTutor, PutTutor } from "../services/tutores";
 import { UpdateEditContext } from "../contexts/updateEditContext";
 
-const InputTutor = ({ label, type, setter, value, setter2 }) => {
+const InputTutor = ({ label, type, setter, value }) => {
 
   const handleChange = useCallback(
     (e) => {
@@ -41,6 +41,7 @@ const TelaNovoTutor = (props) => {
   const [email, setEmail] = useState(selectedUser ? selectedUser.email : "");
   const [password, setPassword] = useState(selectedUser ? selectedUser.password : "");
   const [phoneWMask, setMask] = useState(selectedUser ? selectedUser.phone : "");
+  const [adress, setAddress] = useState(selectedUser ? selectedUser.address : "");
   const [id, setId] = useState(selectedUser ? selectedUser.id : "");
 
   const ConsultaSchema = z.object({
@@ -50,6 +51,7 @@ const TelaNovoTutor = (props) => {
     cpf: z.string().min(0),
     email: z.string().min(0),
     id: z.string().min(0),
+    adress: z.string().min(0)
   });
 
   const handleSubmit = async (e) => {
@@ -61,12 +63,13 @@ const TelaNovoTutor = (props) => {
         password: "jello",
         cpf,
         email,
-        id: id
+        id: id,
+        adress
       });
       if (selectedUser === null) {
         postTutor(consulta);
         setOpenNew(!openNew)
-        window.location.reload();
+        // window.location.reload();
       } else {
         PutTutor(consulta);
         setOpenEdit(!openEdit)
@@ -88,13 +91,15 @@ const TelaNovoTutor = (props) => {
   const phoneUnmask = (value) => {
     return value
       .replace(/\D/g, "")
-      .replace(/^(\d{2})\((\d{2})\)(\d{4})-(\d{4})$/, "$1$2$3$4");
+      .replace(/^(\d{2})(9\d{8})$/, "$1$2");
   };
 
   const handlePhone = (e) => {
+    if (e.target.value.length < 15) {
     setPhone(e.target.value);
     setMask(e.target.value);
-  };
+  }
+};
 
   return (
     <div className="p-14 w-full h-auto">
