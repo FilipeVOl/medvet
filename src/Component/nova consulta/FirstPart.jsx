@@ -39,7 +39,7 @@ export default function FirstPart(props) {
   const [vacina, setVacina] = useState(pagOne.vacina);
   const [desmer, setDesmer] = useState(pagOne.desmer);
   const [animalSelecionado, setAnimalSelecionado] = useState(true);
-  const [viewAnimal, setViewAnimal] = useState(pagOne.viewAnimal)
+  const [viewAnimal, setViewAnimal] = useState(pagOne.viewAnimal);
   const [openModal, setOpenModal] = useState(!open);
   const [required, setRequired] = useState({ paciente: false, especie: false, raca: false, sexo: false, idade: false, peso: false });
 
@@ -48,7 +48,6 @@ export default function FirstPart(props) {
 
   //seta os animais baseado no tutor.
   useEffect(() => {
-    console.log('oi')
     if (typeof tutores[0] === 'object' && 'animals' in tutores[0] && tutores[0].animals.length > 0) {
       setPacientes(tutores[0].animals)
     }
@@ -94,7 +93,7 @@ export default function FirstPart(props) {
     setVacina(arr.filter((_i, index) => index != e))
   }
 
-  const PageOneData = {
+  const pageOneData = {
     data,
     paciente,
     tutor,
@@ -164,7 +163,7 @@ export default function FirstPart(props) {
     }
     if (pacientes.some((e) => e.name == paciente)) {
       props.setSteps(2);
-      setPagOne(PageOneData);
+      setPagOne(pageOneData);
     } else {
       handleButtonClick();
     }
@@ -507,9 +506,11 @@ export default function FirstPart(props) {
                       }
                     const validyCreateAnimal = await postAnimal(animal, tutores[0].id)
                     if (validyCreateAnimal) {
-                      notification()
+                      const envioData = pageOneData;
+                      envioData.idAnimal = [{id: validyCreateAnimal.data}]
+                      notification();
                       props.setSteps(2);
-                      setPagOne(PageOneData)
+                      setPagOne(envioData);
                     } else {
                       erroNotification()
                     }
