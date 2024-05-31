@@ -7,12 +7,21 @@ import PropTypes from "prop-types";
 import "./consultPages.css";
 import { getProfessores, getTeacherByName } from "../../services/professores";
 import { getAnimalsAndTutorByTutorName } from "../../services/tutores";
-
-//criar animal
-//ajeitar desmer, vacinacao
+import mais from '../../images/mais.svg'
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import fundo from '../../images/fundo.svg'
+import { postAnimal } from "../../services/animals";
 
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
+  // melhorias
+  // alterar para reducer, ou criar um só state que é um objetivo.
+  // desabilitar campos do animal quando ele for selecionado.
+  // adicionar receita
+  // modal de adicionar receita
   const [data, setData] = useState(pagOne.data);
   const [paciente, setPaciente] = useState(pagOne.paciente);
   const [tutor, setTutor] = useState(pagOne.tutor);
@@ -28,16 +37,33 @@ export default function FirstPart(props) {
   const [tutores, setTutores] = useState([]);
   const [pacientes, setPacientes] = useState([]);
   const [motivo, setMotivo] = useState(pagOne.motivo);
-
-  //Ajeitar lógica da vacina e desmerninação
-  const [vacina1, setVacina1] = useState(pagOne.vacina1);
+  const [viewTutor, setviewTutor] = useState(pagOne.viewTutor);
+  const [vacina, setVacina] = useState(pagOne.vacina);
   const [desmer, setDesmer] = useState(pagOne.desmer);
+  const [animalSelecionado, setAnimalSelecionado] = useState(true);
+  const [viewAnimal, setViewAnimal] = useState(pagOne.viewAnimal);
+  const [openModal, setOpenModal] = useState(!open);
+  const [required, setRequired] = useState({ paciente: false, especie: false, raca: false, sexo: false, idade: false, peso: false });
 
+  //muda o state do modal
+  const handleButtonClick = () => setOpenModal(!openModal);
+
+  //seta os animais baseado no tutor.
   useEffect(() => {
-    if (typeof tutores[0] === 'object' && 'animals' in tutores[0]) {
+    if (typeof tutores[0] === 'object' && 'animals' in tutores[0] && tutores[0].animals.length > 0) {
       setPacientes(tutores[0].animals)
     }
+    else {
+      setPacientes([])
+    }
   }, [tutores]);
+
+  //controla o disable do tutor baseado no state do input paciente
+  useEffect(() => {
+    paciente == "" || paciente == 'Preencha Tutor' ? setviewTutor(false) : setviewTutor(true)
+  }, [paciente])
+
+  //carrega os autoCompletes ao abrir a página.
   useEffect(() => {
     getProfessores(setProfs);
     getAnimalsAndTutorByTutorName(setTutores, '');
@@ -50,7 +76,26 @@ export default function FirstPart(props) {
     set(obj);
   }
 
-  const PageOneData = {
+  //usa o set para vacina que modifica o array de vacinas
+  const handleVacina = (arr, index, valor, key) => {
+    const array = [...arr]
+    array[index] = { ...array[index], [key]: valor }
+    setVacina(array)
+  }
+
+  //botão que adiciona vacinas
+  const addVacina = () => {
+    const array = [...vacina]
+    const obj = { name: '', date: '' }
+    array.push(obj)
+    setVacina(array)
+  }
+  const removeVacina = (e) => {
+    const arr = [...vacina]
+    setVacina(arr.filter((_i, index) => index != e))
+  }
+
+  const pageOneData = {
     data,
     paciente,
     tutor,
@@ -62,15 +107,77 @@ export default function FirstPart(props) {
     pelagem,
     historico,
     professor,
-    vacina1,
+    vacina,
     desmer,
     motivo,
     idAnimal: pacientes.filter((e) => e.name == paciente),
+    viewAnimal,
+    viewTutor,
+    teacher_id: professores.filter((e) => e.name == professor)[0],
   };
+
+  const fullfillValidate = {
+    paciente,
+    especie,
+    raca,
+    sexo,
+    idade,
+    peso
+  }
+  
+  const validateTrue = (chaves) => {
+    let obj = { ...required }
+    const keys = Object.keys(obj)
+    keys.forEach((e) => {
+      if (e == chaves) {
+        obj[e] = false;
+      }
+    })
+    setRequired(obj)
+  }
+  //botao de Proximo validando lógica se o animal colocado existe
+  const validateInputs = () => {
+    const keys = Object.keys(fullfillValidate)
+    const values = Object.values(fullfillValidate)
+    let validation = false
+    let obj = { ...required }
+    values.map((e, index) => {
+      if (e == '') {
+        const chaves = keys[index]
+        obj[chaves] = true;
+        validation = true
+      }
+    })
+    setRequired(obj)
+    return validation
+  }
+
+  //botao de Proximo validando lógica se o animal colocado existe
   const handleProx = () => {
-    props.setSteps(2);
-    setPagOne(PageOneData);
+    const validacaoCampos = validateInputs()
+    if (validacaoCampos) {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+      return
+    }
+    if (pacientes.some((e) => e.name == paciente)) {
+      props.setSteps(2);
+      setPagOne(pageOneData);
+    } else {
+      handleButtonClick();
+    }
   };
+
+  const notification = () => {
+    alert('Animal adicionado com sucesso!');
+  }
+  const erroNotification = () => {
+    alert('Animal não pode ser criado.');
+  }
+
   return (
     <div className="font-Montserrat p-28 w-full">
       <div className="font-bold">
@@ -117,11 +224,14 @@ export default function FirstPart(props) {
                 Tutor
                 <Autocomplete
                   freeSolo
-                  id="free-solo-2-demo"
                   disableClearable
+                  id="free-solo-2-demo"
+                  disabled={viewTutor}
                   onChange={(_e, newValue) => {
                     setTutor(newValue)
                     getAnimalsAndTutorByTutorName(setTutores, newValue)
+                    setViewAnimal(false)
+                    setPaciente('')
                   }}
                   options={tutores.map((option) => option.name)}
                   value={tutor}
@@ -140,30 +250,38 @@ export default function FirstPart(props) {
                   )}
                 />
               </label>
-              <label htmlFor="free-solo-2-demo" className="grow">
+              <label htmlFor="free-solo-2-demo" className={"grow"}>
                 Paciente
                 <Autocomplete
                   freeSolo
                   id="free-solo-2-demo"
                   value={paciente}
+                  disabled={viewAnimal}
                   onChange={(_e, newValue) => {
                     setPaciente(newValue)
                     const filter = pacientes.filter((e) => e.name == newValue)
-                    console.log(filter[0])
                     setEspecie(filter[0].species)
                     setRaca(filter[0].race)
                     setSexo(filter[0].gender)
                     setIdade(filter[0].age)
-                    // setPeso()
                     setPelagem(filter[0].coat)
+                    setAnimalSelecionado(true)
                   }}
                   disableClearable
                   options={pacientes.map((option) => option.name)} // Assuming you want to use the name property as the label
                   renderInput={(params) => (
                     <TextField
                       value={paciente}
-                      onChange={(_e, newValue) => {
-                        setPaciente(newValue); // Update the state with the new value
+                      onChange={(e) => {
+                        setPaciente(e.target.value); // Update the state with the new value
+                        setAnimalSelecionado(false)
+                        if (animalSelecionado) {
+                          setEspecie('')
+                          setRaca('')
+                          setSexo('')
+                          setIdade('')
+                          setPelagem('')
+                        }
                       }}
                       {...params}
                       InputProps={{
@@ -181,24 +299,38 @@ export default function FirstPart(props) {
                 dataType="text"
                 type={especie}
                 setDataCom={setEspecie}
+                requireVal={required.especie}
+                handleButton={validateTrue}
+                descrHandle="especie"
               />
               <InputComponent
                 nome="Raça"
                 dataType="text"
                 type={raca}
                 setDataCom={setRaca}
+                requireVal={required.raca}
+                handleButton={validateTrue}
+                descrHandle="raca"
               />
               <label className="grid h-full grow">
+
                 Sexo
                 <select
                   value={sexo}
-                  onChange={(e) => setSexo(e.target.value)}
-                  className="w-full grow p-1 py-2 rounded-lg bg-white border-solid border-2 border-gray"
+                  onChange={(e) => {
+                    setSexo(e.target.value)
+                  }}
+                  className={`${required.sexo
+                    ? "outline-red-600 border-red-500"
+                    : "outline-gray-input"
+                    } w-full grow p-1 py-2 rounded-lg bg-white border-solid border-2 border-gray`}
                 >
-                  <option className="bg-white-500" value="M">
-                    Masculino
+                  <option className="bg-white-500" value="">
                   </option>
-                  <option value="F">Feminino</option>
+                  <option className="bg-white-500" value="Macho" defaultValue={true}>
+                    Macho
+                  </option>
+                  <option value="Fêmea">Fêmea</option>
                   <option value="INDEFINIDO">Indefinido</option>
                 </select>
               </label>
@@ -209,12 +341,18 @@ export default function FirstPart(props) {
                 dataType="text"
                 type={idade}
                 setDataCom={setIdade}
+                requireVal={required.idade}
+                handleButton={validateTrue}
+                descrHandle="idade"
               />
               <InputComponent
                 nome="Peso"
                 dataType="text"
                 type={peso}
                 setDataCom={setPeso}
+                requireVal={required.peso}
+                handleButton={validateTrue}
+                descrHandle="peso"
               />
               <InputComponent
                 nome="Pelagem"
@@ -259,43 +397,57 @@ export default function FirstPart(props) {
             <div className="font-bold">
               <h1 className="text-[30px]">Vacinação</h1>
             </div>
-            <div id="div-vac" className="gap-8 flex justify-center my-8">
-              <label  className="grow">
-                Qual
-                <input
-                  type="text"
-                  name="vacina1"
-                  id="vacina1"
-                  className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
-                  value={vacina1.vacina1}
-                  onChange={(e) => handleInput(vacina1, 'vacina1', e.target.value, setVacina1)}
-                />
-              </label>
-              <label >
-                Data da Última
-                <input
-                  type="date"
-                  name="data1"
-                  id="data1"
-                  className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
-                  value={vacina1.date}
-                  onChange={(e) => handleInput(vacina1, 'date', e.target.value, setVacina1)}
-                />
-              </label>
+            <div id="div-vac" className="w-full my-4 flex flex-col gap-8">
+              {vacina.map((e, index) => {
+                return (
+                  <div className="flex gap-8 justify-center items-center" key={index}>
+                    <label className="grow">
+                      Qual
+                      <input
+                        type="text"
+                        className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
+                        value={e.name}
+                        onChange={(e) => handleVacina(vacina, index, e.target.value, 'name')}
+                      />
+                    </label>
+                    <label className="">
+                      Data da Última
+                      <input
+                        type="date"
+                        name="data1"
+                        id="data1"
+                        className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
+                        value={e.date}
+                        onChange={(e) => handleVacina(vacina, index, e.target.value, 'date')}
+                      />
+                    </label>
+                    <div className="bg-remove p-[8px] rounded-lg self-end cursor-pointer" onClick={() => removeVacina(index)}>
+                      <img srcSet={fundo}></img>
+                    </div>
+                  </div>
+                )
+              })}
+              <div className="flex gap-12 justify-center bg-gray-input p-2 rounded-lg text-white-med shadow-xl cursor-pointer" onClick={() => addVacina()}>
+                <div className="flex gap-4">
+                  <img srcSet={mais} alt="mais" className="" />
+                  <button className="grow font-semibold" type="button">Adicionar Vacina</button>
+                </div>
+              </div>
+
             </div>
-            <div className="font-bold">
+            <div className="font-bold mt-16">
               <h1 className="text-[30px]">Desverminação</h1>
             </div>
             <div id="div-vac" className="gap-8 flex justify-center my-8">
-              <label  className="grow">
+              <label className="grow">
                 Qual
                 <input
                   type="text"
                   name="vacina1"
                   id="vacina1"
                   className="w-full border-solid border-2 order-border-gray rounded-lg p-1"
-                  value={desmer.desmer}
-                  onChange={(i) => handleInput(desmer, 'desmer', i.target.value, setDesmer)}
+                  value={desmer.name}
+                  onChange={(i) => handleInput(desmer, 'name', i.target.value, setDesmer)}
                 />
               </label>
               <label >
@@ -314,13 +466,64 @@ export default function FirstPart(props) {
           <button
             type="button"
             className="bg-blue-button py-2 px-16 my-32 rounded-lg text-white float-right"
-            onClick={() => {
-              handleProx();
-            }}
+            onClick={handleProx}
           >
             Próximo
           </button>
         </form>
+      </div>
+      <div>
+        <Modal
+          open={openModal}
+          aria-labelledby="modal-modal-deletetitle"
+          aria-describedby="modal-modal-description2"
+        >
+          <Box id="box-modal-pag1">
+            <Typography
+              id="modal-modal-deletetitle"
+              variant="h6"
+              component="h1"
+            >
+              Cadastrar animal?
+              <p id="descri-modal">O animal inserido ainda não possui cadastro, deseja cadastrá-lo?</p>
+              <div className="flex justify-between my-12">
+                <IconButton
+                  id="voltar-animal"
+                  onClick={handleButtonClick}
+                >
+                  Voltar
+                </IconButton>
+                <IconButton
+                  id="cadastrar-animal"
+                  onClick={async () => {
+                    const animal = {
+                        name: paciente,
+                        species: especie,
+                        race: raca,
+                        gender: sexo,
+                        age: idade,
+                        weight: peso,
+                        coat: pelagem,
+                        tutor_id: tutores[0].id
+                      }
+                    const validyCreateAnimal = await postAnimal(animal, tutores[0].id)
+                    if (validyCreateAnimal) {
+                      const envioData = pageOneData;
+                      envioData.idAnimal = [{id: validyCreateAnimal.data}]
+                      notification();
+                      props.setSteps(2);
+                      setPagOne(envioData);
+                    } else {
+                      erroNotification()
+                    }
+                  }}
+                >
+                  Cadastrar
+                </IconButton>
+              </div>
+            </Typography>
+          </Box>
+        </Modal>
       </div>
     </div>
   );

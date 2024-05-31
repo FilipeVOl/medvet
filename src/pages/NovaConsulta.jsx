@@ -5,27 +5,30 @@ import ThirdPart from "../Component/nova consulta/ThirdPart";
 
 export const ConsultContext = createContext();
 const pagOneData = {
-  paciente: "",
+  paciente: "Preencha Tutor",
   data: "2024-17-05",
   tutor: "",
   especie: "",
   raca: "",
-  sexo: "",
+  sexo: "Macho",
   idade: "",
   peso: "",
   pelagem: "",
   historico: "",
   professor: "",
-  vacina1: { vacina1: "", date: "2024-17-05" },
-  desmer: { desmer: "", date: "2024-17-05" },
+  vacina: [{ name: '', date: '' }],
+  desmer: { name: "", date: "2024-17-05" },
   motivo: "",
   idAnimal: [],
+  viewAnimal: true,
+  viewTutor: false,
+  teacher_id: [],
 };
 
 const pagSecData = {
-  temp: 0,
-  freqCard: 0,
-  resp: 0,
+  temp: "",
+  freqCard: "",
+  resp: "",
   desidratacao: "",
   linfonodos: "",
   pele: "",
