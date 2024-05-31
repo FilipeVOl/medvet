@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import FilterInput from "../Component/Prontuarios/FilterInput";
 // import { getEnchiridion } from "../services/enchiridion";
 import prontuariosMock from "../mocks/enchiridion.mock";
+import page from '../images/page.svg'
 
 export default function Prontuarios() {
   const [namePacient, setNamePacient] = useState('');
@@ -17,7 +18,11 @@ export default function Prontuarios() {
   useEffect(() => {
     setProntuarios(prontuariosMock.enchiridions) // Removed space
   }, [])
-
+  //pegar so o primeiro nome do animal e do tutor
+  // const getTheFirstOne = () => {
+  //   const pront = prontuarios;
+  //   pront.reduce((e) => e.name_animal.split('')[0])
+  // }
   return (
     <div className="font-Montserrat text-xl p-28 w-full">
       <div id="header">
@@ -28,10 +33,10 @@ export default function Prontuarios() {
         <FilterInput placeHolder="Nome do Tutor" valueInput={nameTutor} handleFilter={setNameTutor} />
         <FilterInput placeHolder="Nº do Prontuário" valueInput={numberPront} handleFilter={setNumberPront} />
       </div>
-      <div>
+      <div className="grid grid-cols-5 grid-rows-2 gap-4 rounded-lg">
         {prontuarios.map((e) => {
           return (
-          <div key={e.id} id={e.id}>
+          <div key={e.id} id={e.id} className="p-10 border border-gray-pront rounded-lg bg-gray-pront flex flex-col">
             <p>{e.name_animal}</p>
             <p>{e.name_tutor}</p>
           </div>
