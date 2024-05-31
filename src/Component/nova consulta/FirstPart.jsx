@@ -14,12 +14,14 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import fundo from '../../images/fundo.svg'
 import { postAnimal } from "../../services/animals";
-//criar animal
 
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
-
-  //alterar para reducer, ou criar um só state que é um objetivo.
+  // melhorias
+  // alterar para reducer, ou criar um só state que é um objetivo.
+  // desabilitar campos do animal quando ele for selecionado.
+  // adicionar receita
+  // modal de adicionar receita
   const [data, setData] = useState(pagOne.data);
   const [paciente, setPaciente] = useState(pagOne.paciente);
   const [tutor, setTutor] = useState(pagOne.tutor);
