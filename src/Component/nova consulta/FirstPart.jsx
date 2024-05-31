@@ -22,6 +22,8 @@ export default function FirstPart(props) {
   // desabilitar campos do animal quando ele for selecionado.
   // adicionar receita
   // modal de adicionar receita
+  // corrigir fontes dos autocompletes
+  // ficar vermelho paciente, tutor e professor/médico quando não preenchido.
   const [data, setData] = useState(pagOne.data);
   const [paciente, setPaciente] = useState(pagOne.paciente);
   const [tutor, setTutor] = useState(pagOne.tutor);

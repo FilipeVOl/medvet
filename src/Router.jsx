@@ -11,7 +11,7 @@ import MostrarAluno from "./pages/MostrarAluno";
 import MostrarProfessor from "./pages/MostrarProfessor";
 import MostrarTutor from "./pages/MostrarTutor";
 import TelaNovoTutor from "./pages/TelaNovoTutor";
-import { postAluno } from "./utils/MostrarAluno.utils";
+import Prontuarios from "./pages/Prontuarios";
 
 export function Router() {
   return (
@@ -35,6 +35,7 @@ export function Router() {
           <Route path="showProfessor" element={<MostrarProfessor />} />
           <Route path="criarconsulta" element={<NovaConsulta />} />
           <Route path="showTutor" element={<MostrarTutor />} />
+          <Route path="Prontuarios" element={<Prontuarios/>} />
         </Route>
       </Routes>
     </UserProvider>
