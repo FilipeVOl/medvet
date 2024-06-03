@@ -1,19 +1,25 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import InputMask from "react-input-mask";
 import { postAluno } from "../utils/MostrarAluno.utils";
 import PropTypes from "prop-types";
 import { PutAluno } from "../services/alunos";
+import { UpdateEditContext } from "../contexts/updateEditContext";
+
 
 export default function Cadastro(props) {
-  const [registration, setRegistration] = useState(props.selected ? props.selected.registration : "");
-  const [nome, setNome] = useState(props.selected ? props.selected.name : "");
-  const [cpf, setCpf] = useState(props.selected ? props.selected.cpf : "");
-  const [email, setEmail] = useState(props.selected ? props.selected.email : "");
+  const {selectedUser, setSelectedUser} = useContext(UpdateEditContext);
+  const {openEdit, setOpenEdit} = useContext(UpdateEditContext);
+  const {openNew, setOpenNew} = useContext(UpdateEditContext);
+  const [nome, setNome] = useState(selectedUser ? selectedUser.name : "");
+  const [registration, setRegistration] = useState(selectedUser ? selectedUser.registration : "");
+  const [cpf, setCpf] = useState(selectedUser ? selectedUser.cpf : "");
+  const [phone, setPhone] = useState(selectedUser ? selectedUser.phone : "");
+  const [email, setEmail] = useState(selectedUser ? selectedUser.email : ""  );
   const [course, setCourse] = useState("Medicina Veterinária");
-  const [period, setPeriod] = useState(props.selected ? props.selected.period : "");
-  const [shift, setShift] = useState(props.selected ? props.selected.shift : "");
-  const [phone, setPhone] = useState(props.selected ? props.selected.phone : "");
-  const [id, setId] = useState(props.selected ? props.selected.id : "");
+  const [shift, setShift] = useState(selectedUser ? selectedUser.shift : "");
+  const [period, setPeriod] = useState(selectedUser ? selectedUser.period : "" );
+  const [id, setId] = useState(selectedUser ? selectedUser.id : ""); 
+  
   {
     Cadastro.propTypes = {
       buttonName: PropTypes.string,
@@ -35,11 +41,13 @@ export default function Cadastro(props) {
   };
 
   function clickError() {
-    if (props.selected == null) {
+    if (selectedUser == null) {
       postAluno(data);
-      console.log(props.props);
+      setOpenNew(!openNew);
     } else {
       PutAluno(data);
+      setOpenEdit(!openEdit);
+      window.location.reload();
     }
   }
 
@@ -152,7 +160,7 @@ export default function Cadastro(props) {
                   !phone
                     ? "outline-red-600 border-red-500"
                     : "border-border-gray"
-                } border-[1px] w-full rounded-md h-9 pl-`}
+                } border-[1px] w-full rounded-md h-9`}
               />
             </label>
 
