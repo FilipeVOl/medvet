@@ -38,9 +38,9 @@ export default function Prontuarios() {
       <div className="grid grid-cols-5 grid-rows-2 gap-8 rounded-lg">
         {prontuarios.map((e) => {
           return (
-          <div key={e.id} id={e.id} className="p-5 pt-[113.33%] rounded-lg bg-gray-pront flex flex-col justify-end
-          hover:bg-blue-button hover:scale-110 cursor-pointer w-[105%] h-0">
-            <div className="bg-other-white rounded-lg text-[2vh] flex flex-col p-2 w-fit">
+          <div key={e.id} id={e.id} className="p-4 pt-[113.33%] rounded-lg bg-prontuario-box bg-no-repeat bg-contain flex flex-col justify-end
+          hover:bg-hover-box hover:scale-110 cursor-pointer w-[105%] h-0">
+            <div className="bg-other-white rounded-lg text-[2vh] flex flex-col p-2 m-3 w-fit">
               <p className="font-bold pr-6">{getTheFirstOne(e.name_animal)}</p>
               <p className="">{getTheFirstOne(e.name_tutor)}</p>
             </div>
