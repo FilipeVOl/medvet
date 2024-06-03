@@ -47,11 +47,9 @@ export default function SecondPart(props) {
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
     setCheckboxValues((prev) => {
-      // If checked, add the name to the array
       if (checked) {
         return [...prev, name];
       } else {
-        // If unchecked, remove the name from the array
         return prev.filter((item) => item !== name);
       }
     });

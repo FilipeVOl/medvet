@@ -39,7 +39,7 @@ const pagSecData = {
   snervoso: "",
   sgenit: "",
   outros: "",
-  checkboxValues: ['sem'],
+  checkboxValues: ["sem"],
   mucosas: "",
 };
 
@@ -61,6 +61,7 @@ const handleSteps = (steps, setSteps) => {
     <div></div>;
   }
 };
+
 export default function NovaConsulta() {
   const [steps, setSteps] = useState(1);
   const [pagOne, setPagOne] = useState(pagOneData);
