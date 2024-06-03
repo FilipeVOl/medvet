@@ -28,9 +28,9 @@ export default function Prontuarios() {
   return (
     <div className="font-Montserrat w-full p-28">
       <div id="header">
-        <h1 className="font-bold text-2xl">Prontuários</h1>
+        <h1 className="font-bold text-2xl pr-28">Prontuários</h1>
       </div>
-      <div id="filtros" className="flex my-16 w-full justify-between">
+      <div id="filtros" className="flex my-16 w-full justify-between pr-16">
         <FilterInput placeHolder="Nome do Paciente" valueInput={namePacient} handleFilter={setNamePacient} />
         <FilterInput placeHolder="Nome do Tutor" valueInput={nameTutor} handleFilter={setNameTutor} />
         <FilterInput placeHolder="Nº do Prontuário" valueInput={numberPront} handleFilter={setNumberPront} />
@@ -38,9 +38,9 @@ export default function Prontuarios() {
       <div className="grid grid-cols-5 grid-rows-2 gap-8 rounded-lg">
         {prontuarios.map((e) => {
           return (
-          <div key={e.id} id={e.id} className="p-4 pt-[113.33%] rounded-lg bg-prontuario-box bg-no-repeat bg-contain flex flex-col justify-end
+          <div key={e.id} id={e.id} className="p-4 pt-[111.24%] rounded-lg bg-prontuario-box bg-no-repeat bg-contain flex flex-col justify-end
           hover:bg-hover-box hover:scale-110 cursor-pointer w-[105%] h-0">
-            <div className="bg-other-white rounded-lg text-[2vh] flex flex-col p-2 m-3 w-fit">
+            <div className="bg-other-white rounded-lg text-[1.7vh] flex flex-col p-2 m-2 w-fit">
               <p className="font-bold pr-6">{getTheFirstOne(e.name_animal)}</p>
               <p className="">{getTheFirstOne(e.name_tutor)}</p>
             </div>
