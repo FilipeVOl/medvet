@@ -8,3 +8,12 @@ export const postAnimal = async (animal, tutor_id) => {
         return null
     }
   };
+
+export const getAnimalById = async (id) => {
+    try {
+        const animalDetails = axios.get(`http://localhost:3333/get/animal/id/${id}`);
+        return animalDetails.data;
+    } catch(e) {
+        return null
+    }
+}
