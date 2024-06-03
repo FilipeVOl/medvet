@@ -19,9 +19,11 @@ export default {
         'gray-input': '#9F9F9F',
         'remove': '#D03939',
         'gray-pront': '#E5E3DB',
+        "other-white": "#FCFCFC"
       },
       backgroundImage: {
         search: "url('../images/search.png)",
+        'prontuario-box': "url(src/images/tentativa1.png)"
       },
     },
   },
