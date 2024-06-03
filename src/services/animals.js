@@ -27,3 +27,13 @@ export const getAllAnimals = async (set, page) => {
         return null
     }
 }
+//essa
+export const getAnimalByName = async (set, name) => {
+    try {
+        const animalDetails = await axios.get(`http://localhost:3333/get/animals?numberOfItems=10&page=${page}`);
+        console.log(animalDetails)
+        set(animalDetails.data)
+    } catch(e) {
+        return null
+    }
+}

@@ -26,20 +26,9 @@ export default function Prontuarios() {
     let capitalizedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
     return capitalizedFirstName.substring(0, 10);
   }
-  const consultasFiltradas = (() => {
-    const dateAlt = Object.keys(pageSelected).reduce((acc, key) => {
-      const consultasDoDia = pageSelected[key].filter(
-        consulta =>
-          consulta.nameTutor.toLowerCase().includes(nome.toLowerCase()) ||
-          consulta.namePacient.toLowerCase().includes(nome.toLowerCase())
-      );
-      if (consultasDoDia.length > 0) {
-        acc[key] = consultasDoDia;
-      }
-      return acc;
-    }, {})
-    return Object.keys(dateAlt).length == 0 ? agenda : dateAlt
-  });
+  const filterByTutorName = () => {
+    
+  }
   return (
     <div className="font-Montserrat w-full p-28 flex flex-col">
       <div id="header">
