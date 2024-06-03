@@ -13,6 +13,7 @@ import MostrarTutor from "./pages/MostrarTutor";
 import TelaNovoTutor from "./pages/TelaNovoTutor";
 import { postAluno } from "./utils/MostrarAluno.utils";
 import { UpdateEditProvider } from "./contexts/updateEditContext";
+import Receita from "./pages/Receita";
 
 export function Router() {
   return (
@@ -37,6 +38,7 @@ export function Router() {
             <Route path="showProfessor" element={<MostrarProfessor />} />
             <Route path="criarconsulta" element={<NovaConsulta />} />
             <Route path="showTutor" element={<MostrarTutor />} />
+            <Route path="receita" element={<Receita />} />
           </Route>
         </Routes>
       </UpdateEditProvider>
