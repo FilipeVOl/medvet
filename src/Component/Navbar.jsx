@@ -66,6 +66,10 @@ const Navbar = () => {
         <img src={agendar} alt='criar consulta' className='pr-4'/>
         <Link to="criarconsulta">Criar Consulta</Link>
       </div>
+      <div id='receita' className='flex py-4 bg-[#007448]'>
+      <img src={novoCadastro} alt='receita' className='pr-4'/>
+        <Link to="receita">Receitas</Link>
+      </div>
     </div>
   )
 }

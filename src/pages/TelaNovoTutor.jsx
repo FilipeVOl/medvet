@@ -41,7 +41,7 @@ const TelaNovoTutor = (props) => {
   const [email, setEmail] = useState(selectedUser ? selectedUser.email : "");
   const [password, setPassword] = useState(selectedUser ? selectedUser.password : "");
   const [phoneWMask, setMask] = useState(selectedUser ? selectedUser.phone : "");
-  const [adress, setAddress] = useState(selectedUser ? selectedUser.address : "");
+  const [adress, setAddress] = useState("");
   const [id, setId] = useState(selectedUser ? selectedUser.id : "");
 
   const ConsultaSchema = z.object({
@@ -77,6 +77,7 @@ const TelaNovoTutor = (props) => {
       }
     } catch (error) {
       console.error(error.errors);
+      console.log(selectedUser)
     }
   };
 
