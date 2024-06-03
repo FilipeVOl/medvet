@@ -11,8 +11,18 @@ export const postAnimal = async (animal, tutor_id) => {
 
 export const getAnimalById = async (id) => {
     try {
-        const animalDetails = axios.get(`http://localhost:3333/get/animal/id/${id}`);
-        return animalDetails.data;
+        const animalDetails = await axios.get(`http://localhost:3333/get/animal/id/${id}`);
+        return animalDetails;
+    } catch(e) {
+        return null
+    }
+}
+
+export const getAllAnimals = async (set, page) => {
+    try {
+        const animalDetails = await axios.get(`http://localhost:3333/get/animals?numberOfItems=10&page=${page}`);
+        console.log(animalDetails)
+        set(animalDetails.data)
     } catch(e) {
         return null
     }

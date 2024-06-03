@@ -23,8 +23,8 @@ export default {
       },
       backgroundImage: {
         search: "url('../images/search.png)",
-        'prontuario-box': "url(src/images/prontuario.png)",
-        'hover-box': "url(src/images/hover-pront.png)"
+        'prontuario-box': "url(src/images/prontuario.svg)",
+        'hover-box': "url(src/images/hover-pront.svg)"
       },
     },
   },
