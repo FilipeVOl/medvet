@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Input, InputLabel } from "@mui/material";
 import AddIcon from "../assets/add.svg";
+import { PrescContext } from "../contexts/prescContext";
 
-const InputReceita = ({ label, setter, value }) => {
+export const InputReceita = ({ label, setter, value }) => {
+
   const handleChanges = (e) => {
     setter(e.target.value);
   };
+
   return (
     <div className="flex flex-col mb-4">
       <InputLabel className="ml-4">{label}</InputLabel>
@@ -19,7 +22,8 @@ const InputReceita = ({ label, setter, value }) => {
   );
 };
 
-const Receita = () => {
+export const Receita = (props) => {
+  const { page, setPage } = useContext(PrescContext);
   const [paciente, setPaciente] = useState("");
   const [tutor, setTutor] = useState("");
   const [species, setSpecies] = useState("");
@@ -33,7 +37,27 @@ const Receita = () => {
   const [unidade, setUnidade] = useState("");
   const [medicacao, setMedicacao] = useState("");
   const [descricao, setDescricao] = useState("");
-  const [medicamentos, setMedicamentos] = useState([]);
+  const { medicamentos, setMedicamentos } = useContext(PrescContext);
+
+  const addMedicamento = () => {
+    const array = [...medicamentos];
+    const obj = { uso: "", farmacia: "", unidade: "", medicacao: "", descricao: ""}
+    array.push(obj);
+    setMedicamentos(array)
+    console.log(array);
+    console.log("Objetos:", obj)
+  };
+
+  const handleMedicamento = (arr, index, valor, key) => {
+    const array = [...arr];
+    array[index] = { ...array[index], [key]: valor };
+    setMedicamentos(array);
+    
+  };
+
+  useEffect(() => {
+    console.log(medicamentos);
+  }, [medicamentos]);
 
   return (
     <div className="font-Montserrat">
@@ -61,70 +85,111 @@ const Receita = () => {
       </form>
 
       <p className="text-xl px-20 py-8">Medicação</p>
-      {medicamentos.map((e, index) => {
-        return (
-          <form className="px-24 w-auto mb-20">
-            <div className="grid grid-cols-3 gap-10">
-              <InputLabel>
-                Uso
-                <select
-                  value={uso}
-                  onChange={(e) => setUso(e.target.value)}
-                  className="border flex-col flex w-full rounded-md h-[46px] grow p-2 text-base border-border-gray"
-                >
-                  <option value="oral">Oral</option>
-                  <option value="retal">Retal</option>
-                  <option value="sublingual">Sublingual</option>
-                  <option value="injetavel">Injetável</option>
-                  <option value="dermatologico">Dermatológico</option>
-                  <option value="nasal">Nasal</option>
-                  <option value="oftalmologico">Oftalmológico</option>
-                </select>
-              </InputLabel>
-
-              <InputLabel>
-                Farmácia
-                <select
-                  value={farmacia}
-                  onChange={(e) => setFarmacia(e.target.value)}
-                  className="border flex-col grow flex w-full rounded-md h-[46px] p-2 text-base border-border-gray"
-                >
-                  <option value="farmacia1">Farmacia 1</option>
-                  <option value="farmacia 2">Farmacia 2</option>
-                </select>
-              </InputLabel>
-
-              <InputReceita
-                label="Unidade (qt.)"
-                setter={setUnidade}
-                value={unidade}
-                className="border rounded-md h-[46px] w-auto p-2 text-base border-border-gray"
-              ></InputReceita>
-            </div>
-
-            <div>
-              <InputReceita
-                label="Medicação"
-                setter={setMedicacao}
-                value={medicacao}
-                className="border rounded-md h-[46px] p-2 text-base border-border-gray"
-              ></InputReceita>
-            </div>
-
-            <div>
-              <InputReceita
-                label="Descrição (Posologia)"
-                setter={setDescricao}
-                value={descricao}
-                className="border rounded-md h-[46px] p-2 text-base border-border-gray"
-              ></InputReceita>
-            </div>
-          </form>
-        );
-      })}
-
       <div>
+        {medicamentos.map((e, index) => {
+          return (
+            <form key={index} className="px-24 w-auto mb-20 border-2 mx-8 py-8 flex flex-col gap-4">
+              <div className="grid grid-cols-3 gap-10">
+                <label>
+                  Uso
+                  <select
+                    value={e.uso}
+                    onChange={(e) =>
+                      handleMedicamento(
+                        medicamentos,
+                        index,
+                        e.target.value,
+                        "uso"
+                      )
+                    }
+                    className="border flex-col flex w-full rounded-md h-[46px] grow p-2 text-base border-border-gray"
+                  >
+                    <option value="oral">Oral</option>
+                    <option value="retal">Retal</option>
+                    <option value="sublingual">Sublingual</option>
+                    <option value="injetavel">Injetável</option>
+                    <option value="dermatologico">Dermatológico</option>
+                    <option value="nasal">Nasal</option>
+                    <option value="oftalmologico">Oftalmológico</option>
+                  </select>
+                </label>
+
+                <label>
+                  Farmácia
+                  <select
+                    value={e.farmacia}
+                    onChange={(e) =>
+                      handleMedicamento(
+                        medicamentos,
+                        index,
+                        e.target.value,
+                        "farmacia"
+                      )
+                    }
+                    className="border flex-col grow flex w-full rounded-md h-[46px] p-2 text-base border-border-gray"
+                  >
+                    <option value="farmacia1">Farmacia 1</option>
+                    <option value="farmacia 2">Farmacia 2</option>
+                  </select>
+                </label>
+                
+                <label>Unidade (qt.)
+                <input
+                  value={e.unidade}
+                  onChange={(e) =>
+                    handleMedicamento(
+                      medicamentos,
+                      index,
+                      e.target.value,
+                      "unidade"
+                    )
+                  }
+                  className="border rounded-md h-[46px] w-full p-2 text-base border-border-gray"
+                ></input>
+                </label>
+              </div>
+
+              <div>
+                <label>Medicação
+                <input
+                  label="Medicação"
+                  onChange={(e) =>
+                    handleMedicamento(
+                      medicamentos,
+                      index,
+                      e.target.value,
+                      "medicacao"
+                    )
+                  }
+                  className="border rounded-md h-[46px] w-full p-2 text-base border-border-gray"
+                ></input>
+                </label>
+              </div>
+
+              <div>
+                <label>Descrição (Posologia)
+                <input
+                  setter={setDescricao}
+                  value={(e) =>
+                    handleMedicamento(
+                      medicamentos,
+                      index,
+                      e.target.value,
+                      "descricao"
+                    )
+                  }
+                  className="border rounded-md w-full h-[46px] p-2 text-base border-border-gray"
+                ></input>
+                </label>
+              </div>
+            </form>
+          );
+        })}
+      </div>
+
+      <div className="px-24">
         <button
+          onClick={() => addMedicamento()}
           className="font-bold text-nowrap mt-12 w-full justify-center bg-primary text-white flex items-center 
           rounded-md h-[46px] bg-gray-button border-2
         p-2 text-base"
@@ -134,7 +199,7 @@ const Receita = () => {
         </button>
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex justify-end w-auto">
         <button className="rounded-md h-[46px] mt-8 w-1/4 border-2 text-center bg-border-blue text-white font-bold">
           Confirmar
         </button>

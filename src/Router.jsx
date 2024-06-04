@@ -14,6 +14,7 @@ import TelaNovoTutor from "./pages/TelaNovoTutor";
 import { postAluno } from "./utils/MostrarAluno.utils";
 import { UpdateEditProvider } from "./contexts/updateEditContext";
 import Receita from "./pages/Receita";
+import { PrescProvider } from "./contexts/prescContext";
 
 export function Router() {
   return (
@@ -38,7 +39,7 @@ export function Router() {
             <Route path="showProfessor" element={<MostrarProfessor />} />
             <Route path="criarconsulta" element={<NovaConsulta />} />
             <Route path="showTutor" element={<MostrarTutor />} />
-            <Route path="receita" element={<Receita />} />
+            <Route path="receita" element={<PrescProvider />} />
           </Route>
         </Routes>
       </UpdateEditProvider>
