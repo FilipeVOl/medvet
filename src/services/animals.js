@@ -21,7 +21,6 @@ export const getAnimalById = async (id) => {
 export const getAllAnimals = async (set, page) => {
     try {
         const animalDetails = await axios.get(`http://localhost:3333/get/animals?numberOfItems=10&page=${page}`);
-        console.log(animalDetails)
         set(animalDetails.data)
     } catch(e) {
         return null
@@ -30,9 +29,8 @@ export const getAllAnimals = async (set, page) => {
 //essa
 export const getAnimalByName = async (set, name) => {
     try {
-        const animalDetails = await axios.get(`http://localhost:3333/get/animals?numberOfItems=10&page=${page}`);
-        console.log(animalDetails)
-        set(animalDetails.data)
+        const animalByName = await axios.get(`http://localhost:3333/get/animals?numberOfItems=10&page=${page}`);
+        set(animalByName.data)
     } catch(e) {
         return null
     }

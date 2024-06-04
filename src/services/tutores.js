@@ -40,15 +40,11 @@ export const postTutor = (consulta) => {
     });
 };
 
-export const getTutoresByName = (set, params) => {
+export const getTutoresByName = async (set, params) => {
     try {
-        axios.get(`http://localhost:3333/get/tutor/name?q=${params}`)
-            .then(response => {
-                set(response.data.tutors);
-            })
-            .catch(error => {
-                console.error('ERRO NO BUSCAR POR NOME DO TUTOR', error);
-            });
+        const tutorByName = await axios.get(`http://localhost:3333/get/tutor/name?q=${params}`);
+        console.log(tutorByName.data.tutors)
+        set(tutorByName.data.tutors);
     } catch (e) {
         console.log(e, 'ERRO NO BUSCAR POR NOME DO TUTOR');
     }
