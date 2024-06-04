@@ -7,6 +7,7 @@ export function DefaultLayout() {
     <div>
       <Header />
       <div className="flex">
+        <div className="w-72"></div>
         <Navbar />
         <Outlet />
       </div>

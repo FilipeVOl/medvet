@@ -9,9 +9,10 @@ import novoCadastro from '../images/novo-cadastro.svg'
 import agendamento from '../images/agendamento.svg'
 import cadastrados from '../images/cadastrados.svg'
 import { Link } from "react-router-dom";
+
 const Navbar = () => {
   return (
-    <div className='shadow-md min-w-60 h-[100] min-h-screen bg-[#007448] p-10 w-80 text-white-med'>
+    <div className='shadow-md max-w-72 min-w-72 h-[100] min-h-screen bg-[#007448] p-10 text-white-med fixed'>
       <div id="inicio" className='flex py-4'>
         <img src={house} className='pr-4 '/>
         <Link to="">Início</Link>
