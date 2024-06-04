@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import FilterInput from "../Component/Prontuarios/FilterInput";
 import { Link } from "react-router-dom";
-import { getAllAnimals } from "../services/animals";
+import { getAllAnimals, getAnimalBySequence } from "../services/animals";
 import Pagination from '@mui/material/Pagination';
 import { getTutoresByName } from "../services/tutores";
 
@@ -11,7 +11,6 @@ export default function Prontuarios() {
   const [numberPront, setNumberPront] = useState('');
   const [prontuarios, setProntuarios] = useState([]);
   const [pageSelected, setPageSelected] = useState(1);
-  const [alteredPage, setAlteredPage] = useState([]);
 
   useEffect(() => {
     getAllAnimals(setProntuarios, pageSelected)
@@ -19,9 +18,9 @@ export default function Prontuarios() {
 
   useEffect(() => {
     if (nameTutor.length == 0 && namePacient.length == 0 && numberPront.length == 0) {
-      setAlteredPage(prontuarios)
+      getAllAnimals(setProntuarios, pageSelected)
     }
-  }, [namePacient, nameTutor, numberPront, prontuarios])
+  }, [namePacient, nameTutor, numberPront, pageSelected])
 
   //pegar so o primeiro nome do animal e do tutor
   const getTheFirstOne = (nome) => {
@@ -31,9 +30,14 @@ export default function Prontuarios() {
     return capitalizedFirstName.substring(0, 10);
   }
   //rota de pegar animais pelo nome
-  const filtersInputs = (value) => {
+  const filtersByTutorName = (value) => {
     setNameTutor(value)
-    getTutoresByName(setAlteredPage, value)
+    getTutoresByName(setProntuarios, value)
+  }
+  const filterByAnimalName = (value) => {
+    setNumberPront(value)
+    const e = getAnimalBySequence((i) => console.log(i), value)
+    console.log(e)
   }
   return (
     <div className="font-Montserrat w-full p-28 flex flex-col">
@@ -42,11 +46,11 @@ export default function Prontuarios() {
       </div>
       <div id="filtros" className="flex my-16 w-full justify-between ml-8">
         <FilterInput placeHolder="Nome do Paciente" valueInput={namePacient} handleFilter={setNamePacient} />
-        <FilterInput placeHolder="Nome do Tutor" valueInput={nameTutor} handleFilter={filtersInputs} />
-        <FilterInput placeHolder="Nº do Prontuário" valueInput={numberPront} handleFilter={setNumberPront} />
+        <FilterInput placeHolder="Nome do Tutor" valueInput={nameTutor} handleFilter={filtersByTutorName} />
+        <FilterInput placeHolder="Nº do Prontuário" valueInput={numberPront} handleFilter={filterByAnimalName} />
       </div>
       <div className="grid grid-cols-5 grid-rows-2 gap-8 rounded-lg ml-16 mr-16">
-        {alteredPage.map((e) => {
+        {prontuarios.map((e) => {
           return (
             <Link to={`detalhes/${e.animal_id}`} key={e.animal_id} id={e.animal_id} className="p-4 pt-[111.24%] rounded-lg bg-prontuario-box bg-no-repeat bg-contain flex flex-col justify-end
           hover:bg-hover-box hover:scale-110 cursor-pointer w-[105%] h-0">

@@ -35,3 +35,13 @@ export const getAnimalByName = async (set, name) => {
         return null
     }
 }
+
+export const getAnimalBySequence = async (set, sequence) => {
+    try {
+        const { data } = await axios.get(`http://localhost:3333/get/animal/sequence/${sequence}`);
+        //mudar pra deixar igual a lógica 
+        set([data])
+    } catch(e) {
+        return null
+    }
+}
