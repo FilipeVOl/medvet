@@ -13,16 +13,17 @@ import MostrarTutor from "./pages/MostrarTutor";
 import TelaNovoTutor from "./pages/TelaNovoTutor";
 import Prontuarios from "./pages/Prontuarios";
 import DetalhesProntuario from "./pages/DetalhesProntuario";
+import Prontuario from "./pages/Prontuario";
 
 export function Router() {
   return (
     <UserProvider>
       <Routes>
         <Route path="/" element={<DefaultLayout />}>
-          <Route path="aluno" element={<Cadastro buttonName="Cadastrar"/>} />
+          <Route path="aluno" element={<Cadastro buttonName="Cadastrar" />} />
           <Route path="calendario" element={<Calendar />} />
           <Route path="agendamento" element={<Agendamento />} />
-          <Route path="criarconsulta" element={<NovaConsulta/>}/>
+          <Route path="criarconsulta" element={<NovaConsulta />} />
           <Route
             path="tutor"
             element={<TelaNovoTutor buttonName="Confirmar" />}
@@ -36,8 +37,8 @@ export function Router() {
           <Route path="showProfessor" element={<MostrarProfessor />} />
           <Route path="criarconsulta" element={<NovaConsulta />} />
           <Route path="showTutor" element={<MostrarTutor />} />
-          <Route path="prontuarios" element={<Prontuarios/>} />
-          <Route path="prontuarios/detalhes/:id" element={<DetalhesProntuario />}/>
+          <Route path="prontuarios" element={<Prontuarios />} />
+          <Route path="prontuarios/detalhes/:id" element={<Prontuario />} />
         </Route>
       </Routes>
     </UserProvider>
