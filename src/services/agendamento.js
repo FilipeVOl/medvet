@@ -22,4 +22,15 @@ function ConsultTutorExist(id, consult) {
     })
 }
 
-export { CreateConsult, ConsultTutorExist }
+function getConsults(setOne, setTwo) {
+  axios.get('http://localhost:3333/get/consults')
+      .then(response => {
+        setOne(response.data);
+        setTwo(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+}
+
+export { CreateConsult, ConsultTutorExist, getConsults }

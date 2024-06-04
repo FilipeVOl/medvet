@@ -1,20 +1,13 @@
 import iconSearch from '../images/icon-search.png'
 import { useState, useEffect } from "react";
-import axios from 'axios';
+import { getConsults } from '../services/agendamento';
 
 export default function Agenda() {
   const [agenda, setAgenda] = useState([]);
   const [alteredAgenda, setAlteredAgenda] = useState([]);
   const [nome, setNome] = useState('');
   useEffect(() => {
-    axios.get('http://localhost:3333/get/consults')
-      .then(response => {
-        setAgenda(response.data);
-        setAlteredAgenda(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+    getConsults(setAgenda, setAlteredAgenda)
   }, []);
   const consultasFiltradas = (() => {
     const dateAlt = Object.keys(agenda).reduce((acc, key) => {
