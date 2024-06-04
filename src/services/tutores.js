@@ -55,6 +55,7 @@ export const getTutorByNumber = (number, set) => {
     .get(`http://localhost:3333/get/tutor/searchphone?q=${number}&page=1`)
     .then((response) => {
       set(response.data);
+      return response.data;
     })
     .catch((error) => {
       console.error("Error fetching number:", error);

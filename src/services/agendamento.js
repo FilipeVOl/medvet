@@ -1,14 +1,12 @@
 import axios from "axios";
 
-function CreateConsult(consulta) {
-  axios
-    .post("http://localhost:3333/create/consults", consulta)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+async function CreateConsult(consulta) {
+    try {
+      const data = await axios.post("http://localhost:3333/create/consults", consulta)
+      return data;
+  } catch (e) {
+      console.log(e, 'FETCH ERRO: criar consulta');
+  }
 }
 
 function ConsultTutorExist(id, consult) {
@@ -22,15 +20,15 @@ function ConsultTutorExist(id, consult) {
     })
 }
 
-function getConsults(setOne, setTwo) {
-  axios.get('http://localhost:3333/get/consults')
-      .then(response => {
-        setOne(response.data);
-        setTwo(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+async function getConsults(setOne, setTwo) {
+  try {
+    const { data } = await axios.get('http://localhost:3333/get/consults')
+    setOne(data);
+    setTwo(data);
+    return data
+} catch (e) {
+    console.log(e, 'Agendamento FETCH ERRO');
+}
 }
 
 export { CreateConsult, ConsultTutorExist, getConsults }
