@@ -14,6 +14,7 @@ import TelaNovoTutor from "./pages/TelaNovoTutor";
 import Prontuarios from "./pages/Prontuarios";
 import DetalhesProntuario from "./pages/DetalhesProntuario";
 import Prontuario from "./pages/Prontuario";
+import InfoProntuario from "./pages/InfoProntuario";
 
 export function Router() {
   return (
@@ -39,6 +40,7 @@ export function Router() {
           <Route path="showTutor" element={<MostrarTutor />} />
           <Route path="prontuarios" element={<Prontuarios />} />
           <Route path="prontuarios/detalhes/:id" element={<Prontuario />} />
+          <Route path="prontuarios/detalhes" element={<InfoProntuario />} />
         </Route>
       </Routes>
     </UserProvider>
