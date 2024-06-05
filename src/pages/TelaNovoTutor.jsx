@@ -6,13 +6,12 @@ import { postTutor, PutTutor } from "../services/tutores";
 import { UpdateEditContext } from "../contexts/updateEditContext";
 
 const InputTutor = ({ label, type, setter, value }) => {
-
   const handleChange = useCallback(
     (e) => {
       setter(e.target.value);
     },
     [setter]
-  )
+  );
 
   return (
     <div className="flex flex-col mb-4">
@@ -32,15 +31,19 @@ const InputTutor = ({ label, type, setter, value }) => {
 };
 
 const TelaNovoTutor = (props) => {
-  const {selectedUser, setSelectedUser} = useContext(UpdateEditContext);
-  const {openEdit, setOpenEdit} = useContext(UpdateEditContext);
-  const {openNew, setOpenNew} = useContext(UpdateEditContext);
+  const { selectedUser, setSelectedUser } = useContext(UpdateEditContext);
+  const { openEdit, setOpenEdit } = useContext(UpdateEditContext);
+  const { openNew, setOpenNew } = useContext(UpdateEditContext);
   const [name, setNome] = useState(selectedUser ? selectedUser.name : "");
   const [phone, setPhone] = useState(selectedUser ? selectedUser.phone : "");
   const [cpf, setCpf] = useState(selectedUser ? selectedUser.cpf : "");
   const [email, setEmail] = useState(selectedUser ? selectedUser.email : "");
-  const [password, setPassword] = useState(selectedUser ? selectedUser.password : "");
-  const [phoneWMask, setMask] = useState(selectedUser ? selectedUser.phone : "");
+  const [password, setPassword] = useState(
+    selectedUser ? selectedUser.password : ""
+  );
+  const [phoneWMask, setMask] = useState(
+    selectedUser ? selectedUser.phone : ""
+  );
   const [adress, setAddress] = useState("");
   const [id, setId] = useState(selectedUser ? selectedUser.id : "");
 
@@ -51,7 +54,7 @@ const TelaNovoTutor = (props) => {
     cpf: z.string().min(0),
     email: z.string().min(0),
     id: z.string().min(0),
-    adress: z.string().min(0)
+    adress: z.string().min(0),
   });
 
   const handleSubmit = async (e) => {
@@ -64,20 +67,20 @@ const TelaNovoTutor = (props) => {
         cpf,
         email,
         id: id,
-        adress
+        adress,
       });
-      if (selectedUser === null) {
+      if (selectedUser == null) {
+        console.log(selectedUser);
         postTutor(consulta);
-        setOpenNew(!openNew)
+        setOpenNew(!openNew);
         // window.location.reload();
       } else {
         PutTutor(consulta);
-        setOpenEdit(!openEdit)
-        window.location.reload();
+        setOpenEdit(!openEdit);
       }
     } catch (error) {
       console.error(error.errors);
-      console.log(selectedUser)
+      console.log(selectedUser);
     }
   };
 
@@ -90,17 +93,15 @@ const TelaNovoTutor = (props) => {
   };
 
   const phoneUnmask = (value) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/^(\d{2})(9\d{8})$/, "$1$2");
+    return value.replace(/\D/g, "").replace(/^(\d{2})(9\d{8})$/, "$1$2");
   };
 
   const handlePhone = (e) => {
     if (e.target.value.length < 15) {
-    setPhone(e.target.value);
-    setMask(e.target.value);
-  }
-};
+      setPhone(e.target.value);
+      setMask(e.target.value);
+    }
+  };
 
   return (
     <div className="p-14 w-full h-auto">
@@ -115,30 +116,22 @@ const TelaNovoTutor = (props) => {
               value={name}
             />
             <div className="flex flex-col mb-4">
-                  <label className="ml-4">
-                    Telefone
-                    <input
-                      type="text"
-                      onChange={handlePhone}
-                      value={phoneMask(phone)}
-                      className={` ${
-                        phone === ""
-                          ? "border-[#FF0000]"
-                          : "border-[#848484]"
-                      } 
+              <label className="ml-4">
+                Telefone
+                <input
+                  type="text"
+                  onChange={handlePhone}
+                  value={phoneMask(phone)}
+                  className={` ${
+                    phone === "" ? "border-[#FF0000]" : "border-[#848484]"
+                  } 
                 border rounded-md h-[40px] p-2 text-base`}
-                    />
-                  </label>
-                </div>
-
+                />
+              </label>
             </div>
-            <div className="gap-8 flex flex-col sm:grid sm:grid-cols-[1fr_1fr] md:gap-[10%]" >
-            <InputTutor
-              label="CPF"
-              type="text"
-              setter={setCpf}
-              value={cpf}
-            />
+          </div>
+          <div className="gap-8 flex flex-col sm:grid sm:grid-cols-[1fr_1fr] md:gap-[10%]">
+            <InputTutor label="CPF" type="text" setter={setCpf} value={cpf} />
             <InputTutor
               label="Email"
               type="email"
