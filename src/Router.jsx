@@ -13,31 +13,27 @@ import MostrarTutor from "./pages/MostrarTutor";
 import TelaNovoTutor from "./pages/TelaNovoTutor";
 import Prontuarios from "./pages/Prontuarios";
 import DetalhesProntuario from "./pages/DetalhesProntuario";
+import Login from "./pages/Login";
 
 export function Router() {
   return (
     <UserProvider>
       <Routes>
+        <Route path="login" element={<Login />} />
         <Route path="/" element={<DefaultLayout />}>
           <Route path="aluno" element={<Cadastro buttonName="Cadastrar"/>} />
           <Route path="calendario" element={<Calendar />} />
           <Route path="agendamento" element={<Agendamento />} />
           <Route path="criarconsulta" element={<NovaConsulta/>}/>
-          <Route
-            path="tutor"
-            element={<TelaNovoTutor buttonName="Confirmar" />}
-          />
+          <Route path="tutor" element={<TelaNovoTutor buttonName="Confirmar" />} />
           <Route path="agenda" element={<Agenda />} />
-          <Route
-            path="professor"
-            element={<Professor buttonName="Cadastrar" />}
-          />
+          <Route path="professor" element={<Professor buttonName="Cadastrar" />} />
           <Route path="showAluno" element={<MostrarAluno />} />
           <Route path="showProfessor" element={<MostrarProfessor />} />
           <Route path="criarconsulta" element={<NovaConsulta />} />
           <Route path="showTutor" element={<MostrarTutor />} />
           <Route path="prontuarios" element={<Prontuarios/>} />
-          <Route path="prontuarios/detalhes/:id" element={<DetalhesProntuario />}/>
+          <Route path="prontuarios/detalhes/:id" element={<DetalhesProntuario />} />
         </Route>
       </Routes>
     </UserProvider>
