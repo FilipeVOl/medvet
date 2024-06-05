@@ -9,10 +9,9 @@ import novoCadastro from '../images/novo-cadastro.svg'
 import agendamento from '../images/agendamento.svg'
 import cadastrados from '../images/cadastrados.svg'
 import { Link } from "react-router-dom";
-
 const Navbar = () => {
   return (
-    <div className='shadow-md max-w-72 min-w-72 h-[100] min-h-screen bg-[#007448] p-10 text-white-med fixed'>
+    <div className='shadow-md h-[100] min-h-screen bg-[#007448] p-10 text-white-med fixed top-28 max-w-72 min-w-72'>
       <div id="inicio" className='flex py-4'>
         <img src={house} className='pr-4 '/>
         <Link to="">Início</Link>
@@ -66,6 +65,10 @@ const Navbar = () => {
       <div id="criarConsulta" className='flex py-4 bg-[#007448]'>
         <img src={agendar} alt='criar consulta' className='pr-4'/>
         <Link to="criarconsulta">Criar Consulta</Link>
+      </div>
+      <div id='receita' className='flex py-4 bg-[#007448]'>
+      <img src={novoCadastro} alt='receita' className='pr-4'/>
+        <Link to="receita">Receitas</Link>
       </div>
     </div>
   )
