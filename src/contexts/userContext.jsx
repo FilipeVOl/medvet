@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 export const UserContext = createContext();
@@ -17,12 +17,17 @@ const defaultUser = {
   },
   obs: "Nenhuma observação",
 };
-
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(defaultUser);
-
+  const [token, setToken] = useState("");
+  useEffect(() => {
+    const userToken = localStorage.getItem("userToken");
+    if(userToken) {
+      setToken(userToken)
+    }
+  },[token]);
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, token, setToken }}>
       {children}
     </UserContext.Provider>
   );

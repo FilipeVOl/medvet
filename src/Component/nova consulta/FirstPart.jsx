@@ -24,6 +24,10 @@ export default function FirstPart(props) {
   // modal de adicionar receita
   // corrigir fontes dos autocompletes
   // ficar vermelho paciente, tutor e professor/médico quando não preenchido.
+
+  // SNACKBAR 
+  //Customization
+  //Use with Alerts
   const [data, setData] = useState(pagOne.data);
   const [paciente, setPaciente] = useState(pagOne.paciente);
   const [tutor, setTutor] = useState(pagOne.tutor);
