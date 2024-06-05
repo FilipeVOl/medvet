@@ -31,7 +31,7 @@ export default function Agenda() {
     return maskDate
   }
   return (
-    <main className="font-Montserrat !important">
+    <main className="font-Montserrat !important w-full">
       <section>
         <h1 className="text-2xl font-bold m-16">Agendamentos</h1>
       </section>

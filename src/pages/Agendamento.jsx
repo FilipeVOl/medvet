@@ -67,7 +67,7 @@ const Agendamento = () => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <Modal
         disableEscapeKeyDown
         open={open}

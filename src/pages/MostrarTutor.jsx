@@ -93,7 +93,7 @@ const MostrarTutor = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="container">
+      <div className="container w-full">
         <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
           Tutores cadastrados
         </h1>
