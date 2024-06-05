@@ -2,6 +2,7 @@ import { useState, createContext } from "react";
 import FirstPart from "../Component/nova consulta/FirstPart";
 import SecondPart from "../Component/nova consulta/secondPart";
 import ThirdPart from "../Component/nova consulta/ThirdPart";
+import Stepper from "../Component/nova consulta/Stepper";
 
 export const ConsultContext = createContext();
 const pagOneData = {
@@ -72,18 +73,21 @@ export default function NovaConsulta() {
     pagTh,
   };
   return (
-    <ConsultContext.Provider
-      value={{
-        pagOne,
-        setPagOne,
-        pagSec,
-        setPagSec,
-        pagTh,
-        setPagTh,
-        allPagesData,
-      }}
-    >
-      {handleSteps(steps, setSteps)}
-    </ConsultContext.Provider>
+    <div className="flex flex-col mt-16 w-full">
+      <ConsultContext.Provider
+        value={{
+          pagOne,
+          setPagOne,
+          pagSec,
+          setPagSec,
+          pagTh,
+          setPagTh,
+          allPagesData,
+        }}
+      >
+        {<Stepper stepsPage={steps}/>}
+        {handleSteps(steps, setSteps)}
+      </ConsultContext.Provider>
+    </div>
   );
 }

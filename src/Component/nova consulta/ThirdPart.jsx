@@ -96,7 +96,7 @@ export default function ThirdPart(props) {
   };
 
   return (
-    <div className="font-Montserrat p-28 w-full">
+    <div className="font-Montserrat w-full p-28">
       <div className="font-bold">
         <h1 className="text-[30px]">Exames</h1>
       </div>
