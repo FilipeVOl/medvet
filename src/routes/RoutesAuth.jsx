@@ -21,7 +21,8 @@ export default function RoutesAuth() {
   useEffect(() => {
     const userToken = localStorage.getItem("userToken");
     setToken(userToken)
-  }, [])
+  }, [setToken])
+
   return (
     <Routes>
       {token ? (

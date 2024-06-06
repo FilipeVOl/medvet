@@ -3,13 +3,15 @@ import logoUni from "../images/logo-uni.svg";
 import olho from "../images/olho.svg";
 import olhoFechado from "../images/eye-close.svg";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { postSessions } from "../services/users";
 import { useNavigate } from "react-router-dom";
 
 import Snackbar from "@mui/material/Snackbar";
+import { UserContext } from "../contexts/userContext";
 
 export default function Login() {
+  const { setToken, setUser } = useContext(UserContext)
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
   const [showPassword, setShowPassword] = useState(true);
@@ -28,7 +30,17 @@ export default function Login() {
     const verifyUser = await postSessions(sendUser);
     if (verifyUser) {
       localStorage.setItem("userToken", verifyUser.data.token);
-      navigate("/");
+      setToken(verifyUser.data.token);
+      const user = {
+        name: verifyUser.data.user.name,
+        data: new Date(),
+        role: verifyUser.data.user.role,
+        id: verifyUser.data.user.id,
+        token: verifyUser.data.token,
+      };
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user)
+      navigate("/home");
     } else {
       handleClick();
     }

@@ -4,11 +4,11 @@ import PropTypes from "prop-types";
 export const UserContext = createContext();
 
 const defaultUser = {
-  phone: "",
-  paciente: "Moccha",
-  tutor: "Thiago",
+  name: "",
   data: "16042004",
-  obs: "Nenhuma observação",
+  role: "",
+  id: "",
+  token: "",
 };
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(defaultUser);
