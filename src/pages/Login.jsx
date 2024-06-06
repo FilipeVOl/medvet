@@ -11,7 +11,7 @@ import Snackbar from "@mui/material/Snackbar";
 import { UserContext } from "../contexts/userContext";
 
 export default function Login() {
-  const { setToken, setUser } = useContext(UserContext)
+  const { setToken, setUser, user } = useContext(UserContext)
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
   const [showPassword, setShowPassword] = useState(true);
@@ -38,8 +38,8 @@ export default function Login() {
         id: verifyUser.data.user.id,
         token: verifyUser.data.token,
       };
-      localStorage.setItem("user", JSON.stringify(user));
       setUser(user)
+      localStorage.setItem("user", JSON.stringify(user));
       navigate("/home");
     } else {
       handleClick();

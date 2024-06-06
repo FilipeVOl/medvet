@@ -8,15 +8,17 @@ const defaultUser = {
   data: "16042004",
   role: "",
   id: "",
-  token: "",
 };
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(defaultUser);
   const [token, setToken] = useState("");
   useEffect(() => {
     const userToken = localStorage.getItem("userToken");
+    const user = localStorage.getItem("user")
+    const userObj = JSON.parse(user);
     if(userToken) {
       setToken(userToken)
+      setUser(userObj)
     }
   },[token]);
   return (

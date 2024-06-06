@@ -15,12 +15,16 @@ import DetalhesProntuario from "../pages/DetalhesProntuario";
 import Login from "../pages/Login";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../contexts/userContext";
+import decodedToken from "../middlewares/verifyJwt";
 
 export default function RoutesAuth() {
-  const { token, setToken } = useContext(UserContext)
+  const { token, setToken, setUser } = useContext(UserContext)
   useEffect(() => {
     const userToken = localStorage.getItem("userToken");
-    setToken(userToken)
+    console.log(decodedToken(token))
+    setToken(userToken);
+    const user = localStorage.getItem("user");
+    setUser(user);
   }, [setToken])
 
   return (

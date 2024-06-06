@@ -24,6 +24,8 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "@mui/x-data-grid": "^7.3.0",
     "axios": "^1.6.8",
+    "jose": "^5.4.0",
+    "jsonwebtoken": "^9.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.2",
