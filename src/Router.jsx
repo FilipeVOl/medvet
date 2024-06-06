@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Cadastro from "./pages/Cadastro";
 import Agendamento from "./pages/Agendamento";
-import Professor from "./pages/professor";
+import Professor from "./pages/Professor";
 import NovaConsulta from "./pages/NovaConsulta";
 import { DefaultLayout } from "./layouts/DefaultLayout";
 import { UserProvider } from "./contexts/userContext";

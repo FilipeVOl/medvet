@@ -5,6 +5,10 @@ import { getAllAnimals, getAnimalBySequenceOrName } from "../services/animals";
 import Pagination from "@mui/material/Pagination";
 import { getAnimalsByTutorName } from "../services/tutores";
 
+//melhorias
+//paginação condicional, vir da rota do back um valor com as páginas.
+//buscar por nome do prontuário, agora está pelo número do paciente.
+
 export default function Prontuarios() {
   const [namePacient, setNamePacient] = useState("");
   const [nameTutor, setNameTutor] = useState("");
@@ -62,16 +66,19 @@ export default function Prontuarios() {
           placeHolder="Nome do Paciente"
           valueInput={namePacient}
           handleFilter={filterByAnimalName}
+          type={'text'}
         />
         <FilterInput
           placeHolder="Nome do Tutor"
           valueInput={nameTutor}
           handleFilter={filtersByTutorName}
+          type={'text'}
         />
         <FilterInput
           placeHolder="Nº do Paciente"
           valueInput={numberPront}
           handleFilter={filterByAnimalSequence}
+          type={'number'}
         />
       </div>
       <div className="grid grid-cols-5 grid-rows-2 gap-8 rounded-lg ml-16 mr-16">
