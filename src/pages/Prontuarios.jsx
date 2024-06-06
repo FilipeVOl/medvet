@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import FilterInput from "../Component/Prontuarios/FilterInput";
 import { Link } from "react-router-dom";
-import { getAllAnimals, getAnimalBySequence } from "../services/animals";
+import { getAllAnimals, getAnimalBySequenceOrName } from "../services/animals";
 import Pagination from "@mui/material/Pagination";
-import { getTutoresByName } from "../services/tutores";
+import { getAnimalsByTutorName } from "../services/tutores";
 
 export default function Prontuarios() {
   const [namePacient, setNamePacient] = useState("");
@@ -34,16 +34,24 @@ export default function Prontuarios() {
       firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
     return capitalizedFirstName.substring(0, 10);
   };
+
   //rota de pegar animais pelo nome
-  const filtersByTutorName = (value) => {
+  const filtersByTutorName = async (value) => {
     setNameTutor(value);
-    getTutoresByName(setProntuarios, value);
+    const data = await getAnimalsByTutorName(value);
+    setProntuarios(data)
   };
-  const filterByAnimalName = (value) => {
+
+  const filterByAnimalSequence = (value) => {
     setNumberPront(value);
-    const e = getAnimalBySequence((i) => console.log(i), value);
-    console.log(e);
+    getAnimalBySequenceOrName(setProntuarios, value)
   };
+
+  const filterByAnimalName = (value) => {
+    setNamePacient(value);
+    getAnimalBySequenceOrName(setProntuarios, value)
+  };
+
   return (
     <div className="font-Montserrat w-full p-28 flex flex-col">
       <div id="header">
@@ -53,7 +61,7 @@ export default function Prontuarios() {
         <FilterInput
           placeHolder="Nome do Paciente"
           valueInput={namePacient}
-          handleFilter={setNamePacient}
+          handleFilter={filterByAnimalName}
         />
         <FilterInput
           placeHolder="Nome do Tutor"
@@ -61,9 +69,9 @@ export default function Prontuarios() {
           handleFilter={filtersByTutorName}
         />
         <FilterInput
-          placeHolder="Nº do Prontuário"
+          placeHolder="Nº do Paciente"
           valueInput={numberPront}
-          handleFilter={filterByAnimalName}
+          handleFilter={filterByAnimalSequence}
         />
       </div>
       <div className="grid grid-cols-5 grid-rows-2 gap-8 rounded-lg ml-16 mr-16">

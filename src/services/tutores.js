@@ -71,3 +71,18 @@ export const getAnimalsAndTutorByTutorName = (set, name) => {
       return error
     });
 }
+
+export const getAnimalsByTutorName = async (name) => {
+  try {
+    const { data} = await axios.get(`http://localhost:3333/get/animal/tutor/name/${name}`);
+    return data.map((item) => {
+      return item.animals.map((animal) => ({
+        tutor_name: item.name,
+        animal_name: animal.name,
+        animal_id: animal.id,
+      }));
+    }).flat();
+  } catch (error) {
+    console.error(error);
+  }
+}

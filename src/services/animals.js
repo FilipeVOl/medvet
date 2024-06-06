@@ -36,11 +36,11 @@ export const getAnimalByName = async (set, name) => {
     }
 }
 
-export const getAnimalBySequence = async (set, sequence) => {
+export const getAnimalBySequenceOrName = async (set, q) => {
     try {
-        const { data } = await axios.get(`http://localhost:3333/get/animal/sequence/${sequence}`);
+        const { data } = await axios.get(`http://localhost:3333/search/animal?q=${q}`);
         //mudar pra deixar igual a lógica 
-        set([data])
+        set(data);
     } catch(e) {
         return null
     }
