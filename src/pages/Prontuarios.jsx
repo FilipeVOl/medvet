@@ -8,6 +8,7 @@ import { getAnimalsByTutorName } from "../services/tutores";
 //melhorias
 //paginação condicional, vir da rota do back um valor com as páginas.
 //buscar por nome do prontuário, agora está pelo número do paciente.
+//verificar paginação com as novas rotas
 
 export default function Prontuarios() {
   const [namePacient, setNamePacient] = useState("");
