@@ -1,7 +1,9 @@
 import { useContext, useState, useEffect } from "react";
-import { Input, InputLabel } from "@mui/material";
+import { Input, InputLabel, TextField } from "@mui/material";
 import AddIcon from "../assets/add.svg";
 import { PrescContext } from "../contexts/prescContext";
+import { getAnimalsAndTutorByTutorName, getTutores } from "../services/tutores";
+import Autocomplete from "@mui/material/Autocomplete";
 
 export const InputReceita = ({
   label,
@@ -10,10 +12,45 @@ export const InputReceita = ({
   descrValue,
   requireVal,
   handleButton,
+  isTutor,
+  arrTutores,
+  setArr,
 }) => {
   const handleChanges = (e) => {
     setter(e.target.value);
   };
+
+  if (isTutor) {
+    return (
+      <div className="flex flex-col mb-4">
+        <InputLabel className="ml-4">{label}</InputLabel>
+        <Autocomplete
+          freeSolo
+          disableClearable
+          onChange={(_e, newValue) => {
+            setter(newValue);
+            getAnimalsAndTutorByTutorName(setArr, newValue);
+            setPaciente("");
+          }}
+          options={arrTutores.map((option) => option.name)}
+          value={value}
+          renderInput={(params) => (
+            <TextField
+              onChange={(e) => {
+                setter(e.target.value);
+                getAnimalsAndTutorByTutorName(setArr, e.target.value);
+              }}
+              {...params}
+              InputProps={{
+                ...params.InputProps,
+                type: "search",
+              }}
+            />
+          )}
+        ></Autocomplete>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col mb-4">
@@ -47,6 +84,7 @@ export const Receita = () => {
   const [unidade, setUnidade] = useState("");
   const [medicacao, setMedicacao] = useState("");
   const [descricao, setDescricao] = useState("");
+  const [tutores, setTutores] = useState([]);
   const [required, setRequired] = useState({
     paciente: false,
     tutor: false,
@@ -65,15 +103,15 @@ export const Receita = () => {
     paciente,
     tutor,
     species,
-    raca, 
+    raca,
     sexo,
     idade,
-    peso, 
+    peso,
     id,
     unidade,
     medicacao,
     descricao,
-  }
+  };
 
   const validateTrue = (chaves) => {
     let obj = { ...required };
@@ -87,20 +125,20 @@ export const Receita = () => {
   };
 
   const validateInputs = () => {
-    const keys = Object.keys(fullfillValidate)
-    const values = Object.values(fullfillValidate)
-    let validation = false
-    let obj = { ...required }
+    const keys = Object.keys(fullfillValidate);
+    const values = Object.values(fullfillValidate);
+    let validation = false;
+    let obj = { ...required };
     values.map((e, index) => {
-      if (e == '') {
-        const chaves = keys[index]
+      if (e == "") {
+        const chaves = keys[index];
         obj[chaves] = true;
-        validation = true
+        validation = true;
       }
-    })
-    setRequired(obj)
-    return validation
-  }
+    });
+    setRequired(obj);
+    return validation;
+  };
 
   const addMedicamento = () => {
     const array = [...medicamentos];
@@ -121,30 +159,17 @@ export const Receita = () => {
     setMedicamentos(array);
   };
 
-  useEffect(() => {
-  }, [medicamentos]);
-
-  // const InputAutocomplete = ({ tutors }) => {
-  //   return (
-  //     <div>
-  //       <input list="tutors" />
-  //       <datalist id="tutors">
-  //         {tutors.map((tutor, index) => (
-  //           <option key={index} value={tutor.name} />
-  //         ))}
-  //       </datalist>
-  //     </div>
-  //       )
+  useEffect(() => {}, [medicamentos]);
 
   const handleSubmit = () => {
-    const validacaoCampos = validateInputs()
+    const validacaoCampos = validateInputs();
     if (validacaoCampos) {
       window.scrollTo({
         top: 0,
         left: 0,
         behavior: "smooth",
       });
-      return
+      return;
     }
 
     let isEmpty = false;
@@ -192,10 +217,13 @@ export const Receita = () => {
           <InputReceita
             label="Tutor"
             setter={setTutor}
+            arrTutores={tutores}
+            setArr={setTutores}
             value={tutor}
             descrValue="tutor"
             requireVal={required.tutor}
             handleButton={validateTrue}
+            isTutor
           />
         </div>
         <div className="grid grid-cols-3 gap-4">
@@ -368,7 +396,8 @@ export const Receita = () => {
                       required.descricao
                         ? "outline-red-600 border-red-500"
                         : "outline-gray-input"
-                    } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}                  ></input>
+                    } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}
+                  ></input>
                 </label>
               </div>
             </form>
