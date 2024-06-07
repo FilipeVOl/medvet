@@ -8,7 +8,16 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: './src/tests/setup.js'
+    setupFiles: './src/tests/setup.js',
+    reporters: ['html'],
+    coverage: {
+      provider: 'istanbul', // or 'v8'
+      reporter: ['html'],
+      reportsDirectory: './coverage',
+      extension: ['ts', 'tsx', 'js', 'jsx'],
+      enabled: true,
+      include: './src/tests/agendamentos.spec.js',
+    },
   }
 
 })

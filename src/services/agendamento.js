@@ -9,15 +9,13 @@ async function CreateConsult(consulta) {
   }
 }
 
-function ConsultTutorExist(id, consult) {
-  axios
-    .post(`http://localhost:3333/create/consults/${id}`, consult)
-    .then((response) => {
-      console.log(response)
-    })
-    .catch((error) => {
-      console.error("Error fetching number:", error);
-    })
+async function ConsultTutorExist(id, consult) {
+  try {
+    const data  = await axios.post(`http://localhost:3333/create/consults/${id}`, consult)
+    return data
+  } catch (e) {
+    console.log(e, 'FETCH ERRO: criar consulta');
+  }
 }
 
 async function getConsults(setOne, setTwo) {
@@ -31,4 +29,4 @@ async function getConsults(setOne, setTwo) {
 }
 }
 
-export { CreateConsult, ConsultTutorExist, getConsults }
+export { CreateConsult, ConsultTutorExist, getConsults };
