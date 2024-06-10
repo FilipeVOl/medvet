@@ -76,6 +76,16 @@ export const getAnimalsAndTutorByTutorName = (set, name) => {
     });
 }
 
+export const getAnimalsReceipt = async (setOne, setTwo, name) => {
+  try {
+    const {data } = await axios.get(`http://localhost:3333/get/animal/tutor/name/${name}`);
+    setOne(data);
+    setTwo(data[0].animals);
+  } catch (error) {
+    console.error("Error fetching animals:", error);
+  }
+}
+
 export const PutTutor = (att) => {
     axios
       .put("http://localhost:3333/put/tutor", att)

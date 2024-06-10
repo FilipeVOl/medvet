@@ -19,6 +19,7 @@ export default {
         'gray-input': '#9F9F9F',
         'remove': '#D03939',
         'gray-button': '#9F9F9F',
+        'mui': '#00000099'
       },
       backgroundImage: {
         search: "url('../images/search.png)",

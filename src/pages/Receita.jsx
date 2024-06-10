@@ -1,8 +1,8 @@
 import { useContext, useState, useEffect } from "react";
-import { Input, InputLabel, TextField } from "@mui/material";
+import { Input, InputLabel, TextField, createTheme } from "@mui/material";
 import AddIcon from "../assets/add.svg";
 import { PrescContext } from "../contexts/prescContext";
-import { getAnimalsAndTutorByTutorName, getTutores } from "../services/tutores";
+import { getAnimalsAndTutorByTutorName, getTutores, getAnimalsReceipt } from "../services/tutores";
 import Autocomplete from "@mui/material/Autocomplete";
 
 export const InputReceita = ({
@@ -13,32 +13,42 @@ export const InputReceita = ({
   requireVal,
   handleButton,
   isTutor,
+  isPaciente,
   arrTutores,
-  setArr,
+  arrPacientes,
+  setArrTutor,
+  setArrPaci,
+  setSpecies,
+  setRaca,
+  setSexo,
+  setIdade,
+  setPeso,
+  setId,
 }) => {
   const handleChanges = (e) => {
     setter(e.target.value);
   };
 
+  const [animalSelecionado, setAnimalSelecionado] = useState(true);
+
   if (isTutor) {
     return (
-      <div className="flex flex-col mb-4">
-        <InputLabel className="ml-4">{label}</InputLabel>
+      <label htmlFor="free-solo-2-demo " className="grow text-mui">
+        Tutor
         <Autocomplete
           freeSolo
           disableClearable
+          id="free-solo-2-demo"
           onChange={(_e, newValue) => {
             setter(newValue);
-            getAnimalsAndTutorByTutorName(setArr, newValue);
-            setPaciente("");
+            getAnimalsReceipt(setArrTutor, setArrPaci, newValue);
           }}
           options={arrTutores.map((option) => option.name)}
-          value={value}
           renderInput={(params) => (
             <TextField
               onChange={(e) => {
                 setter(e.target.value);
-                getAnimalsAndTutorByTutorName(setArr, e.target.value);
+                getAnimalsAndTutorByTutorName(setArrTutor, e.target.value);
               }}
               {...params}
               InputProps={{
@@ -47,8 +57,37 @@ export const InputReceita = ({
               }}
             />
           )}
-        ></Autocomplete>
-      </div>
+        />
+      </label>
+    );
+  }
+
+  if (isPaciente) {
+    return (
+      <label htmlFor="free-solo-2-demo" className="grow text-mui">
+        Paciente
+        <Autocomplete
+          freeSolo
+          id="free-solo-2-demo"
+          disableClearable
+          onChange={(_e, newValue) => {
+            setter(newValue);
+          }}
+          options={arrPacientes.map((option) => option.name)}
+          renderInput={(params) => (
+            <TextField
+              onChange={(e) => {
+                setter(e.target.value);
+              }}
+              {...params}
+              InputProps={{
+                ...params.InputProps,
+                type: "search",
+              }}
+            />
+          )}
+        />
+      </label>
     );
   }
 
@@ -57,6 +96,7 @@ export const InputReceita = ({
       <InputLabel className="ml-4">{label}</InputLabel>
       <Input
         type="text"
+        variant="outlined"
         onChange={handleChanges}
         onClick={() => handleButton(descrValue)}
         value={value}
@@ -85,6 +125,7 @@ export const Receita = () => {
   const [medicacao, setMedicacao] = useState("");
   const [descricao, setDescricao] = useState("");
   const [tutores, setTutores] = useState([]);
+  const [pacientes, setPacientes] = useState([]);
   const [required, setRequired] = useState({
     paciente: false,
     tutor: false,
@@ -98,6 +139,10 @@ export const Receita = () => {
     medicacao: false,
     descricao: false,
   });
+
+  useEffect(() => {
+    getAnimalsReceipt(setTutores, setPacientes, "")
+  }, []);
 
   const fullfillValidate = {
     paciente,
@@ -204,26 +249,39 @@ export const Receita = () => {
       <h1 className="p-14 h-10 text-2xl font-bold">Receita</h1>
       <p className="text-xl px-20 py-8">Identificação</p>
       <form className="px-24">
-        <div className="grid grid-cols-2 gap-4">
-          <InputReceita
-            label="Paciente"
-            setter={setPaciente}
-            value={paciente}
-            descrValue="paciente"
-            requireVal={required.paciente}
-            handleButton={validateTrue}
-          />
-
+        <div className="grid grid-cols-2 gap-4 mb-4">
           <InputReceita
             label="Tutor"
             setter={setTutor}
             arrTutores={tutores}
-            setArr={setTutores}
+            setArrTutor={setTutores}
+            setArrPaci={setPacientes}
+
             value={tutor}
             descrValue="tutor"
             requireVal={required.tutor}
             handleButton={validateTrue}
             isTutor
+          />
+
+          <InputReceita
+            label="Paciente"
+            setter={setPaciente}
+            arrTutores={tutores}
+            arrPacientes={pacientes}
+            setArrTutor={setTutores}
+            setArrPaci={setPacientes}
+            setSpecies={setSpecies}
+            setRaca={setRaca}
+            setSexo={setSexo}
+            setPeso={setPeso}
+            setIdade={setIdade}
+            setId={setId}
+            value={paciente}
+            descrValue="paciente"
+            requireVal={required.paciente}
+            handleButton={validateTrue}
+            isPaciente
           />
         </div>
         <div className="grid grid-cols-3 gap-4">
