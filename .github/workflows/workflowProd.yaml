@@ -1,9 +1,9 @@
-name: Tests Integration
+name: Continuos Integration
 
 on: pull_request
 
 jobs:
- testes-integration:
+ continuos-integration:
     runs-on: ubuntu-latest
 
     steps:
