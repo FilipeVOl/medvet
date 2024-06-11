@@ -14,6 +14,6 @@ jobs:
         node-version: 21.
     - name: run install, build and test
       run: |
-        npm install
-        npm start
-        npm test
+        npm run install
+        npm run dev
+        npm run test
