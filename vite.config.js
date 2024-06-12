@@ -11,11 +11,6 @@ export default defineConfig({
     setupFiles: './src/tests/setup.js',
     coverage: {
       provider: 'istanbul', // or 'v8'
-      reporter: ['html'],
-      reportsDirectory: './coverage',
-      extension: ['ts', 'tsx', 'js', 'jsx'],
-      enabled: true,
-      include: './src/tests/agendamentos.spec.js',
     },
   }
 

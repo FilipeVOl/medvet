@@ -4,13 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "CI=false && vite",
+    "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest --no-watch",
-    "coverage": "vitest --coverage",
-    "vitest-ui": "vitest --ui"
+    "coverage": "vitest run --coverage",
+    "vitest-ui": "vitest --ui",
+    "dev-test": "vitest"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",

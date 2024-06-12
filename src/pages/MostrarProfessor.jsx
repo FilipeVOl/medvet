@@ -17,7 +17,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import axios from 'axios';
-import Professor from './professor';
+import Professor from './Professor';
 import { getProfessores } from '../services/professores';
 
 const style = {

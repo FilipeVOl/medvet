@@ -19,7 +19,7 @@ import Box from "@mui/material/Box";
 import Cadastro from "./Cadastro";
 import axios from "axios";
 import { useEffect } from "react";
-import { filterReg, getAluno, PutAluno } from "../services/alunos";
+import { getAluno, PutAluno } from "../services/alunos";
 import { postAluno } from "../utils/MostrarAluno.utils";
 
 const style = {
@@ -112,9 +112,6 @@ const MostrarAluno = () => {
               placeholder="N° de matricula"
               name="searchRegist"
               type="text"
-              onChange={({ target }) =>
-                filterReg(target.value, setRegistration)
-              }
               className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
             />
 

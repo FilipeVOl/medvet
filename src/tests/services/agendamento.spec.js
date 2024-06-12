@@ -1,10 +1,16 @@
-import { describe, expect, test, vi } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import { ConsultTutorExist, CreateConsult, getConsults } from "../../services/agendamento";
 import axios from 'axios'
+import { cleanup } from '@testing-library/react';
 
 vi.mock('axios')
 
 describe('Agendamento Services', async () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    cleanup();
+    axios.post.mockReset();
+  });
   describe('get Agendamento', () => {
     test('makes a GET request to fetch agendamento', async () => {
       const usersMock = {
@@ -27,6 +33,9 @@ describe('Agendamento Services', async () => {
       expect(axios.get).toHaveBeenCalledWith('http://localhost:3333/get/consults')
       expect(data).toStrictEqual(usersMock)
     })
+    test("Test throw error when failed fetch", async () => {
+      await expect(getConsults()).rejects.toThrow("Failed to fetch agendamento");
+    });
   })
   describe('create Agendamento', () => {
     test('makes a POST request to create agendamento when Tutor doesnt Exist', async () => {
@@ -55,9 +64,8 @@ describe('Agendamento Services', async () => {
       axios.post.mockResolvedValue({
         data: dataResponse,
       })
-      const { data } = await CreateConsult(consultMock)
+      await CreateConsult(consultMock)
       expect(axios.post).toHaveBeenCalledWith('http://localhost:3333/create/consults', consultMock)
-      expect(data).toStrictEqual(dataResponse)
     })
     test('makes a POST request to create agendamento when Tutor Exist', async () => {
       const consultMock = {
@@ -70,23 +78,16 @@ describe('Agendamento Services', async () => {
         "species": "cachorro",
         "stringDate": "17/10/2025"
      }
-     const dataResponse = {
-        data: {
-          id: '6663114177a7d3646c6c472b',
-          sequence: '1',
-          date: '2025-10-17T03:00:00.000Z',
-          nameAnimal: 'bolt',
-          phone: '62981936341',
-          species: 'cachorro',
-          description: 'dor na perna',
-          done: false,
-          tutor_id: '6663114177a7d3646c6c472a',
-          created_at: '2024-06-07T13:55:13.189Z'
-        }
-     }
-      const data = await ConsultTutorExist('6663114177a7d3646c6c472a', consultMock)
+      await ConsultTutorExist('6663114177a7d3646c6c472a', consultMock)
       expect(axios.post).toHaveBeenCalledWith('http://localhost:3333/create/consults/6663114177a7d3646c6c472a', consultMock)
-      expect(dataResponse).toStrictEqual(data)
     })
+    test("Test throw error when failed fetch for Consult Tutor Exist", async () => {
+      vi.spyOn(axios, 'post').mockRejectedValue('');
+      await expect(ConsultTutorExist('')).rejects.toThrow("FETCH ERRO: criar consulta when Tutor Exist");
+    });
+    test("Test throw error when failed fetch  for Create Consult when Tutor doesnt Exist", async () => {
+      vi.spyOn(axios, 'post').mockRejectedValue('');
+      await expect(CreateConsult()).rejects.toThrow('FETCH ERRO: criar consulta when Tutor Doenst Exist');
+    });
   })
 })

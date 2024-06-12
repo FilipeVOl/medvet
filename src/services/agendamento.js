@@ -5,7 +5,7 @@ async function CreateConsult(consulta) {
       const data = await axios.post("http://localhost:3333/create/consults", consulta)
       return data;
   } catch (e) {
-      console.log(e, 'FETCH ERRO: criar consulta');
+      throw new Error('FETCH ERRO: criar consulta when Tutor Doenst Exist');
   }
 }
 
@@ -14,7 +14,7 @@ async function ConsultTutorExist(id, consult) {
     const data  = await axios.post(`http://localhost:3333/create/consults/${id}`, consult)
     return data
   } catch (e) {
-    console.log(e, 'FETCH ERRO: criar consulta');
+    throw new Error('FETCH ERRO: criar consulta when Tutor Exist');
   }
 }
 
@@ -25,7 +25,7 @@ async function getConsults(setOne, setTwo) {
     setTwo(data);
     return data
 } catch (e) {
-    console.log(e, 'Agendamento FETCH ERRO');
+  throw new Error('Failed to fetch agendamento');
 }
 }
 
