@@ -7,7 +7,7 @@ export default function Agenda() {
   const [alteredAgenda, setAlteredAgenda] = useState([]);
   const [nome, setNome] = useState('');
   useEffect(() => {
-    getConsults(setAgenda, setAlteredAgenda)
+  getConsults(setAgenda, setAlteredAgenda)
   }, []);
   const consultasFiltradas = (() => {
     const dateAlt = Object.keys(agenda).reduce((acc, key) => {
