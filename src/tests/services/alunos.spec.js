@@ -14,7 +14,7 @@ describe("Alunos Services", async () => {
   });
   describe("error get Alunos", () => {
     test("error log", async () => {
-      await expect(getAluno()).rejects.toThrow("Failed to fetch");
+      await expect(getAluno()).rejects.toThrow("Failed to get All Students");
     });
   });
   describe("get Alunos", () => {

@@ -8,7 +8,7 @@ const getAluno = async (setData) => {
     setData(data);
     return data;
   } catch (e) {
-    throw new Error('Failed to fetch');
+    throw new Error('Failed to get All Students');
   }
 };
 
