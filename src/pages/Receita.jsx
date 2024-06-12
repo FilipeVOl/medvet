@@ -1,6 +1,10 @@
 import { useContext, useState, useEffect } from "react";
 import { Input, InputLabel, TextField, createTheme } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 import AddIcon from "../assets/add.svg";
+import IconButton from "@mui/material/IconButton";
 import { PrescContext } from "../contexts/prescContext";
 import {
   getAnimalsAndTutorByTutorName,
@@ -76,6 +80,7 @@ export const InputReceita = ({
           onChange={(_e, newValue) => {
             setter(newValue);
             const filter = arrPacientes.filter((e) => e.name === newValue);
+            console.log(filter)
             setSpecies(filter[0].species);
             setRaca(filter[0].race);
             setSexo(filter[0].gender);
@@ -120,9 +125,8 @@ export const InputReceita = ({
 };
 
 export const Receita = () => {
-  const { page, setPage } = useContext(PrescContext);
-  const { medicamentos, setMedicamentos } = useContext(PrescContext);
-  const [paciente, setPaciente] = useState("");
+  const { medications, setMedications } = useContext(PrescContext);
+  const [animal_id, setAnimal] = useState("");
   const [tutor, setTutor] = useState("");
   const [species, setSpecies] = useState("");
   const [raca, setRaca] = useState("");
@@ -130,15 +134,11 @@ export const Receita = () => {
   const [idade, setIdade] = useState("");
   const [peso, setPeso] = useState("");
   const [id, setId] = useState("");
-  const [uso, setUso] = useState("");
-  const [farmacia, setFarmacia] = useState("");
-  const [unidade, setUnidade] = useState("");
-  const [medicacao, setMedicacao] = useState("");
-  const [descricao, setDescricao] = useState("");
+  const [openModal, setOpenModal] = useState(!open);
   const [tutores, setTutores] = useState([]);
   const [pacientes, setPacientes] = useState([]);
   const [required, setRequired] = useState({
-    paciente: false,
+    animal_id: false,
     tutor: false,
     species: false,
     raca: false,
@@ -146,19 +146,23 @@ export const Receita = () => {
     idade: false,
     peso: false,
     id: false,
-    unidade: false,
-    medicacao: false,
-    descricao: false,
+    unit: false,
+    measurement: false,
+    description: false,
   });
+
+  const handleButtonClick = () => {
+    setOpenModal(!openModal);
+  };
 
   useEffect(() => {
     getAnimalsReceipt(setTutores, setPacientes, "");
   }, []);
 
-  useEffect(() => {}, [required.unidade]);
+  useEffect(() => {}, [medications]);
 
   const fullfillValidate = {
-    paciente,
+    animal_id,
     tutor,
     species,
     raca,
@@ -180,12 +184,11 @@ export const Receita = () => {
   };
 
   const validateInputs = () => {
-    medicamentos.forEach((e) => {
+    medications.forEach((e) => {
       Object.entries(e).forEach(([key, value]) => {
         fullfillValidate[key] = value;
-      })
-    })
-    console.log(fullfillValidate)
+      });
+    });
     const keys = Object.keys(fullfillValidate);
     const values = Object.values(fullfillValidate);
     let validation = false;
@@ -203,25 +206,23 @@ export const Receita = () => {
   };
 
   const addMedicamento = () => {
-    const array = [...medicamentos];
+    const array = [...medications];
     const obj = {
-      uso: "",
+      use_type: "",
       farmacia: "",
       unidade: "",
       medicacao: "",
       descricao: "",
     };
     array.push(obj);
-    setMedicamentos(array);
+    setMedications(array);
   };
 
   const handleMedicamento = (arr, index, valor, key) => {
     const array = [...arr];
     array[index] = { ...array[index], [key]: valor };
-    setMedicamentos(array);
+    setMedications(array);
   };
-
-  useEffect(() => {}, [medicamentos]);
 
   const handleSubmit = () => {
     const validacaoCampos = validateInputs();
@@ -231,34 +232,23 @@ export const Receita = () => {
         left: 0,
         behavior: "smooth",
       });
+    } else {
+      handleButtonClick();
+      console.log(data)
       return;
     }
+  };
 
-    let isEmpty = false;
-
-    medicamentos.forEach((medicamento, index) => {
-      Object.entries(medicamento).forEach(([key, value]) => {
-        if (!value) {
-          isEmpty = false;
-          console.log(`O campo ${key} do medicamento ${index + 1} está vazio`);
-        }
-      });
-    });
-
-    if (isEmpty) {
-      return;
-    }
-    const data = {
-      paciente,
-      tutor,
-      species,
-      raca,
-      sexo,
-      idade,
-      peso,
-      id,
-      medicamentos,
-    };
+  const data = {
+    animal_id,
+    tutor,
+    species,
+    raca,
+    sexo,
+    idade,
+    peso,
+    id,
+    medications,
   };
 
   return (
@@ -282,7 +272,7 @@ export const Receita = () => {
 
           <InputReceita
             label="Paciente"
-            setter={setPaciente}
+            setter={setAnimal}
             arrTutores={tutores}
             arrPacientes={pacientes}
             setArrTutor={setTutores}
@@ -293,9 +283,9 @@ export const Receita = () => {
             setPeso={setPeso}
             setIdade={setIdade}
             setId={setId}
-            value={paciente}
-            descrValue="paciente"
-            requireVal={required.paciente}
+            value={animal_id}
+            descrValue="animal_id"
+            requireVal={required.animal_id}
             handleButton={validateTrue}
             isPaciente
           />
@@ -356,7 +346,7 @@ export const Receita = () => {
 
       <p className="text-xl px-20 py-8">Medicação</p>
       <div>
-        {medicamentos.map((e, index) => {
+        {medications.map((e, index) => {
           return (
             <form
               key={index}
@@ -366,13 +356,13 @@ export const Receita = () => {
                 <label>
                   Uso
                   <select
-                    value={e.uso}
+                    value={e.use_type}
                     onChange={(e) =>
                       handleMedicamento(
-                        medicamentos,
+                        medications,
                         index,
                         e.target.value,
-                        "uso"
+                        "use_type"
                       )
                     }
                     className="border flex-col flex w-full rounded-md h-[46px] grow p-2 text-base border-border-gray"
@@ -390,13 +380,13 @@ export const Receita = () => {
                 <label>
                   Farmácia
                   <select
-                    value={e.farmacia}
+                    value={e.pharmacy}
                     onChange={(e) =>
                       handleMedicamento(
-                        medicamentos,
+                        medications,
                         index,
                         e.target.value,
-                        "farmacia"
+                        "pharmacy"
                       )
                     }
                     className="border flex-col grow flex w-full rounded-md h-[46px] p-2 text-base border-border-gray"
@@ -409,18 +399,18 @@ export const Receita = () => {
                 <label>
                   Unidade (qt.)
                   <input
-                    value={e.unidade}
-                    onClick={() => validateTrue("unidade")}
+                    value={e.unit}
+                    onClick={() => validateTrue("unit")}
                     onChange={(e) =>
                       handleMedicamento(
-                        medicamentos,
+                        medications,
                         index,
                         e.target.value,
-                        "unidade"
+                        "unit"
                       )
                     }
                     className={`${
-                      required.unidade
+                      required.unit
                         ? "outline-red-600 border-red-500"
                         : "outline-gray-input"
                     } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}
@@ -433,18 +423,18 @@ export const Receita = () => {
                   Medicação
                   <input
                     label="Medicação"
-                    value={e.medicacao}
-                    onClick={() => validateTrue("medicacao")}
+                    value={e.measurement}
+                    onClick={() => validateTrue("measurement")}
                     onChange={(e) =>
                       handleMedicamento(
-                        medicamentos,
+                        medications,
                         index,
                         e.target.value,
-                        "medicacao"
+                        "measurement"
                       )
                     }
                     className={`${
-                      required.medicacao
+                      required.measurement
                         ? "outline-red-600 border-red-500"
                         : "outline-gray-input"
                     } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}
@@ -456,18 +446,18 @@ export const Receita = () => {
                 <label>
                   Descrição (Posologia)
                   <input
-                    value={e.descricao}
-                    onClick={() => validateTrue("descricao")}
+                    value={e.description}
+                    onClick={() => validateTrue("description")}
                     onChange={(e) =>
                       handleMedicamento(
-                        medicamentos,
+                        medications,
                         index,
                         e.target.value,
-                        "descricao"
+                        "description"
                       )
                     }
                     className={`${
-                      required.descricao
+                      required.description
                         ? "outline-red-600 border-red-500"
                         : "outline-gray-input"
                     } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}
@@ -500,6 +490,29 @@ export const Receita = () => {
         >
           Confirmar
         </button>
+      </div>
+      <div>
+        <Modal
+          open={openModal}
+          aria-labelledby="modal-modal-deletetitle"
+          aria-describedby="modal-modal-description2"
+        >
+          <Box id="box-modal-pag1">
+            <Typography
+              id="modal-modal-deletetitle"
+              variant="h6"
+              component="h1"
+            >
+              Consulta Criada
+              <p id="descri-modal">Consulta Criada com Sucesso</p>
+              <div className="flex justify-between my-12">
+                <IconButton id="fechar-modal" onClick={handleButtonClick}>
+                  OK
+                </IconButton>
+              </div>
+            </Typography>
+          </Box>
+        </Modal>
       </div>
     </div>
   );
