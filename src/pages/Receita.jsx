@@ -2,8 +2,13 @@ import { useContext, useState, useEffect } from "react";
 import { Input, InputLabel, TextField, createTheme } from "@mui/material";
 import AddIcon from "../assets/add.svg";
 import { PrescContext } from "../contexts/prescContext";
-import { getAnimalsAndTutorByTutorName, getTutores, getAnimalsReceipt } from "../services/tutores";
+import {
+  getAnimalsAndTutorByTutorName,
+  getTutores,
+  getAnimalsReceipt,
+} from "../services/tutores";
 import Autocomplete from "@mui/material/Autocomplete";
+import "../Component/nova consulta/consultPages.css";
 
 export const InputReceita = ({
   label,
@@ -28,8 +33,6 @@ export const InputReceita = ({
   const handleChanges = (e) => {
     setter(e.target.value);
   };
-
-  const [animalSelecionado, setAnimalSelecionado] = useState(true);
 
   if (isTutor) {
     return (
@@ -72,10 +75,18 @@ export const InputReceita = ({
           disableClearable
           onChange={(_e, newValue) => {
             setter(newValue);
+            const filter = arrPacientes.filter((e) => e.name === newValue);
+            setSpecies(filter[0].species);
+            setRaca(filter[0].race);
+            setSexo(filter[0].gender);
+            setIdade(filter[0].age);
+            // setPeso(filter[0].weigth);
+            setId(filter[0].sequence);
           }}
           options={arrPacientes.map((option) => option.name)}
           renderInput={(params) => (
             <TextField
+              id="textField"
               onChange={(e) => {
                 setter(e.target.value);
               }}
@@ -141,8 +152,10 @@ export const Receita = () => {
   });
 
   useEffect(() => {
-    getAnimalsReceipt(setTutores, setPacientes, "")
+    getAnimalsReceipt(setTutores, setPacientes, "");
   }, []);
+
+  useEffect(() => {}, [required.unidade]);
 
   const fullfillValidate = {
     paciente,
@@ -153,9 +166,6 @@ export const Receita = () => {
     idade,
     peso,
     id,
-    unidade,
-    medicacao,
-    descricao,
   };
 
   const validateTrue = (chaves) => {
@@ -170,10 +180,17 @@ export const Receita = () => {
   };
 
   const validateInputs = () => {
+    medicamentos.forEach((e) => {
+      Object.entries(e).forEach(([key, value]) => {
+        fullfillValidate[key] = value;
+      })
+    })
+    console.log(fullfillValidate)
     const keys = Object.keys(fullfillValidate);
     const values = Object.values(fullfillValidate);
     let validation = false;
     let obj = { ...required };
+
     values.map((e, index) => {
       if (e == "") {
         const chaves = keys[index];
@@ -256,7 +273,6 @@ export const Receita = () => {
             arrTutores={tutores}
             setArrTutor={setTutores}
             setArrPaci={setPacientes}
-
             value={tutor}
             descrValue="tutor"
             requireVal={required.tutor}
@@ -477,7 +493,9 @@ export const Receita = () => {
 
       <div className="flex justify-end w-auto mr-24 mb-8">
         <button
-          onClick={() => handleSubmit()}
+          onClick={() => {
+            handleSubmit();
+          }}
           className="rounded-md h-[46px] mt-8 w-1/4 border-2 text-center bg-border-blue text-white font-bold"
         >
           Confirmar
@@ -486,9 +504,5 @@ export const Receita = () => {
     </div>
   );
 };
-
-// InputLabel.propTypes = {
-
-// }
 
 export default Receita;
