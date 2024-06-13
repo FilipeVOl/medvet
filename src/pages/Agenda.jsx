@@ -58,16 +58,16 @@ export default function Agenda() {
                 <h2 className="text-2xl pr-0 text-text-gray font-semibold">{transData(dados)}</h2>
                 {alteredAgenda[dados].map((e) => {
                   return (
-                    <div key={e}className='flex bg-side-gray my-4 rounded-lg ml-4'>
+                    <div key={e} className='flex bg-side-gray my-4 rounded-lg ml-4' data-testid="agenda">
                       <div className='bg-card-green m-0 text-transparent  rounded-lg'>a</div>
                       <div className='flex flex-col p-4 w-screen'>
                         <div className='m-2'>
-                          <span>Tutor:  <span className="font-bold pl-1">{e.nameAnimal}</span></span>
-                          <span>, {e.species}</span>
+                          <span>Tutor:  <span className="font-bold pl-1">{e.nameTutor}</span></span>
+                          <span>, {e.phone}</span>
                         </div>
                         <div className='m-2'>
-                          <span className="ml-0 pr-1">Paciente:  <span className="font-bold pl-1">{e.nameTutor}</span></span>
-                          <span className="ml-0 pl-1">{`- ${e.phone}`}</span>
+                          <span className="ml-0 pr-1">Paciente:  <span className="font-bold pl-1">{e.nameAnimal}</span></span>
+                          <span className="ml-0 pl-1">{`- ${e.species}`}</span>
                         </div>
                         <span className="m-2">{`Observações: ${e.description}`}</span>
                       </div>

@@ -3,7 +3,7 @@ name: testes-unitarios
 on: [pull_request, push]
 
 jobs:
- continuos-integration:
+ testes-unitarios:
     runs-on: ubuntu-latest
 
     steps:
