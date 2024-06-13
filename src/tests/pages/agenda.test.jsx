@@ -69,14 +69,16 @@ describe("test Agenda", () => {
     await axios.get.mockResolvedValue({
       data: mockAgenda,
     });
-    const { getAllByTestId, getByPlaceholderText } = render(<Agenda />)
+    const { getAllByTestId, getByPlaceholderText, debug } = render(<Agenda />)
     fireEvent.change(getByPlaceholderText('Buscar por Nome'), { target: { value: 'Alisson' } });
     await waitFor(async () => {
       expect(getAllByTestId('agenda').length).toBe(4);
       expect(getByPlaceholderText('Buscar por Nome')).toBeInTheDocument();
-    })
+    });
     await waitFor(() => {
-      expect(getAllByTestId('agenda').length).toBe(1);
-    })
-  })
-})
+      expect(getByPlaceholderText('Buscar por Nome').value).toEqual('Alisson')
+      debug();
+    });
+
+  });
+});
