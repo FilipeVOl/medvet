@@ -6,5 +6,6 @@ export const getProntuario = async (id) => {
     return response.data;
   } catch (error) {
     console.error(error);
+    throw new Error('Problema na requisição de prontúario');
   }
 }
