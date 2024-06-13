@@ -1,4 +1,4 @@
-name: Continuos Integration
+name: testes-unitarios
 
 on: [pull_request, push]
 
