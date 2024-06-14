@@ -20,6 +20,8 @@ export default {
         'remove': '#D03939',
         'gray-pront': '#E5E3DB',
         "other-white": "#FCFCFC"
+        'gray-button': '#9F9F9F',
+        'mui': '#00000099'
       },
       backgroundImage: {
         search: "url('../images/search.png)",

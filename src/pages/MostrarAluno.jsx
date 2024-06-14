@@ -17,10 +17,10 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Cadastro from "./Cadastro";
-import axios from "axios";
 import { useEffect } from "react";
-import { filterReg, getAluno, PutAluno } from "../services/alunos";
-import { postAluno } from "../utils/MostrarAluno.utils";
+import { getAluno, getAlunoByReg } from "../services/alunos";
+import { UpdateEditContext, UpdateEditProvider } from "../contexts/updateEditContext";
+
 
 const style = {
   position: "absolute",
@@ -28,7 +28,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "auto",
-  height: "95%",
+  height: "calc(100vh - 50px)",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -78,31 +78,24 @@ const MostrarAluno = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [openNew, setOpenNew] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [att, setAtt] = useState({});
+  const [registration, setRegistration] = useState("");
+  const [query, setQuery] = useState("");
 
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   const handleNewClick = () => setOpenNew(!openNew);
 
-  let [data, setData] = useState("");
-  let [registration, setRegistration] = useState("");
+  const [data, setData] = useState("");
+  const [users, setUsers] = useState([data]);
 
   useEffect(() => {
     getAluno(setData);
-  }, [openNew]);
-
-
-  // useEffect(() => {
-  //   filterReg(registration, setRegistration);
-  // }, []);
-
-  const PutButton = () => {
-    PutAluno(att);
-  };
+  }, [selectedUser, openNew]);
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="container w-full">
+      <UpdateEditContext.Provider value={{ openEdit, setOpenEdit, openNew, setOpenNew, selectedUser, setSelectedUser }}>
+      <div className="container">
         <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
           Alunos cadastrados
         </h1>
@@ -112,12 +105,12 @@ const MostrarAluno = () => {
               placeholder="N° de matricula"
               name="searchRegist"
               type="text"
-              onChange={({ target }) =>
-                filterReg(target.value, setRegistration)
-              }
+              onChange={({ target }) =>{
+                setQuery(target.value)
+                getAlunoByReg(setData, target.value)
+              }}
               className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
             />
-
             <SearchIcon
               style={{
                 color: "gray",
@@ -153,7 +146,7 @@ const MostrarAluno = () => {
             >
               <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  <Cadastro buttonName="Cadastrar"/>
+                  <Cadastro buttonName="Cadastrar" />
                 </Typography>
               </Box>
             </Modal>
@@ -165,9 +158,6 @@ const MostrarAluno = () => {
               <TableHead>
                 <TableRow>
                   {columns.map((column) =>
-                    // <StyledTableCell
-                    // key={column.field}>{column.headerName}
-                    // </StyledTableCell>
                     column.field == "editIcon" ? (
                       <StyledTableCell
                         style={{
@@ -196,7 +186,6 @@ const MostrarAluno = () => {
                       onClick={() => {
                         handleButtonClick();
                         setSelectedUser(row);
-
                       }}
                     >
                       <img src={EditIcon} />
@@ -204,7 +193,9 @@ const MostrarAluno = () => {
 
                     <IconButton
                       className="delete-button"
-                      onClick={handleDeleteClick}
+                      onClick={ () => {
+                      handleDeleteClick();
+                      setSelectedUser(row)}}
                     >
                       {/* // axios.delete(`http://localhost:3333/deletealuno/${row.id}`)
                       // function removeRow () {
@@ -230,11 +221,7 @@ const MostrarAluno = () => {
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              <Cadastro
-                selected={selectedUser}
-                attFunc={PutButton}
-                buttonName="Atualizar"
-              />
+              <Cadastro selected={selectedUser} openEdit={setOpenEdit} buttonName="Atualizar" />
             </Typography>
           </Box>
         </Modal>
@@ -252,7 +239,7 @@ const MostrarAluno = () => {
               left: "50%",
               transform: "translate(-50%, -50%)",
               width: "500px",
-              height: "20%",
+              height: "1/3",
               bgcolor: "background.paper",
               border: "2px solid #000",
               boxShadow: 24,
@@ -287,7 +274,12 @@ const MostrarAluno = () => {
                   Voltar
                 </IconButton>
                 <IconButton
-                  // onClick={}
+                  onClick={() => {
+                    handleDeleteClick();
+                    const newUsers = users.filter(user => user.id !== selectedUser.id);
+                      setUsers(newUsers)
+                      console.log(users)
+                  }}
                   style={{
                     backgroundColor: "#100F49",
                     width: "200px",
@@ -305,8 +297,10 @@ const MostrarAluno = () => {
           </Box>
         </Modal>
       </div>
+      </UpdateEditContext.Provider>
     </ThemeProvider>
   );
 };
+
 
 export default MostrarAluno;
