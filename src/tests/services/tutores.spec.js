@@ -10,7 +10,6 @@ import {
 
 import { afterEach, describe, expect, test, vi } from "vitest";
 import axios from "axios";
-import { cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { getAllTutors, getAnimalByTutorNameMock, getAnimalsAndTutorByTutorNameMock, tutorPatientByIdMock, tutoresByNameMock, tutoresByNumberMock } from "../mocks/agendamento.mock";
 
@@ -19,7 +18,6 @@ vi.mock("axios");
 describe("Tutores Services", async () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    cleanup();
     axios.get.mockReset();
   });
   describe("test get Tutores", () => {

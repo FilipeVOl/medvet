@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Input, InputLabel } from "@mui/material";
+import { Input, InputLabel, Snackbar } from "@mui/material";
 import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
@@ -15,10 +15,11 @@ const InputConsulta = ({ label, type, setter, value }) => {
 
   return (
     <div className="flex flex-col mb-4">
-      <InputLabel className="ml-4" htmlFor={label}>
+      <InputLabel sx={{ fontFamily: 'Montserrat' }} className="ml-4" htmlFor={label}>
         {label}
       </InputLabel>
       <Input
+        sx={{ fontFamily: 'Montserrat' }}
         onChange={handleChange}
         type={type}
         value={value}
@@ -39,7 +40,8 @@ const TutorInvalido = () => {
   const [stringDate, setDate] = useState("");
   const [hora, setHora] = useState("");
   const [description, setDesc] = useState("");
-
+  const [open, setOpen] = useState(false);
+  const [openError, setError] = useState(false);
   const dateMask = (value) => {
     return value
       .replace(/\D/g, "")
@@ -65,6 +67,13 @@ const TutorInvalido = () => {
     nameTutor: z.string().min(0),
   });
 
+  const handleClose = () => {
+    setOpen(!open);
+  };
+  const handleError = () => {
+    setError(!openError);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -78,14 +87,13 @@ const TutorInvalido = () => {
         nameTutor: nameTutor,
       });
       CreateConsult(consulta);
-
+      handleClose();
       console.log();
     } catch (error) {
       console.error(error.errors);
+      handleError()
     }
   };
-
-  console.log(phoneWMask)
 
   const phoneMask = (value) => {
     return value
@@ -202,6 +210,22 @@ const TutorInvalido = () => {
             </div>
           </div>
         </form>
+        <Snackbar
+              anchorOrigin={{vertical: 'bottom',horizontal: 'center'}}
+              open={open}
+              autoHideDuration={3000}
+              onClose={handleClose}
+              message="Consulta Criada com Sucesso!"
+              sx={{ marginBottom: '10vh'}}
+            />
+        <Snackbar
+              anchorOrigin={{vertical: 'bottom',horizontal: 'center'}}
+              open={openError}
+              autoHideDuration={3000}
+              onClose={handleError}
+              message="Error ao criar Consulta!"
+              sx={{ marginBottom: '10vh'}}
+            />
       </div>
     </>
   );

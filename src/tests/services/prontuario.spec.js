@@ -2,7 +2,6 @@ import { getProntuario } from "../../services/prontuario";
 
 import { afterEach, describe, expect, test, vi } from "vitest";
 import axios from "axios";
-import { cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 
 vi.mock("axios");
@@ -10,7 +9,6 @@ vi.mock("axios");
 describe("test get Prontuario", () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    cleanup();
     axios.get.mockReset();
   });
   test("error get Prontuario", async () => {

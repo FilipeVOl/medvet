@@ -1,27 +1,28 @@
 import { useState, useCallback } from "react";
-import { Input, InputLabel } from "@mui/material";
+import { Input, InputLabel, Snackbar } from "@mui/material";
 import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
 import { ConsultTutorExist } from "../../services/agendamento";
 
-const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
+const InputConsulta = ({ label, type, setter, value, isDisabled, placeHolder }) => {
   const handleChange = useCallback(
     (e) => {
       setter(e.target.value);
     },
     [setter]
   );
-
   return (
     <div className="flex flex-col mb-4 font-Montserrat">
-      <InputLabel className="ml-4" htmlFor={label}>
+      <InputLabel sx={{ fontFamily: 'Montserrat', fontWeight: 'medium' }} className="ml-4" htmlFor={label}>
         {label}
       </InputLabel>
       <Input
+        sx={{ fontFamily: 'Montserrat', fontWeight: 'medium' }}
         onChange={handleChange}
         type={type}
         value={value}
+        placeholder={placeHolder}
         disabled={isDisabled}
         className={` ${value === "" ? "border-border-blue" : "border-[#848484]"
           } border rounded-md h-[46px] p-2`}
@@ -38,7 +39,8 @@ const TutorValidado = (props) => {
   const [stringDate, setDate] = useState("");
   const [hora, setHora] = useState("");
   const [description, setDesc] = useState("");
-
+  const [open, setOpen] = useState(false);
+  const [openError, setError] = useState(false);
   const dateMask = (value) => {
     return value
       .replace(/\D/g, "")
@@ -64,7 +66,12 @@ const TutorValidado = (props) => {
     nameTutor: z.string().min(0)
   });
 
-
+  const handleClose = () => {
+    setOpen(!open);
+  };
+  const handleError = () => {
+    setError(!openError);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,10 +86,9 @@ const TutorValidado = (props) => {
         nameTutor: nameTutor,
       });
       ConsultTutorExist(props.tel.id, consulta);
-
-      console.log();
+      handleClose()
     } catch (error) {
-      console.error(error.errors);
+      handleError()
     }
   };
 
@@ -111,15 +117,16 @@ const TutorValidado = (props) => {
                   type="text"
                   value={nameAnimal}
                   setter={setName}
-                  className="font-Montserrat"
                 />
 
                 <InputConsulta
+                  inputProps={{ "data-testid": "tel-input-valid" }}
                   label="Tutor"
                   type="text"
                   setter={setTutor}
                   value={props.tel.name}
                   isDisabled={true}
+                  placeHolder="Digite o nome completo"
                 />
               </div>
 
@@ -138,7 +145,7 @@ const TutorValidado = (props) => {
                   value={hourMask(hora)}
                 />
 
-                <div className="flex flex-col mb-4">
+                <div className="flex flex-col mb-4 first-line:after: font-medium">
                   <label className="ml-4" >
                     Telefone
                     <input
@@ -146,7 +153,8 @@ const TutorValidado = (props) => {
                       onChange={handlePhone}
                       value={phoneMask(props.tel.phone)}
                       disabled={true}
-                      className={"border-[#848484] border rounded-md h-[46px] p-2 text-base text-[#848484]"}
+                      className={"border-[#848484] border rounded-md h-[46px] p-2 text-base text-[#848484]  font-normal"}
+                      data-testid="input-modal-agendamento"
                     />
                   </label>
                 </div>
@@ -191,6 +199,22 @@ const TutorValidado = (props) => {
             </div>
           </div>
         </form>
+        <Snackbar
+              anchorOrigin={{vertical: 'bottom',horizontal: 'center'}}
+              open={open}
+              autoHideDuration={3000}
+              onClose={handleClose}
+              message="Consulta Criada com Sucesso!"
+              sx={{ marginBottom: '10vh'}}
+            />
+        <Snackbar
+              anchorOrigin={{vertical: 'bottom',horizontal: 'center'}}
+              open={openError}
+              autoHideDuration={3000}
+              onClose={handleError}
+              message="Erro ao criar Consulta!"
+              sx={{ marginBottom: '10vh'}}
+            />
       </div>
     </>
   );
@@ -203,6 +227,7 @@ InputConsulta.propTypes = {
   setter: PropTypes.func,
   setter2: PropTypes.func,
   isDisabled: PropTypes.bool,
+  placeHolder: PropTypes.string,
 };
 
 TutorValidado.propTypes = {

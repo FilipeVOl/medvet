@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import axios from "axios";
 import { getAluno, PutAluno } from "../../services/alunos";
-import { cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 
 vi.mock("axios");
@@ -9,7 +8,6 @@ vi.mock("axios");
 describe("Alunos Services", async () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    cleanup();
     axios.get.mockReset();
   });
   describe("error get Alunos", () => {

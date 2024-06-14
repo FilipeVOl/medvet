@@ -8,7 +8,6 @@ import {
 } from "../../services/animals";
 import axios from "axios";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 
 vi.mock("axios");
@@ -16,7 +15,6 @@ vi.mock("axios");
 describe("Alunos Services", async () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    cleanup();
     axios.get.mockReset();
   });
   describe("Erros Fetchs", () => {
@@ -40,7 +38,6 @@ describe("Alunos Services", async () => {
   describe("Sucesso Fetchs", () => {
     afterEach(() => {
       vi.restoreAllMocks();
-      cleanup();
       axios.get.mockReset();
     });
     test("get All Animal", async () => {

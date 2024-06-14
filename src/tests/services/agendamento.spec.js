@@ -1,14 +1,12 @@
 import { afterEach, describe, expect, test, vi } from 'vitest'
 import { ConsultTutorExist, CreateConsult, getConsults } from "../../services/agendamento";
 import axios from 'axios'
-import { cleanup } from '@testing-library/react';
 
 vi.mock("axios");
 
 describe('Agendamento Services', async () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    cleanup();
     axios.post.mockReset();
   });
   describe('get Agendamento', () => {
