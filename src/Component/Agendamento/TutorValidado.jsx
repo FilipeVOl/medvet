@@ -1,26 +1,9 @@
-import { useState, useEffect, useContext, useCallback } from "react";
-import Modal from "@mui/material/Modal";
+import { useState, useCallback } from "react";
 import { Input, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
-import Tutor from "../../pages/TelaNovoTutor";
-import { CreateConsult } from "../../services/agendamento";
 import { ConsultTutorExist } from "../../services/agendamento";
-import Box from "@mui/material/Box";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "auto",
-  height: "50%",
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
 
 const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
   const handleChange = useCallback(
@@ -31,7 +14,7 @@ const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
   );
 
   return (
-    <div className="flex flex-col mb-4">
+    <div className="flex flex-col mb-4 font-Montserrat">
       <InputLabel className="ml-4" htmlFor={label}>
         {label}
       </InputLabel>
@@ -40,16 +23,14 @@ const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
         type={type}
         value={value}
         disabled={isDisabled}
-        className={` ${
-          value === "" ? "border-[#FF0000]" : "border-[#848484]"
-        } border rounded-md h-[46px] p-2 text-base`}
+        className={` ${value === "" ? "border-[#FF0000]" : "border-[#848484]"
+          } border rounded-md h-[46px] p-2`}
       />
     </div>
   );
 };
 
 const TutorValidado = (props) => {
-  const [phone, setPhone] = useState("");
   const [phoneWMask, setMask] = useState(props.tel.phone);
   const [nameAnimal, setName] = useState("");
   const [nameTutor, setTutor] = useState("");
@@ -57,8 +38,6 @@ const TutorValidado = (props) => {
   const [stringDate, setDate] = useState("");
   const [hora, setHora] = useState("");
   const [description, setDesc] = useState("");
-  const [Disabled, setDisabled] = useState(true);
-  const [id, setId] = useState(props.tel.id)
 
   const dateMask = (value) => {
     return value
@@ -85,7 +64,7 @@ const TutorValidado = (props) => {
     nameTutor: z.string().min(0)
   });
 
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -115,20 +94,13 @@ const TutorValidado = (props) => {
       .replace(/(-\d{4})\d+?$/, "$1");
   };
 
-  const phoneUnmask = (value) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/^(\d{2})\((\d{2})\)(\d{4})-(\d{4})$/, "$1$2$3$4");
-  };
-
   const handlePhone = (e) => {
-    setPhone(e.target.value);
     setMask(e.target.value);
   };
 
   return (
     <>
-      <div className="p-16 w-full h-screen">
+      <div className="p-16 w-full h-screen font-Montserrat">
         <h1 className=" text-2xl font-bold">Agendar Consulta</h1>
         <form>
           <div className="pt-12 ml-4 w-auto">
@@ -139,6 +111,7 @@ const TutorValidado = (props) => {
                   type="text"
                   value={nameAnimal}
                   setter={setName}
+                  className="font-Montserrat"
                 />
 
                 <InputConsulta
@@ -146,7 +119,7 @@ const TutorValidado = (props) => {
                   type="text"
                   setter={setTutor}
                   value={props.tel.name}
-                  isDisabled={Disabled}
+                  isDisabled={true}
                 />
               </div>
 
@@ -166,19 +139,14 @@ const TutorValidado = (props) => {
                 />
 
                 <div className="flex flex-col mb-4">
-                  <label className="ml-4">
+                  <label className="ml-4" >
                     Telefone
                     <input
                       type="text"
                       onChange={handlePhone}
                       value={phoneMask(props.tel.phone)}
-                      isDisabled={Disabled}
-                      className={` ${
-                        props.tel.phone === ""
-                          ? "border-[#FF0000]"
-                          : "border-[#848484]"
-                      } 
-                border rounded-md h-[46px] p-2 text-base`}
+                      disabled={true}
+                      className={"border-[#848484] border rounded-md h-[46px] p-2 text-base text-[#848484]"}
                     />
                   </label>
                 </div>
@@ -211,12 +179,11 @@ const TutorValidado = (props) => {
               <div className="flex justify-end ml-4 mt-8">
                 <button
                   onClick={handleSubmit}
-                  className={`${
-                    !handleSubmit
+                  className={`${!handleSubmit
                       ? "cursor-not-allowed opacity-25 disabled"
                       : ""
-                  } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
-                  //set the button to disabled if any of the fields are empty
+                    } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
+                //set the button to disabled if any of the fields are empty
                 >
                   Confirmar
                 </button>

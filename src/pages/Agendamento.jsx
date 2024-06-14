@@ -1,5 +1,4 @@
-import { useState, useEffect, useContext } from "react";
-import { UserContext } from "../contexts/userContext";
+import { useState, useEffect } from "react";
 import { getTutorByNumber } from "../services/tutores";
 import Modal from "@mui/material/Modal";
 import { Input, InputLabel } from "@mui/material";
@@ -23,7 +22,6 @@ const Agendamento = () => {
   };
 
 
-  const { user, setUser } = useContext(UserContext);
   const [data, setData] = useState([1]);
   const [telefone, setTelefone] = useState("");
   const [open, setOpen] = useState(true);
@@ -47,19 +45,11 @@ const Agendamento = () => {
   };
 
   useEffect(() => {
-    try {
-      getTutorByNumber(telefone, setData);
-    } catch(e) {
-      console.log(e)
-    }
+    getTutorByNumber(telefone, setData);
   }, [telefone]);
 
   const handleConfirmButton = () => {
-    try {
-      getTutorByNumber(telefone, setData);
-    } catch(e) {
-      console.log(e)
-    }
+    getTutorByNumber(telefone, setData);
     handleClose();
     if (data.tutors[0].phone == phoneUnmask(telefone)) {
       setValidate(true);
@@ -84,7 +74,6 @@ const Agendamento = () => {
             <Input
               onChange={(e) => {
                 setTelefone(e.target.value);
-                setUser({ ...user, phone: e.target.value });
               }}
               value={phoneMask(telefone)}
               className="border border-[#848484] rounded-[2px] h-[46px] p-2 text-base w-full"
