@@ -1,13 +1,9 @@
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../contexts/userContext";
 import { getTutorByNumber } from "../services/tutores";
 import Modal from "@mui/material/Modal";
 import { Input, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";
-import Textarea from "@mui/joy/Textarea";
-import z from "zod";
-import Tutor from "../pages/TelaNovoTutor";
-import { CreateConsult } from "../services/agendamento";
 import TutorValidado from "../Component/Agendamento/TutorValidado";
 import TutorInvalido from "../Component/Agendamento/TutorInvalido";
 import Box from "@mui/material/Box";
@@ -21,9 +17,9 @@ const Agendamento = () => {
     width: "auto",
     height: "50%",
     bgcolor: "background.paper",
-    border: "2px solid #000",
+    borderRadius: "10px",
     boxShadow: 24,
-    p: 4,
+    p: 6,
   };
 
 
@@ -31,7 +27,6 @@ const Agendamento = () => {
   const [data, setData] = useState([1]);
   const [telefone, setTelefone] = useState("");
   const [open, setOpen] = useState(true);
-  const [phoneWMask, setMask] = useState("");
   const [validate, setValidate] = useState(false);
 
   const phoneMask = (value) => {
@@ -72,7 +67,7 @@ const Agendamento = () => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <Modal
         disableEscapeKeyDown
         open={open}
@@ -83,7 +78,7 @@ const Agendamento = () => {
         <Box sx={style}>
           <h1 className="text-2xl font-bold">Conferir Telefone</h1>
           <div>
-            <InputLabel className="ml-4" htmlFor="">
+            <InputLabel className="ml-4 mt-6">
               Telefone
             </InputLabel>
             <Input
@@ -94,18 +89,18 @@ const Agendamento = () => {
               value={phoneMask(telefone)}
               className="border border-[#848484] rounded-[2px] h-[46px] p-2 text-base w-full"
             />
-            <div className="flex justify-between">
+            <div className="flex justify-between mt-20">
               <button
                 onClick={() => {
                   setOpen(!open);
                 }}
-                className="bg-white border border-[#848484] text-black font-bold rounded-[10px] h-[46px] w-[220px] mt-8"
+                className="bg-white border border-[#848484] text-black font-bold rounded-[10px] h-[46px] w-[220px]"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleConfirmButton}
-                className="bg-[#100F49] text-white font-bold rounded-[10px] h-[46px] w-[220px] mt-8"
+                className="bg-[#100F49] text-white font-bold rounded-[10px] h-[46px] w-[220px]"
               >
                 Continuar
               </button>

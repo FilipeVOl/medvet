@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Cadastro from "./pages/Cadastro";
 import Agendamento from "./pages/Agendamento";
-import Professor from "./pages/professor";
+import Professor from "./pages/Professor";
 import NovaConsulta from "./pages/NovaConsulta";
 import { DefaultLayout } from "./layouts/DefaultLayout";
 import { UserProvider } from "./contexts/userContext";
@@ -11,6 +11,10 @@ import MostrarAluno from "./pages/MostrarAluno";
 import MostrarProfessor from "./pages/MostrarProfessor";
 import MostrarTutor from "./pages/MostrarTutor";
 import TelaNovoTutor from "./pages/TelaNovoTutor";
+import Prontuarios from "./pages/Prontuarios";
+import DetalhesProntuario from "./pages/DetalhesProntuario";
+import Prontuario from "./pages/Prontuario";
+import InfoProntuario from "./pages/InfoProntuario";
 import { postAluno } from "./utils/MostrarAluno.utils";
 import { UpdateEditProvider } from "./contexts/updateEditContext";
 import Receita from "./pages/Receita";
@@ -39,6 +43,9 @@ export function Router() {
             <Route path="showProfessor" element={<MostrarProfessor />} />
             <Route path="criarconsulta" element={<NovaConsulta />} />
             <Route path="showTutor" element={<MostrarTutor />} />
+            <Route path="prontuarios" element={<Prontuarios />} />
+            <Route path="prontuarios/detalhes/:id" element={<Prontuario />} />
+            <Route path="prontuarios/detalhes" element={<InfoProntuario />} />
             <Route path="receita" element={<PrescProvider />} />
           </Route>
         </Routes>

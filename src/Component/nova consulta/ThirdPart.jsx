@@ -53,6 +53,7 @@ export default function ThirdPart(props) {
       stringDate: replaceDateToBrl(allPagesData.pagOne.data),
       animal_id: allPagesData.pagOne.idAnimal[0].id,
       teacher_id: allPagesData.pagOne.teacher_id.id,
+      weight: parseInt(allPagesData.pagOne.peso),
       history: allPagesData.pagOne.historico,
       reason_consult: allPagesData.pagOne.motivo,
       deworming: allPagesData.pagOne.desmer.name,
@@ -96,7 +97,7 @@ export default function ThirdPart(props) {
   };
 
   return (
-    <div className="font-Montserrat p-28 w-full">
+    <div className="font-Montserrat w-full p-28">
       <div className="font-bold">
         <h1 className="text-[30px]">Exames</h1>
       </div>

@@ -18,11 +18,15 @@ export default {
         'white-med': '#FFFFFF',
         'gray-input': '#9F9F9F',
         'remove': '#D03939',
+        'gray-pront': '#E5E3DB',
+        "other-white": "#FCFCFC"
         'gray-button': '#9F9F9F',
         'mui': '#00000099'
       },
       backgroundImage: {
         search: "url('../images/search.png)",
+        'prontuario-box': "url(src/images/prontuario.svg)",
+        'hover-box': "url(src/images/hover-pront.svg)"
       },
     },
   },

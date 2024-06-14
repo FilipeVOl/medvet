@@ -1,20 +1,13 @@
 import iconSearch from '../images/icon-search.png'
 import { useState, useEffect } from "react";
-import axios from 'axios';
+import { getConsults } from '../services/agendamento';
 
 export default function Agenda() {
   const [agenda, setAgenda] = useState([]);
   const [alteredAgenda, setAlteredAgenda] = useState([]);
   const [nome, setNome] = useState('');
   useEffect(() => {
-    axios.get('http://localhost:3333/get/consults')
-      .then(response => {
-        setAgenda(response.data);
-        setAlteredAgenda(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+    getConsults(setAgenda, setAlteredAgenda)
   }, []);
   const consultasFiltradas = (() => {
     const dateAlt = Object.keys(agenda).reduce((acc, key) => {
@@ -38,7 +31,7 @@ export default function Agenda() {
     return maskDate
   }
   return (
-    <main className="font-Montserrat !important">
+    <main className="font-Montserrat !important w-full">
       <section>
         <h1 className="text-2xl font-bold m-16">Agendamentos</h1>
       </section>
@@ -47,7 +40,7 @@ export default function Agenda() {
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <img src={iconSearch}/>
           </div>
-          <input type="text" id="simple-search" className=" bg-gray-50 border border-gray-300
+          <input type="text" id="simple-search" className="bg-gray-50 border border-gray-300
         text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
           block ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
         dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-3/12" 
