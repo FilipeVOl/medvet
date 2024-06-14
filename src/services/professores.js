@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const getProfessores = (set) => {
+const getProfessores = async (set) => {
     try {
       const { data } = await axios.get('http://localhost:3333/get/teacher?numberOfItems=5&page=1')
       set(data)
@@ -10,7 +10,7 @@ const getProfessores = (set) => {
     }
 }
 
-const getTeacherByName = (set, name) => {
+const getTeacherByName = async (set, name) => {
   try {
     const { data } = await axios.get(`http://localhost:3333/get/teacher/name?q=${name}`)
     set(data.teachers)
