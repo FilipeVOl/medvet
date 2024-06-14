@@ -23,7 +23,7 @@ const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
         type={type}
         value={value}
         disabled={isDisabled}
-        className={` ${value === "" ? "border-[#FF0000]" : "border-[#848484]"
+        className={` ${value === "" ? "border-border-blue" : "border-[#848484]"
           } border rounded-md h-[46px] p-2`}
       />
     </div>

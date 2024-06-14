@@ -1,28 +1,11 @@
-import { useState, useEffect, useContext, useCallback } from "react";
-import Modal from "@mui/material/Modal";
+import { useState, useCallback } from "react";
 import { Input, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
-import Tutor from "../../pages/TelaNovoTutor";
 import { CreateConsult } from "../../services/agendamento";
-import { ConsultTutorExist } from "../../services/agendamento";
-import Box from "@mui/material/Box";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "auto",
-  height: "50%",
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
-
-const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
+const InputConsulta = ({ label, type, setter, value }) => {
   const handleChange = useCallback(
     (e) => {
       setter(e.target.value);
@@ -40,14 +23,14 @@ const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
         type={type}
         value={value}
         className={` ${
-          value === "" ? "border-[#FF0000]" : "border-[#848484]"
+          value === "" ? "border-border-blue" : "border-[#848484]"
         } border rounded-md h-[46px] p-2 text-base`}
       />
     </div>
   );
 };
 
-const TutorInvalido = (props) => {
+const TutorInvalido = () => {
   const [phone, setPhone] = useState("");
   const [phoneWMask, setMask] = useState("");
   const [nameAnimal, setName] = useState("");
@@ -56,7 +39,6 @@ const TutorInvalido = (props) => {
   const [stringDate, setDate] = useState("");
   const [hora, setHora] = useState("");
   const [description, setDesc] = useState("");
-  const [id, setId] = useState("");
 
   const dateMask = (value) => {
     return value
@@ -171,7 +153,7 @@ const TutorInvalido = (props) => {
                       value={phoneMask(phone)}
                       className={` ${
                         phone === ""
-                          ? "border-[#FF0000]"
+                          ? "border-border-blue"
                           : "border-[#848484]"
                       } 
                 border rounded-md h-[46px] p-2 text-base`}
