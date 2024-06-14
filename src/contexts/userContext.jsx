@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 export const UserContext = createContext();
 
 const defaultUser = {
-  phone: "",
+  phone: "61992047777",
   paciente: "Moccha",
   tutor: "Thiago",
   data: "16042004",

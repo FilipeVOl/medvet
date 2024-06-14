@@ -1,36 +1,32 @@
 import axios from "axios";
 
-function CreateConsult(consulta) {
-  axios
-    .post("http://localhost:3333/create/consults", consulta)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+async function CreateConsult(consulta) {
+    try {
+      const data = await axios.post("http://localhost:3333/create/consults", consulta)
+      return data;
+  } catch (e) {
+      throw new Error('FETCH ERRO: criar consulta when Tutor Doenst Exist');
+  }
 }
 
-function ConsultTutorExist(id, consult) {
-  axios
-    .post(`http://localhost:3333/create/consults/${id}`, consult)
-    .then((response) => {
-      console.log(response)
-    })
-    .catch((error) => {
-      console.error("Error fetching number:", error);
-    })
+async function ConsultTutorExist(id, consult) {
+  try {
+    const data  = await axios.post(`http://localhost:3333/create/consults/${id}`, consult)
+    return data
+  } catch (e) {
+    throw new Error('FETCH ERRO: criar consulta when Tutor Exist');
+  }
 }
 
-function getConsults(setOne, setTwo) {
-  axios.get('http://localhost:3333/get/consults')
-      .then(response => {
-        setOne(response.data);
-        setTwo(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+async function getConsults(setOne, setTwo) {
+  try {
+    const { data } = await axios.get('http://localhost:3333/get/consults')
+    setOne(data);
+    setTwo(data);
+    return data
+} catch (e) {
+  throw new Error('Failed to fetch agendamento');
+}
 }
 
-export { CreateConsult, ConsultTutorExist, getConsults }
+export { CreateConsult, ConsultTutorExist, getConsults };

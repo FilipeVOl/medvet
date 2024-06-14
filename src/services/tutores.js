@@ -1,75 +1,67 @@
 import axios from "axios";
 
-export const getTutorPatientById = (set, id) => {
+export const getTutorPatientById = async (set, id) => {
     try {
-        axios.get(`http://localhost:3333/get/animals/bytutor/${id}`)
-            .then(response => {
-                set(response.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
+      const { data } = await axios.get(`http://localhost:3333/get/animals/bytutor/${id}`);
+      set(data);
+      return data;
     } catch (e) {
-        console.log(e, 'Problema na requisição de tutor por ID.');
+      console.log(e)
+        throw new Error('Problema na requisição de tutor por ID.');
     }
 }
 
-
-export const getTutores = (set) => {
+export const getTutores = async (set) => {
     try {
-        axios.get('http://localhost:3333/get/tutor?numberOfItems=5&page=1')
-            .then(response => {
-                set(response.data);
-            })
-            .catch(error => {
-                console.error('Não acessou os tutores no banco', error);
-            });
+      const { data } = await axios.get('http://localhost:3333/get/tutor?numberOfItems=5&page=1');
+      set(data);
+      return data;
     } catch (e) {
-        console.log(e, 'Problema na requisição de tutores.');
+      console.log(e)
+       throw new Error('Problema na requisição de todos os tutores.');
     }
 }
 
-export const postTutor = (consulta) => {
-  axios
-    .post("http://localhost:3333/tutor", consulta)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+export const postTutor = async (consulta) => {
+  try {
+    await axios.post("http://localhost:3333/tutor", consulta);
+  } catch(e) {
+    console.log(e)
+    throw new Error('Problema na criação de tutores')
+  }
 };
 
 export const getTutoresByName = async (set, params) => {
     try {
-        const tutorByName = await axios.get(`http://localhost:3333/get/tutor/name?q=${params}`);
-        console.log(tutorByName.data.tutors)
-        set(tutorByName.data.tutors);
+        const { data } = await axios.get(`http://localhost:3333/get/tutor/name?q=${params}`);
+        set(data.tutors);
+        return data.tutors;
     } catch (e) {
-        console.log(e, 'ERRO NO BUSCAR POR NOME DO TUTOR');
+      console.log(e)
+      throw new Error('Problema na requisição de tutores por nome.', e);
     }
 }
 
-export const getTutorByNumber = (number, set) => {
-  axios
-    .get(`http://localhost:3333/get/tutor/searchphone?q=${number}&page=1`)
-    .then((response) => {
-      set(response.data);
-    })
-    .catch((error) => {
-      console.error("Error fetching number:", error);
-    });
+export const getTutorByNumber = async (number, set) => {
+  try {
+    const { data } = await axios.get(`http://localhost:3333/get/tutor/searchphone?q=${number}&page=1`);
+    set(data);
+    return data;
+  } catch (e) {
+    console.log(e)
+    throw new Error('Problema na requisição de tutores por telefone.');
+  }
 };
 
-export const getAnimalsAndTutorByTutorName = (set, name) => {
-    axios
-    .get(`http://localhost:3333/get/animal/tutor/name/${name}`)
-    .then((response) => {
-      set(response.data);
-    })
-    .catch((error) => {
-      return error
-    });
+export const getAnimalsAndTutorByTutorName = async (set, name) => {
+  try {
+    const { data } = await axios.get(`http://localhost:3333/get/animal/tutor/name/${name}`);
+    set(data);
+    return data;
+  } catch (e) {
+    console.log(e)
+    throw new Error('Problema na requisição de animais e tutores por nome.');
+  }
 }
 
 export const getAnimalsByTutorName = async (name) => {
@@ -83,7 +75,8 @@ export const getAnimalsByTutorName = async (name) => {
       }));
     }).flat();
   } catch (error) {
-    console.error(error);
+    console.log(error)
+    throw new Error('Problema na requisição de animais por tutor');
   }
 }
 

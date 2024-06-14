@@ -21,7 +21,6 @@ import { useEffect } from "react";
 import { getAluno, getAlunoByReg } from "../services/alunos";
 import { UpdateEditContext, UpdateEditProvider } from "../contexts/updateEditContext";
 
-
 const style = {
   position: "absolute",
   top: "50%",

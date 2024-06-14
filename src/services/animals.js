@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const postAnimal = async (animal, tutor_id) => {
     try {
-        const id = axios.post(`http://localhost:3333/create/animals/${tutor_id}`, animal);
+        const id = await axios.post(`http://localhost:3333/create/animals/${tutor_id}`, animal); 
         return id;
     } catch(e) {
         return null
@@ -20,17 +20,9 @@ export const getAnimalById = async (id) => {
 
 export const getAllAnimals = async (set, page) => {
     try {
-        const animalDetails = await axios.get(`http://localhost:3333/get/animals?numberOfItems=10&page=${page}`);
-        set(animalDetails.data)
-    } catch(e) {
-        return null
-    }
-}
-//essa
-export const getAnimalByName = async (set, name) => {
-    try {
-        const animalByName = await axios.get(`http://localhost:3333/get/animals?numberOfItems=10&page=${page}`);
-        set(animalByName.data)
+        const { data } = await axios.get(`http://localhost:3333/get/animals?numberOfItems=10&page=${page}`);
+        set(data)
+        return data;
     } catch(e) {
         return null
     }
@@ -39,8 +31,8 @@ export const getAnimalByName = async (set, name) => {
 export const getAnimalBySequenceOrName = async (set, q) => {
     try {
         const { data } = await axios.get(`http://localhost:3333/search/animal?q=${q}`);
-        //mudar pra deixar igual a lógica 
         set(data);
+        return data;
     } catch(e) {
         return null
     }
