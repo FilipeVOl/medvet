@@ -1,28 +1,11 @@
-import { useState, useEffect, useContext, useCallback } from "react";
-import Modal from "@mui/material/Modal";
-import { Input, InputLabel } from "@mui/material";
+import { useState, useCallback } from "react";
+import { Input, InputLabel, Snackbar } from "@mui/material";
 import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
-import Tutor from "../../pages/TelaNovoTutor";
 import { CreateConsult } from "../../services/agendamento";
-import { ConsultTutorExist } from "../../services/agendamento";
-import Box from "@mui/material/Box";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "auto",
-  height: "50%",
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
-
-const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
+const InputConsulta = ({ label, type, setter, value }) => {
   const handleChange = useCallback(
     (e) => {
       setter(e.target.value);
@@ -32,22 +15,23 @@ const InputConsulta = ({ label, type, setter, value, isDisabled }) => {
 
   return (
     <div className="flex flex-col mb-4">
-      <InputLabel className="ml-4" htmlFor={label}>
+      <InputLabel sx={{ fontFamily: 'Montserrat' }} className="ml-4" htmlFor={label}>
         {label}
       </InputLabel>
       <Input
+        sx={{ fontFamily: 'Montserrat' }}
         onChange={handleChange}
         type={type}
         value={value}
         className={` ${
-          value === "" ? "border-[#FF0000]" : "border-[#848484]"
+          value === "" ? "border-border-blue" : "border-[#848484]"
         } border rounded-md h-[46px] p-2 text-base`}
       />
     </div>
   );
 };
 
-const TutorInvalido = (props) => {
+const TutorInvalido = () => {
   const [phone, setPhone] = useState("");
   const [phoneWMask, setMask] = useState("");
   const [nameAnimal, setName] = useState("");
@@ -56,8 +40,8 @@ const TutorInvalido = (props) => {
   const [stringDate, setDate] = useState("");
   const [hora, setHora] = useState("");
   const [description, setDesc] = useState("");
-  const [id, setId] = useState("");
-
+  const [open, setOpen] = useState(false);
+  const [openError, setError] = useState(false);
   const dateMask = (value) => {
     return value
       .replace(/\D/g, "")
@@ -83,6 +67,13 @@ const TutorInvalido = (props) => {
     nameTutor: z.string().min(0),
   });
 
+  const handleClose = () => {
+    setOpen(!open);
+  };
+  const handleError = () => {
+    setError(!openError);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -96,14 +87,13 @@ const TutorInvalido = (props) => {
         nameTutor: nameTutor,
       });
       CreateConsult(consulta);
-
+      handleClose();
       console.log();
     } catch (error) {
       console.error(error.errors);
+      handleError()
     }
   };
-
-  console.log(phoneWMask)
 
   const phoneMask = (value) => {
     return value
@@ -171,7 +161,7 @@ const TutorInvalido = (props) => {
                       value={phoneMask(phone)}
                       className={` ${
                         phone === ""
-                          ? "border-[#FF0000]"
+                          ? "border-border-blue"
                           : "border-[#848484]"
                       } 
                 border rounded-md h-[46px] p-2 text-base`}
@@ -220,6 +210,22 @@ const TutorInvalido = (props) => {
             </div>
           </div>
         </form>
+        <Snackbar
+              anchorOrigin={{vertical: 'bottom',horizontal: 'center'}}
+              open={open}
+              autoHideDuration={3000}
+              onClose={handleClose}
+              message="Consulta Criada com Sucesso!"
+              sx={{ marginBottom: '10vh'}}
+            />
+        <Snackbar
+              anchorOrigin={{vertical: 'bottom',horizontal: 'center'}}
+              open={openError}
+              autoHideDuration={3000}
+              onClose={handleError}
+              message="Error ao criar Consulta!"
+              sx={{ marginBottom: '10vh'}}
+            />
       </div>
     </>
   );

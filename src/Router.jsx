@@ -20,7 +20,7 @@ export function Router() {
   return (
     <UserProvider>
       <Routes>
-        <Route path="/" element={<DefaultLayout />}>
+        <Route path="/" element={<DefaultLayout />} className="font-Montserrat">
           <Route path="aluno" element={<Cadastro buttonName="Cadastrar" />} />
           <Route path="calendario" element={<Calendar />} />
           <Route path="agendamento" element={<Agendamento />} />

@@ -1,5 +1,4 @@
-import { useState, useEffect, useContext } from "react";
-import { UserContext } from "../contexts/userContext";
+import { useState } from "react";
 import { getTutorByNumber } from "../services/tutores";
 import Modal from "@mui/material/Modal";
 import { Input, InputLabel } from "@mui/material";
@@ -23,7 +22,6 @@ const Agendamento = () => {
   };
 
 
-  const { user, setUser } = useContext(UserContext);
   const [data, setData] = useState([1]);
   const [telefone, setTelefone] = useState("");
   const [open, setOpen] = useState(true);
@@ -46,28 +44,17 @@ const Agendamento = () => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    try {
-      getTutorByNumber(telefone, setData);
-    } catch(e) {
-      console.log(e)
-    }
-  }, [telefone]);
-
-  const handleConfirmButton = () => {
-    try {
-      getTutorByNumber(telefone, setData);
-    } catch(e) {
-      console.log(e)
-    }
-    handleClose();
-    if (data.tutors[0].phone == phoneUnmask(telefone)) {
+  const handleConfirmButton = async () => {
+   const response = await getTutorByNumber(phoneUnmask(telefone), setData);
+    if (response.tutors[0].phone == phoneUnmask(telefone)) {
+      console.log(response.tutors[0]);
       setValidate(true);
     }
+    handleClose();
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full font-Montserrat" id="main-agendamento">
       <Modal
         disableEscapeKeyDown
         open={open}
@@ -78,19 +65,24 @@ const Agendamento = () => {
         <Box sx={style}>
           <h1 className="text-2xl font-bold">Conferir Telefone</h1>
           <div>
-            <InputLabel className="ml-4 mt-6">
+            <InputLabel 
+            sx={{ fontFamily: 'Montserrat' }}
+            className="ml-4 mt-6">
               Telefone
             </InputLabel>
             <Input
+            sx={{ fontFamily: 'Montserrat' }}
               onChange={(e) => {
                 setTelefone(e.target.value);
-                setUser({ ...user, phone: e.target.value });
               }}
               value={phoneMask(telefone)}
               className="border border-[#848484] rounded-[2px] h-[46px] p-2 text-base w-full"
+              placeholder="Buscar tutor pelo número"
+              data-testid="input-modal-agendamento"
             />
             <div className="flex justify-between mt-20">
               <button
+                data-testid="button-modal-agendamento"
                 onClick={() => {
                   setOpen(!open);
                 }}

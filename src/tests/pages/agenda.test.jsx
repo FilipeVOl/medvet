@@ -1,8 +1,7 @@
 import "@testing-library/jest-dom/vitest";
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
-import Agenda from "../../pages/agenda";
-import { getConsults } from "../../services/agendamento";
+import { describe, test, expect, vi, afterEach } from "vitest";
+import Agenda from "../../pages/Agenda";
 import axios from "axios";
 
 vi.mock("axios");
@@ -49,8 +48,8 @@ const mockAgenda = {
 }
 describe("test Agenda", () => {
   afterEach(() => {
-        vi.restoreAllMocks();
-      });
+    vi.restoreAllMocks();
+  });
   test('render Agenda with mock', async () => {
     await axios.get.mockResolvedValue({
       data: mockAgenda,
@@ -66,19 +65,29 @@ describe("test Agenda", () => {
     })
   })
   test('test Agenda filter input', async () => {
-    await axios.get.mockResolvedValue({
-      data: mockAgenda,
-    });
-    const { getAllByTestId, getByPlaceholderText, debug } = render(<Agenda />)
-    fireEvent.change(getByPlaceholderText('Buscar por Nome'), { target: { value: 'Alisson' } });
-    await waitFor(async () => {
-      expect(getAllByTestId('agenda').length).toBe(4);
-      expect(getByPlaceholderText('Buscar por Nome')).toBeInTheDocument();
-    });
+
+    axios.get.mockResolvedValue({ data: mockAgenda });
+    const { getAllByTestId, getByTestId, getByText, queryByText } = render(<Agenda />);
+    expect(getByTestId('filter-agenda')).toBeInTheDocument();
+
     await waitFor(() => {
-      expect(getByPlaceholderText('Buscar por Nome').value).toEqual('Alisson')
-      debug();
+      expect(getAllByTestId('agenda').length).toBe(4);
     });
 
+    const filterInput = getByTestId('filter-agenda');
+    fireEvent.change(filterInput, { target: { value: 'Alisson' } });
+    fireEvent.click(filterInput);
+    expect(filterInput.value).toBe('Alisson');
+    expect(getByText('Alisson')).toBeInTheDocument();
+    expect(queryByText('Fernando')).not.toBeInTheDocument();
+    expect(queryByText('Josue')).not.toBeInTheDocument();
+    expect(queryByText('Roberto')).not.toBeInTheDocument();
+
+    fireEvent.change(filterInput, { target: { value: 'Alissonn' } });
+
+    expect(getByText('Alisson')).toBeInTheDocument();
+    expect(queryByText('Fernando')).toBeInTheDocument();
+    expect(queryByText('Josue')).toBeInTheDocument();
+    expect(queryByText('Roberto')).toBeInTheDocument();
   });
 });
