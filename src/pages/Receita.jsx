@@ -5,6 +5,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import AddIcon from "../assets/add.svg";
 import IconButton from "@mui/material/IconButton";
+import Postpresc from "../services/prescription";
 import { PrescContext } from "../contexts/prescContext";
 import {
   getAnimalsAndTutorByTutorName,
@@ -125,6 +126,7 @@ export const InputReceita = ({
 };
 
 export const Receita = () => {
+  // FAZER REQUISIÇÃO DO TEACHER_ID DA TELA DE NOVACONSULTA
   const { medications, setMedications } = useContext(PrescContext);
   const [animal_id, setAnimal] = useState("");
   const [tutor, setTutor] = useState("");
@@ -134,6 +136,7 @@ export const Receita = () => {
   const [idade, setIdade] = useState("");
   const [peso, setPeso] = useState("");
   const [id, setId] = useState("");
+  const [teacher_id, setTeacherId] = useState("");
   const [openModal, setOpenModal] = useState(!open);
   const [tutores, setTutores] = useState([]);
   const [pacientes, setPacientes] = useState([]);
@@ -234,6 +237,7 @@ export const Receita = () => {
       });
     } else {
       handleButtonClick();
+      Postpresc(data)
       console.log(data)
       return;
     }
