@@ -15,34 +15,41 @@ import Prontuarios from "./pages/Prontuarios";
 import DetalhesProntuario from "./pages/DetalhesProntuario";
 import Prontuario from "./pages/Prontuario";
 import InfoProntuario from "./pages/InfoProntuario";
+import { postAluno } from "./utils/MostrarAluno.utils";
+import { UpdateEditProvider } from "./contexts/updateEditContext";
+import Receita from "./pages/Receita";
+import { PrescProvider } from "./contexts/prescContext";
 
 export function Router() {
   return (
     <UserProvider>
-      <Routes>
-        <Route path="/" element={<DefaultLayout />} className="font-Montserrat">
-          <Route path="aluno" element={<Cadastro buttonName="Cadastrar" />} />
-          <Route path="calendario" element={<Calendar />} />
-          <Route path="agendamento" element={<Agendamento />} />
-          <Route path="criarconsulta" element={<NovaConsulta />} />
-          <Route
-            path="tutor"
-            element={<TelaNovoTutor buttonName="Confirmar" />}
-          />
-          <Route path="agenda" element={<Agenda />} />
-          <Route
-            path="professor"
-            element={<Professor buttonName="Cadastrar" />}
-          />
-          <Route path="showAluno" element={<MostrarAluno />} />
-          <Route path="showProfessor" element={<MostrarProfessor />} />
-          <Route path="criarconsulta" element={<NovaConsulta />} />
-          <Route path="showTutor" element={<MostrarTutor />} />
-          <Route path="prontuarios" element={<Prontuarios />} />
-          <Route path="prontuarios/detalhes/:id" element={<Prontuario />} />
-          <Route path="prontuarios/detalhes" element={<InfoProntuario />} />
-        </Route>
-      </Routes>
+      <UpdateEditProvider>
+        <Routes>
+          <Route path="/" element={<DefaultLayout />}>
+            <Route path="aluno" element={<Cadastro buttonName="Cadastrar" />} />
+            <Route path="calendario" element={<Calendar />} />
+            <Route path="agendamento" element={<Agendamento />} />
+            <Route path="criarconsulta" element={<NovaConsulta />} />
+            <Route
+              path="tutor"
+              element={<TelaNovoTutor buttonName="Confirmar" />}
+            />
+            <Route path="agenda" element={<Agenda />} />
+            <Route
+              path="professor"
+              element={<Professor buttonName="Cadastrar" />}
+            />
+            <Route path="showAluno" element={<MostrarAluno />} />
+            <Route path="showProfessor" element={<MostrarProfessor />} />
+            <Route path="criarconsulta" element={<NovaConsulta />} />
+            <Route path="showTutor" element={<MostrarTutor />} />
+            <Route path="prontuarios" element={<Prontuarios />} />
+            <Route path="prontuarios/detalhes/:id" element={<Prontuario />} />
+            <Route path="prontuarios/detalhes" element={<InfoProntuario />} />
+            <Route path="receita" element={<PrescProvider />} />
+          </Route>
+        </Routes>
+      </UpdateEditProvider>
     </UserProvider>
   );
 }

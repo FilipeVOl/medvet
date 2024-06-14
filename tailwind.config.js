@@ -19,7 +19,9 @@ export default {
         'gray-input': '#9F9F9F',
         'remove': '#D03939',
         'gray-pront': '#E5E3DB',
-        "other-white": "#FCFCFC"
+        "other-white": "#FCFCFC",
+        'gray-button': '#9F9F9F',
+        'mui': '#00000099'
       },
       backgroundImage: {
         search: "url('../images/search.png)",
