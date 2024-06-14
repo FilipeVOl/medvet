@@ -21,7 +21,7 @@ import { Autocomplete } from "@mui/material";
 import { useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import { getProfessores, getProfByReg } from "../services/professores";
-import Professor from "./professor";
+import Professor from "./Professor";
 import { UpdateEditContext, UpdateEditProvider } from "../contexts/updateEditContext";
 
 const style = {
