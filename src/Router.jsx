@@ -12,13 +12,12 @@ import MostrarProfessor from "./pages/MostrarProfessor";
 import MostrarTutor from "./pages/MostrarTutor";
 import TelaNovoTutor from "./pages/TelaNovoTutor";
 import Prontuarios from "./pages/Prontuarios";
-import DetalhesProntuario from "./pages/DetalhesProntuario";
+// import DetalhesProntuario from "./pages/DetalhesProntuario";
 import Prontuario from "./pages/Prontuario";
 import InfoProntuario from "./pages/InfoProntuario";
-import { postAluno } from "./utils/MostrarAluno.utils";
 import { UpdateEditProvider } from "./contexts/updateEditContext";
-import Receita from "./pages/Receita";
 import { PrescProvider } from "./contexts/prescContext";
+import CreateAnimal from "./pages/CreateAnimal";
 
 export function Router() {
   return (
@@ -47,6 +46,7 @@ export function Router() {
             <Route path="prontuarios/detalhes/:id" element={<Prontuario />} />
             <Route path="prontuarios/detalhes" element={<InfoProntuario />} />
             <Route path="receita" element={<PrescProvider />} />
+            <Route path="criaranimal" element={<CreateAnimal />} />
           </Route>
         </Routes>
       </UpdateEditProvider>
