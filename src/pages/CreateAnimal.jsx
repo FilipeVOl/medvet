@@ -5,6 +5,7 @@ import "../Component/nova consulta/consultPages.css";
 import InputComponent from "../Component/nova consulta/InputComponent";
 import { postAnimal } from "../services/animals";
 import { getAnimalsAndTutorByTutorName } from "../services/tutores";
+import { Snackbar } from '@mui/material';
 
 export default function CreateAnimal() {
   const [paciente, setPaciente] = useState('');
@@ -17,12 +18,19 @@ export default function CreateAnimal() {
   const [pelagem, setPelagem] = useState('');
   const [tutores, setTutores] = useState([]);
   const [required, setRequired] = useState({ paciente: false, especie: false, raca: false, sexo: false, idade: false, peso: false, tutor: false });
-
+  const [snackFailed, setSnackFailed] = useState(false);
+  const [snackSucess, setSnackSucess] = useState(false);
   //carrega os autoCompletes ao abrir a página.
   useEffect(() => {
     getAnimalsAndTutorByTutorName(setTutores, '');
   }, []);
 
+  const handleSucess = () => {
+    setSnackSucess(!snackSucess)
+  }
+  const handleFailed = () => {
+    setSnackFailed(!snackFailed)
+  }
   const fullfillValidate = {
     especie,
     raca,
@@ -82,9 +90,11 @@ export default function CreateAnimal() {
       }
       const validyCreateAnimal = await postAnimal(animal, tutores[0].id)
       if (validyCreateAnimal) {
-//snackbar sucess
+        handleSucess()
+        //snackbar sucess
       } else {
-//snakcbar failed
+        handleFailed()
+        //snakcbar failed
       }
     }
   };
@@ -209,10 +219,27 @@ export default function CreateAnimal() {
             className="bg-blue-button py-2 px-16 my-32 rounded-lg text-white float-right"
             onClick={handlePostAnimal}
           >
-            Próximo
+            Cadastrar
           </button>
         </form>
       </div>
+  
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={snackSucess}
+        autoHideDuration={3000}
+        onClose={handleSucess}
+        message="Animal Criado com Sucesso!"
+        sx={{ marginBottom: '10vh' }}
+      />
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={snackFailed}
+        autoHideDuration={3000}
+        onClose={handleFailed}
+        message="Animal já existente ou dadoos faltantes/inválidos."
+        sx={{ marginBottom: '10vh' }}
+      />
     </div>
   );
 }
