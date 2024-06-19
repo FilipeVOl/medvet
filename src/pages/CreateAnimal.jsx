@@ -37,7 +37,8 @@ export default function CreateAnimal() {
     sexo,
     idade,
     peso,
-    paciente
+    paciente,
+    tutor
   }
 
   const validateTrue = (chaves) => {
@@ -113,19 +114,31 @@ export default function CreateAnimal() {
                 <Autocomplete
                   freeSolo
                   disableClearable
+                  sx={{
+                    border: 'none'
+                  }}
                   id="free-solo-2-demo"
                   onChange={(_e, newValue) => {
-                    setTutor(newValue)
-                    getAnimalsAndTutorByTutorName(setTutores, newValue)
+                    setTutor(newValue);
+                    getAnimalsAndTutorByTutorName(setTutores, newValue);
+                    validateTrue('tutor');
                   }}
                   options={tutores.map((option) => option.name)}
                   value={tutor}
                   renderInput={(params) => (
                     <TextField
+                    sx={{
+                      border: required.tutor ? '2px solid red' : 'none',
+                      margin: 0,
+                      borderRadius: 3,
+                      fontFamily: 'Montserrat'
+                  }}
                       onChange={(e) => {
                         setTutor(e.target.value)
                         getAnimalsAndTutorByTutorName(setTutores, e.target.value)
+                        validateTrue('tutor');
                       }}
+                      onClick={() => validateTrue('tutor')}
                       {...params}
                       InputProps={{
                         ...params.InputProps,
@@ -171,6 +184,7 @@ export default function CreateAnimal() {
                   value={sexo}
                   onChange={(e) => {
                     setSexo(e.target.value)
+                    validateTrue('sexo')
                   }}
                   className={`${required.sexo
                     ? "outline-red-600 border-red-500"

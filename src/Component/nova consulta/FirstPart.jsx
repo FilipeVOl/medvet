@@ -45,7 +45,7 @@ export default function FirstPart(props) {
   const [animalSelecionado, setAnimalSelecionado] = useState(true);
   const [viewAnimal, setViewAnimal] = useState(pagOne.viewAnimal);
   const [openModal, setOpenModal] = useState(!open);
-  const [required, setRequired] = useState({ paciente: false, especie: false, raca: false, sexo: false, idade: false, peso: false });
+  const [required, setRequired] = useState({ paciente: false, especie: false, raca: false, sexo: false, idade: false, peso: false, tutor: false, professor: false });
 
   //muda o state do modal
   const handleButtonClick = () => setOpenModal(!openModal);
@@ -124,9 +124,11 @@ export default function FirstPart(props) {
     raca,
     sexo,
     idade,
-    peso
+    peso,
+    tutor,
+    professor
   }
-  
+
   const validateTrue = (chaves) => {
     let obj = { ...required }
     const keys = Object.keys(obj)
@@ -147,7 +149,7 @@ export default function FirstPart(props) {
       if (e == '') {
         const chaves = keys[index]
         obj[chaves] = true;
-        validation = true
+        validation = true;
       }
     })
     setRequired(obj)
@@ -200,10 +202,17 @@ export default function FirstPart(props) {
                   value={professor}
                   renderInput={(params) => (
                     <TextField
+                      sx={{
+                        border: required.professor ? '2px solid red' : 'none',
+                        margin: 0,
+                        borderRadius: 3,
+                        fontFamily: 'Montserrat'
+                      }}
                       value={professor}
                       onChange={(e, value) => {
                         setProfessor(value)
                         e.target.value.length == 0 ? getProfessores(setProfs) : getTeacherByName(setProfs, e.target.value)
+                        validateTrue('professor');
                       }}
                       {...params}
                       InputProps={{
@@ -235,14 +244,23 @@ export default function FirstPart(props) {
                     setViewAnimal(false)
                     setPaciente('')
                   }}
+                  onClick={()=> validateTrue('tutor')}
                   options={tutores.map((option) => option.name)}
                   value={tutor}
                   renderInput={(params) => (
                     <TextField
+                    sx={{
+                      border: required.tutor ? '2px solid red' : 'none',
+                      margin: 0,
+                      borderRadius: 3,
+                      fontFamily: 'Montserrat'
+                    }}
                       onChange={(e) => {
                         setTutor(e.target.value)
                         getAnimalsAndTutorByTutorName(setTutores, e.target.value)
+                        validateTrue('tutor')
                       }}
+                      onClick={() => validateTrue('tutor')}
                       {...params}
                       InputProps={{
                         ...params.InputProps,
@@ -273,8 +291,15 @@ export default function FirstPart(props) {
                   options={pacientes.map((option) => option.name)} // Assuming you want to use the name property as the label
                   renderInput={(params) => (
                     <TextField
+                    sx={{
+                      border: required.paciente ? '2px solid red' : 'none',
+                      margin: 0,
+                      borderRadius: 3,
+                      fontFamily: 'Montserrat'
+                    }}
                       value={paciente}
                       onChange={(e) => {
+                        validateTrue('paciente')
                         setPaciente(e.target.value); // Update the state with the new value
                         setAnimalSelecionado(false)
                         if (animalSelecionado) {
@@ -320,7 +345,8 @@ export default function FirstPart(props) {
                 <select
                   value={sexo}
                   onChange={(e) => {
-                    setSexo(e.target.value)
+                    setSexo(e.target.value);
+                    validateTrue('sexo');
                   }}
                   className={`${required.sexo
                     ? "outline-red-600 border-red-500"
@@ -499,19 +525,19 @@ export default function FirstPart(props) {
                   id="cadastrar-animal"
                   onClick={async () => {
                     const animal = {
-                        name: paciente,
-                        species: especie,
-                        race: raca,
-                        gender: sexo,
-                        age: idade,
-                        weight: peso,
-                        coat: pelagem,
-                        tutor_id: tutores[0].id
-                      }
+                      name: paciente,
+                      species: especie,
+                      race: raca,
+                      gender: sexo,
+                      age: idade,
+                      weight: peso,
+                      coat: pelagem,
+                      tutor_id: tutores[0].id
+                    }
                     const validyCreateAnimal = await postAnimal(animal, tutores[0].id)
                     if (validyCreateAnimal) {
                       const envioData = pageOneData;
-                      envioData.idAnimal = [{id: validyCreateAnimal.data}]
+                      envioData.idAnimal = [{ id: validyCreateAnimal.data }]
                       notification();
                       props.setSteps(2);
                       setPagOne(envioData);

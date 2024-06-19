@@ -8,7 +8,7 @@ export default function InputComponent(props) {
       className={`${props.requireVal
         ? "outline-red-600 border-red-500"
         : "outline-gray-input"
-      } w-full border-solid border-2 border-gray rounded-lg h-10 p-1`} 
+      } w-full border-solid border-2 border-gray rounded-lg h-11 p-2`} 
       onChange={((e) => props.setDataCom(e.target.value))} />
     </label>
   )
