@@ -39,7 +39,7 @@ describe("test Agendar Consulta", () => {
       console.log(inputs[0]);
       console.log(inputs[1]);
       console.log(inputs[2]);
-      expect(inputs[0]).toHaveValue('');
+      expect(inputs[0]).toHaveValue('(62)98193-6345');
     })
   });
 })

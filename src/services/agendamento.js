@@ -8,7 +8,7 @@ async function CreateConsult (consulta) {
     )
     return data
   } catch (e) {
-    console.log(e.response.data.issues)
+    // console.log(e.response.data.issues)
     throw new Error('FETCH ERRO: criar consulta when Tutor Doenst Exist')
   }
 }
