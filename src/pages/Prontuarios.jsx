@@ -96,7 +96,7 @@ export default function Prontuarios() {
                 <p className="font-bold pr-6">
                   {getTheFirstOne(e.animal_name)}
                 </p>
-                <p className="">{e.tutor_name}</p>
+                <p className="">{getTheFirstOne(e.tutor_name)}</p>
               </div>
             </Link>
           );
