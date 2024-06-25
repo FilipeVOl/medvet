@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom/vitest";
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi, afterEach } from "vitest";
 import axios from "axios";
 import { tutoresByNumberMock } from "../mocks/agendamento.mock";
@@ -26,15 +26,20 @@ describe("test Agendar Consulta", () => {
     await userEvent.type(input, '62981936345')
     expect(input).toHaveValue('(62)98193-6345');
   });
-  // test('test when the number is not found', async () => {
-  //   await axios.get.mockRejectValue('');
-  //   const { getByPlaceholderText, getByRole, getByTestId, findByTestId } = render(<Agendamento />)
-  //   const input = getByPlaceholderText(/Buscar tutor pelo número/i)
-  //   expect(input).toBeInTheDocument();
-  //   await userEvent.type(input, '62981936345')
-  //   expect(input).toHaveValue('(62)98193-6341')
-  //   act(async () => {
-  //     await userEvent.click(getByRole('button', { name: /Continuar/i }));
-  //   });
-  // });
+  test('test when the number is not found', async () => {
+    vi.spyOn(axios, "get").mockRejectedValueOnce("Failed to fetch");
+    const { getByPlaceholderText,getAllByRole, getByRole } = render(<Agendamento />)
+    const input = getByPlaceholderText(/Buscar tutor pelo número/i)
+    expect(input).toBeInTheDocument();
+    await userEvent.type(input, '62981936345')
+    expect(input).toHaveValue('(62)98193-6345');
+    await userEvent.click(getByRole('button', { name: /Continuar/i }));
+    await waitFor(() => {
+      const inputs = getAllByRole('textbox')
+      console.log(inputs[0]);
+      console.log(inputs[1]);
+      console.log(inputs[2]);
+      expect(inputs[0]).toHaveValue('');
+    })
+  });
 })

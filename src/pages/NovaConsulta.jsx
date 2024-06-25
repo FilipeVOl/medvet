@@ -7,7 +7,7 @@ import Stepper from "../Component/nova consulta/Stepper";
 export const ConsultContext = createContext();
 const pagOneData = {
   paciente: "Preencha Tutor",
-  data: "2024-17-05",
+  data: "",
   tutor: "",
   especie: "",
   raca: "",

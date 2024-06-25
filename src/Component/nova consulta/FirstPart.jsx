@@ -45,7 +45,7 @@ export default function FirstPart(props) {
   const [animalSelecionado, setAnimalSelecionado] = useState(true);
   const [viewAnimal, setViewAnimal] = useState(pagOne.viewAnimal);
   const [openModal, setOpenModal] = useState(!open);
-  const [required, setRequired] = useState({ paciente: false, especie: false, raca: false, sexo: false, idade: false, peso: false, tutor: false, professor: false });
+  const [required, setRequired] = useState({ paciente: false, especie: false, raca: false, sexo: false, idade: false, peso: false, tutor: false, professor: false, data: false });
 
   //muda o state do modal
   const handleButtonClick = () => setOpenModal(!openModal);
@@ -126,12 +126,14 @@ export default function FirstPart(props) {
     idade,
     peso,
     tutor,
-    professor
+    professor,
+    data,
   }
 
   const validateTrue = (chaves) => {
     let obj = { ...required }
     const keys = Object.keys(obj)
+    console.log(keys)
     keys.forEach((e) => {
       if (e == chaves) {
         obj[e] = false;
@@ -145,8 +147,9 @@ export default function FirstPart(props) {
     const values = Object.values(fullfillValidate)
     let validation = false
     let obj = { ...required }
+    console.log(obj[keys[0]])
     values.map((e, index) => {
-      if (e == '') {
+      if (e == '' || e == 'Preencha Tutor') {
         const chaves = keys[index]
         obj[chaves] = true;
         validation = true;
@@ -198,14 +201,17 @@ export default function FirstPart(props) {
                   id="free-solo-2-demo"
                   disableClearable
                   options={professores.map((option) => option.name)}
-                  onChange={(_e, newValue) => setProfessor(newValue)}
+                  onChange={(_e, newValue) => {
+                    setProfessor(newValue)
+                    validateTrue('professor');
+                  }}
                   value={professor}
                   renderInput={(params) => (
                     <TextField
                       sx={{
-                        border: required.professor ? '2px solid red' : 'none',
+                        border: required.professor ? '1.5px solid red' : 'none',
                         margin: 0,
-                        borderRadius: 3,
+                        borderRadius: 2,
                         fontFamily: 'Montserrat'
                       }}
                       value={professor}
@@ -228,6 +234,9 @@ export default function FirstPart(props) {
                 dataType="date"
                 type={data}
                 setDataCom={setData}
+                requireVal={required.data}
+                handleButton={validateTrue}
+                descrHandle="data"
               />
             </div>
             <div id="div-pac-tut" className="flex gap-8 my-4 justify-center">
@@ -243,24 +252,23 @@ export default function FirstPart(props) {
                     getAnimalsAndTutorByTutorName(setTutores, newValue)
                     setViewAnimal(false)
                     setPaciente('')
+                    validateTrue('tutor')
                   }}
-                  onClick={()=> validateTrue('tutor')}
                   options={tutores.map((option) => option.name)}
                   value={tutor}
                   renderInput={(params) => (
                     <TextField
-                    sx={{
-                      border: required.tutor ? '2px solid red' : 'none',
-                      margin: 0,
-                      borderRadius: 3,
-                      fontFamily: 'Montserrat'
-                    }}
+                      sx={{
+                        border: required.tutor ? '1.5px solid red' : 'none',
+                        margin: 0,
+                        borderRadius: 2,
+                        fontFamily: 'Montserrat'
+                      }}
                       onChange={(e) => {
                         setTutor(e.target.value)
                         getAnimalsAndTutorByTutorName(setTutores, e.target.value)
                         validateTrue('tutor')
                       }}
-                      onClick={() => validateTrue('tutor')}
                       {...params}
                       InputProps={{
                         ...params.InputProps,
@@ -286,17 +294,18 @@ export default function FirstPart(props) {
                     setIdade(filter[0].age)
                     setPelagem(filter[0].coat)
                     setAnimalSelecionado(true)
+                    validateTrue('paciente')
                   }}
                   disableClearable
                   options={pacientes.map((option) => option.name)} // Assuming you want to use the name property as the label
                   renderInput={(params) => (
                     <TextField
-                    sx={{
-                      border: required.paciente ? '2px solid red' : 'none',
-                      margin: 0,
-                      borderRadius: 3,
-                      fontFamily: 'Montserrat'
-                    }}
+                      sx={{
+                        border: required.paciente ? '1.5px solid red' : 'none',
+                        margin: 0,
+                        borderRadius: 2,
+                        fontFamily: 'Montserrat'
+                      }}
                       value={paciente}
                       onChange={(e) => {
                         validateTrue('paciente')

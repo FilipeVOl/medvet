@@ -86,7 +86,7 @@ const TutorInvalido = () => {
         phone: phoneUnmask(phoneWMask),
         nameTutor: nameTutor,
       });
-      CreateConsult(consulta);
+      await CreateConsult(consulta);
       handleClose();
       console.log();
     } catch (error) {
