@@ -37,7 +37,7 @@ export const getTutoresByName = async (set, params) => {
     set(data.tutors)
     return data.tutors
   } catch (e) {
-    // console.log(e)
+    console.log(e)
     throw new Error('Problema na requisição de tutores por nome.', e)
   }
 }

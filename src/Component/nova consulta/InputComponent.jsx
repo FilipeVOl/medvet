@@ -9,7 +9,7 @@ export default function InputComponent(props) {
         ? "outline-red-600 border-red-500"
         : "outline-gray-input"
       } w-full border-solid border-2 border-gray rounded-lg h-11 p-2`} 
-      onChange={((e) => props.setDataCom(e.target.value))} />
+      onChange={((e) => props.setDataCom(e.target.value))} disabled={props.disable}/>
     </label>
   )
 }
@@ -24,4 +24,5 @@ InputComponent.propTypes = {
   requireVal: PropTypes.bool,
   handleButton: PropTypes.func,
   descrHandle: PropTypes.string,
+  disable: PropTypes.bool,
 };

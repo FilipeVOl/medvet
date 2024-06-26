@@ -22,8 +22,6 @@ export default function FirstPart(props) {
   // desabilitar campos do animal quando ele for selecionado.
   // adicionar receita
   // modal de adicionar receita
-  // corrigir fontes dos autocompletes
-  // ficar vermelho paciente, tutor e professor/médico quando não preenchido.
   const [data, setData] = useState(pagOne.data);
   const [paciente, setPaciente] = useState(pagOne.paciente);
   const [tutor, setTutor] = useState(pagOne.tutor);
@@ -338,6 +336,7 @@ export default function FirstPart(props) {
                 requireVal={required.especie}
                 handleButton={validateTrue}
                 descrHandle="especie"
+                disable={viewTutor}
               />
               <InputComponent
                 nome="Raça"
@@ -347,12 +346,14 @@ export default function FirstPart(props) {
                 requireVal={required.raca}
                 handleButton={validateTrue}
                 descrHandle="raca"
+                disable={viewTutor}
               />
               <label className="grid h-full grow">
 
                 Sexo
                 <select
                   value={sexo}
+                  disabled={viewTutor}
                   onChange={(e) => {
                     setSexo(e.target.value);
                     validateTrue('sexo');
@@ -381,6 +382,7 @@ export default function FirstPart(props) {
                 requireVal={required.idade}
                 handleButton={validateTrue}
                 descrHandle="idade"
+                disable={viewTutor}
               />
               <InputComponent
                 nome="Peso"
@@ -396,6 +398,7 @@ export default function FirstPart(props) {
                 dataType="text"
                 type={pelagem}
                 setDataCom={setPelagem}
+                disable={viewTutor}
               />
             </div>
           </div>
