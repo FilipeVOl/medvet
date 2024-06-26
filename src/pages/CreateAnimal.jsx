@@ -103,7 +103,7 @@ export default function CreateAnimal() {
   return (
     <div className="font-Montserrat p-28 w-full">
       <div className="font-semibold">
-        <h1 className="text-[30px]">Identificação</h1>
+        <h1 className="text-[30px]">Novo Animal</h1>
       </div>
       <div>
         <form className="text-[18px]">

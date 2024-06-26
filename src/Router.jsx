@@ -18,6 +18,7 @@ import InfoProntuario from "./pages/InfoProntuario";
 import { UpdateEditProvider } from "./contexts/updateEditContext";
 import { PrescProvider } from "./contexts/prescContext";
 import CreateAnimal from "./pages/CreateAnimal";
+import Home from "./pages/Home";
 
 export function Router() {
   return (
@@ -25,6 +26,7 @@ export function Router() {
       <UpdateEditProvider>
         <Routes>
           <Route path="/" element={<DefaultLayout />}>
+            <Route path="home" element={<Home />} />
             <Route path="aluno" element={<Cadastro buttonName="Cadastrar" />} />
             <Route path="calendario" element={<Calendar />} />
             <Route path="agendamento" element={<Agendamento />} />

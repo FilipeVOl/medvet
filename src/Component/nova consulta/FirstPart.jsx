@@ -19,9 +19,9 @@ export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
   // melhorias
   // alterar para reducer, ou criar um só state que é um objetivo.
-  // desabilitar campos do animal quando ele for selecionado.
   // adicionar receita
   // modal de adicionar receita
+  //adicionar snackbar inves de windows alert
   const [data, setData] = useState(pagOne.data);
   const [paciente, setPaciente] = useState(pagOne.paciente);
   const [tutor, setTutor] = useState(pagOne.tutor);
