@@ -39,7 +39,7 @@ const Navbar = () => {
         <Link to="receita">Receitas</Link>
       </div>
       <div>
-        <Accordion text="Cadastrados" image={novoCadastro} options={arr2}/>
+        <Accordion text="Cadastrados" image={cadastrados} options={arr2}/>
       </div>
       <div id='prontuarios' className='flex py-4 bg-[#007448]'>
       <img src={prontuarios} alt='prontuarios' className='pr-4'/>
