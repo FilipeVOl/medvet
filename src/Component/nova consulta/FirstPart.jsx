@@ -22,6 +22,7 @@ export default function FirstPart(props) {
   // adicionar receita
   // modal de adicionar receita
   //adicionar snackbar inves de windows alert
+  //tirar border red when animal selecteds
   const [data, setData] = useState(pagOne.data);
   const [paciente, setPaciente] = useState(pagOne.paciente);
   const [tutor, setTutor] = useState(pagOne.tutor);

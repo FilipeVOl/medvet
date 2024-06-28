@@ -48,7 +48,7 @@ export function Router() {
             <Route path="prontuarios/detalhes/:id" element={<Prontuario />} />
             <Route path="prontuarios/detalhes" element={<InfoProntuario />} />
             <Route path="receita" element={<PrescProvider />} />
-            <Route path="criaranimal" element={<CreateAnimal />} />
+            <Route path="animal" element={<CreateAnimal />} />
           </Route>
         </Routes>
       </UpdateEditProvider>
