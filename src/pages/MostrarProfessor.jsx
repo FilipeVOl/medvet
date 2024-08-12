@@ -161,9 +161,6 @@ const MostrarProf = () => {
               <TableHead>
                 <TableRow>
                   {columns.map((column) =>
-                    // <StyledTableCell
-                    // key={column.field}>{column.headerName}
-                    // </StyledTableCell>
                     column.field == "editIcon" ? (
                       <StyledTableCell
                         style={{

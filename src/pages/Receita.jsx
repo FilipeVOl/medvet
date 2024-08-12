@@ -5,6 +5,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import AddIcon from "../assets/add.svg";
 import IconButton from "@mui/material/IconButton";
+import CancelIcon from "../images/cancel.svg"
 import Postpresc from "../services/prescription";
 import { PrescContext } from "../contexts/prescContext";
 import {
@@ -208,8 +209,9 @@ export const Receita = () => {
     return validation;
   };
 
+  const array = [...medications];
+
   const addMedicamento = () => {
-    const array = [...medications];
     const obj = {
       use_type: "",
       farmacia: "",
@@ -220,6 +222,11 @@ export const Receita = () => {
     array.push(obj);
     setMedications(array);
   };
+
+  const deleteMedicamento = () => {
+    array.splice(array.length - 1, 1);
+    setMedications(array);
+  }
 
   const handleMedicamento = (arr, index, valor, key) => {
     const array = [...arr];
@@ -356,6 +363,9 @@ export const Receita = () => {
               key={index}
               className="px-24 w-auto mb-20 border-2 mx-8 py-8 flex flex-col gap-4"
             >
+              <img src={CancelIcon} 
+              onClick={() => deleteMedicamento()}
+              className="cursor-pointer w-6 h-6 fill-red-500 self-end"/>
               <div className="grid grid-cols-3 gap-10">
                 <label>
                   Uso

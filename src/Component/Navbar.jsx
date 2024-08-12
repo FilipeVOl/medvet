@@ -6,8 +6,7 @@ import agendamento from '../images/agendamento.svg'
 import cadastrados from '../images/cadastrados.svg'
 import prontuarios from '../images/prontuarios.svg'
 import { Link } from "react-router-dom";
-import Accordion from './Accordion'
-
+import { AccordionGroup } from '@mui/joy';
 const Navbar = () => {
   const arr = {Aluno: 'aluno', Tutor: 'tutor', Professor: 'professor', Animal: 'animal'};
   const arr2 = {Aluno: 'showAluno', Tutor: 'showTutor', Professor: 'showProfessor'};
@@ -22,13 +21,54 @@ const Navbar = () => {
         <Link to="agendamento">Agendar</Link>
       </div>
       <div id="novo-cadastro" className='flex bg-[#007448]'>
+        <img src={novoCadastro} className='self-start my-4'/>
+        <AccordionGroup sx={{
+          maxWidth: '100%',
+        }}>
+        <Accordion sx={{ backgroundColor: '#007448', color: '#FFFFFF', boxShadow: "none" }}>
+          <AccordionSummary
+            expandIcon={<img src={arrow}/>}
+            aria-controls="panel2-content"
+            id="panel2-header"
+          >
+            <Typography>Novo Cadastro</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography sx={{ display:'flex', flexDirection:"column", justifyContent:"flex-start", alignItems:"flex-start" }}>
+                <Link to="tutor">Tutor</Link>
+                <Link to="professor">Professor</Link>
+                <Link to="aluno">Aluno</Link>
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        </AccordionGroup>
       </div>
       <div id="agendamento" className='flex py-4'>
         <img src={agendamento} className='pr-4'/>
         <Link to="agenda">Agendamento</Link>
       </div>
-      <div>
-        <Accordion text="Novo Cadastro" image={novoCadastro} options={arr}/>
+      <div id="cadastrados" className='flex bg-[#007448]'>
+      <img src={cadastrados} className='self-start my-4' />
+        <AccordionGroup sx={{
+          maxWidth: '100%',
+        }}>
+        <Accordion sx={{ backgroundColor: '#007448', color: '#FFFFFF', boxShadow: "none"}}>
+          <AccordionSummary
+            expandIcon={<img src={arrow} />}
+            aria-controls="panel2-content"
+            id="panel2-header"
+          >
+            <Typography>Cadastrados</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography sx={{ display:'flex', flexDirection:"column", justifyContent:"flex-start", alignItems:"flex-start" }}>
+                <Link to="showTutor">Tutor</Link>
+                <Link to="showProfessor">Professor</Link>
+                <Link to="showAluno">Aluno</Link>
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        </AccordionGroup>
       </div>
       <div id="criarConsulta" className='flex py-4 bg-[#007448]'>
         <img src={agendar} alt='criar consulta' className='pr-4'/>

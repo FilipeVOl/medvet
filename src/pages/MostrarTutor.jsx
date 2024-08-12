@@ -79,7 +79,7 @@ const MostrarTutor = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openNew, setOpenNew] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState("");
   const [registration, setRegistration] = useState("");
   const [query, setQuery] = useState("");
   const  handleButtonClick = () => setOpenEdit(!openEdit);
@@ -92,6 +92,9 @@ const MostrarTutor = () => {
   useEffect(() => {
     getTutores(setData);
   }, [selectedUser, openNew]);
+
+  console.log(data)
+
 
   return (
     <ThemeProvider theme={theme}>
