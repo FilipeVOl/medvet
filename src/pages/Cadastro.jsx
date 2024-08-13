@@ -43,6 +43,7 @@ export default function Cadastro(props) {
   function clickError() {
     if (selectedUser == null) {
       postAluno(data);
+      console.log(data)
       setOpenNew(!openNew);
     } else {
       PutAluno(data);

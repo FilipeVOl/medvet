@@ -30,14 +30,13 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "auto",
-  height: "90%",
+  width: "80%",
+  height: "calc(100vh - 50px)",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
-
 const theme = createTheme({
   palette: {
     common: {
@@ -92,8 +91,6 @@ const MostrarTutor = () => {
   useEffect(() => {
     getTutores(setData);
   }, [selectedUser, openNew]);
-
-  console.log(data)
 
 
   return (
@@ -174,7 +171,8 @@ const MostrarTutor = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {Object.values(data).map((row) => (
+                {data && data.tutor ? (
+                Object.values(data.tutor).map((row) => (
                   <StyledTableRow key={row.id}>
                     <StyledTableCell>{row.name}</StyledTableCell>
                     <StyledTableCell>{row.phone}</StyledTableCell>
@@ -191,34 +189,13 @@ const MostrarTutor = () => {
                     <IconButton
                       className="delete-button"
                       onClick={ () => {
-                      handleButtonClick();
+                      handleDeleteClick();
                       setSelectedUser(row)}}
                     >
-                      {/* // axios.delete(`http://localhost:3333/deletealuno/${row.id}`)
-                      // function removeRow () {
-                      //   const dataC = [...data]
-                      //   dataC.splice(TableBody.data, 0)
-                      //   console.log(dataC)
-                      // } */}
-
+            
                       <img src={TrashIcon} />
                     </IconButton>
-                    <Modal
-                      open={openEdit}
-                      onClose={handleButtonClick}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
-                    >
-                      <Box sx={style}>
-                        <Typography
-                          id="modal-modal-title"
-                          variant="h6"
-                          component="h2"
-                        >
-                          <TelaNovoTutor buttonName="Atualizar" />
-                        </Typography>
-                      </Box>
-                    </Modal>
+                    
 
                     <Modal
                       open={openDelete}
@@ -236,7 +213,7 @@ const MostrarTutor = () => {
                           left: "50%",
                           transform: "translate(-50%, -50%)",
                           width: "500px",
-                          height: "20%",
+                          height: "auto",
                           bgcolor: "background.paper",
                           border: "2px solid #000",
                           boxShadow: 24,
@@ -271,7 +248,17 @@ const MostrarTutor = () => {
                               Voltar
                             </IconButton>
                             <IconButton
-                              onClick={handleDeleteClick}
+                              onClick={() => {
+                                axios.delete(`http://localhost:3333/delete/tutor/${selectedUser.id}`)
+                                .then((response) => {
+                                  console.log(response);
+                                  getTutores(setData);
+                                })
+                                .catch((error) => {
+                                  console.log(error);
+                                });
+                                handleDeleteClick();
+                              }}
                               style={{
                                 backgroundColor: "#100F49",
                                 width: "200px",
@@ -289,7 +276,18 @@ const MostrarTutor = () => {
                       </Box>
                     </Modal>
                   </StyledTableRow>
-                ))}
+                ))
+              ) : (
+                <StyledTableRow>
+                  <StyledTableCell>
+                    <div className="flex justify-center">
+                      <p className="font-Montserrat text-2xl">
+                        Nenhum tutor encontrado
+                      </p>
+                    </div>
+                  </StyledTableCell>
+                </StyledTableRow>
+              )}
               </TableBody>
             </Table>
           </TableContainer>

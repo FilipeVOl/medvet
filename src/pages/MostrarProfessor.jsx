@@ -92,6 +92,7 @@ const MostrarProf = () => {
 
   useEffect(() => {
     getProfessores(setData);
+    console.log(data)
   }, [selectedUser, openNew]);
 
 

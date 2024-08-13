@@ -471,7 +471,7 @@ export default function FirstPart(props) {
               <div className="flex gap-12 justify-center bg-gray-input p-2 rounded-lg text-white-med shadow-xl cursor-pointer" onClick={() => addVacina()}>
                 <div className="flex gap-4">
                   <img srcSet={mais} alt="mais" className="" />
-                  <button className="grow font-semibold" type="button">Adicionar Vacina</button>
+                  <button className="grow font-semibold text-nowrap" type="button">Adicionar Vacina</button>
                 </div>
               </div>
 
