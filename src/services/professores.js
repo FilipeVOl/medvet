@@ -1,14 +1,34 @@
 import axios from "axios";
 
 const getProfessores = async (set) => {
+const getProfessores = async (set) => {
     try {
-      const { data } = await axios.get('http://localhost:3333/get/teacher?numberOfItems=5&page=1')
-      set(data)
-      return data
+       await axios.get('http://localhost:3333/get/teacher?numberOfItems=5&page=1')
+        .then(response => {
+          set(response.data);
+        })
+        .catch(error => {
+          console.error('Não acessou os profesores no banco', error);
+        });
     } catch(e) {
-      return 'Problema na requisição de pegar todos os professores.'
+        console.log(e, 'Problema na requisição de all professores.');
     }
 }
+
+const getProfById = (set, id) => {
+  try {
+      axios.get(`http://localhost:3333/get/teacher/id/${id}`)
+      .then(response => {
+        set(response.data).teachers;
+      })
+      .catch(error => {
+        console.error('Não acessou os profesores no banco', error);
+      });
+  } catch(e) {
+      console.log(e, 'Problema na requisição de professores pelo id.');
+  }
+}
+
 
 const getTeacherByName = async (set, name) => {
   try {

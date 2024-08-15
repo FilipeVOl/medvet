@@ -15,6 +15,7 @@ import {
 } from "../services/tutores";
 import Autocomplete from "@mui/material/Autocomplete";
 import "../Component/nova consulta/consultPages.css";
+import { getEnchiridion } from "../services/enchiridion";
 
 export const InputReceita = ({
   label,
@@ -160,12 +161,15 @@ export const Receita = () => {
   };
 
   useEffect(() => {
+    getEnchiridion(setTeacherId);
     getAnimalsReceipt(setTutores, setPacientes, "");
   }, []);
+
 
   useEffect(() => {}, [medications]);
 
   const fullfillValidate = {
+    teacher_id,
     animal_id,
     tutor,
     species,
@@ -186,6 +190,9 @@ export const Receita = () => {
     });
     setRequired(obj);
   };
+
+  
+
 
   const validateInputs = () => {
     medications.forEach((e) => {
@@ -250,7 +257,14 @@ export const Receita = () => {
     }
   };
 
+  const getProfId = (i) => {
+    if (teacher_id[i] && teacher_id[i].hasOwnProperty('id')) {
+      return teacher_id[i].id
+    }
+  }
+
   const data = {
+    teacher_id: getProfId(0),
     animal_id,
     tutor,
     species,
@@ -260,7 +274,7 @@ export const Receita = () => {
     peso,
     id,
     medications,
-  };
+  }
 
   return (
     <div className="font-Montserrat">

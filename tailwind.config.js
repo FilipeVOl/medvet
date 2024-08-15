@@ -3,6 +3,15 @@ export default {
   content: ["./src/**/*.{html,js,jsx}"],
   theme: {
     extend: {
+      keyframes: {
+        fadeIn: {
+          "0%, 100%": { opacity: 0 },
+          "10%": { opacity: 1 },
+        }
+      },
+      animation: {
+        fadeIn: "fadeIn 10s ease-in-out alternate",
+      },
       fontFamily: {
         Montserrat: ["Montserrat"],
       },
