@@ -12,7 +12,7 @@ const Navbar = () => {
   const arr = {Aluno: 'aluno', Tutor: 'tutor', Professor: 'professor', Animal: 'animal'};
   const arr2 = {Aluno: 'showAluno', Tutor: 'showTutor', Professor: 'showProfessor'};
   return (
-    <div className='shadow-md h-[100] min-h-screen bg-[#007448] p-10 text-white-med fixed top-28 max-w-72 min-w-72'>
+    <div className='shadow-md h-[100%] min-h-screen bg-[#007448] p-10 text-white-med fixed top-28 max-w-72 min-w-72'>
       <div id="inicio" className='flex py-4'>
         <img src={house} className='pr-4 '/>
         <Link to="home">Início</Link>

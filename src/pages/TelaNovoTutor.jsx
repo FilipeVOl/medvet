@@ -34,7 +34,7 @@ export default function Tutor(props) {
   };
 
   function clickError() {
-    if (selectedUser == null) {
+    if (selectedUser == "") {
       postTutor(data);
       console.log(data);
       setOpenNew(!openNew);

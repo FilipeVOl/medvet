@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import { Link } from "react-router-dom";
 
 export default function ThirdPart(props) {
   const { pagTh, setPagTh, allPagesData } = useContext(ConsultContext);
@@ -16,8 +17,10 @@ export default function ThirdPart(props) {
   const [sTratamento, setTrata] = useState(pagTh.sTratamento);
   const [sObs, setObs] = useState(pagTh.sObs);
   const [openModal, setOpenModal] = useState(!open);
+  const [continueReceita, setContinueReceita] = useState(false);
 
   const handleButtonClick = () => setOpenModal(!openModal);
+  const handleContinueReceita = () => setContinueReceita(!continueReceita);
 
   const renderTextArea = [
     {
@@ -145,7 +148,7 @@ export default function ThirdPart(props) {
               <div className="flex justify-between my-12">
                 <IconButton
                   id="fechar-modal"
-                  onClick={handleButtonClick}
+                onClick={() => {handleButtonClick(), handleContinueReceita()}}
                 >
                   OK
                 </IconButton>
@@ -153,6 +156,37 @@ export default function ThirdPart(props) {
             </Typography>
           </Box>
         </Modal>
+
+        <Modal
+          open={continueReceita}
+          aria-labelledby="modal-modal-deletetitle"
+          aria-describedby="modal-modal-description2"
+          >
+            <Box id="box-modal-pag1">
+              <Typography
+                id="modal-modal-deletetitle"
+                variant="h6"
+                component="h1"
+              >
+                Deseja Continuar para Receita?
+                <div className="flex justify-between my-12">
+                  <Link to="/receita" smooth={true} duration={1000}>
+                  <IconButton
+                    id="fechar-modal"
+                  >
+                    Sim
+                  </IconButton>
+                  </Link>
+                  <IconButton
+                    id="fechar-modal"
+                  onClick={() => {handleContinueReceita()}}
+                  >
+                    Não
+                  </IconButton>
+                </div>
+              </Typography>
+              </Box>
+          </Modal>
     </div>
   );
 }

@@ -27,7 +27,7 @@ export function Router() {
         <Routes>
           <Route path="/" element={<DefaultLayout />}>
             <Route path="home" element={<Home />} />
-            <Route path="aluno" element={<Cadastro buttonName="Cadastrar" />} />
+            <Route path="aluno" element={<Cadastro buttonName="Cadastrar"/>} />
             <Route path="calendario" element={<Calendar />} />
             <Route path="agendamento" element={<Agendamento />} />
             <Route path="criarconsulta" element={<NovaConsulta />} />
