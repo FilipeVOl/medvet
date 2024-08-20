@@ -16,15 +16,12 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import axios from "axios";
-import Tutor from "../pages/TelaNovoTutor";
-import { getTutores, getTutoresByName } from "../services/tutores";
-import tutores from "../mocks/tutor.mock";
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+import { getTutores, getTutoresByName, patchTutor } from "../services/tutores";
 import TelaNovoTutor from "../pages/TelaNovoTutor";
-import Textarea from "@mui/joy/Textarea";
 import {
   UpdateEditContext,
-  UpdateEditProvider,
 } from "../contexts/updateEditContext";
 
 const style = {
@@ -83,7 +80,7 @@ const MostrarTutor = () => {
   const [showToast, setShowToast] = useState(false);
   const [selectedUser, setSelectedUser] = useState("");
   const [registration, setRegistration] = useState("");
-  const [query, setQuery] = useState("");
+  const [currPage, setCurrPage] = useState(1);
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   const handleNewClick = () => setOpenNew(!openNew);
@@ -91,9 +88,13 @@ const MostrarTutor = () => {
   const [data, setData] = useState("");
   const [users, setUsers] = useState([data]);
 
+  const handlePage = (event, value) => {
+    setCurrPage(value)
+  }
+
   useEffect(() => {
-    getTutores(setData);
-  }, [selectedUser, openNew]);
+    getTutores(setData, currPage);
+  }, [selectedUser, openNew, currPage]);
 
   useEffect(() => {
     if (showToast) {
@@ -116,7 +117,7 @@ const MostrarTutor = () => {
           setSelectedUser,
         }}
       >
-        <div className="container">
+        <div className="container h-[100vh]">
           {showToast && (
             <div className="animate-fadeIn opacity-0 absolute top-32 right-0 m-4">
               <div
@@ -205,7 +206,9 @@ const MostrarTutor = () => {
             </div>
           </div>
           <div className="ml-36 sm:w-[80%] mt-16">
-            <TableContainer component={Paper}>
+            <TableContainer sx={{
+              height: "auto"
+            }} component={Paper}>
               <Table aria-label="customized table">
                 <TableHead>
                   <TableRow>
@@ -327,23 +330,9 @@ const MostrarTutor = () => {
                                 <IconButton
                                   onClick={() => {
                                     console.log(selectedUser.id);
-                                    axios
-                                      .patch(
-                                        "http://localhost:3333/delete/tutor",
-                                        {
-                                          id: selectedUser.id,
-                                        }
-                                      )
-                                      .then((response) => {
-                                        console.log(response);
-                                        getTutores(setData);
-                                      })
-                                      .catch((error) => {
-                                        console.log(error);
-                                      });
+                                    patchTutor(selectedUser.id);
                                     handleDeleteClick();
                                     setShowToast(true);
-                                    showToast();
                                   }}
                                   style={{
                                     backgroundColor: "#100F49",
@@ -377,6 +366,12 @@ const MostrarTutor = () => {
                 </TableBody>
               </Table>
             </TableContainer>
+            <Stack className="flex justify-center items-center mt-4" spacing={2}>
+      <Pagination
+        count={2}
+        onChange={handlePage}
+      />
+    </Stack>
           </div>
         </div>
       </UpdateEditContext.Provider>

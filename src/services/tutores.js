@@ -11,9 +11,9 @@ export const getTutorPatientById = async (set, id) => {
   }
 }
 
-export const getTutores = async (set) => {
+export const getTutores = async (set, page) => {
   try {
-    const { data } = await axios.get('http://localhost:3333/get/tutor?numberOfItems=5&page=1')
+    const { data } = await axios.get(`http://localhost:3333/get/tutor?numberOfItems=5&page=${page}`)
     set(data)
     return data
   } catch (e) {
@@ -24,7 +24,10 @@ export const getTutores = async (set) => {
 
 export const postTutor = async (consulta) => {
   try {
-    await axios.post('http://localhost:3333/tutor', consulta)
+    const response = await axios.post('http://localhost:3333/tutor', consulta)
+    if (response.status === 200) {
+      return response.data
+    }
   } catch (e) {
     console.log(e)
     throw new Error('Problema na criação de tutores')
@@ -100,3 +103,14 @@ export const PutTutor = (att) => {
       console.error('Error updating data:', error)
     })
 }
+
+export const patchTutor = async (id) => {
+  axios
+    .patch("http://localhost:3333/delete/tutor", id)
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};

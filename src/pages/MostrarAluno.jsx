@@ -16,6 +16,8 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 import Cadastro from "./Cadastro";
 import { useEffect } from "react";
 import { getAluno, getAlunoByReg } from "../services/alunos";
@@ -82,7 +84,10 @@ const MostrarAluno = () => {
   const [showToast, setShowToast] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [registration, setRegistration] = useState("");
-  const [query, setQuery] = useState("");
+  const [currPage, setCurrPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 5;
 
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
@@ -92,8 +97,8 @@ const MostrarAluno = () => {
   const [users, setUsers] = useState([data]);
 
   useEffect(() => {
-    getAluno(setData);
-  }, [selectedUser, openNew]);
+    getAluno(setData, currPage, itemsPerPage);
+  }, [selectedUser, openNew, currPage]);
 
   useEffect(() => {
     if (showToast) {
@@ -103,6 +108,10 @@ const MostrarAluno = () => {
       return () => clearTimeout(timer);
     }
   }, [showToast]);
+
+  const handlePage = (event, value) => {
+    setCurrPage(value);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -263,6 +272,12 @@ const MostrarAluno = () => {
                 </TableBody>
               </Table>
             </TableContainer>
+            <Stack
+              className="flex justify-center items-center mt-4"
+              spacing={2}
+            >
+              <Pagination count={currPage} onChange={handlePage} />
+            </Stack>
           </div>
 
           <Modal
