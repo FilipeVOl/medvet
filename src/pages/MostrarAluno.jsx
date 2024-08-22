@@ -20,7 +20,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import Cadastro from "./Cadastro";
 import { useEffect } from "react";
-import { getAluno, getAlunoByReg } from "../services/alunos";
+import { getAluno, getAlunoByReg, patchAluno } from "../services/alunos";
 import {
   UpdateEditContext,
   UpdateEditProvider,
@@ -38,6 +38,9 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+
+// melhorias
+// fazer paginação com fix do banco de dados de numberofPages
 
 const theme = createTheme({
   palette: {
@@ -97,7 +100,7 @@ const MostrarAluno = () => {
   const [users, setUsers] = useState([data]);
 
   useEffect(() => {
-    getAluno(setData, currPage, itemsPerPage);
+    getAluno(setData, currPage);
   }, [selectedUser, openNew, currPage]);
 
   useEffect(() => {
@@ -243,7 +246,7 @@ const MostrarAluno = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {Object.values(data).map((row) => (
+                  {Object.values(data.student).map((row) => (
                     <StyledTableRow key={row.id}>
                       <StyledTableCell>{row.registration}</StyledTableCell>
                       <StyledTableCell>{row.name}</StyledTableCell>
@@ -346,21 +349,9 @@ const MostrarAluno = () => {
                   </IconButton>
                   <IconButton
                     onClick={() => {
-                      console.log(selectedUser.id);
-                      // axios
-                      //   .patch("http://localhost:3333/delete/tutor", {
-                      //     id: selectedUser.id,
-                      //   })
-                      //   .then((response) => {
-                      //     console.log(response);
-                      //     getAluno(setData);
-                      //   })
-                      //   .catch((error) => {
-                      //     console.log(error);
-                      //   });
                       handleDeleteClick();
+                      patchAluno(setData, selectedUser);
                       setShowToast(true);
-                      showToast();
                     }}
                     style={{
                       backgroundColor: "#100F49",

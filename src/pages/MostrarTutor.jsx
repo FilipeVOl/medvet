@@ -328,9 +328,14 @@ const MostrarTutor = () => {
                                   Voltar
                                 </IconButton>
                                 <IconButton
-                                  onClick={() => {
-                                    console.log(selectedUser.id);
-                                    patchTutor(selectedUser.id);
+                                  onClick={async () => {
+                                    try {
+                                    console.log(selectedUser.id)
+
+                                     await patchTutor(setData, selectedUser.id);
+                                    } catch (error) {
+                                      console.error('Error deleting data:', error)
+                                    }
                                     handleDeleteClick();
                                     setShowToast(true);
                                   }}

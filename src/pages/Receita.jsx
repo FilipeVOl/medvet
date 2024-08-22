@@ -5,7 +5,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import AddIcon from "../assets/add.svg";
 import IconButton from "@mui/material/IconButton";
-import CancelIcon from "../images/cancel.svg"
+import CancelIcon from "../images/cancel.svg";
 import Postpresc from "../services/prescription";
 import { PrescContext } from "../contexts/prescContext";
 import {
@@ -16,6 +16,7 @@ import {
 import Autocomplete from "@mui/material/Autocomplete";
 import "../Component/nova consulta/consultPages.css";
 import { getEnchiridion } from "../services/enchiridion";
+import { getAllTeachers, getTeacherByName } from "../services/professores";
 
 export const InputReceita = ({
   label,
@@ -25,9 +26,12 @@ export const InputReceita = ({
   requireVal,
   handleButton,
   isTutor,
+  isProf,
   isPaciente,
   arrTutores,
   arrPacientes,
+  arrProfs,
+  setArrProf,
   setArrTutor,
   setArrPaci,
   setSpecies,
@@ -72,6 +76,39 @@ export const InputReceita = ({
     );
   }
 
+  if (isProf) {
+    return (
+      <label htmlFor="free-solo-2-demo" className="grow text-mui">
+        Professor
+        <Autocomplete
+          freeSolo
+          disableClearable
+          id="free-solo-2-demo"
+          onChange={(_e, newValue) => {
+            setter(newValue);
+            getAllTeachers(setArrProf);
+
+          }}
+          options={arrProfs.map((option) => option.name)}
+          renderInput={(params) => (
+            <TextField
+              onChange={(e) => {
+                setter(e.target.value);
+                getTeacherByName(setArrProf, e.target.value);
+                console.log(arrProfs);
+              }}
+              {...params}
+              InputProps={{
+                ...params.InputProps,
+                type: "search",
+              }}
+            />
+          )}
+        />
+      </label>
+    );
+  }
+
   if (isPaciente) {
     return (
       <label htmlFor="free-solo-2-demo" className="grow text-mui">
@@ -83,7 +120,7 @@ export const InputReceita = ({
           onChange={(_e, newValue) => {
             setter(newValue);
             const filter = arrPacientes.filter((e) => e.name === newValue);
-            console.log(filter)
+            console.log(filter);
             setSpecies(filter[0].species);
             setRaca(filter[0].race);
             setSexo(filter[0].gender);
@@ -141,10 +178,12 @@ export const Receita = () => {
   const [teacher_id, setTeacherId] = useState("");
   const [openModal, setOpenModal] = useState(!open);
   const [tutores, setTutores] = useState([]);
+  const [professores, setProfessores] = useState([]);
   const [pacientes, setPacientes] = useState([]);
   const [required, setRequired] = useState({
     animal_id: false,
     tutor: false,
+    teacher_id: false,
     species: false,
     raca: false,
     sexo: false,
@@ -163,8 +202,8 @@ export const Receita = () => {
   useEffect(() => {
     getEnchiridion(setTeacherId);
     getAnimalsReceipt(setTutores, setPacientes, "");
+    getAllTeachers(setProfessores);
   }, []);
-
 
   useEffect(() => {}, [medications]);
 
@@ -190,9 +229,6 @@ export const Receita = () => {
     });
     setRequired(obj);
   };
-
-  
-
 
   const validateInputs = () => {
     medications.forEach((e) => {
@@ -233,7 +269,7 @@ export const Receita = () => {
   const deleteMedicamento = () => {
     array.splice(array.length - 1, 1);
     setMedications(array);
-  }
+  };
 
   const handleMedicamento = (arr, index, valor, key) => {
     const array = [...arr];
@@ -251,17 +287,17 @@ export const Receita = () => {
       });
     } else {
       handleButtonClick();
-      Postpresc(data)
-      console.log(data)
+      Postpresc(data);
+      console.log(data);
       return;
     }
   };
 
   const getProfId = (i) => {
-    if (teacher_id[i] && teacher_id[i].hasOwnProperty('id')) {
-      return teacher_id[i].id
+    if (teacher_id[i] && teacher_id[i].hasOwnProperty("id")) {
+      return teacher_id[i].id;
     }
-  }
+  };
 
   const data = {
     teacher_id: getProfId(0),
@@ -274,7 +310,7 @@ export const Receita = () => {
     peso,
     id,
     medications,
-  }
+  };
 
   return (
     <div className="font-Montserrat">
@@ -293,6 +329,19 @@ export const Receita = () => {
             requireVal={required.tutor}
             handleButton={validateTrue}
             isTutor
+          />
+
+          <InputReceita
+            label="Professor"
+            setter={setTeacherId}
+            arrProfs={professores}
+            setArrProf={setProfessores}
+            setArrPaci={setPacientes}
+            value={teacher_id}
+            descrValue="professor"
+            requireVal={required.professor}
+            handleButton={validateTrue}
+            isProf
           />
 
           <InputReceita
@@ -377,9 +426,11 @@ export const Receita = () => {
               key={index}
               className="px-24 w-auto mb-20 border-2 mx-8 py-8 flex flex-col gap-4"
             >
-              <img src={CancelIcon} 
-              onClick={() => deleteMedicamento()}
-              className="cursor-pointer w-6 h-6 fill-red-500 self-end"/>
+              <img
+                src={CancelIcon}
+                onClick={() => deleteMedicamento()}
+                className="cursor-pointer w-6 h-6 fill-red-500 self-end"
+              />
               <div className="grid grid-cols-3 gap-10">
                 <label>
                   Uso

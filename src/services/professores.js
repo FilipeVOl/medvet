@@ -14,6 +14,16 @@ const getProfessores = async (set, page, itemspage) => {
     }
 }
 
+const getAllTeachers = async (set) => {
+  try {
+    await axios.get('http://localhost:3333/get/teacher?numberOfItems=5&page=1')
+    .then(response => {
+      set(response.data);
+    })
+  } catch(e) {
+    console.log(e, 'Problema na requisição de all professores.');
+  }}
+
 const getProfById = (set, id) => {
   try {
       axios.get(`http://localhost:3333/get/teacher/id/${id}`)
@@ -75,5 +85,18 @@ const getProfByReg = (set, registration) => {
     });
 }
 
+const patchProf = async (set, id) => {
+  try {
+  const response = await axios
+    .patch("http://localhost:3333/delete/teacher", {
+        id: id,
+    })
+    set(response.data)
+    console.log(response.data)
+  } catch (error) {
+      console.log(error);
+    };
+};
 
-export { getProfessores, getTeacherByName, postProf, PutProf, getProfByReg }
+
+export { getProfessores, getAllTeachers, getTeacherByName, postProf, PutProf, getProfByReg, patchProf }

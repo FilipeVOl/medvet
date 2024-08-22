@@ -3,7 +3,7 @@ import axios from "axios";
 const getAluno = async (setData, page) => {
   try {
     const { data } = await axios.get(
-      `http://localhost:3333/get/student?numberOfItems=10&page=${page}`
+      `http://localhost:3333/get/student?numberOfItems=5&page=${page}`
     );
     setData(data);
     return data;
@@ -33,18 +33,17 @@ const getAlunoByReg = async (set, registration) => {
   }
 };
 
-const patchAluno = async (set) => {
-  axios
-    .patch("http://localhost:3333/delete/aluno", {
-      id: selectedUser.id,
+const patchAluno = async (set, id) => {
+  try {
+  const response = await axios
+    .patch("http://localhost:3333/delete/student", {
+        id: id,
     })
-    .then((response) => {
-      console.log(response);
-      getAluno(setData);
-    })
-    .catch((error) => {
+    set(response.data)
+    console.log(response.data)
+  } catch (error) {
       console.log(error);
-    });
+    };
 };
 
 export { getAluno, PutAluno, getAlunoByReg, patchAluno };

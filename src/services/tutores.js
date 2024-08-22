@@ -104,13 +104,16 @@ export const PutTutor = (att) => {
     })
 }
 
-export const patchTutor = async (id) => {
-  axios
-    .patch("http://localhost:3333/delete/tutor", id)
-    .then((response) => {
-      console.log(response);
+
+export const patchTutor = async (set, id) => {
+  try {
+  const response = await axios
+    .patch("http://localhost:3333/delete/tutor", {
+        id: id,
     })
-    .catch((error) => {
+    set(response.data)
+    console.log(response.data)
+  } catch (error) {
       console.log(error);
-    });
+    };
 };
