@@ -17,3 +17,15 @@ export async function getEnchiridion(set) {
         throw new Error('Failed to get Enchiridion');
     }
 }
+
+
+export const getEnchiridionsAnimalId = async (id) => {
+    try {
+      const enchiridions = await axios.get(`http://localhost:3333/get/enchiridion/animal/${id}`)
+      return enchiridions.data
+    } catch (error) {
+      console.error(error)
+      throw new Error('Problema na requisição de animal id with prontuarios')
+    }
+  }
+  

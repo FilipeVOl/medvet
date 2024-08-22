@@ -3,20 +3,38 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import MedicalInformationIcon from "@mui/icons-material/MedicalInformation";
 import { getProntuario } from "../services/prontuario";
+import { getEnchiridionsAnimalId } from "../services/enchiridion";
 import { useParams } from "react-router-dom";
 
 export default function Prontuario() {
   const { id } = useParams();
   const [prontuario, setProntuario] = useState({});
+  const [enchiridions, setEnchiridions] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await getProntuario(id);
       setProntuario(response);
     };
-
+   console.log(id)
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchDatas = async () => {
+      console.log("useEffect executada");
+      try {
+        const responses = await getEnchiridionsAnimalId(id);
+        console.log(responses);
+        setEnchiridions(responses);
+      } catch (error) {
+        console.error('Erro ao buscar os dados:', error);
+      }
+    };
+    fetchDatas();
+  }, [id]);
+
+  
 
   const firstCapitalLetter = (string) => {
     if (string) {
@@ -130,7 +148,6 @@ export default function Prontuario() {
               </button>
             </div>
           )}
-          <ConsultWrapper />
           <ConsultWrapper />
         </div>
       </div>
