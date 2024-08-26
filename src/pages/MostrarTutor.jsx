@@ -231,153 +231,126 @@ const MostrarTutor = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data && data.tutor ? (
-                    Object.values(data.tutor).map((row) => (
-                      <StyledTableRow key={row.id}>
-                        <StyledTableCell>{row.name}</StyledTableCell>
-                        <StyledTableCell>{row.phone}</StyledTableCell>
+                  
+                {data.tutor && Object.values(data.tutor).map((row) => (
+                    <StyledTableRow key={row.id}>
+                      <StyledTableCell>{row.name}</StyledTableCell>
+                      <StyledTableCell>{row.phone}</StyledTableCell>
+                      <IconButton
+                        className="edit-button"
+                        onClick={() => {
+                          handleButtonClick();
+                          setSelectedUser(row);
+                        }}
+                      >
+                        <img src={EditIcon} />
+                      </IconButton>
 
-                        <IconButton
-                          className="edit-button"
-                          onClick={() => {
-                            handleButtonClick();
-                            setSelectedUser(row);
-                          }}
-                        >
-                          <img src={EditIcon} />
-                        </IconButton>
-                        <IconButton
-                          className="delete-button"
-                          onClick={() => {
-                            handleDeleteClick();
-                            setSelectedUser(row);
-                          }}
-                        >
-                          <img src={TrashIcon} />
-                        </IconButton>
-
-                        <Modal
-                          open={openEdit}
-                          onClose={handleButtonClick}
-                          aria-labelledby="modal-modal-title"
-                          aria-describedby="modal-modal-description"
-                        >
-                          <Box sx={style}>
-                            <Typography
-                              id="modal-modal-title"
-                              variant="h6"
-                              component="h2"
-                            >
-                              <TelaNovoTutor
-                                selected={selectedUser}
-                                openEdit={setOpenEdit}
-                                buttonName="Atualizar"
-                              />
-                            </Typography>
-                          </Box>
-                        </Modal>
-
-                        <Modal
-                          open={openDelete}
-                          style={{
-                            borderRadius: "0.375rem",
-                          }}
-                          onClose={handleDeleteClick}
-                          aria-labelledby="modal-modal-deletetitle"
-                          aria-describedby="modal-modal-description2"
-                        >
-                          <Box
-                            sx={{
-                              position: "absolute",
-                              top: "50%",
-                              left: "50%",
-                              transform: "translate(-50%, -50%)",
-                              width: "500px",
-                              height: "auto",
-                              bgcolor: "background.paper",
-                              border: "2px solid #000",
-                              boxShadow: 24,
-                              p: 4,
-                            }}
-                          >
-                            <Typography
-                              style={{
-                                fontSize: "27px",
-                              }}
-                              className="font-Montserrat flex flex-col gap-12"
-                              id="modal-modal-deletetitle"
-                              variant="h6"
-                              component="h1"
-                            >
-                              Excluir cadastro?
-                              <p>Tem certeza de que quer excluir?</p>
-                              <div className="grid grid-cols-2">
-                                <IconButton
-                                  style={{
-                                    backgroundColor: "white",
-                                    width: "200px",
-                                    borderRadius: "6px",
-                                    border: "1px solid black",
-                                    color: "black",
-                                    "&:hover": {
-                                      backgroundColor: "#2C2B60",
-                                    },
-                                  }}
-                                  onClick={handleDeleteClick}
-                                >
-                                  Voltar
-                                </IconButton>
-                                <IconButton
-                                  onClick={async () => {
-                                    try {
-                                    console.log(selectedUser.id)
-
-                                     await patchTutor(setData, selectedUser.id);
-                                    } catch (error) {
-                                      console.error('Error deleting data:', error)
-                                    }
-                                    handleDeleteClick();
-                                    setShowToast(true);
-                                  }}
-                                  style={{
-                                    backgroundColor: "#100F49",
-                                    width: "200px",
-                                    borderRadius: "6px",
-                                    color: "white",
-                                    "&:hover": {
-                                      backgroundColor: "#2C2B60",
-                                    },
-                                  }}
-                                >
-                                  Excluir
-                                </IconButton>
-                              </div>
-                            </Typography>
-                          </Box>
-                        </Modal>
-                      </StyledTableRow>
-                    ))
-                  ) : (
-                    <StyledTableRow>
-                      <StyledTableCell>
-                        <div className="flex justify-center">
-                          <p className="font-Montserrat text-2xl">
-                            Nenhum tutor encontrado
-                          </p>
-                        </div>
-                      </StyledTableCell>
+                      <IconButton
+                        className="delete-button"
+                        onClick={() => {
+                          handleDeleteClick();
+                          setSelectedUser(row);
+                        }}
+                      >
+                        <img src={TrashIcon} />
+                      </IconButton>
                     </StyledTableRow>
-                  )}
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
-            <Stack className="flex justify-center items-center mt-4" spacing={2}>
-      <Pagination
-        count={2}
-        onChange={handlePage}
-      />
-    </Stack>
+            <Stack
+              className="flex justify-center items-center mt-4"
+              spacing={2}
+            >
+              <Pagination count={data.numberOfPages} onChange={handlePage} />
+            </Stack>
           </div>
+
+          <Modal
+            open={openEdit}
+            onClose={handleButtonClick}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                <TelaNovoTutor buttonName="Atualizar" />
+              </Typography>
+            </Box>
+          </Modal>
+
+          <Modal
+            open={openDelete}
+            onClose={handleDeleteClick}
+            aria-labelledby="modal-modal-deletetitle"
+            aria-describedby="modal-modal-description2"
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "500px",
+                height: "1/3",
+                bgcolor: "background.paper",
+                border: "2px solid #000",
+                boxShadow: 24,
+                p: 4,
+              }}
+            >
+              <Typography
+                style={{
+                  fontSize: "27px",
+                }}
+                className="font-Montserrat flex flex-col gap-12"
+                id="modal-modal-deletetitle"
+                variant="h6"
+                component="h1"
+              >
+                Excluir cadastro?
+                <p>Tem certeza de que quer excluir?</p>
+                <div className="grid grid-cols-2">
+                  <IconButton
+                    style={{
+                      backgroundColor: "white",
+                      width: "200px",
+                      borderRadius: "6px",
+                      border: "1px solid black",
+                      color: "black",
+                      "&:hover": {
+                        backgroundColor: "#2C2B60",
+                      },
+                    }}
+                    onClick={handleDeleteClick}
+                  >
+                    Voltar
+                  </IconButton>
+                  <IconButton
+                    onClick={() => {
+                      console.log(selectedUser.id);
+                      handleDeleteClick();
+                      patchTutor(selectedUser.id);
+                      setShowToast(true);
+                    }}
+                    style={{
+                      backgroundColor: "#100F49",
+                      width: "200px",
+                      borderRadius: "6px",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#2C2B60",
+                      },
+                    }}
+                  >
+                    Excluir
+                  </IconButton>
+                </div>
+              </Typography>
+            </Box>
+          </Modal>
         </div>
       </UpdateEditContext.Provider>
     </ThemeProvider>

@@ -2,7 +2,7 @@ import axios from "axios";
 
 const getProfessores = async (set, page, itemspage) => {
     try {
-       await axios.get(`http://localhost:3333/get/teacher?numberOfItems=${itemspage}&page=${page}`)
+       await axios.get(`http://localhost:3333/get/teacher?numberOfItems=5&page=${page}`)
         .then(response => {
           set(response.data);
         })

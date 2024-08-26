@@ -85,7 +85,6 @@ const MostrarProf = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [registration, setRegistration] = useState("");
   const [currPage, setCurrPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 5;
 
@@ -244,7 +243,7 @@ const MostrarProf = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {Object.values(data).map((row) => (
+                  {data.teacher && Object.values(data.teacher).map((row) => (
                     <StyledTableRow key={row.id}>
                       <StyledTableCell>{row.registration}</StyledTableCell>
                       <StyledTableCell>{row.name}</StyledTableCell>
@@ -284,7 +283,7 @@ const MostrarProf = () => {
               className="flex justify-center items-center mt-4"
               spacing={2}
             >
-              <Pagination count={currPage} onChange={handlePage} />
+              <Pagination count={data.numberOfPages} onChange={handlePage} />
             </Stack>
           </div>
 
@@ -352,7 +351,7 @@ const MostrarProf = () => {
                     onClick={() => {
                       console.log(selectedUser.id);
                       handleDeleteClick();
-                      patchTutor(selectedUser.id);
+                      // patchTutor(selectedUser.id);
                       setShowToast(true);
                     }}
                     style={{

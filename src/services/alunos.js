@@ -12,6 +12,18 @@ const getAluno = async (setData, page) => {
   }
 };
 
+const getAllStudents = async (setData) => {
+  try {
+    const { data } = await axios.get(
+      `http://localhost:3333/get/student?numberOfItems=5&page=1`
+    );
+    setData(data);
+    return data;
+  } catch (e) {
+    throw new Error("Failed to get All Students");
+  }
+};
+
 const PutAluno = async (att) => {
   try {
     const response = await axios.put("http://localhost:3333/put/student", att);

@@ -20,7 +20,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import Cadastro from "./Cadastro";
 import { useEffect } from "react";
-import { getAluno, getAlunoByReg, patchAluno } from "../services/alunos";
+import { getAluno, getAlunoByReg, patchAluno} from "../services/alunos";
 import {
   UpdateEditContext,
   UpdateEditProvider,
@@ -87,21 +87,23 @@ const MostrarAluno = () => {
   const [showToast, setShowToast] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [registration, setRegistration] = useState("");
+  const [query, setQuery] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
   const [currPage, setCurrPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 5;
 
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   const handleNewClick = () => setOpenNew(!openNew);
 
   const [data, setData] = useState("");
-  const [users, setUsers] = useState([data]);
 
   useEffect(() => {
-    getAluno(setData, currPage);
-  }, [selectedUser, openNew, currPage]);
+    getAluno(setData, currPage).then((res) => {
+      setFilteredData(res.student);
+    }).catch((e) => {
+      console.log(e);
+    })
+  }, [selectedUser, openNew]);
 
   useEffect(() => {
     if (showToast) {
@@ -171,9 +173,11 @@ const MostrarAluno = () => {
                 placeholder="N° de matricula"
                 name="searchRegist"
                 type="text"
-                onChange={({ target }) => {
-                  setQuery(target.value);
-                  getAlunoByReg(setData, target.value);
+                onChange={ async ({ target }) => {
+                   setQuery(target.value);
+                   if (target.value) {
+                   await getAlunoByReg(setFilteredData, query);
+                   }
                 }}
                 className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
               />
@@ -246,7 +250,8 @@ const MostrarAluno = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {Object.values(data.student).map((row) => (
+                {console.log(filteredData)}
+                  {filteredData && filteredData.map((row) => (
                     <StyledTableRow key={row.id}>
                       <StyledTableCell>{row.registration}</StyledTableCell>
                       <StyledTableCell>{row.name}</StyledTableCell>
@@ -279,7 +284,7 @@ const MostrarAluno = () => {
               className="flex justify-center items-center mt-4"
               spacing={2}
             >
-              <Pagination count={currPage} onChange={handlePage} />
+              <Pagination count={1} onChange={handlePage} />
             </Stack>
           </div>
 
