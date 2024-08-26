@@ -3,13 +3,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import MedicalInformationIcon from "@mui/icons-material/MedicalInformation";
 import { getProntuario } from "../services/prontuario";
+import CircularProgress from '@mui/material/CircularProgress';
 import { getEnchiridionsAnimalId } from "../services/enchiridion";
 import { useParams } from "react-router-dom";
+import CircularIndeterminate from "../Component/Prontuarios/Loading";
 
 export default function Prontuario() {
   const { id } = useParams();
   const [prontuario, setProntuario] = useState({});
   const [enchiridions, setEnchiridions] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,11 +27,14 @@ export default function Prontuario() {
     const fetchDatas = async () => {
       console.log("useEffect executada");
       try {
+        setIsLoading(true);
         const responses = await getEnchiridionsAnimalId(id);
         console.log(responses);
         setEnchiridions(responses);
       } catch (error) {
         console.error('Erro ao buscar os dados:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchDatas();
@@ -49,20 +55,20 @@ export default function Prontuario() {
   };
 
   const Wrapper = () => {
-    const ConsultWrapper = () => {
+    const ConsultWrapper = ({ date, reasonConsult, weight }) => {
       return (
         <div className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8">
           <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-start gap-2">
             <MedicalInformationIcon className="text-[#100F49]" fontSize="24" />
-            18/05/2024 - Prof. Henrique Valle
+            {date} - Prof. Henrique Valle
           </span>
           <span className="font-Montserrat text-lg text-[#595959]">
-            <strong>Motivo da consulta: </strong>O animal fica agressivo quando
-            encosta na pata dianteira.
+            <strong>Motivo da consulta: </strong>
+            {reasonConsult}
           </span>
           <span className="font-Montserrat text-lg text-[#595959]">
             <strong>Peso: </strong>
-            12kg
+            {weight}kg
           </span>
         </div>
       );
@@ -148,7 +154,14 @@ export default function Prontuario() {
               </button>
             </div>
           )}
-          <ConsultWrapper />
+           {enchiridions.enchiridions.map((enchiridion) => (
+          <ConsultWrapper
+            key={enchiridion.id}
+            date={new Date(enchiridion.date).toLocaleDateString()}
+            reasonConsult={enchiridion.reason_consult}
+            weight={enchiridion.weights[0]}
+          />
+        ))}
         </div>
       </div>
     );
@@ -156,6 +169,7 @@ export default function Prontuario() {
 
   return (
     <>
+     {isLoading ? <CircularIndeterminate/> :  
       <div className="container flex p-20 flex-col font-Montserrat">
         <h1 className="font-Montserrat mb-14  h-10 font-bold text-2xl">
           Prontuário
@@ -180,6 +194,7 @@ export default function Prontuario() {
         </div>
         <Wrapper />
       </div>
+}
     </>
   );
 }
