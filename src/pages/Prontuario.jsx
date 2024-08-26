@@ -5,15 +5,18 @@ import MedicalInformationIcon from "@mui/icons-material/MedicalInformation";
 import { getProntuario } from "../services/prontuario";
 import CircularProgress from '@mui/material/CircularProgress';
 import { getEnchiridionsAnimalId } from "../services/enchiridion";
+import { getTeacherName } from "../services/enchiridion";
 import { useParams } from "react-router-dom";
 import CircularIndeterminate from "../Component/Prontuarios/Loading";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Prontuario() {
   const { id } = useParams();
   const [prontuario, setProntuario] = useState({});
   const [enchiridions, setEnchiridions] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-
+  const [teacherNames, setTeacherNames] = useState({});
   useEffect(() => {
     const fetchData = async () => {
       const response = await getProntuario(id);
@@ -31,6 +34,18 @@ export default function Prontuario() {
         const responses = await getEnchiridionsAnimalId(id);
         console.log(responses);
         setEnchiridions(responses);
+
+      // Buscar os nomes dos professores
+      const uniqueTeacherIds = [...new Set(responses.enchiridions.map(e => e.teacher_id))];
+      const names = {};
+      for (const teacherId of uniqueTeacherIds) {
+        const name = await getTeacherName(teacherId);
+        names[teacherId] = name;
+      }
+      setTeacherNames(names);
+
+
+
       } catch (error) {
         console.error('Erro ao buscar os dados:', error);
       } finally {
@@ -55,12 +70,21 @@ export default function Prontuario() {
   };
 
   const Wrapper = () => {
-    const ConsultWrapper = ({ date, reasonConsult, weight }) => {
+    const ConsultWrapper = ({ date, reasonConsult, weight, id , enchiridionid }) => {
+      
+      const navigate = useNavigate();
+
+
+      const handleClick = () => {
+        navigate(`/enchiridion/view/${enchiridionid}`);
+      };
+
+
       return (
-        <div className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8">
+        <div   onClick={handleClick} className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8">
           <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-start gap-2">
             <MedicalInformationIcon className="text-[#100F49]" fontSize="24" />
-            {date} - Prof. Henrique Valle
+            {date} - {teacherNames[id] || id}
           </span>
           <span className="font-Montserrat text-lg text-[#595959]">
             <strong>Motivo da consulta: </strong>
@@ -157,9 +181,11 @@ export default function Prontuario() {
            {enchiridions.enchiridions.map((enchiridion) => (
           <ConsultWrapper
             key={enchiridion.id}
+            enchiridionid ={enchiridion.id}
             date={new Date(enchiridion.date).toLocaleDateString()}
             reasonConsult={enchiridion.reason_consult}
             weight={enchiridion.weights[0]}
+            id={enchiridion.teacher_id}
           />
         ))}
         </div>

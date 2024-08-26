@@ -45,107 +45,107 @@ export const InputReceita = ({
     setter(e.target.value);
   };
 
-  if (isTutor) {
-    return (
-      <label htmlFor="free-solo-2-demo " className="grow text-mui">
-        Tutor
-        <Autocomplete
-          freeSolo
-          disableClearable
-          id="free-solo-2-demo"
-          onChange={(_e, newValue) => {
-            setter(newValue);
-            getAnimalsReceipt(setArrTutor, setArrPaci, newValue);
-          }}
-          options={arrTutores.map((option) => option.name)}
-          renderInput={(params) => (
-            <TextField
-              onChange={(e) => {
-                setter(e.target.value);
-                getAnimalsAndTutorByTutorName(setArrTutor, e.target.value);
-              }}
-              {...params}
-              InputProps={{
-                ...params.InputProps,
-                type: "search",
-              }}
-            />
-          )}
-        />
-      </label>
-    );
-  }
+  // if (isTutor) {
+  //   return (
+  //     <label htmlFor="free-solo-2-demo " className="grow text-mui">
+  //       Tutor
+  //       <Autocomplete
+  //         freeSolo
+  //         disableClearable
+  //         id="free-solo-2-demo"
+  //         onChange={(_e, newValue) => {
+  //           setter(newValue);
+  //           getAnimalsReceipt(setArrTutor, setArrPaci, newValue);
+  //         }}
+  //         options={arrTutores.map((option) => option.name)}
+  //         renderInput={(params) => (
+  //           <TextField
+  //             onChange={(e) => {
+  //               setter(e.target.value);
+  //               getAnimalsAndTutorByTutorName(setArrTutor, e.target.value);
+  //             }}
+  //             {...params}
+  //             InputProps={{
+  //               ...params.InputProps,
+  //               type: "search",
+  //             }}
+  //           />
+  //         )}
+  //       />
+  //     </label>
+  //   );
+  // }
 
-  if (isProf) {
-    return (
-      <label htmlFor="free-solo-2-demo" className="grow text-mui">
-        Professor
-        <Autocomplete
-          freeSolo
-          disableClearable
-          id="free-solo-2-demo"
-          onChange={(_e, newValue) => {
-            setter(newValue);
-            getAllTeachers(setArrProf);
+  // if (isProf) {
+  //   return (
+  //     <label htmlFor="free-solo-2-demo" className="grow text-mui">
+  //       Professor
+  //       <Autocomplete
+  //         freeSolo
+  //         disableClearable
+  //         id="free-solo-2-demo"
+  //         onChange={(_e, newValue) => {
+  //           setter(newValue);
+  //           getAllTeachers(setArrProf);
 
-          }}
-          options={arrProfs.map((option) => option.name)}
-          renderInput={(params) => (
-            <TextField
-              onChange={(e) => {
-                setter(e.target.value);
-                getTeacherByName(setArrProf, e.target.value);
-                console.log(arrProfs);
-              }}
-              {...params}
-              InputProps={{
-                ...params.InputProps,
-                type: "search",
-              }}
-            />
-          )}
-        />
-      </label>
-    );
-  }
+  //         }}
+  //         options={arrProfs.map((option) => option.name)}
+  //         renderInput={(params) => (
+  //           <TextField
+  //             onChange={(e) => {
+  //               setter(e.target.value);
+  //               getTeacherByName(setArrProf, e.target.value);
+  //               console.log(arrProfs);
+  //             }}
+  //             {...params}
+  //             InputProps={{
+  //               ...params.InputProps,
+  //               type: "search",
+  //             }}
+  //           />
+  //         )}
+  //       />
+  //     </label>
+  //   );
+  // }
 
-  if (isPaciente) {
-    return (
-      <label htmlFor="free-solo-2-demo" className="grow text-mui">
-        Paciente
-        <Autocomplete
-          freeSolo
-          id="free-solo-2-demo"
-          disableClearable
-          onChange={(_e, newValue) => {
-            setter(newValue);
-            const filter = arrPacientes.filter((e) => e.name === newValue);
-            console.log(filter);
-            setSpecies(filter[0].species);
-            setRaca(filter[0].race);
-            setSexo(filter[0].gender);
-            setIdade(filter[0].age);
-            // setPeso(filter[0].weigth);
-            setId(filter[0].sequence);
-          }}
-          options={arrPacientes.map((option) => option.name)}
-          renderInput={(params) => (
-            <TextField
-              id="textField"
-              onChange={(e) => {
-                setter(e.target.value);
-              }}
-              {...params}
-              InputProps={{
-                ...params.InputProps,
-                type: "search",
-              }}
-            />
-          )}
-        />
-      </label>
-    );
-  }
+  // if (isPaciente) {
+  //   return (
+  //     <label htmlFor="free-solo-2-demo" className="grow text-mui">
+  //       Paciente
+  //       <Autocomplete
+  //         freeSolo
+  //         id="free-solo-2-demo"
+  //         disableClearable
+  //         onChange={(_e, newValue) => {
+  //           setter(newValue);
+  //           const filter = arrPacientes.filter((e) => e.name === newValue);
+  //           console.log(filter);
+  //           setSpecies(filter[0].species);
+  //           setRaca(filter[0].race);
+  //           setSexo(filter[0].gender);
+  //           setIdade(filter[0].age);
+  //           // setPeso(filter[0].weigth);
+  //           setId(filter[0].sequence);
+  //         }}
+  //         options={arrPacientes.map((option) => option.name)}
+  //         renderInput={(params) => (
+  //           <TextField
+  //             id="textField"
+  //             onChange={(e) => {
+  //               setter(e.target.value);
+  //             }}
+  //             {...params}
+  //             InputProps={{
+  //               ...params.InputProps,
+  //               type: "search",
+  //             }}
+  //           />
+  //         )}
+  //       />
+  //     </label>
+  //   );
+  // }
 
   return (
     <div className="flex flex-col mb-4">

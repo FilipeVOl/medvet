@@ -1,7 +1,13 @@
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import { Grid } from "@mui/material";
+import { useParams } from "react-router-dom";
+
 
 export default function InfoProntuario() {
+
+  const { id } = useParams();
+
+
   const Title = ({ title }) => {
     return (
       <div className="flex gap-2 items-center">
