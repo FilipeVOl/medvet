@@ -18,7 +18,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import { getTutores, getTutoresByName, patchTutor } from "../services/tutores";
+import { getTutorByNumber, getTutores, getTutoresByName, patchTutor } from "../services/tutores";
 import TelaNovoTutor from "../pages/TelaNovoTutor";
 import {
   UpdateEditContext,
@@ -79,22 +79,22 @@ const MostrarTutor = () => {
   const [openNew, setOpenNew] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [selectedUser, setSelectedUser] = useState("");
-  const [registration, setRegistration] = useState("");
   const [currPage, setCurrPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   const handleNewClick = () => setOpenNew(!openNew);
 
   const [data, setData] = useState("");
-  const [users, setUsers] = useState([data]);
 
   const handlePage = (event, value) => {
     setCurrPage(value)
   }
 
   useEffect(() => {
-    getTutores(setData, currPage);
-  }, [selectedUser, openNew, currPage]);
+    getTutorByNumber(query).then((data) => setFilteredData(data));
+  }, [selectedUser, openNew, query]);
 
   useEffect(() => {
     if (showToast) {
@@ -163,7 +163,6 @@ const MostrarTutor = () => {
                 className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
                 onChange={({ target }) => {
                   setQuery(target.value);
-                  getTutoresByName(setData, target.value);
                 }}
               />
               <SearchIcon className="absolute p-4" />
@@ -231,8 +230,8 @@ const MostrarTutor = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  
-                {data.tutor && Object.values(data.tutor).map((row) => (
+                {console.log(typeof filteredData)}
+                {filteredData && filteredData.map((row) => (
                     <StyledTableRow key={row.id}>
                       <StyledTableCell>{row.name}</StyledTableCell>
                       <StyledTableCell>{row.phone}</StyledTableCell>

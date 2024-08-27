@@ -33,12 +33,11 @@ const PutAluno = async (att) => {
   }
 };
 
-const getAlunoByReg = async (set, registration) => {
+const getAlunoByReg = async (registration) => {
   try {
     const { data } = await axios.get(
       `http://localhost:3333/get/student/registration?q=${registration}&page=1`
     );
-    set(data);
     return data;
   } catch (e) {
     throw new Error("Erro ao filtrar alunos");

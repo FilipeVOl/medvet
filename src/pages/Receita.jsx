@@ -10,7 +10,6 @@ import Postpresc from "../services/prescription";
 import { PrescContext } from "../contexts/prescContext";
 import {
   getAnimalsAndTutorByTutorName,
-  getTutores,
   getAnimalsReceipt,
 } from "../services/tutores";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -87,9 +86,9 @@ export const InputReceita = ({
           onChange={(_e, newValue) => {
             setter(newValue);
             getAllTeachers(setArrProf);
-
+            {console.log(arrProfs)}
           }}
-          options={arrProfs.map((option) => option.name)}
+          options={Object.values(arrProfs).map((option) => option.name)}
           renderInput={(params) => (
             <TextField
               onChange={(e) => {
@@ -163,6 +162,7 @@ export const InputReceita = ({
     </div>
   );
 };
+
 
 export const Receita = () => {
   // FAZER REQUISIÇÃO DO TEACHER_ID DA TELA DE NOVACONSULTA
@@ -339,7 +339,7 @@ export const Receita = () => {
             setArrPaci={setPacientes}
             value={teacher_id}
             descrValue="professor"
-            requireVal={required.professor}
+            requireVal={required.teacher_id}
             handleButton={validateTrue}
             isProf
           />

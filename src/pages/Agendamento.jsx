@@ -22,7 +22,6 @@ const Agendamento = () => {
   };
 
 
-  const [data, setData] = useState([1]);
   const [telefone, setTelefone] = useState("");
   const [open, setOpen] = useState(true);
   const [validate, setValidate] = useState(false);
@@ -44,11 +43,13 @@ const Agendamento = () => {
     setOpen(false);
   };
 
+  const [data, setData] = useState("");
+
   const handleConfirmButton = async () => {
-   const response = await getTutorByNumber(phoneUnmask(telefone), setData);
-    if (response.tutors[0].phone == phoneUnmask(telefone)) {
-      console.log(response.tutors[0]);
+   const response = await getTutorByNumber(phoneUnmask(telefone));
+    if (response == phoneUnmask(telefone)) {
       setValidate(true);
+      setData(response);
     }
     handleClose();
   };
@@ -100,7 +101,8 @@ const Agendamento = () => {
           </div>
         </Box>
       </Modal>
-      {validate ? <TutorValidado tel={data.tutors[0]} /> : <TutorInvalido />}
+      {console.log(data)}
+      {validate ? <TutorValidado tel={data} /> : <TutorInvalido />}
     </div>
   );
 };
