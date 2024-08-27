@@ -76,12 +76,12 @@ export default function Prontuario() {
 
 
       const handleClick = () => {
-        navigate(`/enchiridion/view/${enchiridionid}`);
+        navigate(`/prontuarios/view/${enchiridionid}`);
       };
 
 
       return (
-        <div   onClick={handleClick} className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8">
+        <div   onClick={handleClick} className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer">
           <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-start gap-2">
             <MedicalInformationIcon className="text-[#100F49]" fontSize="24" />
             {date} - {teacherNames[id] || id}

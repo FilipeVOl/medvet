@@ -1,11 +1,46 @@
-import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+
 import { Grid } from "@mui/material";
 import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import CircularIndeterminate from "../Component/Prontuarios/Loading";
+import { getEnchiridionId, getTeacherName } from "../services/enchiridion";
+import { getAnimalById } from "../services/animals";
+
 
 
 export default function InfoProntuario() {
 
   const { id } = useParams();
+  const [prontuario, setProntuario] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [teacherName, setTeacherName] = useState({});
+  const [animals, setAnimals] = useState({});
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const enchiridion = await getEnchiridionId(id);
+        setProntuario(enchiridion);
+        const teacher = await getTeacherName(enchiridion.teacher_id);
+        setTeacherName(teacher);
+        const animal = await getAnimalById(enchiridion.animal_id);
+        setAnimals(animal)
+        console.log(animal)
+      } catch (error) {
+        console.error("Erro ao buscar o prontuário:", error);
+      }finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+
+
+
 
 
   const Title = ({ title }) => {
@@ -18,11 +53,14 @@ export default function InfoProntuario() {
     );
   };
 
-  const SystemsWrapper = ({ title }) => {
+  const SystemsWrapper = ({ title, props }) => {
     return (
       <div className="flex-1 w-full items-start justify-start mb-12">
-        <h1 className="font-Montserrat font-normal text-lg text-[#2C2C2C]">
-          {title}
+        <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C]">
+          {title} 
+        </h1>
+        <h1>
+          {props}
         </h1>
       </div>
     );
@@ -30,13 +68,14 @@ export default function InfoProntuario() {
 
   return (
     <>
+     {isLoading ? <CircularIndeterminate/> : 
       <div className="container flex p-20 ml-12 mt-8 flex-col font-Montserrat">
         <div className="flex flex-col mb-10">
           <h1 className="font-Montserrat h-10 font-bold text-2xl">
             Prontuário
           </h1>
           <span className="font-Montserrat font-semibold text-xl text-[#2C2C2C]">
-            N° 475256
+          N° {prontuario.id}
           </span>
         </div>
         <div className="flex flex-col gap-2">
@@ -47,7 +86,7 @@ export default function InfoProntuario() {
                 Professor:
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                João da Silva
+                {teacherName}
               </span>
             </Grid>
             <Grid item xs={2}>
@@ -55,7 +94,7 @@ export default function InfoProntuario() {
                 Paciente:
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                Joacir
+                {animals.data.name}
               </span>
             </Grid>
             <Grid item xs={3}>
@@ -71,15 +110,15 @@ export default function InfoProntuario() {
                 Data:
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                26/04/2004
+              {new Date(prontuario.date).toLocaleDateString()}
               </span>
             </Grid>
             <Grid item xs={3}>
               <h1 className="font-Montserrat font-medium text-lg text-[#2C2C2C]">
-                Espécie:
+                Espécie: 
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                Canis familiaris
+               {animals.data.species}
               </span>
             </Grid>
             <Grid item xs={3}>
@@ -87,7 +126,7 @@ export default function InfoProntuario() {
                 Raça:
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                Canis Molaris
+              {animals.data.race}
               </span>
             </Grid>
             <Grid item xs={2}>
@@ -95,7 +134,7 @@ export default function InfoProntuario() {
                 Sexo:
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                Macho
+              {animals.data.gender}
               </span>
             </Grid>
             <Grid item xs={2}>
@@ -103,7 +142,7 @@ export default function InfoProntuario() {
                 Idade:
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                3 anos
+              {animals.data.age}
               </span>
             </Grid>
             <Grid item xs={2}>
@@ -111,7 +150,7 @@ export default function InfoProntuario() {
                 Peso:
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                12kg
+               {prontuario.weight}
               </span>
             </Grid>
             <Grid item xs={2}>
@@ -119,7 +158,7 @@ export default function InfoProntuario() {
                 Pelagem:
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                Amarela
+              {animals.data.coat}
               </span>
             </Grid>
           </Grid>
@@ -129,14 +168,14 @@ export default function InfoProntuario() {
               Motivo da consulta:
             </h1>
             <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-              O animal fica agressivo quando encosta na pata direita dianteira{" "}
+              {prontuario.reason_consult}
             </span>
 
             <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mt-4">
               Histórico:
             </h1>
             <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-              Costuma ser muito dócil e gosta correr no quintal.
+              {prontuario.history}
             </span>
             <div className="flex justify-between gap-16">
               <div className="w-1/2">
@@ -194,7 +233,7 @@ export default function InfoProntuario() {
                 Temperatura:
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                37.5°C
+                {prontuario.temperature}
               </span>
             </Grid>
             <Grid item xs={3}>
@@ -202,7 +241,7 @@ export default function InfoProntuario() {
                 Freq. Cardíaca:
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                120 bpm
+                {prontuario.frequency_cardiac}
               </span>
             </Grid>
             <Grid item xs={3}>
@@ -210,7 +249,7 @@ export default function InfoProntuario() {
                 Freq. Respiratória:
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                30 mpm
+                {prontuario.frequency_respiratory}
               </span>
             </Grid>
             <Grid item xs={3}>
@@ -218,30 +257,30 @@ export default function InfoProntuario() {
                 Linfonodos reativos:
               </h1>
               <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                1,5 cm
+                {prontuario.lymph_node}
               </span>
             </Grid>
             <Grid item xs={12}>
               <h1 className="font-Montserrat font-medium text-lg text-[#2C2C2C]">
-                Grau de desidratação estimado: 5%
+                Grau de desidratação estimado: {prontuario.dehydration}
               </h1>
             </Grid>
             <Grid item xs={12}>
               <h1 className="font-Montserrat text-[##100F49] font-semibold text-xl">
-                Mucosas:
+                Mucosas
               </h1>
             </Grid>
             <Grid item xs={3}>
               <h1 className="font-Montserrat font-medium text-lg text-[#2C2C2C]">
-                Normocoradas
+                Tipo: {prontuario.type_mucous}
               </h1>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={3}>
               <h1 className="font-Montserrat font-medium text-lg text-[#2C2C2C]">
-                Pálidas
+                Qual: { prontuario.whats_mucous}
               </h1>
             </Grid>
-            <Grid item xs={2}>
+            {/* <Grid item xs={2}>
               <h1 className="font-Montserrat font-medium text-lg text-[#2C2C2C]">
                 Congestas
               </h1>
@@ -250,48 +289,48 @@ export default function InfoProntuario() {
               <h1 className="font-Montserrat font-medium text-lg text-[#2C2C2C]">
                 Cianóticas
               </h1>
-            </Grid>
+            </Grid> */}
           </Grid>
           <Title title="Avaliação dos sistemas" />
           <Grid container spacing={2} rowSpacing={3} className="p-8">
             <Grid item xs={6}>
-              <SystemsWrapper title="Pele e anexos:" />
+              <SystemsWrapper title="Pele e anexos:" props={prontuario.skin_annex} />
             </Grid>
             <Grid item xs={6}>
-              <SystemsWrapper title="Sist. Circulatório:" />
+              <SystemsWrapper title="Sist. Circulatório:" props={prontuario.system_circulatory} />
             </Grid>
             <Grid item xs={6}>
-              <SystemsWrapper title="Sist. Respiratório:" />
+              <SystemsWrapper title="Sist. Respiratório:" props={prontuario.system_respiratory} />
             </Grid>
             <Grid item xs={6}>
-              <SystemsWrapper title="Sist. Digestivo:" />
+              <SystemsWrapper title="Sist. Digestivo:" props={prontuario.system_digestive} />
             </Grid>
             <Grid item xs={6}>
-              <SystemsWrapper title="Sist. Locomotor:" />
+              <SystemsWrapper title="Sist. Locomotor:" props={prontuario.system_locomotor} />
             </Grid>
             <Grid item xs={6}>
-              <SystemsWrapper title="Sist. Nervoso:" />
+              <SystemsWrapper title="Sist. Nervoso:"  props={prontuario.system_nervous}/>
             </Grid>
             <Grid item xs={6}>
-              <SystemsWrapper title="Sist. Genitourinário:" />
+              <SystemsWrapper title="Sist. Genitourinário:" props={prontuario.system_genitourinary} />
             </Grid>
             <Grid item xs={6}>
-              <SystemsWrapper title="Outros:" />
+              <SystemsWrapper title="Outros:"  props={prontuario.others}/>
             </Grid>
           </Grid>
           <Title title="Exames" />
           <Grid container spacing={2} rowSpacing={3} className="p-8">
             <Grid item xs={6}>
-              <SystemsWrapper title="Exames complementares:" />
+              <SystemsWrapper title="Exames complementares:" props={prontuario.complementary_exams} />
             </Grid>
             <Grid item xs={6}>
-              <SystemsWrapper title="Diagnóstico:" />
+              <SystemsWrapper title="Diagnóstico:" props={prontuario.diagnosis} />
             </Grid>
             <Grid item xs={6}>
-              <SystemsWrapper title="Tratamento:" />
+              <SystemsWrapper title="Tratamento:" props={prontuario.trataments}/>
             </Grid>
             <Grid item xs={6}>
-              <SystemsWrapper title="Observações:" />
+              <SystemsWrapper title="Observações:" props={prontuario.observations} />
             </Grid>
             <Grid item xs={6}>
               <SystemsWrapper title="Responsável (Nome Completo):" />
@@ -299,6 +338,7 @@ export default function InfoProntuario() {
           </Grid>
         </div>
       </div>
+}
     </>
   );
 }
