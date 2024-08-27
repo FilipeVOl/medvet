@@ -32,7 +32,8 @@ const InputConsulta = ({ label, type, setter, value, isDisabled, placeHolder }) 
 };
 
 const TutorValidado = (props) => {
-  const [phoneWMask, setMask] = useState(props.tel);
+  console.log(props.tel.phone)
+  const [phoneWMask, setMask] = useState(props.tel.phone);
   const [nameAnimal, setName] = useState("");
   const [nameTutor, setTutor] = useState("");
   const [species, setEspecie] = useState("");
@@ -151,7 +152,7 @@ const TutorValidado = (props) => {
                     <input
                       type="text"
                       onChange={handlePhone}
-                      value={phoneMask(props.tel)}
+                      value={phoneMask(props.tel.phone)}
                       disabled={true}
                       className={"border-[#848484] border rounded-md h-[46px] p-2 text-base text-[#848484]  font-normal"}
                       data-testid="input-modal-agendamento"

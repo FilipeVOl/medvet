@@ -47,10 +47,11 @@ const Agendamento = () => {
 
   const handleConfirmButton = async () => {
    const response = await getTutorByNumber(phoneUnmask(telefone));
-    if (response == phoneUnmask(telefone)) {
       setValidate(true);
       setData(response);
-    }
+      if (response.phone && response.phone === phoneUnmask(telefone)) {
+        setValidate(true);
+      }
     handleClose();
   };
 
