@@ -3,20 +3,59 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import MedicalInformationIcon from "@mui/icons-material/MedicalInformation";
 import { getProntuario } from "../services/prontuario";
+import CircularProgress from '@mui/material/CircularProgress';
+import { getEnchiridionsAnimalId } from "../services/enchiridion";
+import { getTeacherName } from "../services/enchiridion";
 import { useParams } from "react-router-dom";
+import CircularIndeterminate from "../Component/Prontuarios/Loading";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Prontuario() {
   const { id } = useParams();
   const [prontuario, setProntuario] = useState({});
-
+  const [enchiridions, setEnchiridions] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [teacherNames, setTeacherNames] = useState({});
   useEffect(() => {
     const fetchData = async () => {
       const response = await getProntuario(id);
       setProntuario(response);
     };
-
+   console.log(id)
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchDatas = async () => {
+      console.log("useEffect executada");
+      try {
+        setIsLoading(true);
+        const responses = await getEnchiridionsAnimalId(id);
+        console.log(responses);
+        setEnchiridions(responses);
+
+      // Buscar os nomes dos professores
+      const uniqueTeacherIds = [...new Set(responses.enchiridions.map(e => e.teacher_id))];
+      const names = {};
+      for (const teacherId of uniqueTeacherIds) {
+        const name = await getTeacherName(teacherId);
+        names[teacherId] = name;
+      }
+      setTeacherNames(names);
+
+
+
+      } catch (error) {
+        console.error('Erro ao buscar os dados:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchDatas();
+  }, [id]);
+
+  
 
   const firstCapitalLetter = (string) => {
     if (string) {
@@ -31,20 +70,29 @@ export default function Prontuario() {
   };
 
   const Wrapper = () => {
-    const ConsultWrapper = () => {
+    const ConsultWrapper = ({ date, reasonConsult, weight, id , enchiridionid }) => {
+      
+      const navigate = useNavigate();
+
+
+      const handleClick = () => {
+        navigate(`/prontuarios/view/${enchiridionid}`);
+      };
+
+
       return (
-        <div className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8">
+        <div   onClick={handleClick} className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer">
           <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-start gap-2">
             <MedicalInformationIcon className="text-[#100F49]" fontSize="24" />
-            18/05/2024 - Prof. Henrique Valle
+            {date} - {teacherNames[id] || id}
           </span>
           <span className="font-Montserrat text-lg text-[#595959]">
-            <strong>Motivo da consulta: </strong>O animal fica agressivo quando
-            encosta na pata dianteira.
+            <strong>Motivo da consulta: </strong>
+            {reasonConsult}
           </span>
           <span className="font-Montserrat text-lg text-[#595959]">
             <strong>Peso: </strong>
-            12kg
+            {weight}kg
           </span>
         </div>
       );
@@ -130,8 +178,16 @@ export default function Prontuario() {
               </button>
             </div>
           )}
-          <ConsultWrapper />
-          <ConsultWrapper />
+           {enchiridions.enchiridions.map((enchiridion) => (
+          <ConsultWrapper
+            key={enchiridion.id}
+            enchiridionid ={enchiridion.id}
+            date={new Date(enchiridion.date).toLocaleDateString()}
+            reasonConsult={enchiridion.reason_consult}
+            weight={enchiridion.weights[0]}
+            id={enchiridion.teacher_id}
+          />
+        ))}
         </div>
       </div>
     );
@@ -139,6 +195,7 @@ export default function Prontuario() {
 
   return (
     <>
+     {isLoading ? <CircularIndeterminate/> :  
       <div className="container flex p-20 flex-col font-Montserrat">
         <h1 className="font-Montserrat mb-14  h-10 font-bold text-2xl">
           Prontuário
@@ -163,6 +220,7 @@ export default function Prontuario() {
         </div>
         <Wrapper />
       </div>
+}
     </>
   );
 }

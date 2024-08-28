@@ -46,7 +46,7 @@ export function Router() {
             <Route path="showTutor" element={<MostrarTutor />} />
             <Route path="prontuarios" element={<Prontuarios />} />
             <Route path="prontuarios/detalhes/:id" element={<Prontuario />} />
-            <Route path="prontuarios/detalhes" element={<InfoProntuario />} />
+            <Route path="prontuarios/view/:id" element={<InfoProntuario />} />
             <Route path="receita" element={<PrescProvider />} />
             <Route path="animal" element={<CreateAnimal />} />
           </Route>
