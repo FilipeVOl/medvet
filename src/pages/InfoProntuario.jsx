@@ -6,6 +6,7 @@ import CircularIndeterminate from "../Component/Prontuarios/Loading";
 import { getEnchiridionId, getTeacherName } from "../services/enchiridion";
 import { getAnimalById } from "../services/animals";
 import { getTeacherid } from "../services/professores";
+import { getTutorID } from "../services/tutores";
 
 
 
@@ -16,6 +17,7 @@ export default function InfoProntuario() {
   const [isLoading, setIsLoading] = useState(true);
   const [teacher, setTeacher] = useState({})
   const [animals, setAnimals] = useState({});
+  const [tutor, setTutor] = useState({})
 
 
   useEffect(() => {
@@ -23,12 +25,13 @@ export default function InfoProntuario() {
       try {
         setIsLoading(true);
         const enchiridion = await getEnchiridionId(id);
+        const [animal, prof] = await Promise.all([
+          getAnimalById(enchiridion.animal_id),
+          getTeacherid(enchiridion.teacher_id),
+        ]);
         setProntuario(enchiridion);
-        const animal = await getAnimalById(enchiridion.animal_id);
         setAnimals(animal)
-        const prof = await getTeacherid(enchiridion.teacher_id)
         setTeacher(prof)
-        console.log(prof)
       } catch (error) {
         console.error("Erro ao buscar o prontuário:", error);
       } finally {
@@ -103,7 +106,7 @@ export default function InfoProntuario() {
                   Tutor:
                 </h1>
                 <span className="font-Montserrat font-normal text-xl text-[#2C2C2C]">
-                  Bárbara Rodriguez
+                  {animals.data.tutor.name}
                 </span>
               </Grid>
               <Grid item xs={2}>
