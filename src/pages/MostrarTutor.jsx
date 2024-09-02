@@ -81,7 +81,7 @@ const MostrarTutor = () => {
   const [selectedUser, setSelectedUser] = useState("");
   const [currPage, setCurrPage] = useState(1);
   const [query, setQuery] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredData, setFilteredData] = useState("");
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   const handleNewClick = () => setOpenNew(!openNew);
@@ -230,7 +230,7 @@ const MostrarTutor = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {console.log(typeof filteredData)}
+                {console.log(typeof filteredData && "Dados:", filteredData)}
                 {filteredData && filteredData.map((row) => (
                     <StyledTableRow key={row.id}>
                       <StyledTableCell>{row.name}</StyledTableCell>

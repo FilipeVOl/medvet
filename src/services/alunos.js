@@ -48,9 +48,9 @@ const patchAluno = async (set, id) => {
   try {
   const response = await axios
     .patch("http://localhost:3333/delete/student", {
-        id: id,
+        id
     })
-    set(response.data)
+    set(response.data);
     console.log(response.data)
   } catch (error) {
       console.log(error);

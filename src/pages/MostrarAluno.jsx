@@ -86,6 +86,7 @@ const MostrarAluno = () => {
   const [openNew, setOpenNew] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [status_delete, setStatusDelete] = useState(false);
   const [registration, setRegistration] = useState("");
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -246,7 +247,7 @@ const MostrarAluno = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {console.log(filteredData)}
+                {console.log(filteredData)} 
                   {filteredData && filteredData.map((row) => (
                     <StyledTableRow key={row.id}>
                       <StyledTableCell>{row.registration}</StyledTableCell>
@@ -351,7 +352,8 @@ const MostrarAluno = () => {
                   <IconButton
                     onClick={() => {
                       handleDeleteClick();
-                      patchAluno(setData, selectedUser);
+                      console.log(selectedUser.id);
+                      patchAluno(setStatusDelete, selectedUser.id);
                       setShowToast(true);
                     }}
                     style={{
