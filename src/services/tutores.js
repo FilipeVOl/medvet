@@ -45,11 +45,10 @@ export const getTutoresByName = async (set, params) => {
   }
 }
 
-export const getTutorByNumber = async (number, set) => {
+export const getTutorByNumber = async (tel) => {
   try {
-    const { data } = await axios.get(`http://localhost:3333/get/tutor/searchphone?q=${number}&page=1`)
-    set(data)
-    return data
+    const { data } = await axios.get(`http://localhost:3333/get/tutor/searchphone?q=${tel}&page=1`)
+    return data.tutors
   } catch (e) {
     console.log(e)
     throw new Error('Problema na requisição de tutores por telefone.')

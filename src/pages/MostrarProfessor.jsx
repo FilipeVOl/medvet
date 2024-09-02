@@ -19,7 +19,7 @@ import Box from "@mui/material/Box";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useEffect } from "react";
-import { getProfessores, getProfByReg } from "../services/professores";
+import { getProfByReg } from "../services/professores";
 import Professor from "./Professor";
 import {
   UpdateEditContext,
@@ -84,21 +84,20 @@ const MostrarProf = () => {
   const [showToast, setShowToast] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [registration, setRegistration] = useState("");
-  const [currPage, setCurrPage] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 5;
+  const [filteredData, setFilteredData] = useState("");
+  const [query, setQuery] = useState("");
 
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   const handleNewClick = () => setOpenNew(!openNew);
 
   const [data, setData] = useState("");
-  const [users, setUsers] = useState([data]);
 
   useEffect(() => {
-    getProfessores(setData, currPage, itemsPerPage);
-    console.log(totalItems)
-  }, [selectedUser, openNew, currPage]);
+    getProfByReg(query).then((data) => {
+      setFilteredData(data)
+    });
+  }, [selectedUser, openNew, query]);
 
   const handlePage = (event, value) => {
     setCurrPage(value);
@@ -170,7 +169,6 @@ const MostrarProf = () => {
                 type="text"
                 onChange={({ target }) => {
                   setQuery(target.value);
-                  getProfByReg(setData, target.value);
                 }}
                 className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
               />
@@ -243,7 +241,7 @@ const MostrarProf = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data.teacher && Object.values(data.teacher).map((row) => (
+                  {filteredData && filteredData.map((row) => (
                     <StyledTableRow key={row.id}>
                       <StyledTableCell>{row.registration}</StyledTableCell>
                       <StyledTableCell>{row.name}</StyledTableCell>

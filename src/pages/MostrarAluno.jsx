@@ -86,6 +86,7 @@ const MostrarAluno = () => {
   const [openNew, setOpenNew] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [status_delete, setStatusDelete] = useState(false);
   const [registration, setRegistration] = useState("");
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -98,12 +99,10 @@ const MostrarAluno = () => {
   const [data, setData] = useState("");
 
   useEffect(() => {
-    getAluno(setData, currPage).then((res) => {
-      setFilteredData(res.student);
-    }).catch((e) => {
-      console.log(e);
-    })
-  }, [selectedUser, openNew]);
+   getAlunoByReg(query).then((data) => {
+      setFilteredData(data);
+    });
+  }, [selectedUser, query]);
 
   useEffect(() => {
     if (showToast) {
@@ -173,12 +172,10 @@ const MostrarAluno = () => {
                 placeholder="N° de matricula"
                 name="searchRegist"
                 type="text"
-                onChange={ async ({ target }) => {
+                onChange={ ({ target }) => {
                    setQuery(target.value);
-                   if (target.value) {
-                   await getAlunoByReg(setFilteredData, query);
                    }
-                }}
+                }
                 className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
               />
               <SearchIcon
@@ -250,7 +247,7 @@ const MostrarAluno = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {console.log(filteredData)}
+                {console.log(filteredData)} 
                   {filteredData && filteredData.map((row) => (
                     <StyledTableRow key={row.id}>
                       <StyledTableCell>{row.registration}</StyledTableCell>
@@ -355,7 +352,8 @@ const MostrarAluno = () => {
                   <IconButton
                     onClick={() => {
                       handleDeleteClick();
-                      patchAluno(setData, selectedUser);
+                      console.log(selectedUser.id);
+                      patchAluno(setStatusDelete, selectedUser.id);
                       setShowToast(true);
                     }}
                     style={{

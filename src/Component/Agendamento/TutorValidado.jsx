@@ -32,6 +32,7 @@ const InputConsulta = ({ label, type, setter, value, isDisabled, placeHolder }) 
 };
 
 const TutorValidado = (props) => {
+  console.log(props.tel.phone)
   const [phoneWMask, setMask] = useState(props.tel.phone);
   const [nameAnimal, setName] = useState("");
   const [nameTutor, setTutor] = useState("");

@@ -16,13 +16,13 @@ const getProfessores = async (set, page, itemspage) => {
 
 const getAllTeachers = async (set) => {
   try {
-    await axios.get('http://localhost:3333/get/teacher?numberOfItems=5&page=1')
-    .then(response => {
-      set(response.data);
-    })
-  } catch(e) {
-    console.log(e, 'Problema na requisição de all professores.');
-  }}
+    const { data } = await axios.get('http://localhost:3333/get/teacher?numberOfItems=5&page=1')
+    set(data.teacher)
+    return data
+    } catch (e) {
+      console.error('Erro ao buscar todos os professores', e)
+    }
+}
 
 const getProfById = (set, id) => {
   try {
@@ -41,8 +41,7 @@ const getProfById = (set, id) => {
 const getTeacherByName = async (set, name) => {
   try {
     const { data } = await axios.get(`http://localhost:3333/get/teacher/name?q=${name}`)
-    set(data.teachers)
-    return data.teachers
+    return data.teacher
   } catch(e) {
     return 'Problema na requisição de professores pelo nome.'
   }
@@ -68,21 +67,18 @@ const PutProf = (att) => {
       .catch((error) => {
         console.error("Error fetching data:", error)
       })
-}
+};
 
-const getProfByReg = (set, registration) => {
-  axios
-    .get(
+const getProfByReg = async (registration) => {
+  try {
+    const { data } = await axios.get(
       `http://localhost:3333/get/teacher/registration?q=${registration}&page=1`
-    )
-    .then((response) => {
-      set(response.data);
-      console.log(response.data);
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
-}
+    );
+    return data;
+  } catch (error) {
+    console.error("Erro ao filtrar professores");
+  }
+};
 
 const patchProf = async (set, id) => {
   try {
