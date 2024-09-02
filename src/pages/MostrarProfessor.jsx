@@ -21,10 +21,8 @@ import Stack from "@mui/material/Stack";
 import { useEffect } from "react";
 import { getProfByReg } from "../services/professores";
 import Professor from "./Professor";
-import {
-  UpdateEditContext,
-} from "../contexts/updateEditContext";
-import { patchTutor } from "../services/tutores";
+import { UpdateEditContext } from "../contexts/updateEditContext";
+import { patchProf } from "../services/professores";
 
 const style = {
   position: "absolute",
@@ -83,10 +81,10 @@ const MostrarProf = () => {
   const [openNew, setOpenNew] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [status_delete, setStatusDelete] = useState("");
   const [registration, setRegistration] = useState("");
   const [filteredData, setFilteredData] = useState("");
   const [query, setQuery] = useState("");
-
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   const handleNewClick = () => setOpenNew(!openNew);
@@ -95,7 +93,7 @@ const MostrarProf = () => {
 
   useEffect(() => {
     getProfByReg(query).then((data) => {
-      setFilteredData(data)
+      setFilteredData(data);
     });
   }, [selectedUser, openNew, query]);
 
@@ -126,7 +124,7 @@ const MostrarProf = () => {
       >
         <div className="container">
           {showToast && (
-            <div className="animate-fadeIn opacity-0 absolute top-32 right-0 m-4">
+            <div className="animate-fadeIn fixed opacity-0 z-10 top-32 right-0 m-4">
               <div
                 class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
                 role="alert"
@@ -241,39 +239,35 @@ const MostrarProf = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {filteredData && filteredData.map((row) => (
-                    <StyledTableRow key={row.id}>
-                      <StyledTableCell>{row.registration}</StyledTableCell>
-                      <StyledTableCell>{row.name}</StyledTableCell>
-                      <StyledTableCell>{row.phone}</StyledTableCell>
-                      <IconButton
-                        className="edit-button"
-                        onClick={() => {
-                          handleButtonClick();
-                          setSelectedUser(row);
-                        }}
-                      >
-                        <img src={EditIcon} />
-                      </IconButton>
+                  {filteredData &&
+                    filteredData
+                      .filter((row) => !row.status_delete)
+                      .map((row) => (
+                        <StyledTableRow key={row.id}>
+                          <StyledTableCell>{row.registration}</StyledTableCell>
+                          <StyledTableCell>{row.name}</StyledTableCell>
+                          <StyledTableCell>{row.phone}</StyledTableCell>
+                          <IconButton
+                            className="edit-button"
+                            onClick={() => {
+                              handleButtonClick();
+                              setSelectedUser(row);
+                            }}
+                          >
+                            <img src={EditIcon} />
+                          </IconButton>
 
-                      <IconButton
-                        className="delete-button"
-                        onClick={() => {
-                          handleDeleteClick();
-                          setSelectedUser(row);
-                        }}
-                      >
-                        {/* // axios.delete(`http://localhost:3333/deletealuno/${row.id}`)
-                      // function removeRow () {
-                      //   const dataC = [...data]
-                      //   dataC.splice(TableBody.data, 0)
-                      //   console.log(dataC)
-                      // } */}
-
-                        <img src={TrashIcon} />
-                      </IconButton>
-                    </StyledTableRow>
-                  ))}
+                          <IconButton
+                            className="delete-button"
+                            onClick={() => {
+                              handleDeleteClick();
+                              setSelectedUser(row);
+                            }}
+                          >
+                            <img src={TrashIcon} />
+                          </IconButton>
+                        </StyledTableRow>
+                      ))}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -349,8 +343,7 @@ const MostrarProf = () => {
                     onClick={() => {
                       console.log(selectedUser.id);
                       handleDeleteClick();
-                      // patchTutor(selectedUser.id);
-                      setShowToast(true);
+                      patchProf(setStatusDelete, selectedUser.id, setShowToast);
                     }}
                     style={{
                       backgroundColor: "#100F49",

@@ -104,13 +104,14 @@ export const PutTutor = (att) => {
 }
 
 
-export const patchTutor = async (set, id) => {
+export const patchTutor = async (set, id, toast) => {
   try {
   const response = await axios
     .patch("http://localhost:3333/delete/tutor", {
         id: id,
     })
     set(response.data)
+    toast(true ? axios.status === 200 : false)
     console.log(response.data)
   } catch (error) {
       console.log(error);

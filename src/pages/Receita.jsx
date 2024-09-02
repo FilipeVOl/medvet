@@ -10,6 +10,7 @@ import Postpresc from "../services/prescription";
 import { PrescContext } from "../contexts/prescContext";
 import {
   getAnimalsAndTutorByTutorName,
+  getTutores,
   getAnimalsReceipt,
 } from "../services/tutores";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -86,11 +87,9 @@ export const InputReceita = ({
           onChange={(_e, newValue) => {
             setter(newValue);
             getAllTeachers(setArrProf);
-            {
-              console.log(arrProfs);
-            }
+
           }}
-          options={Object.values(arrProfs).map((option) => option.name)}
+          options={arrProfs.map((option) => option.name)}
           renderInput={(params) => (
             <TextField
               onChange={(e) => {
@@ -287,317 +286,315 @@ export const Receita = () => {
         behavior: "smooth",
       });
     } else {
-      Postpresc(data).then((res) => {
-        if (res.status == 200) {
-          handleButtonClick();
-        }
-        console.log(data);
-      });
+      handleButtonClick();
+      Postpresc(data);
+      console.log(data);
+      return;
     }
+  };
 
-    const getProfId = (i) => {
-      if (teacher_id[i] && teacher_id[i].hasOwnProperty("id")) {
-        return teacher_id[i].id;
-      }
-    };
+  const getProfId = (i) => {
+    if (teacher_id[i] && teacher_id[i].hasOwnProperty("id")) {
+      return teacher_id[i].id;
+    }
+  };
 
-    const data = {
-      teacher_id: getProfId(0),
-      animal_id,
-      tutor,
-      species,
-      raca,
-      sexo,
-      idade,
-      peso,
-      id,
-      medications,
-    };
+  const data = {
+    teacher_id: getProfId(0),
+    animal_id,
+    tutor,
+    species,
+    raca,
+    sexo,
+    idade,
+    peso,
+    id,
+    medications,
+  };
 
-    return (
-      <div className="font-Montserrat">
-        <h1 className="p-14 h-10 text-2xl font-bold">Receita</h1>
-        <p className="text-xl px-20 py-8">Identificação</p>
-        <form className="px-24">
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <InputReceita
-              label="Tutor"
-              setter={setTutor}
-              arrTutores={tutores}
-              setArrTutor={setTutores}
-              setArrPaci={setPacientes}
-              value={tutor}
-              descrValue="tutor"
-              requireVal={required.tutor}
-              handleButton={validateTrue}
-              isTutor
-            />
+  return (
+    <div className="font-Montserrat">
+      <h1 className="p-14 h-10 text-2xl font-bold">Receita</h1>
+      <p className="text-xl px-20 py-8">Identificação</p>
+      <form className="px-24">
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <InputReceita
+            label="Tutor"
+            setter={setTutor}
+            arrTutores={tutores}
+            setArrTutor={setTutores}
+            setArrPaci={setPacientes}
+            value={tutor}
+            descrValue="tutor"
+            requireVal={required.tutor}
+            handleButton={validateTrue}
+            isTutor
+          />
 
-            <InputReceita
-              label="Professor"
-              setter={setTeacherId}
-              arrProfs={professores}
-              setArrProf={setProfessores}
-              setArrPaci={setPacientes}
-              value={teacher_id}
-              descrValue="professor"
-              requireVal={required.teacher_id}
-              handleButton={validateTrue}
-              isProf
-            />
+          <InputReceita
+            label="Professor"
+            setter={setTeacherId}
+            arrProfs={professores}
+            setArrProf={setProfessores}
+            setArrPaci={setPacientes}
+            value={teacher_id}
+            descrValue="professor"
+            requireVal={required.professor}
+            handleButton={validateTrue}
+            isProf
+          />
 
-            <InputReceita
-              label="Paciente"
-              setter={setAnimal}
-              arrTutores={tutores}
-              arrPacientes={pacientes}
-              setArrTutor={setTutores}
-              setArrPaci={setPacientes}
-              setSpecies={setSpecies}
-              setRaca={setRaca}
-              setSexo={setSexo}
-              setPeso={setPeso}
-              setIdade={setIdade}
-              setId={setId}
-              value={animal_id}
-              descrValue="animal_id"
-              requireVal={required.animal_id}
-              handleButton={validateTrue}
-              isPaciente
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            <InputReceita
-              label="Espécie"
-              setter={setSpecies}
-              value={species}
-              descrValue="species"
-              requireVal={required.species}
-              handleButton={validateTrue}
-            />
-            <InputReceita
-              label="Raça"
-              setter={setRaca}
-              value={raca}
-              descrValue="raca"
-              requireVal={required.raca}
-              handleButton={validateTrue}
-            />
-            <InputReceita
-              label="Sexo"
-              setter={setSexo}
-              value={sexo}
-              descrValue="sexo"
-              requireVal={required.sexo}
-              handleButton={validateTrue}
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-4 w-3/4">
-            <InputReceita
-              label="Idade"
-              setter={setIdade}
-              value={idade}
-              descrValue="idade"
-              requireVal={required.idade}
-              handleButton={validateTrue}
-            />
-            <InputReceita
-              label="Peso"
-              setter={setPeso}
-              value={peso}
-              descrValue="peso"
-              requireVal={required.peso}
-              handleButton={validateTrue}
-            />
-            <InputReceita
-              label="ID"
-              setter={setId}
-              value={id}
-              descrValue="id"
-              requireVal={required.id}
-              handleButton={validateTrue}
-            />
-          </div>
-        </form>
-
-        <p className="text-xl px-20 py-8">Medicação</p>
-        <div>
-          {medications.map((e, index) => {
-            return (
-              <form
-                key={index}
-                className="px-24 w-auto mb-20 border-2 mx-8 py-8 flex flex-col gap-4"
-              >
-                <img
-                  src={CancelIcon}
-                  onClick={() => deleteMedicamento()}
-                  className="cursor-pointer w-6 h-6 fill-red-500 self-end"
-                />
-                <div className="grid grid-cols-3 gap-10">
-                  <label>
-                    Uso
-                    <select
-                      value={e.use_type}
-                      onChange={(e) =>
-                        handleMedicamento(
-                          medications,
-                          index,
-                          e.target.value,
-                          "use_type"
-                        )
-                      }
-                      className="border flex-col flex w-full rounded-md h-[46px] grow p-2 text-base border-border-gray"
-                    >
-                      <option value="oral">Oral</option>
-                      <option value="retal">Retal</option>
-                      <option value="sublingual">Sublingual</option>
-                      <option value="injetavel">Injetável</option>
-                      <option value="dermatologico">Dermatológico</option>
-                      <option value="nasal">Nasal</option>
-                      <option value="oftalmologico">Oftalmológico</option>
-                    </select>
-                  </label>
-
-                  <label>
-                    Farmácia
-                    <select
-                      value={e.pharmacy}
-                      onChange={(e) =>
-                        handleMedicamento(
-                          medications,
-                          index,
-                          e.target.value,
-                          "pharmacy"
-                        )
-                      }
-                      className="border flex-col grow flex w-full rounded-md h-[46px] p-2 text-base border-border-gray"
-                    >
-                      <option value="farmacia1">Farmacia 1</option>
-                      <option value="farmacia 2">Farmacia 2</option>
-                    </select>
-                  </label>
-
-                  <label>
-                    Unidade (qt.)
-                    <input
-                      value={e.unit}
-                      onClick={() => validateTrue("unit")}
-                      onChange={(e) =>
-                        handleMedicamento(
-                          medications,
-                          index,
-                          e.target.value,
-                          "unit"
-                        )
-                      }
-                      className={`${
-                        required.unit
-                          ? "outline-red-600 border-red-500"
-                          : "outline-gray-input"
-                      } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}
-                    ></input>
-                  </label>
-                </div>
-
-                <div>
-                  <label>
-                    Medicação
-                    <input
-                      label="Medicação"
-                      value={e.measurement}
-                      onClick={() => validateTrue("measurement")}
-                      onChange={(e) =>
-                        handleMedicamento(
-                          medications,
-                          index,
-                          e.target.value,
-                          "measurement"
-                        )
-                      }
-                      className={`${
-                        required.measurement
-                          ? "outline-red-600 border-red-500"
-                          : "outline-gray-input"
-                      } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}
-                    ></input>
-                  </label>
-                </div>
-
-                <div>
-                  <label>
-                    Descrição (Posologia)
-                    <input
-                      value={e.description}
-                      onClick={() => validateTrue("description")}
-                      onChange={(e) =>
-                        handleMedicamento(
-                          medications,
-                          index,
-                          e.target.value,
-                          "description"
-                        )
-                      }
-                      className={`${
-                        required.description
-                          ? "outline-red-600 border-red-500"
-                          : "outline-gray-input"
-                      } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}
-                    ></input>
-                  </label>
-                </div>
-              </form>
-            );
-          })}
+          <InputReceita
+            label="Paciente"
+            setter={setAnimal}
+            arrTutores={tutores}
+            arrPacientes={pacientes}
+            setArrTutor={setTutores}
+            setArrPaci={setPacientes}
+            setSpecies={setSpecies}
+            setRaca={setRaca}
+            setSexo={setSexo}
+            setPeso={setPeso}
+            setIdade={setIdade}
+            setId={setId}
+            value={animal_id}
+            descrValue="animal_id"
+            requireVal={required.animal_id}
+            handleButton={validateTrue}
+            isPaciente
+          />
         </div>
+        <div className="grid grid-cols-3 gap-4">
+          <InputReceita
+            label="Espécie"
+            setter={setSpecies}
+            value={species}
+            descrValue="species"
+            requireVal={required.species}
+            handleButton={validateTrue}
+          />
+          <InputReceita
+            label="Raça"
+            setter={setRaca}
+            value={raca}
+            descrValue="raca"
+            requireVal={required.raca}
+            handleButton={validateTrue}
+          />
+          <InputReceita
+            label="Sexo"
+            setter={setSexo}
+            value={sexo}
+            descrValue="sexo"
+            requireVal={required.sexo}
+            handleButton={validateTrue}
+          />
+        </div>
+        <div className="grid grid-cols-3 gap-4 w-3/4">
+          <InputReceita
+            label="Idade"
+            setter={setIdade}
+            value={idade}
+            descrValue="idade"
+            requireVal={required.idade}
+            handleButton={validateTrue}
+          />
+          <InputReceita
+            label="Peso"
+            setter={setPeso}
+            value={peso}
+            descrValue="peso"
+            requireVal={required.peso}
+            handleButton={validateTrue}
+          />
+          <InputReceita
+            label="ID"
+            setter={setId}
+            value={id}
+            descrValue="id"
+            requireVal={required.id}
+            handleButton={validateTrue}
+          />
+        </div>
+      </form>
 
-        <div className="mx-24">
-          <button
-            onClick={() => addMedicamento()}
-            className="font-bold text-nowrap mt-12 w-full justify-center bg-primary text-white flex items-center 
+      <p className="text-xl px-20 py-8">Medicação</p>
+      <div>
+        {medications.map((e, index) => {
+          return (
+            <form
+              key={index}
+              className="px-24 w-auto mb-20 border-2 mx-8 py-8 flex flex-col gap-4"
+            >
+              <img
+                src={CancelIcon}
+                onClick={() => deleteMedicamento()}
+                className="cursor-pointer w-6 h-6 fill-red-500 self-end"
+              />
+              <div className="grid grid-cols-3 gap-10">
+                <label>
+                  Uso
+                  <select
+                    value={e.use_type}
+                    onChange={(e) =>
+                      handleMedicamento(
+                        medications,
+                        index,
+                        e.target.value,
+                        "use_type"
+                      )
+                    }
+                    className="border flex-col flex w-full rounded-md h-[46px] grow p-2 text-base border-border-gray"
+                  >
+                    <option value="oral">Oral</option>
+                    <option value="retal">Retal</option>
+                    <option value="sublingual">Sublingual</option>
+                    <option value="injetavel">Injetável</option>
+                    <option value="dermatologico">Dermatológico</option>
+                    <option value="nasal">Nasal</option>
+                    <option value="oftalmologico">Oftalmológico</option>
+                  </select>
+                </label>
+
+                <label>
+                  Farmácia
+                  <select
+                    value={e.pharmacy}
+                    onChange={(e) =>
+                      handleMedicamento(
+                        medications,
+                        index,
+                        e.target.value,
+                        "pharmacy"
+                      )
+                    }
+                    className="border flex-col grow flex w-full rounded-md h-[46px] p-2 text-base border-border-gray"
+                  >
+                    <option value="farmacia1">Farmacia 1</option>
+                    <option value="farmacia 2">Farmacia 2</option>
+                  </select>
+                </label>
+
+                <label>
+                  Unidade (qt.)
+                  <input
+                    value={e.unit}
+                    onClick={() => validateTrue("unit")}
+                    onChange={(e) =>
+                      handleMedicamento(
+                        medications,
+                        index,
+                        e.target.value,
+                        "unit"
+                      )
+                    }
+                    className={`${
+                      required.unit
+                        ? "outline-red-600 border-red-500"
+                        : "outline-gray-input"
+                    } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}
+                  ></input>
+                </label>
+              </div>
+
+              <div>
+                <label>
+                  Medicação
+                  <input
+                    label="Medicação"
+                    value={e.measurement}
+                    onClick={() => validateTrue("measurement")}
+                    onChange={(e) =>
+                      handleMedicamento(
+                        medications,
+                        index,
+                        e.target.value,
+                        "measurement"
+                      )
+                    }
+                    className={`${
+                      required.measurement
+                        ? "outline-red-600 border-red-500"
+                        : "outline-gray-input"
+                    } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}
+                  ></input>
+                </label>
+              </div>
+
+              <div>
+                <label>
+                  Descrição (Posologia)
+                  <input
+                    value={e.description}
+                    onClick={() => validateTrue("description")}
+                    onChange={(e) =>
+                      handleMedicamento(
+                        medications,
+                        index,
+                        e.target.value,
+                        "description"
+                      )
+                    }
+                    className={`${
+                      required.description
+                        ? "outline-red-600 border-red-500"
+                        : "outline-gray-input"
+                    } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}
+                  ></input>
+                </label>
+              </div>
+            </form>
+          );
+        })}
+      </div>
+
+      <div className="mx-24">
+        <button
+          onClick={() => addMedicamento()}
+          className="font-bold text-nowrap mt-12 w-full justify-center bg-primary text-white flex items-center 
           rounded-md h-[46px] bg-gray-button border-2
         p-2 text-base"
-          >
-            <img src={AddIcon} alt="adicionar medicamento" />
-            Adicionar Medicamento
-          </button>
-        </div>
-
-        <div className="flex justify-end w-auto mr-24 mb-8">
-          <button
-            onClick={() => {
-              handleSubmit();
-            }}
-            className="rounded-md h-[46px] mt-8 w-1/4 border-2 text-center bg-border-blue text-white font-bold"
-          >
-            Confirmar
-          </button>
-        </div>
-        <div>
-          <Modal
-            open={openModal}
-            aria-labelledby="modal-modal-deletetitle"
-            aria-describedby="modal-modal-description2"
-          >
-            <Box id="box-modal-pag1">
-              <Typography
-                id="modal-modal-deletetitle"
-                variant="h6"
-                component="h1"
-              >
-                Consulta Criada
-                <p id="descri-modal">Consulta Criada com Sucesso</p>
-                <div className="flex justify-between my-12">
-                  <IconButton id="fechar-modal" onClick={handleButtonClick}>
-                    OK
-                  </IconButton>
-                </div>
-              </Typography>
-            </Box>
-          </Modal>
-        </div>
+        >
+          <img src={AddIcon} alt="adicionar medicamento" />
+          Adicionar Medicamento
+        </button>
       </div>
-    );
-  };
+
+      <div className="flex justify-end w-auto mr-24 mb-8">
+        <button
+          onClick={() => {
+            handleSubmit();
+          }}
+          className="rounded-md h-[46px] mt-8 w-1/4 border-2 text-center bg-border-blue text-white font-bold"
+        >
+          Confirmar
+        </button>
+      </div>
+      <div>
+        <Modal
+          open={openModal}
+          aria-labelledby="modal-modal-deletetitle"
+          aria-describedby="modal-modal-description2"
+        >
+          <Box id="box-modal-pag1">
+            <Typography
+              id="modal-modal-deletetitle"
+              variant="h6"
+              component="h1"
+            >
+              Consulta Criada
+              <p id="descri-modal">Consulta Criada com Sucesso</p>
+              <div className="flex justify-between my-12">
+                <IconButton id="fechar-modal" onClick={handleButtonClick}>
+                  OK
+                </IconButton>
+              </div>
+            </Typography>
+          </Box>
+        </Modal>
+      </div>
+    </div>
+  );
 };
 
 export default Receita;

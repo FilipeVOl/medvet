@@ -44,13 +44,14 @@ const getAlunoByReg = async (registration) => {
   }
 };
 
-const patchAluno = async (set, id) => {
+const patchAluno = async (set, id, toast) => {
   try {
   const response = await axios
     .patch("http://localhost:3333/delete/student", {
         id
     })
     set(response.data);
+    toast(true)
     console.log(response.data)
   } catch (error) {
       console.log(error);

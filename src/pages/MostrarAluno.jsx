@@ -131,7 +131,7 @@ const MostrarAluno = () => {
       >
         <div className="container">
           {showToast && (
-            <div className="animate-fadeIn opacity-0 absolute top-32 right-0 m-4">
+            <div className="animate-fadeIn opacity-0 fixed z-10 top-32 right-0 m-4">
               <div
                 class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
                 role="alert"
@@ -248,7 +248,9 @@ const MostrarAluno = () => {
                 </TableHead>
                 <TableBody>
                 {console.log(filteredData)} 
-                  {filteredData && filteredData.map((row) => (
+                  {filteredData && filteredData
+                  .filter(row => !row.status_delete)
+                  .map((row) => (
                     <StyledTableRow key={row.id}>
                       <StyledTableCell>{row.registration}</StyledTableCell>
                       <StyledTableCell>{row.name}</StyledTableCell>
@@ -353,8 +355,7 @@ const MostrarAluno = () => {
                     onClick={() => {
                       handleDeleteClick();
                       console.log(selectedUser.id);
-                      patchAluno(setStatusDelete, selectedUser.id);
-                      setShowToast(true);
+                      patchAluno(setStatusDelete, selectedUser.id, setShowToast);
                     }}
                     style={{
                       backgroundColor: "#100F49",

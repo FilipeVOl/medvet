@@ -80,13 +80,14 @@ const getProfByReg = async (registration) => {
   }
 };
 
-const patchProf = async (set, id) => {
+const patchProf = async (set, id, toast) => {
   try {
   const response = await axios
     .patch("http://localhost:3333/delete/teacher", {
-        id: id,
+        id,
     })
     set(response.data)
+    toast(true)
     console.log(response.data)
   } catch (error) {
       console.log(error);

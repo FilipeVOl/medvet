@@ -79,6 +79,7 @@ const MostrarTutor = () => {
   const [openNew, setOpenNew] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [selectedUser, setSelectedUser] = useState("");
+  const [status_delete, setStatusDelete] = useState("");
   const [currPage, setCurrPage] = useState(1);
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState("");
@@ -119,7 +120,7 @@ const MostrarTutor = () => {
       >
         <div className="container h-[100vh]">
           {showToast && (
-            <div className="animate-fadeIn opacity-0 absolute top-32 right-0 m-4">
+            <div className="animate-fadeIn opacity-0 z-10 fixed top-32 right-0 m-4">
               <div
                 class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
                 role="alert"
@@ -230,8 +231,9 @@ const MostrarTutor = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {console.log(typeof filteredData && "Dados:", filteredData)}
-                {filteredData && filteredData.map((row) => (
+                {filteredData && filteredData
+                .filter((row) => !row.status_delete)
+                .map((row) => (
                     <StyledTableRow key={row.id}>
                       <StyledTableCell>{row.name}</StyledTableCell>
                       <StyledTableCell>{row.phone}</StyledTableCell>
@@ -331,8 +333,7 @@ const MostrarTutor = () => {
                     onClick={() => {
                       console.log(selectedUser.id);
                       handleDeleteClick();
-                      patchTutor(selectedUser.id);
-                      setShowToast(true);
+                      patchTutor(setStatusDelete, selectedUser.id, setShowToast);
                     }}
                     style={{
                       backgroundColor: "#100F49",
