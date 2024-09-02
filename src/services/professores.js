@@ -28,7 +28,6 @@ const getProfById = (set, id) => {
   try {
       axios.get(`http://localhost:3333/get/teacher/id/${id}`)
       .then(response => {
-        set(response.data).teachers;
       })
       .catch(error => {
         console.error('Não acessou os profesores no banco', error);
@@ -92,6 +91,20 @@ const patchProf = async (set, id) => {
   } catch (error) {
       console.log(error);
     };
+};
+
+
+
+
+export const getTeacherid = async (teacherId) => {
+  try {
+      const  response= await axios.get(`http://localhost:3333/get/teacher/id/${teacherId}`)
+      const data = response.data; 
+      return data;
+    } catch (error) {
+      console.error(error)
+      throw new Error('Problema na requisição de teacher id')
+    }
 };
 
 

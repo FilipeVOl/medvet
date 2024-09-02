@@ -116,3 +116,15 @@ export const patchTutor = async (set, id) => {
       console.log(error);
     };
 };
+
+
+
+export const getTutorID = async (id) => {
+  try {
+    const response = await axios.get(`http://localhost:3333/get/tutor/id/${id}`)
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw new Error('Problema na requisição de tutor id')
+  }
+}
