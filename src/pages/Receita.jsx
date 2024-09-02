@@ -17,6 +17,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import "../Component/nova consulta/consultPages.css";
 import { getEnchiridion } from "../services/enchiridion";
 import { getAllTeachers, getTeacherByName } from "../services/professores";
+import { getAnimalBySequenceOrName } from "../services/animals";
 
 export const InputReceita = ({
   label,
@@ -120,7 +121,6 @@ export const InputReceita = ({
           onChange={(_e, newValue) => {
             setter(newValue);
             const filter = arrPacientes.filter((e) => e.name === newValue);
-            console.log(filter);
             setSpecies(filter[0].species);
             setRaca(filter[0].race);
             setSexo(filter[0].gender);
@@ -168,6 +168,7 @@ export const Receita = () => {
   // FAZER REQUISIÇÃO DO TEACHER_ID DA TELA DE NOVACONSULTA
   const { medications, setMedications } = useContext(PrescContext);
   const [animal_id, setAnimal] = useState("");
+  const [paciente, setPaciente] = useState("");
   const [tutor, setTutor] = useState("");
   const [species, setSpecies] = useState("");
   const [raca, setRaca] = useState("");
@@ -181,7 +182,7 @@ export const Receita = () => {
   const [professores, setProfessores] = useState([]);
   const [pacientes, setPacientes] = useState([]);
   const [required, setRequired] = useState({
-    animal_id: false,
+    paciente: false,
     tutor: false,
     teacher_id: false,
     species: false,
@@ -205,11 +206,18 @@ export const Receita = () => {
     getAllTeachers(setProfessores);
   }, []);
 
+  useEffect(() => {
+    getAnimalBySequenceOrName(paciente).then((data) => {
+      setAnimal(data)
+    });
+    console.log(animal_id);
+  }, [paciente]);
+
   useEffect(() => {}, [medications]);
 
   const fullfillValidate = {
     teacher_id,
-    animal_id,
+    paciente,
     tutor,
     species,
     raca,
@@ -299,6 +307,8 @@ export const Receita = () => {
     }
   };
 
+
+
   const data = {
     teacher_id: getProfId(0),
     animal_id,
@@ -346,7 +356,7 @@ export const Receita = () => {
 
           <InputReceita
             label="Paciente"
-            setter={setAnimal}
+            setter={setPaciente}
             arrTutores={tutores}
             arrPacientes={pacientes}
             setArrTutor={setTutores}
@@ -357,9 +367,9 @@ export const Receita = () => {
             setPeso={setPeso}
             setIdade={setIdade}
             setId={setId}
-            value={animal_id}
-            descrValue="animal_id"
-            requireVal={required.animal_id}
+            value={paciente}
+            descrValue="paciente"
+            requireVal={required.paciente}
             handleButton={validateTrue}
             isPaciente
           />

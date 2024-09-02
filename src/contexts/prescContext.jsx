@@ -6,6 +6,7 @@ import Receita from "../pages/Receita";
 export const PrescContext = createContext();
 
 const pageData = {
+  teacher_id: "",
   animal_id: "",
   tutor: "",
   especie: "",

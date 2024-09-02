@@ -28,11 +28,10 @@ export const getAllAnimals = async (set, page) => {
     }
 }
 
-export const getAnimalBySequenceOrName = async (set, q) => {
+export const getAnimalBySequenceOrName = async (q) => {
     try {
         const { data } = await axios.get(`http://localhost:3333/search/animal?q=${q}`);
-        set(data);
-        return data;
+        return data[0].animal_id
     } catch(e) {
         return null
     }

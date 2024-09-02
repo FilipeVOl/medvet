@@ -18,11 +18,7 @@ import { postAnimal } from "../../services/animals";
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
   // melhorias
-  // alterar para reducer, ou criar um só state que é um objetivo.
-  // adicionar receita
-  // modal de adicionar receita
-  //adicionar snackbar inves de windows alert
-  //tirar border red when animal selecteds
+// mudar requisição de professor, para buscar dentro de teachers no array da requisição
   const [data, setData] = useState(pagOne.data);
   const [paciente, setPaciente] = useState(pagOne.paciente);
   const [tutor, setTutor] = useState(pagOne.tutor);
