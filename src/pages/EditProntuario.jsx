@@ -34,8 +34,18 @@ export default function EditProntuario() {
     trataments: "",
     observations: ""
   });
-  const [animal, setAnimal] = useState({});
-  const [teacher, setTeacher] = useState({});
+  const [animal, setAnimal] = useState({
+    id: "",
+    name: "",
+    age: "",
+    coat: "",
+    created_at: "",
+    gender: "",
+    race: "",
+    sequence: "",
+    species: ""
+  });
+  const [teacher, setTeacher] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const { id } = useParams();
@@ -49,9 +59,12 @@ export default function EditProntuario() {
           getAnimalById(enchiridion.animal_id),
           getTeacherid(enchiridion.teacher_id),
         ]);
+        console.log(animalData)
+        console.log(teacherData)
+        console.log(enchiridion)
         setProntuario(enchiridion);
         setAnimal(animalData);
-        setTeacher(teacherData);
+        setTeacher(teacherData.user.name);
       } catch (error) {
         console.error("Erro ao buscar o prontuário:", error);
       } finally {
@@ -101,14 +114,14 @@ export default function EditProntuario() {
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Informações de Identificação</h1>
           <Grid container spacing={2} rowSpacing={3} className="p-8">
             <Grid item xs={2}>
-              <CustomInput
+            <CustomInput
                 label="Professor"
-                value={teacher.name || ""}
-                onChange={(e) => setTeacher({ ...teacher, name: e.target.value })}
+                value={teacher}
+                onChange={(e) => setTeacher(e.target.value)} // Atualize o nome do professor diretamente
               />
             </Grid>
             <Grid item xs={2}>
-              <CustomInput
+            <CustomInput
                 label="Paciente"
                 value={animal.name || ""}
                 onChange={(e) => setAnimal({ ...animal, name: e.target.value })}
