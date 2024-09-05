@@ -5,7 +5,7 @@ import InputComponent from "./InputComponent";
 import { ConsultContext } from "../../pages/NovaConsulta";
 import PropTypes from "prop-types";
 import "./consultPages.css";
-import { getProfessores, getTeacherByName } from "../../services/professores";
+import { getAllTeachers, getProfessores, getTeacherByName } from "../../services/professores";
 import { getAnimalsAndTutorByTutorName } from "../../services/tutores";
 import mais from '../../images/mais.svg'
 import IconButton from "@mui/material/IconButton";
@@ -62,7 +62,7 @@ export default function FirstPart(props) {
 
   //carrega os autoCompletes ao abrir a página.
   useEffect(() => {
-    getProfessores(setProfs);
+    getAllTeachers(setProfs);
     getAnimalsAndTutorByTutorName(setTutores, '');
   }, []);
 
@@ -124,6 +124,7 @@ export default function FirstPart(props) {
     professor,
     data,
   }
+
 
   const validateTrue = (chaves) => {
     let obj = { ...required }
@@ -212,7 +213,7 @@ export default function FirstPart(props) {
                       value={professor}
                       onChange={(e, value) => {
                         setProfessor(value)
-                        e.target.value.length == 0 ? getProfessores(setProfs) : getTeacherByName(setProfs, e.target.value)
+                        e.target.value.length == 0 ? getAllTeachers(setProfs) : getTeacherByName(e.target.value)
                         validateTrue('professor');
                       }}
                       {...params}

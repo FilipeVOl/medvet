@@ -22,6 +22,19 @@ export const getTutores = async (set, page) => {
   }
 }
 
+
+export const getAllTutores = async (res) => {
+  try {
+    const { data } = await axios.get('http://localhost:3333/get/tutor?numberOfItems=5&page=1')
+    res (data.tutor)
+    return data
+  } catch (e) {
+    console.log(e)
+    throw new Error('Problema na requisição de todos os tutores.')
+  }
+}
+
+
 export const postTutor = async (consulta) => {
   try {
     const response = await axios.post('http://localhost:3333/tutor', consulta)

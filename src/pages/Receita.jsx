@@ -6,7 +6,11 @@ import Box from "@mui/material/Box";
 import AddIcon from "../assets/add.svg";
 import IconButton from "@mui/material/IconButton";
 import CancelIcon from "../images/cancel.svg";
-import Postpresc from "../services/prescription";
+import {
+  postPrescription,
+  getPrescription,
+  getAllPresc,
+} from "../services/prescription";
 import { PrescContext } from "../contexts/prescContext";
 import {
   getAnimalsAndTutorByTutorName,
@@ -16,7 +20,12 @@ import {
 import Autocomplete from "@mui/material/Autocomplete";
 import "../Component/nova consulta/consultPages.css";
 import { getEnchiridion } from "../services/enchiridion";
-import { getAllTeachers, getTeacherByName } from "../services/professores";
+import {
+  getAllTeachers,
+  getTeacherByName,
+  getProfById,
+  getTeacherIdByName,
+} from "../services/professores";
 import { getAnimalBySequenceOrName } from "../services/animals";
 
 export const InputReceita = ({
@@ -88,7 +97,6 @@ export const InputReceita = ({
           onChange={(_e, newValue) => {
             setter(newValue);
             getAllTeachers(setArrProf);
-
           }}
           options={arrProfs.map((option) => option.name)}
           renderInput={(params) => (
@@ -96,7 +104,6 @@ export const InputReceita = ({
               onChange={(e) => {
                 setter(e.target.value);
                 getTeacherByName(setArrProf, e.target.value);
-                console.log(arrProfs);
               }}
               {...params}
               InputProps={{
@@ -176,15 +183,16 @@ export const Receita = () => {
   const [idade, setIdade] = useState("");
   const [peso, setPeso] = useState("");
   const [id, setId] = useState("");
+  const [professor, setProfessor] = useState("");
   const [teacher_id, setTeacherId] = useState("");
   const [openModal, setOpenModal] = useState(!open);
   const [tutores, setTutores] = useState([]);
   const [professores, setProfessores] = useState([]);
   const [pacientes, setPacientes] = useState([]);
   const [required, setRequired] = useState({
+    professor: false,
     paciente: false,
     tutor: false,
-    teacher_id: false,
     species: false,
     raca: false,
     sexo: false,
@@ -208,15 +216,18 @@ export const Receita = () => {
 
   useEffect(() => {
     getAnimalBySequenceOrName(paciente).then((data) => {
-      setAnimal(data)
+      setAnimal(data);
+    });
+    getTeacherIdByName(professor).then((data) => {
+      setTeacherId(data);
     });
     console.log(animal_id);
-  }, [paciente]);
+  }, [paciente, professor]);
 
   useEffect(() => {}, [medications]);
 
   const fullfillValidate = {
-    teacher_id,
+    professor,
     paciente,
     tutor,
     species,
@@ -295,22 +306,21 @@ export const Receita = () => {
       });
     } else {
       handleButtonClick();
-      Postpresc(data);
-      console.log(data);
-      return;
+      postPrescription(data);
+      let data2 = getAllPresc();
+      console.log(data2);
+      for (let i = 0; i < data2.length; i++) {
+        if (data2.animal_id == data.animal_id) {
+          getPrescription(data2.id);
+          console.log("alo");
+        }
+      }
     }
+    return;
   };
-
-  const getProfId = (i) => {
-    if (teacher_id[i] && teacher_id[i].hasOwnProperty("id")) {
-      return teacher_id[i].id;
-    }
-  };
-
-
 
   const data = {
-    teacher_id: getProfId(0),
+    teacher_id,
     animal_id,
     tutor,
     species,
@@ -343,11 +353,11 @@ export const Receita = () => {
 
           <InputReceita
             label="Professor"
-            setter={setTeacherId}
+            setter={setProfessor}
             arrProfs={professores}
             setArrProf={setProfessores}
             setArrPaci={setPacientes}
-            value={teacher_id}
+            value={professor}
             descrValue="professor"
             requireVal={required.professor}
             handleButton={validateTrue}

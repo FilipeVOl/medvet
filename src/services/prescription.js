@@ -11,4 +11,16 @@ import axios from "axios";
     });
 };
 
-export default postPrescription;
+const getPrescription = async (prescription, id) => {
+  const { data } = await axios
+    .get(`http://localhost:3333/pdf/prescription/${id}`)
+    return data;
+} 
+
+const getAllPresc = async () => {
+  const { data } = await axios
+    .get(`http://localhost:3333/get/prescriptions`)
+    return data;
+}
+
+export { postPrescription, getPrescription, getAllPresc };

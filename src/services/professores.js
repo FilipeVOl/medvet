@@ -4,7 +4,7 @@ const getProfessores = async (set, page) => {
     try {
        await axios.get(`http://localhost:3333/get/teacher?numberOfItems=5&page=${page}`)
         .then(response => {
-          set(response.data);
+          set(response.data.teacher);
         })
         .catch(error => {
           console.error('Não acessou os profesores no banco', error);
@@ -24,7 +24,7 @@ const getAllTeachers = async (set) => {
     }
 }
 
-const getProfById = (set, id) => {
+const getProfById = (id) => {
   try {
       axios.get(`http://localhost:3333/get/teacher/id/${id}`)
       .then(response => {
@@ -41,7 +41,16 @@ const getProfById = (set, id) => {
 const getTeacherByName = async (name) => {
   try {
     const { data } = await axios.get(`http://localhost:3333/get/teacher/name?q=${name}`)
-    return data.teacher
+    return data
+  } catch(e) {
+    return 'Problema na requisição de professores pelo nome.'
+  }
+}
+
+const getTeacherIdByName = async (name) => {
+  try {
+    const { data } = await axios.get(`http://localhost:3333/get/teacher/name?q=${name}`)
+    return data.teachers[0].id
   } catch(e) {
     return 'Problema na requisição de professores pelo nome.'
   }
@@ -109,4 +118,4 @@ export const getTeacherid = async (teacherId) => {
 };
 
 
-export { getProfessores, getAllTeachers, getTeacherByName, postProf, PutProf, getProfByReg, patchProf }
+export { getProfessores, getAllTeachers, getTeacherByName, getTeacherIdByName, postProf, PutProf, getProfByReg, patchProf, getProfById }

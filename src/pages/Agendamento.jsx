@@ -49,8 +49,7 @@ const Agendamento = () => {
    const response = await getTutorByNumber(phoneUnmask(telefone));
       setValidate(true);
       setData(response);
-      if (response.phone && response.phone === phoneUnmask(telefone)) {
-        setValidate(true);
+      if (response.phone && response.phone === phoneUnmask(telefone) & console.log("Telefone encontrado")) {
       }
     handleClose();
   };
@@ -103,7 +102,7 @@ const Agendamento = () => {
         </Box>
       </Modal>
       {console.log(data)}
-      {validate ? <TutorValidado tel={data} /> : <TutorInvalido />}
+      {validate ? <TutorValidado tel={data[0]} /> : <TutorInvalido />}
     </div>
   );
 };

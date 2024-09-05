@@ -1,39 +1,102 @@
-import { useState, useCallback } from "react";
-import { Input, InputLabel, Snackbar } from "@mui/material";
+import { useState, useCallback, useEffect } from "react";
+import { Input, InputLabel, Snackbar, TextField } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
 import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
 import { ConsultTutorExist } from "../../services/agendamento";
+import { getAllTutores, getTutoresByName } from "../../services/tutores";
 
-const InputConsulta = ({ label, type, setter, value, isDisabled, placeHolder }) => {
+const InputConsulta = ({
+  label,
+  IsPaciente,
+  type,
+  setter,
+  value,
+  ArrTutores,
+  setArrTutores,
+  isDisabled,
+  placeHolder,
+}) => {
   const handleChange = useCallback(
     (e) => {
       setter(e.target.value);
     },
     [setter]
   );
+
+  useEffect(() => {
+    if (IsPaciente) {
+      getAllTutores(setArrTutores);
+    }
+  }, [IsPaciente, setArrTutores]);
+
+  if (IsPaciente) {
+    return (
+      <div className="flex flex-col mb-4 font-Montserrat">
+        <InputLabel
+          sx={{ fontFamily: "Montserrat", fontWeight: "medium" }}
+          className="ml-4"
+          htmlFor={label}
+        >
+          {label}
+        </InputLabel>
+        <Autocomplete
+          freeSolo
+          disableClearable
+          id="free-solo-2-demo"
+          onChange={(_e, newValue) => {
+            handleChange({ target: { value: newValue } });
+            getAllTutores(setArrTutores);
+          }}
+          {...console.log(ArrTutores)}
+          options={ArrTutores.map((option) => option.name)}
+          renderInput={(params) => (
+            <TextField
+              onChange={(e) => {
+                handleChange(e);
+                getTutoresByName(setArrTutores, e.target.value);
+              }}
+              {...params}
+              InputProps={{
+                ...params.InputProps,
+                type: "search",
+              }}
+            />
+          )}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col mb-4 font-Montserrat">
-      <InputLabel sx={{ fontFamily: 'Montserrat', fontWeight: 'medium' }} className="ml-4" htmlFor={label}>
+      <InputLabel
+        sx={{ fontFamily: "Montserrat", fontWeight: "medium" }}
+        className="ml-4"
+        htmlFor={label}
+      >
         {label}
       </InputLabel>
       <Input
-        sx={{ fontFamily: 'Montserrat', fontWeight: 'medium' }}
+        sx={{ fontFamily: "Montserrat", fontWeight: "medium" }}
         onChange={handleChange}
         type={type}
         value={value}
         placeholder={placeHolder}
         disabled={isDisabled}
-        className={` ${value === "" ? "border-border-blue" : "border-[#848484]"
-          } border rounded-md h-[46px] p-2`}
+        className={` ${
+          value === "" ? "border-border-blue" : "border-[#848484]"
+        } border rounded-md h-[46px] p-2`}
       />
     </div>
   );
 };
 
 const TutorValidado = (props) => {
-  console.log(props.tel.phone)
+  console.log(props.tel.phone);
   const [phoneWMask, setMask] = useState(props.tel.phone);
+  const [tutores, setTutores] = useState([]);
   const [nameAnimal, setName] = useState("");
   const [nameTutor, setTutor] = useState("");
   const [species, setEspecie] = useState("");
@@ -64,7 +127,7 @@ const TutorValidado = (props) => {
     phone: z.string().min(1),
     description: z.string().min(1),
     nameAnimal: z.string().min(1),
-    nameTutor: z.string().min(0)
+    nameTutor: z.string().min(0),
   });
 
   const handleClose = () => {
@@ -87,9 +150,9 @@ const TutorValidado = (props) => {
         nameTutor: nameTutor,
       });
       ConsultTutorExist(props.tel.id, consulta);
-      handleClose()
+      handleClose();
     } catch (error) {
-      handleError()
+      handleError();
     }
   };
 
@@ -118,12 +181,16 @@ const TutorValidado = (props) => {
                   type="text"
                   value={nameAnimal}
                   setter={setName}
+                  IsPaciente
+                  ArrTutores={tutores}
+                  setArrTutores={setTutores}
                 />
 
                 <InputConsulta
                   inputProps={{ "data-testid": "tel-input-valid" }}
                   label="Tutor"
                   type="text"
+
                   setter={setTutor}
                   value={props.tel.name}
                   isDisabled={true}
@@ -147,14 +214,16 @@ const TutorValidado = (props) => {
                 />
 
                 <div className="flex flex-col mb-4 first-line:after: font-medium">
-                  <label className="ml-4" >
+                  <label className="ml-4">
                     Telefone
                     <input
                       type="text"
                       onChange={handlePhone}
                       value={phoneMask(props.tel.phone)}
                       disabled={true}
-                      className={"border-[#848484] border rounded-md h-[46px] p-2 text-base text-[#848484]  font-normal"}
+                      className={
+                        "border-[#848484] border rounded-md h-[46px] p-2 text-base text-[#848484]  font-normal"
+                      }
                       data-testid="input-modal-agendamento"
                     />
                   </label>
@@ -188,11 +257,12 @@ const TutorValidado = (props) => {
               <div className="flex justify-end ml-4 mt-8">
                 <button
                   onClick={handleSubmit}
-                  className={`${!handleSubmit
+                  className={`${
+                    !handleSubmit
                       ? "cursor-not-allowed opacity-25 disabled"
                       : ""
-                    } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
-                //set the button to disabled if any of the fields are empty
+                  } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
+                  //set the button to disabled if any of the fields are empty
                 >
                   Confirmar
                 </button>
@@ -201,21 +271,21 @@ const TutorValidado = (props) => {
           </div>
         </form>
         <Snackbar
-              anchorOrigin={{vertical: 'bottom',horizontal: 'center'}}
-              open={open}
-              autoHideDuration={3000}
-              onClose={handleClose}
-              message="Consulta Criada com Sucesso!"
-              sx={{ marginBottom: '10vh'}}
-            />
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          open={open}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          message="Consulta Criada com Sucesso!"
+          sx={{ marginBottom: "10vh" }}
+        />
         <Snackbar
-              anchorOrigin={{vertical: 'bottom',horizontal: 'center'}}
-              open={openError}
-              autoHideDuration={3000}
-              onClose={handleError}
-              message="Erro ao criar Consulta!"
-              sx={{ marginBottom: '10vh'}}
-            />
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          open={openError}
+          autoHideDuration={3000}
+          onClose={handleError}
+          message="Erro ao criar Consulta!"
+          sx={{ marginBottom: "10vh" }}
+        />
       </div>
     </>
   );
