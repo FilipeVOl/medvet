@@ -1,4 +1,3 @@
-
 import { Grid } from "@mui/material";
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
@@ -7,6 +6,7 @@ import { getEnchiridionId, getTeacherName } from "../services/enchiridion";
 import { getAnimalById } from "../services/animals";
 import { getTeacherid } from "../services/professores";
 import { getTutorID } from "../services/tutores";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -70,6 +70,11 @@ export default function InfoProntuario() {
     );
   };
 
+  const navigate = useNavigate();
+
+
+    
+
   return (
     <>
       {isLoading ? <CircularIndeterminate /> :
@@ -85,8 +90,7 @@ export default function InfoProntuario() {
               className="mt-4 w-[216px] px-6 py-2 bg-[#D5D0C7]  text-white font-Montserrat font-semibold text-lg 	rounded-[10px] transition-colors duration-300 ease-in-out hover:bg-[#007448]"
               style={{ width: '216px' }}
               onClick={() => {
-                // Função para editar o prontuário
-                console.log('Editar prontuário');
+                navigate(`/prontuarios/edit/${prontuario.id}`)
               }}
             >
               Editar Prontuário
