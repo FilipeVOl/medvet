@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { getEnchiridionId, getTeacherName } from "../services/enchiridion";
 import { getAnimalById } from "../services/animals";
 import { getTeacherid } from "../services/professores";
+import axios from 'axios';
 
 export default function EditProntuario() {
   const [prontuario, setProntuario] = useState({
@@ -55,12 +56,13 @@ export default function EditProntuario() {
       try {
         setIsLoading(true);
         const enchiridion = await getEnchiridionId(id);
-        const [animalData, teacherData] = await Promise.all([
+        const [animalDataResponse, teacherData] = await Promise.all([
           getAnimalById(enchiridion.animal_id),
           getTeacherid(enchiridion.teacher_id),
         ]);
-        console.log(animalData)
-        console.log(teacherData)
+        const animalData = animalDataResponse.data;
+        // console.log(animalData)
+        // console.log(teacherData)
         console.log(enchiridion)
         setProntuario(enchiridion);
         setAnimal(animalData);
@@ -79,9 +81,25 @@ export default function EditProntuario() {
     return <CircularIndeterminate />;
   }
 
-  const handleSave = () => {
-    // Função para salvar as alterações
-    console.log("Salvar prontuário");
+
+  const updateEnchiridion = async ( prontuario) => {
+    try {
+      const response = await axios.put(`http://localhost:3333/put/enchiridion`, prontuario);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao atualizar o prontuário:", error);
+      throw error;
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      console.log(prontuario)
+      await updateEnchiridion(prontuario);
+      alert("Prontuário atualizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao salvar o prontuário:", error.response ? error.response.data : error.message);
+    }
   };
 
   const CustomInput = ({
