@@ -14,11 +14,12 @@ export default function EditProntuario() {
     history: "",
     vaccinations: [],
     deworming: "",
+    stringDate: "",
     date_deworming: "",
     temperature: "",
     frequency_cardiac: "",
     frequency_respiratory: "",
-    lymph_node:"",
+    lymph_node: "",
     dehydration: "",
     type_mucous: "",
     whats_mucous: "",
@@ -48,6 +49,7 @@ export default function EditProntuario() {
   });
   const [teacher, setTeacher] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  // const [showToast, setShowToast] = useState(false);
 
   const { id } = useParams();
 
@@ -61,10 +63,11 @@ export default function EditProntuario() {
           getTeacherid(enchiridion.teacher_id),
         ]);
         const animalData = animalDataResponse.data;
+        const formattedDate = enchiridion.date ? new Date(enchiridion.date).toLocaleDateString('pt-BR') : '';
         // console.log(animalData)
         // console.log(teacherData)
         console.log(enchiridion)
-        setProntuario(enchiridion);
+        setProntuario({ ...enchiridion, stringDate: formattedDate });
         setAnimal(animalData);
         setTeacher(teacherData.user.name);
       } catch (error) {
@@ -77,12 +80,25 @@ export default function EditProntuario() {
     fetchData();
   }, [id]);
 
+
+
+  // useEffect(() => {
+  //   if (showToast) {
+  //     const timer = setTimeout(() => {
+  //       setShowToast(false);
+  //     }, 10000);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [showToast]);
+
+  
+
   if (isLoading) {
     return <CircularIndeterminate />;
   }
 
 
-  const updateEnchiridion = async ( prontuario) => {
+  const updateEnchiridion = async (prontuario) => {
     try {
       const response = await axios.put(`http://localhost:3333/put/enchiridion`, prontuario);
       return response.data;
@@ -97,6 +113,7 @@ export default function EditProntuario() {
       console.log(prontuario)
       await updateEnchiridion(prontuario);
       alert("Prontuário atualizado com sucesso!");
+      // setShowToast(true);
     } catch (error) {
       console.error("Erro ao salvar o prontuário:", error.response ? error.response.data : error.message);
     }
@@ -110,7 +127,10 @@ export default function EditProntuario() {
     required = false,
     fullWidth = true,
     ...props
-  }) => (
+  }) => {
+
+  
+    return (
     <div className="flex flex-col w-full">
       <label className="mb-2 text-gray-700 font-semibold">{label}</label>
       <input
@@ -121,10 +141,43 @@ export default function EditProntuario() {
         {...props}
       />
     </div>
-  );
+  )};
 
   return (
     <div className="container flex p-20 ml-12 mt-8 flex-col font-Montserrat">
+        {/* {showToast && (
+            <div className="animate-fadeIn opacity-0 absolute top-32 right-0 m-4">
+              <div
+                class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
+                role="alert"
+                tabindex="-1"
+                aria-labelledby="hs-toast-success-example-label"
+              >
+                <div class="flex p-4">
+                  <div class="shrink-0">
+                    <svg
+                      class="shrink-0 size-4 text-teal-500 mt-0.5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
+                    </svg>
+                  </div>
+                  <div class="ms-3">
+                    <p
+                      id="hs-toast-success-example-label"
+                      class="text-sm text-gray-700 dark:text-neutral-400"
+                    >
+                      Aluno excluído com sucesso
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )} */}
       <div className="flex flex-col gap-2 flex-grow">
         <h1 className="font-Montserrat h-10 font-bold text-2xl">Editar Prontuário</h1>
 
@@ -132,14 +185,14 @@ export default function EditProntuario() {
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Informações de Identificação</h1>
           <Grid container spacing={2} rowSpacing={3} className="p-8">
             <Grid item xs={2}>
-            <CustomInput
+              <CustomInput
                 label="Professor"
                 value={teacher}
                 onChange={(e) => setTeacher(e.target.value)} // Atualize o nome do professor diretamente
               />
             </Grid>
             <Grid item xs={2}>
-            <CustomInput
+              <CustomInput
                 label="Paciente"
                 value={animal.name || ""}
                 onChange={(e) => setAnimal({ ...animal, name: e.target.value })}
@@ -155,8 +208,8 @@ export default function EditProntuario() {
             <Grid item xs={2}>
               <CustomInput
                 label="Data"
-                value={new Date().toLocaleDateString()}
-                readOnly
+                value={prontuario.stringDate || ""}
+                onChange={(e) => setProntuario({ ...prontuario, date: e.target.value })}
               />
             </Grid>
             <Grid item xs={3}>
@@ -289,32 +342,32 @@ export default function EditProntuario() {
             </Grid>
           </Grid>
           <Grid container spacing={3} rowSpacing={3} className="p-8">
-          <Grid item xs={3}>
-          <CustomInput
-            label="Grau de desidratação estimado"
-            value={prontuario.dehydration || ""}
-            onChange={(e) => setProntuario({ ...prontuario, dehydration: e.target.value })}
-          />
-          </Grid>
-          <Grid item xs={3}>
-          <CustomInput
-            label="Mucosas Tipo"
-            value={prontuario.type_mucous || ""}
-            onChange={(e) => setProntuario({ ...prontuario, type_mucous: e.target.value })}
-          />
-          </Grid>
-          <Grid item xs={3}>
-          <CustomInput
-            label="Mucosas Qual"
-            value={prontuario.whats_mucous || ""}
-            onChange={(e) => setProntuario({ ...prontuario, whats_mucous: e.target.value })}
-          />
-          </Grid>
+            <Grid item xs={3}>
+              <CustomInput
+                label="Grau de desidratação estimado"
+                value={prontuario.dehydration || ""}
+                onChange={(e) => setProntuario({ ...prontuario, dehydration: e.target.value })}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <CustomInput
+                label="Mucosas Tipo"
+                value={prontuario.type_mucous || ""}
+                onChange={(e) => setProntuario({ ...prontuario, type_mucous: e.target.value })}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <CustomInput
+                label="Mucosas Qual"
+                value={prontuario.whats_mucous || ""}
+                onChange={(e) => setProntuario({ ...prontuario, whats_mucous: e.target.value })}
+              />
+            </Grid>
           </Grid>
 
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Avaliação dos Sistemas</h1>
           <Grid container spacing={2} rowSpacing={3} className="p-8">
-          <Grid item xs={3}>
+            <Grid item xs={3}>
               <CustomInput
                 label="Pele e anexos"
                 value={prontuario.skin_annex || ""}
@@ -344,7 +397,7 @@ export default function EditProntuario() {
             </Grid>
           </Grid>
           <Grid container spacing={2} rowSpacing={3} className="p-8">
-          <Grid item xs={3}>
+            <Grid item xs={3}>
               <CustomInput
                 label="Locomotor"
                 value={prontuario.system_locomotor || ""}
