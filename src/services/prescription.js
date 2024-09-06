@@ -1,17 +1,17 @@
 import axios from "axios";
 
- const postPrescription = (prescription) => {
-  axios
-    .post("http://localhost:3333/create/prescription", prescription)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+const postPrescription = async (prescription) => {
+  try {
+    const res = await axios.post("http://localhost:3333/create/prescription", prescription);
+    console.log(res);
+    return res.data; // Retorna o id diretamente de res.data
+  } catch (err) {
+    console.log(err);
+    throw err; // Lança o erro para tratamento em outro lugar, se necessário
+  }
 };
 
-const getPrescription = async (prescription, id) => {
+const getPrescription = async (id) => {
   const { data } = await axios
     .get(`http://localhost:3333/pdf/prescription/${id}`)
     return data;

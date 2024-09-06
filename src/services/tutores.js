@@ -95,11 +95,11 @@ export const getAnimalsByTutorName = async (name) => {
   }
 }
 
-export const getAnimalsReceipt = async (setOne, setTwo, name, i) => {
+export const getAnimalsReceipt = async (setOne, setTwo, name) => {
   try {
     const { data } = await axios.get(`http://localhost:3333/get/animal/tutor/name/${name}`)
     setOne(data)
-    setTwo(data[i].animals)
+    setTwo(data[0].animals)
   } catch (error) {
     console.error('Error fetching animals:', error)
   }

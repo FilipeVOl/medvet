@@ -221,7 +221,6 @@ export const Receita = () => {
     getTeacherIdByName(professor).then((data) => {
       setTeacherId(data);
     });
-    console.log(animal_id);
   }, [paciente, professor]);
 
   useEffect(() => {}, [medications]);
@@ -296,27 +295,31 @@ export const Receita = () => {
     setMedications(array);
   };
 
-  const handleSubmit = () => {
-    const validacaoCampos = validateInputs();
-    if (validacaoCampos) {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth",
-      });
-    } else {
-      handleButtonClick();
-      postPrescription(data);
-      let data2 = getAllPresc();
-      console.log(data2);
-      for (let i = 0; i < data2.length; i++) {
-        if (data2.animal_id == data.animal_id) {
-          getPrescription(data2.id);
-          console.log("alo");
+  const handleSubmit = async () => {
+    try {
+      const validacaoCampos = validateInputs();
+      if (validacaoCampos) {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "smooth",
+        });
+      } else {
+        handleButtonClick();
+        const id = await postPrescription(data);
+
+        console.log(id);
+        if (id) {
+          const prescriptionData = await getPrescription(id); // Faz a requisição com o ID
+          console.log(prescriptionData); // Exibe os dados da prescrição
+
+          // Inicia o download no navegador
+          window.open(`http://localhost:3333/pdf/prescription/${id}`, "_blank");
         }
       }
+    } catch (error) {
+      console.error("Erro durante o processo:", error);
     }
-    return;
   };
 
   const data = {
