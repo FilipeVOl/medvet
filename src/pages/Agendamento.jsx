@@ -101,7 +101,6 @@ const Agendamento = () => {
           </div>
         </Box>
       </Modal>
-      {console.log(data)}
       {validate ? <TutorValidado tel={data[0]} /> : <TutorInvalido />}
     </div>
   );

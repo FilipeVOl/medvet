@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
 import { ConsultTutorExist } from "../../services/agendamento";
-import { getAllTutores, getTutoresByName } from "../../services/tutores";
+import { getAnimalByTutorId} from "../../services/animals";
 
 const InputConsulta = ({
   label,
@@ -13,10 +13,16 @@ const InputConsulta = ({
   type,
   setter,
   value,
-  ArrTutores,
-  setArrTutores,
+  ArrAnimais,
+  setArrAnimais,
+  setSpecies, 
+  setRaca,
+  setSexo,
+  setIdade,
+  setId,
   isDisabled,
   placeHolder,
+  props,
 }) => {
   const handleChange = useCallback(
     (e) => {
@@ -24,12 +30,6 @@ const InputConsulta = ({
     },
     [setter]
   );
-
-  useEffect(() => {
-    if (IsPaciente) {
-      getAllTutores(setArrTutores);
-    }
-  }, [IsPaciente, setArrTutores]);
 
   if (IsPaciente) {
     return (
@@ -47,15 +47,20 @@ const InputConsulta = ({
           id="free-solo-2-demo"
           onChange={(_e, newValue) => {
             handleChange({ target: { value: newValue } });
-            getAllTutores(setArrTutores);
+            const filter = ArrAnimais.filter((e) => e.name === newValue);
+            setSpecies(filter[0].species);
+            setRaca(filter[0].race);
+            setSexo(filter[0].gender);
+            setIdade(filter[0].age);
+            // setPeso(filter[0].weigth);
+            setId(filter[0].sequence);
           }}
-          {...console.log(ArrTutores)}
-          options={ArrTutores.map((option) => option.name)}
+          {...console.log(ArrAnimais)}
+          options={ArrAnimais.map((option) => option.name)}
           renderInput={(params) => (
             <TextField
               onChange={(e) => {
                 handleChange(e);
-                getTutoresByName(setArrTutores, e.target.value);
               }}
               {...params}
               InputProps={{
@@ -94,10 +99,14 @@ const InputConsulta = ({
 };
 
 const TutorValidado = (props) => {
-  console.log(props.tel.phone);
   const [phoneWMask, setMask] = useState(props.tel.phone);
-  const [tutores, setTutores] = useState([]);
+  const [animais, setAnimais] = useState([]);
   const [nameAnimal, setName] = useState("");
+  const [raca, setRaca] = useState("");
+  const [sexo, setSexo] = useState("");
+  const [idade, setIdade] = useState("");
+  const [id, setId] = useState("");
+  const [dadosTutor, setDadosTutor] = useState(props.tel.id);
   const [nameTutor, setTutor] = useState("");
   const [species, setEspecie] = useState("");
   const [stringDate, setDate] = useState("");
@@ -105,6 +114,9 @@ const TutorValidado = (props) => {
   const [description, setDesc] = useState("");
   const [open, setOpen] = useState(false);
   const [openError, setError] = useState(false);
+
+console.log(species)
+
   const dateMask = (value) => {
     return value
       .replace(/\D/g, "")
@@ -168,6 +180,10 @@ const TutorValidado = (props) => {
     setMask(e.target.value);
   };
 
+  useEffect(() => {
+    getAnimalByTutorId(props.tel.id, setAnimais);
+  }, []);
+
   return (
     <>
       <div className="p-16 w-full h-screen font-Montserrat">
@@ -182,15 +198,19 @@ const TutorValidado = (props) => {
                   value={nameAnimal}
                   setter={setName}
                   IsPaciente
-                  ArrTutores={tutores}
-                  setArrTutores={setTutores}
+                  ArrAnimais={animais}
+                  setArrAnimais={setAnimais}
+                  setId={setId}
+                  setSpecies={setEspecie}
+                  setRaca={setRaca}
+                  setSexo={setSexo}
+                  setIdade={setIdade}
                 />
 
                 <InputConsulta
                   inputProps={{ "data-testid": "tel-input-valid" }}
                   label="Tutor"
                   type="text"
-
                   setter={setTutor}
                   value={props.tel.name}
                   isDisabled={true}
