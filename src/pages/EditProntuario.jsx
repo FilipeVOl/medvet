@@ -5,49 +5,25 @@ import { useParams } from "react-router-dom";
 import { getEnchiridionId, getTeacherName } from "../services/enchiridion";
 import { getAnimalById } from "../services/animals";
 import { getTeacherid } from "../services/professores";
+import { useForm, Controller, useFieldArray  } from "react-hook-form";
 import axios from 'axios';
 
 export default function EditProntuario() {
-  const [prontuario, setProntuario] = useState({
-    weight: "",
-    reason_consult: "",
-    history: "",
-    vaccinations: [],
-    deworming: "",
-    stringDate: "",
-    date_deworming: "",
-    temperature: "",
-    frequency_cardiac: "",
-    frequency_respiratory: "",
-    lymph_node: "",
-    dehydration: "",
-    type_mucous: "",
-    whats_mucous: "",
-    skin_annex: "",
-    system_circulatory: "",
-    system_respiratory: "",
-    system_digestive: "",
-    system_locomotor: "",
-    system_nervous: "",
-    system_genitourinary: "",
-    others: "",
-    complementary_exams: "",
-    diagnosis: "",
-    trataments: "",
-    observations: ""
+
+  const { control, handleSubmit, setValue, getValues } = useForm({
+    defaultValues: {
+      prontuario: {
+        vaccinations: [], // Inicialize com um array vazio 
+      },
+    },
   });
-  const [animal, setAnimal] = useState({
-    id: "",
-    name: "",
-    age: "",
-    coat: "",
-    created_at: "",
-    gender: "",
-    race: "",
-    sequence: "",
-    species: ""
+
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'prontuario.vaccinations',
   });
-  const [teacher, setTeacher] = useState("");
+ 
   const [isLoading, setIsLoading] = useState(false);
   // const [showToast, setShowToast] = useState(false);
 
@@ -67,9 +43,43 @@ export default function EditProntuario() {
         // console.log(animalData)
         // console.log(teacherData)
         console.log(enchiridion)
-        setProntuario({ ...enchiridion, stringDate: formattedDate });
-        setAnimal(animalData);
-        setTeacher(teacherData.user.name);
+        // setProntuario({ ...enchiridion, stringDate: formattedDate });
+        // setAnimal(animalData);
+        // setTeacher(teacherData.user.name);
+        setValue('teacher', teacherData.user.name);
+        setValue('animal.name', animalData.name);
+        setValue('animal.tutor', animalData.tutor?.name || '');
+        setValue('prontuario.stringDate', formattedDate);
+        setValue('animal.species', animalData.species);
+        setValue('animal.race', animalData.race);
+        setValue('animal.gender', animalData.gender);
+        setValue('animal.age', animalData.age);
+        setValue('prontuario.weight', enchiridion.weight);
+        setValue('animal.coat', animalData.coat);
+        setValue('prontuario.reason_consult', enchiridion.reason_consult);
+        setValue('prontuario.history', enchiridion.history);
+        setValue('prontuario.vaccinations', enchiridion.vaccinations);
+        setValue('prontuario.deworming', enchiridion.deworming);
+        setValue('prontuario.date_deworming', enchiridion.date_deworming);
+        setValue('prontuario.temperature', enchiridion.temperature);
+        setValue('prontuario.frequency_cardiac', enchiridion.frequency_cardiac);
+        setValue('prontuario.frequency_respiratory', enchiridion.frequency_respiratory);
+        setValue('prontuario.lymph_node', enchiridion.lymph_node);
+        setValue('prontuario.dehydration', enchiridion.dehydration);
+        setValue('prontuario.type_mucous', enchiridion.type_mucous);
+        setValue('prontuario.whats_mucous', enchiridion.whats_mucous);
+        setValue('prontuario.skin_annex', enchiridion.skin_annex);
+        setValue('prontuario.system_circulatory', enchiridion.system_circulatory);
+        setValue('prontuario.system_respiratory', enchiridion.system_respiratory);
+        setValue('prontuario.system_digestive', enchiridion.system_digestive);
+        setValue('prontuario.system_locomotor', enchiridion.system_locomotor);
+        setValue('prontuario.system_nervous', enchiridion.system_nervous);
+        setValue('prontuario.system_genitourinary', enchiridion.system_genitourinary);
+        setValue('prontuario.others', enchiridion.others);
+        setValue('prontuario.complementary_exams', enchiridion.complementary_exams);
+        setValue('prontuario.diagnosis', enchiridion.diagnosis);
+        setValue('prontuario.trataments', enchiridion.trataments);
+        setValue('prontuario.observations', enchiridion.observations);
       } catch (error) {
         console.error("Erro ao buscar o prontuário:", error);
       } finally {
@@ -119,29 +129,23 @@ export default function EditProntuario() {
     }
   };
 
-  const CustomInput = ({
-    label,
-    value,
-    onChange,
-    type = "text",
-    required = false,
-    fullWidth = true,
-    ...props
-  }) => {
-
-  
-    return (
-    <div className="flex flex-col w-full">
-      <label className="mb-2 text-gray-700 font-semibold">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        className={`w-full border-solid border-2 rounded-lg h-11 p-2 ${required ? "outline-red-600 border-red-500" : "outline-gray-input"}`}
-        {...props}
-      />
-    </div>
-  )};
+  const CustomInput = ({ label, name, control, defaultValue = "", required = false, type = "text" }) => (
+    <Controller
+      name={name}
+      control={control}
+      defaultValue={defaultValue}
+      render={({ field }) => (
+        <div className="flex flex-col w-full">
+          <label className="mb-2 text-gray-700 font-semibold">{label}</label>
+          <input
+            {...field}
+            type={type}
+            className={`w-full border-solid border-2 rounded-lg h-11 p-2 ${required ? "outline-red-600 border-red-500" : "outline-gray-input"}`}
+          />
+        </div>
+      )}
+    />
+  );
 
   return (
     <div className="container flex p-20 ml-12 mt-8 flex-col font-Montserrat">
@@ -184,279 +188,140 @@ export default function EditProntuario() {
         <div className="flex flex-col gap-2">
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Informações de Identificação</h1>
           <Grid container spacing={2} rowSpacing={3} className="p-8">
-            <Grid item xs={2}>
-              <CustomInput
-                label="Professor"
-                value={teacher}
-                onChange={(e) => setTeacher(e.target.value)} // Atualize o nome do professor diretamente
-              />
+          <Grid item xs={2}>
+              <CustomInput label="Professor" name="teacher" control={control} />
             </Grid>
             <Grid item xs={2}>
-              <CustomInput
-                label="Paciente"
-                value={animal.name || ""}
-                onChange={(e) => setAnimal({ ...animal, name: e.target.value })}
-              />
+              <CustomInput label="Paciente" name="animal.name" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Tutor"
-                value={animal.tutor?.name || ""}
-                onChange={(e) => setAnimal({ ...animal, tutor: { name: e.target.value } })}
-              />
+              <CustomInput label="Tutor" name="animal.tutor" control={control} />
             </Grid>
             <Grid item xs={2}>
-              <CustomInput
-                label="Data"
-                value={prontuario.stringDate || ""}
-                onChange={(e) => setProntuario({ ...prontuario, date: e.target.value })}
-              />
+              <CustomInput label="Data" name="prontuario.stringDate" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Espécie"
-                value={animal.species || ""}
-                onChange={(e) => setAnimal({ ...animal, species: e.target.value })}
-              />
+              <CustomInput label="Espécie" name="animal.species" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Raça"
-                value={animal.race || ""}
-                onChange={(e) => setAnimal({ ...animal, race: e.target.value })}
-              />
+              <CustomInput label="Raça" name="animal.race" control={control} />
             </Grid>
             <Grid item xs={2}>
-              <CustomInput
-                label="Sexo"
-                value={animal.gender || ""}
-                onChange={(e) => setAnimal({ ...animal, gender: e.target.value })}
-              />
+              <CustomInput label="Sexo" name="animal.gender" control={control} />
             </Grid>
             <Grid item xs={2}>
-              <CustomInput
-                label="Idade"
-                value={animal.age || ""}
-                onChange={(e) => setAnimal({ ...animal, age: e.target.value })}
-              />
+              <CustomInput label="Idade" name="animal.age" control={control} />
             </Grid>
             <Grid item xs={2}>
-              <CustomInput
-                label="Peso"
-                value={prontuario.weight}
-                onChange={(e) => setProntuario({ ...prontuario, weight: e.target.value })}
-              />
+              <CustomInput label="Peso" name="prontuario.weight" control={control} />
             </Grid>
             <Grid item xs={2}>
-              <CustomInput
-                label="Pelagem"
-                value={animal.coat || ""}
-                onChange={(e) => setAnimal({ ...animal, coat: e.target.value })}
-              />
+              <CustomInput label="Pelagem" name="animal.coat" control={control} />
             </Grid>
           </Grid>
-
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Anamnese</h1>
           <div className="flex flex-col p-8">
-            <CustomInput
-              label="Motivo da Consulta"
-              value={prontuario.reason_consult}
-              onChange={(e) => setProntuario({ ...prontuario, reason_consult: e.target.value })}
-            />
-            <CustomInput
-              label="Histórico"
-              value={prontuario.history || ""}
-              onChange={(e) => setProntuario({ ...prontuario, history: e.target.value })}
-            />
+            <CustomInput label="Motivo da Consulta" name="prontuario.reason_consult" control={control} />
+            <CustomInput label="Histórico" name="prontuario.history" control={control} />
           </div>
-
+ 
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Vacinação</h1>
           <div className="flex flex-col p-8">
-            {prontuario.vaccinations.map((vacina, index) => (
-              <div key={index} className="flex flex-col mb-4">
+            {fields.map((vacina, index) => (
+              <div key={vacina.id} className="flex flex-col mb-4">
                 <CustomInput
                   label="Qual"
-                  value={vacina.name || ""}
-                  onChange={(e) => {
-                    const newVaccinations = [...prontuario.vaccinations];
-                    newVaccinations[index].name = e.target.value;
-                    setProntuario({ ...prontuario, vaccinations: newVaccinations });
-                  }}
+                  name={`prontuario.vaccinations[${index}].name`}
+                  control={control}
+                  defaultValue={vacina.name || ""}
                 />
                 <CustomInput
                   label="Data da última"
-                  value={vacina.date || ""}
-                  onChange={(e) => {
-                    const newVaccinations = [...prontuario.vaccinations];
-                    newVaccinations[index].date = e.target.value;
-                    setProntuario({ ...prontuario, vaccinations: newVaccinations });
-                  }}
+                  name={`prontuario.vaccinations[${index}].date`}
+                  control={control}
+                  defaultValue={vacina.date || ""}
                 />
+                <button type="button" onClick={() => remove(index)}>Remover</button>
               </div>
             ))}
+            <button type="button" onClick={() => append({ name: '', date: '' })}>Adicionar Vacinação</button>
           </div>
 
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Desverminação</h1>
           <div className="flex flex-col p-8">
-            <CustomInput
-              label="Qual"
-              value={prontuario.deworming || ""}
-              onChange={(e) => setProntuario({ ...prontuario, deworming: e.target.value })}
-            />
-            <CustomInput
-              label="Data da última"
-              value={prontuario.date_deworming || ""}
-              onChange={(e) => setProntuario({ ...prontuario, date_deworming: e.target.value })}
-            />
+            <CustomInput label="Desverminação" name="prontuario.deworming" control={control} />
+            <CustomInput label="Data" name="prontuario.date_deworming" control={control} />
           </div>
 
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Exame Físico</h1>
           <Grid container spacing={2} rowSpacing={3} className="p-8">
             <Grid item xs={3}>
-              <CustomInput
-                label="Temperatura"
-                value={prontuario.temperature}
-                onChange={(e) => setProntuario({ ...prontuario, temperature: e.target.value })}
-              />
+              <CustomInput label="Temperatura" name="prontuario.temperature" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Frequência Cardíaca"
-                value={prontuario.frequency_cardiac}
-                onChange={(e) => setProntuario({ ...prontuario, frequency_cardiac: e.target.value })}
-              />
+              <CustomInput label="Frequência Cardíaca" name="prontuario.frequency_cardiac" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Frequência Respiratória"
-                value={prontuario.frequency_respiratory}
-                onChange={(e) => setProntuario({ ...prontuario, frequency_respiratory: e.target.value })}
-              />
+              <CustomInput label="Frequência Respiratória" name="prontuario.frequency_respiratory" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Linfonodos reativos"
-                value={prontuario.lymph_node || ""}
-                onChange={(e) => setProntuario({ ...prontuario, lymph_node: e.target.value })}
-              />
+              <CustomInput label="Linfônodos" name="prontuario.lymph_node" control={control} />
             </Grid>
           </Grid>
-          <Grid container spacing={3} rowSpacing={3} className="p-8">
-            <Grid item xs={3}>
-              <CustomInput
-                label="Grau de desidratação estimado"
-                value={prontuario.dehydration || ""}
-                onChange={(e) => setProntuario({ ...prontuario, dehydration: e.target.value })}
-              />
+          <Grid container spacing={2} rowSpacing={3} className="p-8">
+             <Grid item xs={3}>
+              <CustomInput label="Grau de desidratação estimadoo" name="prontuario.dehydration" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Mucosas Tipo"
-                value={prontuario.type_mucous || ""}
-                onChange={(e) => setProntuario({ ...prontuario, type_mucous: e.target.value })}
-              />
+              <CustomInput label="Mucosas Tipo" name="prontuario.type_mucous" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Mucosas Qual"
-                value={prontuario.whats_mucous || ""}
-                onChange={(e) => setProntuario({ ...prontuario, whats_mucous: e.target.value })}
-              />
+              <CustomInput label="Mucosas Qual" name="prontuario.whats_mucous" control={control} />
             </Grid>
           </Grid>
 
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Avaliação dos Sistemas</h1>
           <Grid container spacing={2} rowSpacing={3} className="p-8">
-            <Grid item xs={3}>
-              <CustomInput
-                label="Pele e anexos"
-                value={prontuario.skin_annex || ""}
-                onChange={(e) => setProntuario({ ...prontuario, skin_annex: e.target.value })}
-              />
+          <Grid item xs={3}>
+              <CustomInput label="Pele e anexos" name="prontuario.skin_annex" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Circulatório"
-                value={prontuario.system_circulatory || ""}
-                onChange={(e) => setProntuario({ ...prontuario, system_circulatory: e.target.value })}
-              />
+              <CustomInput label="Sistema Circulatório" name="prontuario.system_circulatory" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Respiratório"
-                value={prontuario.system_respiratory || ""}
-                onChange={(e) => setProntuario({ ...prontuario, system_respiratory: e.target.value })}
-              />
+              <CustomInput label="Sistema Respiratório" name="prontuario.system_respiratory" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Digestivo"
-                value={prontuario.system_digestive || ""}
-                onChange={(e) => setProntuario({ ...prontuario, system_digestive: e.target.value })}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={2} rowSpacing={3} className="p-8">
-            <Grid item xs={3}>
-              <CustomInput
-                label="Locomotor"
-                value={prontuario.system_locomotor || ""}
-                onChange={(e) => setProntuario({ ...prontuario, system_locomotor: e.target.value })}
-              />
+              <CustomInput label="Sistema Digestivo" name="prontuario.system_digestive" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Nervoso"
-                value={prontuario.system_nervous || ""}
-                onChange={(e) => setProntuario({ ...prontuario, system_nervous: e.target.value })}
-              />
+              <CustomInput label="Sistema Locomotor" name="prontuario.system_locomotor" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Geniturinário"
-                value={prontuario.system_genitourinary || ""}
-                onChange={(e) => setProntuario({ ...prontuario, system_genitourinary: e.target.value })}
-              />
+              <CustomInput label="Sistema Nervoso" name="prontuario.system_nervous" control={control} />
             </Grid>
             <Grid item xs={3}>
-              <CustomInput
-                label="Outros"
-                value={prontuario.others || ""}
-                onChange={(e) => setProntuario({ ...prontuario, others: e.target.value })}
-              />
+              <CustomInput label="Sistema Geniturinário" name="prontuario.system_genitourinary" control={control} />
+            </Grid>
+            <Grid item xs={3}>
+              <CustomInput label="Outros" name="prontuario.others" control={control} />
             </Grid>
           </Grid>
 
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Exames Complementares</h1>
           <div className="flex flex-col p-8">
-            <CustomInput
-              label="Exames Complementares"
-              value={prontuario.complementary_exams || ""}
-              onChange={(e) => setProntuario({ ...prontuario, complementary_exams: e.target.value })}
-            />
+            <CustomInput label="Exames Complementares" name="prontuario.complementary_exams" control={control} />
           </div>
 
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Diagnóstico e Tratamentos</h1>
           <div className="flex flex-col p-8">
-            <CustomInput
-              label="Diagnóstico"
-              value={prontuario.diagnosis || ""}
-              onChange={(e) => setProntuario({ ...prontuario, diagnosis: e.target.value })}
-            />
-            <CustomInput
-              label="Tratamentos"
-              value={prontuario.trataments || ""}
-              onChange={(e) => setProntuario({ ...prontuario, trataments: e.target.value })}
-            />
+            <CustomInput label="Diagnóstico" name="prontuario.diagnosis" control={control} />
+            <CustomInput label="Tratamentos" name="prontuario.trataments" control={control} />
           </div>
 
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Observações</h1>
           <div className="flex flex-col p-8">
-            <CustomInput
-              label="Observações"
-              value={prontuario.observations || ""}
-              onChange={(e) => setProntuario({ ...prontuario, observations: e.target.value })}
-            />
+            <CustomInput label="Observações" name="prontuario.observations" control={control} />
           </div>
 
           <div className="flex justify-end mb-4 mt-8">
@@ -468,6 +333,9 @@ export default function EditProntuario() {
               Salvar alterações
             </button>
           </div>
+
+
+         
         </div>
       </div>
     </div>
