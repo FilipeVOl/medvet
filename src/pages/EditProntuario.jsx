@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { getEnchiridionId, getTeacherName } from "../services/enchiridion";
 import { getAnimalById } from "../services/animals";
 import { getTeacherid } from "../services/professores";
-import { useForm, Controller, useFieldArray  } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import axios from 'axios';
 
 export default function EditProntuario() {
@@ -13,19 +13,24 @@ export default function EditProntuario() {
   const { control, handleSubmit, setValue, getValues } = useForm({
     defaultValues: {
       prontuario: {
-        vaccinations: [], // Inicialize com um array vazio 
+        vaccinations: [], 
       },
     },
   });
+
+
+  const [enchiridionId, setEnchiridionId] = useState(null);
+  const [teacherId, setTeacherId] = useState(null);
+  const [animalId, setAnimalId] = useState(null);
 
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'prontuario.vaccinations',
   });
- 
+
   const [isLoading, setIsLoading] = useState(false);
-  // const [showToast, setShowToast] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const { id } = useParams();
 
@@ -42,10 +47,7 @@ export default function EditProntuario() {
         const formattedDate = enchiridion.date ? new Date(enchiridion.date).toLocaleDateString('pt-BR') : '';
         // console.log(animalData)
         // console.log(teacherData)
-        console.log(enchiridion)
-        // setProntuario({ ...enchiridion, stringDate: formattedDate });
-        // setAnimal(animalData);
-        // setTeacher(teacherData.user.name);
+        // console.log(enchiridion)
         setValue('teacher', teacherData.user.name);
         setValue('animal.name', animalData.name);
         setValue('animal.tutor', animalData.tutor?.name || '');
@@ -80,6 +82,9 @@ export default function EditProntuario() {
         setValue('prontuario.diagnosis', enchiridion.diagnosis);
         setValue('prontuario.trataments', enchiridion.trataments);
         setValue('prontuario.observations', enchiridion.observations);
+        setEnchiridionId(enchiridion.id);
+        setTeacherId(enchiridion.teacher_id);
+        setAnimalId(enchiridion.animal_id);
       } catch (error) {
         console.error("Erro ao buscar o prontuário:", error);
       } finally {
@@ -92,16 +97,16 @@ export default function EditProntuario() {
 
 
 
-  // useEffect(() => {
-  //   if (showToast) {
-  //     const timer = setTimeout(() => {
-  //       setShowToast(false);
-  //     }, 10000);
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [showToast]);
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
 
-  
+
 
   if (isLoading) {
     return <CircularIndeterminate />;
@@ -118,12 +123,26 @@ export default function EditProntuario() {
     }
   };
 
-  const handleSave = async () => {
+  const onSubmit = async (formData) => {
     try {
-      console.log(prontuario)
+      const prontuario = {
+        ...formData.prontuario,
+        vaccination: formData.prontuario.vaccinations.map((vaccine) => ({
+          id: vaccine.id || null,
+          date: vaccine.date,
+          name: vaccine.name,
+          enchiridion_id: id,
+        })),
+        status_delete: false,
+        animal_id: animalId,
+        teacher_id: teacherId,
+        id: enchiridionId
+      };
+
+      console.log(prontuario);
       await updateEnchiridion(prontuario);
-      alert("Prontuário atualizado com sucesso!");
       // setShowToast(true);
+      alert("Prontuário atualizado com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar o prontuário:", error.response ? error.response.data : error.message);
     }
@@ -149,46 +168,31 @@ export default function EditProntuario() {
 
   return (
     <div className="container flex p-20 ml-12 mt-8 flex-col font-Montserrat">
-        {/* {showToast && (
-            <div className="animate-fadeIn opacity-0 absolute top-32 right-0 m-4">
-              <div
-                class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
-                role="alert"
-                tabindex="-1"
-                aria-labelledby="hs-toast-success-example-label"
-              >
-                <div class="flex p-4">
-                  <div class="shrink-0">
-                    <svg
-                      class="shrink-0 size-4 text-teal-500 mt-0.5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
-                    </svg>
-                  </div>
-                  <div class="ms-3">
-                    <p
-                      id="hs-toast-success-example-label"
-                      class="text-sm text-gray-700 dark:text-neutral-400"
-                    >
-                      Aluno excluído com sucesso
-                    </p>
-                  </div>
-                </div>
+      {showToast && (
+        <div className="animate-fadeIn absolute top-32 right-0 m-4">
+          <div className="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700" role="alert" aria-labelledby="hs-toast-success-example-label">
+            <div className="flex p-4">
+              <div className="shrink-0">
+                <svg className="shrink-0 size-4 text-teal-500 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
+                </svg>
+              </div>
+              <div className="ms-3">
+                <p id="hs-toast-success-example-label" className="text-sm text-gray-700 dark:text-neutral-400">
+                  Prontuário atualizado com sucesso!
+                </p>
               </div>
             </div>
-          )} */}
+          </div>
+        </div>
+      )}
       <div className="flex flex-col gap-2 flex-grow">
         <h1 className="font-Montserrat h-10 font-bold text-2xl">Editar Prontuário</h1>
 
         <div className="flex flex-col gap-2">
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Informações de Identificação</h1>
           <Grid container spacing={2} rowSpacing={3} className="p-8">
-          <Grid item xs={2}>
+            <Grid item xs={2}>
               <CustomInput label="Professor" name="teacher" control={control} />
             </Grid>
             <Grid item xs={2}>
@@ -224,7 +228,7 @@ export default function EditProntuario() {
             <CustomInput label="Motivo da Consulta" name="prontuario.reason_consult" control={control} />
             <CustomInput label="Histórico" name="prontuario.history" control={control} />
           </div>
- 
+
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Vacinação</h1>
           <div className="flex flex-col p-8">
             {fields.map((vacina, index) => (
@@ -241,10 +245,13 @@ export default function EditProntuario() {
                   control={control}
                   defaultValue={vacina.date || ""}
                 />
-                <button type="button" onClick={() => remove(index)}>Remover</button>
+
+                <button type="button" onClick={() => remove(index)} className="mt-4 w-[100px] px-2 py-1 bg-[#dd3030]  text-white font-Montserrat  text-[15px]	rounded-[10px] transition-colors duration-300 ease-in-out hover:bg-[#702020]">Remover</button>
               </div>
             ))}
-            <button type="button" onClick={() => append({ name: '', date: '' })}>Adicionar Vacinação</button>
+            <div className="flex justify-center items-center ">
+              <button type="button" onClick={() => append({ name: '', date: '' })} className="mt-4 w-[210px] px-6 py-2 bg-[#D5D0C7]  text-white font-Montserrat font-semibold text-[15px] 	rounded-[10px] transition-colors duration-300 ease-in-out hover:bg-[#007448]"  >Adicionar Vacinação</button>
+            </div>
           </div>
 
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Desverminação</h1>
@@ -269,7 +276,7 @@ export default function EditProntuario() {
             </Grid>
           </Grid>
           <Grid container spacing={2} rowSpacing={3} className="p-8">
-             <Grid item xs={3}>
+            <Grid item xs={3}>
               <CustomInput label="Grau de desidratação estimadoo" name="prontuario.dehydration" control={control} />
             </Grid>
             <Grid item xs={3}>
@@ -282,7 +289,7 @@ export default function EditProntuario() {
 
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Avaliação dos Sistemas</h1>
           <Grid container spacing={2} rowSpacing={3} className="p-8">
-          <Grid item xs={3}>
+            <Grid item xs={3}>
               <CustomInput label="Pele e anexos" name="prontuario.skin_annex" control={control} />
             </Grid>
             <Grid item xs={3}>
@@ -328,14 +335,14 @@ export default function EditProntuario() {
             <button
               className="mt-4 w-[216px] px-6 py-2 bg-[#D5D0C7]  text-white font-Montserrat font-semibold text-lg 	rounded-[10px] transition-colors duration-300 ease-in-out hover:bg-[#007448]"
               style={{ width: '216px' }}
-              onClick={handleSave}
+              onClick={handleSubmit(onSubmit)}
             >
               Salvar alterações
             </button>
           </div>
 
 
-         
+
         </div>
       </div>
     </div>
