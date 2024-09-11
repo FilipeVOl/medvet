@@ -56,6 +56,7 @@ export default function Prontuarios() {
     setNamePacient(value);
     getAnimalBySequenceOrName(setProntuarios, value)
   };
+  
 
   return (
     <div className="font-Montserrat w-full p-28 flex flex-col">

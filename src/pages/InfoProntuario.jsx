@@ -1,4 +1,3 @@
-
 import { Grid } from "@mui/material";
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
@@ -7,6 +6,7 @@ import { getEnchiridionId, getTeacherName } from "../services/enchiridion";
 import { getAnimalById } from "../services/animals";
 import { getTeacherid } from "../services/professores";
 import { getTutorID } from "../services/tutores";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -70,6 +70,11 @@ export default function InfoProntuario() {
     );
   };
 
+  const navigate = useNavigate();
+
+
+    
+
   return (
     <>
       {isLoading ? <CircularIndeterminate /> :
@@ -81,6 +86,16 @@ export default function InfoProntuario() {
             <span className="font-Montserrat font-semibold text-xl text-[#2C2C2C]">
               N° {prontuario.id}
             </span>
+            <button
+              className="mt-4 w-[216px] px-6 py-2 bg-[#D5D0C7]  text-white font-Montserrat font-semibold text-lg 	rounded-[10px] transition-colors duration-300 ease-in-out hover:bg-[#007448]"
+              style={{ width: '216px' }}
+              onClick={() => {
+                navigate(`/prontuarios/edit/${prontuario.id}`)
+              }}
+            >
+              Editar Prontuário
+            </button>
+
           </div>
           <div className="flex flex-col gap-2">
             <Title title="Informações de Identificação" />
@@ -339,7 +354,7 @@ export default function InfoProntuario() {
                 <SystemsWrapper title="Observações:" props={prontuario.observations} />
               </Grid>
               <Grid item xs={6}>
-                <SystemsWrapper title="Responsável (Nome Completo):"  props={teacher.user.name}/>
+                <SystemsWrapper title="Responsável (Nome Completo):" props={teacher.user.name} />
               </Grid>
             </Grid>
           </div>

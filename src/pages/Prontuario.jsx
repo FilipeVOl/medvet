@@ -17,6 +17,7 @@ export default function Prontuario() {
   const [enchiridions, setEnchiridions] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [teacherNames, setTeacherNames] = useState({});
+  const [isClicked, setIsClicked] = useState("consultas");
   useEffect(() => {
     const fetchData = async () => {
       const response = await getProntuario(id);
@@ -43,7 +44,6 @@ export default function Prontuario() {
         names[teacherId] = name;
       }
       setTeacherNames(names);
-
 
 
       } catch (error) {
@@ -81,24 +81,31 @@ export default function Prontuario() {
 
 
       return (
-        <div   onClick={handleClick} className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer">
-          <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-start gap-2">
-            <MedicalInformationIcon className="text-[#100F49]" fontSize="24" />
-            {date} - {teacherNames[id] || id}
-          </span>
+      <div onClick={handleClick} className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer">
+        <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-start gap-2">
+          <MedicalInformationIcon className="text-[#100F49]" fontSize="24" />
+          {date} - {teacherNames[id] || id}
+        </span>
+        {isClicked === "consultas" ? (
           <span className="font-Montserrat text-lg text-[#595959]">
             <strong>Motivo da consulta: </strong>
             {reasonConsult}
           </span>
+        ) : isClicked === "prescricoes" ? (
           <span className="font-Montserrat text-lg text-[#595959]">
-            <strong>Peso: </strong>
-            {weight}kg
+            <strong>Prescrição: </strong>
+            {}
           </span>
-        </div>
-      );
-    };
+        ) : null}
+        <span className="font-Montserrat text-lg text-[#595959]">
+          <strong>Peso: </strong>
+          {weight}kg
+        </span>
+      </div>
+    );
+  };
 
-    const [isClicked, setIsClicked] = useState("consultas");
+
     return (
       <div className="container bg-transparent flex mt-14 flex-col font-Montserrat">
         <div className="bg-transparent flex">

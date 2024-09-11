@@ -19,6 +19,9 @@ import { UpdateEditProvider } from "./contexts/updateEditContext";
 import { PrescProvider } from "./contexts/prescContext";
 import CreateAnimal from "./pages/CreateAnimal";
 import Home from "./pages/Home";
+import EditProntuario from "./pages/EditProntuario";
+
+import EditProntuario2 from "./pages/EditProntuario2";
 
 export function Router() {
   return (
@@ -47,6 +50,8 @@ export function Router() {
             <Route path="prontuarios" element={<Prontuarios />} />
             <Route path="prontuarios/detalhes/:id" element={<Prontuario />} />
             <Route path="prontuarios/view/:id" element={<InfoProntuario />} />
+            <Route path="prontuarios/edit/:id" element={<EditProntuario />} />
+            <Route path="prontuarios/edit2/:id" element={<EditProntuario2 />} />
             <Route path="receita" element={<PrescProvider />} />
             <Route path="animal" element={<CreateAnimal />} />
           </Route>
