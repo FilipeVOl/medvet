@@ -45,7 +45,6 @@ export default function Prontuario() {
       setTeacherNames(names);
 
 
-
       } catch (error) {
         console.error('Erro ao buscar os dados:', error);
       } finally {
