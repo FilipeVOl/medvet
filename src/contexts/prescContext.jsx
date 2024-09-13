@@ -2,6 +2,7 @@ import { createContext, useState } from "react";
 import PropTypes from "prop-types";
 import InputReceita from "../pages/Receita";
 import Receita from "../pages/Receita";
+import Prontuario from "../pages/Prontuario";
 
 export const PrescContext = createContext();
 
@@ -17,14 +18,14 @@ const pageData = {
   id: "",
 };
 
-export const PrescProvider = () => {
+export const PrescProvider = ({children}) => {
   const [page, setPage] = useState(pageData);
   const [medications, setMedications] = useState([
     { use_type: "oral", pharmacy: "farmacia1", unit: "", measurement: "", description: "" },
   ]);
   return (
     <PrescContext.Provider value={{ page, setPage, medications, setMedications }}>
-      <Receita />
+      {children}
     </PrescContext.Provider>
   );
 };
