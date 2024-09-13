@@ -4,23 +4,71 @@ import { postAluno } from "../utils/MostrarAluno.utils";
 import PropTypes from "prop-types";
 import { PutAluno } from "../services/alunos";
 import { UpdateEditContext } from "../contexts/updateEditContext";
-
+import InputComponent from "../Component/nova consulta/InputComponent";
 
 export default function Cadastro(props) {
-  const {selectedUser, setSelectedUser} = useContext(UpdateEditContext);
-  const {openEdit, setOpenEdit} = useContext(UpdateEditContext);
-  const {openNew, setOpenNew} = useContext(UpdateEditContext);
+  const { selectedUser, setSelectedUser } = useContext(UpdateEditContext);
+  const { openEdit, setOpenEdit } = useContext(UpdateEditContext);
+  const { openNew, setOpenNew } = useContext(UpdateEditContext);
   const [nome, setNome] = useState(selectedUser ? selectedUser.name : "");
-  const [registration, setRegistration] = useState(selectedUser ? selectedUser.registration : "");
+  const [registration, setRegistration] = useState(
+    selectedUser ? selectedUser.registration : ""
+  );
   const [cpf, setCpf] = useState(selectedUser ? selectedUser.cpf : "");
   const [phone, setPhone] = useState(selectedUser ? selectedUser.phone : "");
-  const [email, setEmail] = useState(selectedUser ? selectedUser.email : ""  );
+  const [email, setEmail] = useState(selectedUser ? selectedUser.email : "");
   const [course, setCourse] = useState("Medicina Veterinária");
   const [showToast, setShowToast] = useState(false);
   const [shift, setShift] = useState(selectedUser ? selectedUser.shift : "");
-  const [period, setPeriod] = useState(selectedUser ? selectedUser.period : "" );
-  const [id, setId] = useState(selectedUser ? selectedUser.id : ""); 
-  
+  const [period, setPeriod] = useState(selectedUser ? selectedUser.period : "");
+  const [id, setId] = useState(selectedUser ? selectedUser.id : "");
+  const [required, setRequired] = useState({
+    nome: false,
+    registration: false,
+    cpf: false,
+    phone: false,
+    email: false,
+    shift: false,
+    period: false,
+  });
+
+  const fullfillValidate = {
+    nome,
+    registration,
+    cpf,
+    phone,
+    email,
+    shift,
+    period,
+  };
+
+  const validateTrue = (chaves) => {
+    let obj = { ...required };
+    const keys = Object.keys(obj);
+    keys.forEach((e) => {
+      if (e == chaves) {
+        obj[e] = false;
+      }
+    });
+    setRequired(obj);
+  };
+
+  const validateInputs = () => {
+    const keys = Object.keys(fullfillValidate);
+    const values = Object.values(fullfillValidate);
+    let validation = false;
+    let obj = { ...required };
+    values.map((e, index) => {
+      if (e == "") {
+        const chaves = keys[index];
+        obj[chaves] = true;
+        validation = true;
+      }
+    });
+    setRequired(obj);
+    return validation;
+  };
+
   {
     Cadastro.propTypes = {
       buttonName: PropTypes.string,
@@ -38,16 +86,16 @@ export default function Cadastro(props) {
     period,
     phone,
     name: nome,
-    id: id
+    id: id,
   };
 
   const clickError = async () => {
     if (!selectedUser) {
       try {
-      await postAluno(data)
-      console.log("Aluno criado com sucesso");
-      setShowToast(!showToast);
-      setOpenNew(!openNew);
+        await postAluno(data);
+        console.log("Aluno criado com sucesso");
+        setShowToast(!showToast);
+        setOpenNew(!openNew);
       } catch (error) {
         console.log("Erro ao criar aluno");
       }
@@ -57,7 +105,7 @@ export default function Cadastro(props) {
       setOpenEdit(!openEdit);
       //window.location.reload();
     }
-  }
+  };
 
   function ValidateInput() {
     return nome && registration && cpf && phone;
@@ -91,7 +139,7 @@ export default function Cadastro(props) {
                   id="hs-toast-success-example-label"
                   class="text-sm text-gray-700 dark:text-neutral-400"
                 >
-                  Tutor criado com sucesso
+                  Aluno criado com sucesso
                 </p>
               </div>
             </div>
@@ -105,46 +153,24 @@ export default function Cadastro(props) {
       <form>
         <div className="forms-container px-28 grid grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
           <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
-            <label htmlFor="nome" className="font-Montserrat">
-              Nome completo *<br />
-              <input
-                id="name"
-                value={nome}
-                required
-                onChange={(e) => {
-                  setNome(e.target.value);
-                }}
-                name="name"
-                type="text"
-                className={`w-full border-[1px] ${
-                  !nome
-                    ? "border-red-600 outline-red-600"
-                    : "border-border-gray"
-                } rounded-md h-9 pl-2`}
-              />
-            </label>
-            <label htmlFor="registration" className="font-Montserrat">
-              Matricula *<br />
-              <input
-                id="registration"
-                required
-                value={registration}
-                name="registration"
-                type="text"
-                onChange={(e) => {
-                  // setUserData(
-                  //   ...userData,
-                  //   (userData.registration = e.target.value)
-                  // );
-                  setRegistration(e.target.value);
-                }}
-                className={`border-[1px] w-full rounded-md h-9 pl-2 ${
-                  !registration
-                    ? "outline-red-600 border-red-500"
-                    : "border-border-gray"
-                }`}
-              />
-            </label>
+            <InputComponent
+              nome="Nome completo"
+              dataType="text"
+              type={nome}
+              setDataCom={setNome}
+              requireVal={required.nome}
+              handleButton={validateTrue}
+              descrHandle="nome"
+            />
+            <InputComponent
+              nome="Matrícula"
+              dataType="text"
+              type={registration}
+              setDataCom={setRegistration}
+              requireVal={required.registration}
+              handleButton={validateTrue}
+              descrHandle="registration"
+            />
           </div>
 
           <div className="box-2 grid grid-cols-[1fr_2fr] gap-[5%]">
@@ -160,31 +186,20 @@ export default function Cadastro(props) {
                   setCpf(e.target.value);
                 }}
                 className={`${
-                  !cpf ? "outline-red-600 border-red-500" : "border-border-gray"
-                } border-[1px] w-full rounded-md h-9 pl-2`}
+                  required.cpf ? "outline-red-600 border-red-500" : "border-gray"
+                } border-2 border-solid w-full rounded-lg h-11 pl-2`}
               />
             </label>
-
-            <label htmlFor="email" className="font-Montserrat">
-              Email *<br />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-                id="email"
-                name="email"
-                className={`${
-                  !email
-                    ? "outline-red-600 border-red-500"
-                    : "border-border-gray"
-                } w-full border-[1px] rounded-md h-9 pl-2`}
-              />
-            </label>
+            <InputComponent
+              nome="Email"
+              dataType="email"
+              type={email}
+              setDataCom={setEmail}
+              requireVal={required.email}
+              handleButton={validateTrue}
+              descrHandle="email"
+            />
           </div>
-
           <div className="box-3 grid grid-cols-[1fr_2fr] gap-[5%]">
             <label htmlFor="phone" className="font-Montserrat">
               Contato *<br />
@@ -198,10 +213,8 @@ export default function Cadastro(props) {
                   setPhone(e.target.value);
                 }}
                 className={`${
-                  !phone
-                    ? "outline-red-600 border-red-500"
-                    : "border-border-gray"
-                } border-[1px] w-full rounded-md h-9`}
+                  required.phone ? "outline-red-600 border-red-500" : "border-gray"
+                } border-2 border-solid w-full rounded-md h-11 pl-2`}
               />
             </label>
 
@@ -217,52 +230,31 @@ export default function Cadastro(props) {
                 onChange={(e) => {
                   setCourse(e.target.value);
                 }}
-                className="w-full border-[1px] rounded-md h-9 pl-2"
+                className="w-full border-2 border-solid rounded-lg h-11 pl-2"
               />
             </label>
           </div>
 
           <div className="box-4 grid grid-cols-[1fr_2fr] gap-[2%] md:gap-[5%]">
-            <label htmlFor="period" className="font-Montserrat">
-              Período
-              <br />
-              <input
-                type="number"
-                required
-                name="period"
-                value={period}
-                id="period"
-                onChange={(e) => {
-                  setPeriod(e.target.value);
-                }}
-                className={`${
-                  !period
-                    ? "outline-red-600 border-red-500"
-                    : "border-border-gray"
-                } border-[1px] rounded-md h-9 pl-2 max-w-63`}
-                maxLength={2}
-              />
-            </label>
+            <InputComponent
+              nome="Período"
+              dataType="number"
+              type={period}
+              setDataCom={setPeriod}
+              requireVal={required.period}
+              handleButton={validateTrue}
+              descrHandle="period"
+            />
 
-            <label htmlFor="shift" className="font-Montserrat">
-              Turno
-              <br />
-              <input
-                type="text"
-                required
-                value={shift}
-                id="shift"
-                name="shift"
-                onChange={(e) => {
-                  setShift(e.target.value);
-                }}
-                className={`${
-                  !shift
-                    ? "outline-red-600 border-red-500"
-                    : "border-border-gray"
-                } border-[1px] rounded-md h-9 pl-2 max-w-63`}
-              />
-            </label>
+            <InputComponent
+              nome="Turno"
+              dataType="text"
+              type={shift}
+              setDataCom={setShift}
+              requireVal={required.shift}
+              handleButton={validateTrue}
+              descrHandle="shift"
+            />
           </div>
         </div>
 

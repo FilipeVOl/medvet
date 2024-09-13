@@ -4,6 +4,7 @@ import { postTutor } from "../services/tutores";
 import PropTypes from "prop-types";
 import { PutTutor } from "../services/tutores";
 import { UpdateEditContext } from "../contexts/updateEditContext";
+import InputComponent from "../Component/nova consulta/InputComponent";
 
 export default function Tutor(props) {
   const { selectedUser, setSelectedUser } = useContext(UpdateEditContext);
@@ -15,7 +16,42 @@ export default function Tutor(props) {
   const [email, setEmail] = useState(selectedUser ? selectedUser.email : "");
   const [showToast, setShowToast] = useState(false);
   const [id, setId] = useState(selectedUser ? selectedUser.id : "");
+  const [required, setRequired] = useState({ nome: false, cpf: false, phone: false, email: false });
   const [query, setQuery] = useState("");
+
+  const fullfillValidate = {
+    nome,
+    cpf,
+    phone,
+    email,
+  }
+
+  const validateTrue = (chaves) => {
+    let obj = { ...required }
+    const keys = Object.keys(obj)
+    keys.forEach((e) => {
+      if (e == chaves) {
+        obj[e] = false;
+      }
+    })
+    setRequired(obj)
+  }
+  //botao de Proximo validando lógica se o animal colocado existe
+  const validateInputs = () => {
+    const keys = Object.keys(fullfillValidate)
+    const values = Object.values(fullfillValidate)
+    let validation = false
+    let obj = { ...required }
+    values.map((e, index) => {
+      if (e == '') {
+        const chaves = keys[index]
+        obj[chaves] = true;
+        validation = true
+      }
+    })
+    setRequired(obj)
+    return validation
+  }
 
   {
     Tutor.propTypes = {
@@ -95,24 +131,15 @@ export default function Tutor(props) {
       <form>
         <div className="forms-container w-full px-28 grid grid-rows-4 md:grid-rows-2 gap-x-8 gap-y-4">
           <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
-            <label htmlFor="nome" className="font-Montserrat">
-              Nome completo *<br />
-              <input
-                id="name"
-                value={nome}
-                required
-                onChange={(e) => {
-                  setNome(e.target.value);
-                }}
-                name="name"
-                type="text"
-                className={`w-full border-[1px] ${
-                  !nome
-                    ? "border-red-600 outline-red-600"
-                    : "border-border-gray"
-                } rounded-md h-9 pl-2`}
+          <InputComponent
+                nome="Nome completo"
+                dataType="text"
+                type={nome}
+                setDataCom={setNome}
+                requireVal={required.nome}
+                handleButton={validateTrue}
+                descrHandle="nome"
               />
-            </label>
 
             <label htmlFor="cpf" className="font-Montserrat">
               CPF *<br />
@@ -126,8 +153,8 @@ export default function Tutor(props) {
                   setCpf(e.target.value);
                 }}
                 className={`${
-                  !cpf ? "outline-red-600 border-red-500" : "border-border-gray"
-                } border-[1px] w-full rounded-md h-9 pl-2`}
+                  required.cpf ? "outline-red-600 border-red-500" : "border-gray"
+                } border-2 border-solid w-full rounded-md h-11 pl-2`}
               />
             </label>
           </div>
@@ -145,31 +172,22 @@ export default function Tutor(props) {
                   setPhone(e.target.value);
                 }}
                 className={`${
-                  !phone
+                  required.phone
                     ? "outline-red-600 border-red-500"
-                    : "border-border-gray"
-                } border-[1px] w-full rounded-md h-9`}
+                    : "border-gray"
+                } border-2 border-solid w-full rounded-md h-11 pl-2`}
               />
             </label>
 
-            <label htmlFor="email" className="font-Montserrat">
-              Email *<br />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-                id="email"
-                name="email"
-                className={`${
-                  !email
-                    ? "outline-red-600 border-red-500"
-                    : "border-border-gray"
-                } w-full border-[1px] rounded-md h-9 pl-2`}
+            <InputComponent
+                nome="Email"
+                dataType="email"
+                type={email}
+                setDataCom={setEmail}
+                requireVal={required.email}
+                handleButton={validateTrue}
+                descrHandle="email"
               />
-            </label>
           </div>
         </div>
 
