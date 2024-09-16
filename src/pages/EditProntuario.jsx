@@ -13,7 +13,7 @@ export default function EditProntuario() {
   const { control, handleSubmit, setValue, getValues } = useForm({
     defaultValues: {
       prontuario: {
-        vaccinations: [], 
+        vaccinations: [],
       },
     },
   });
@@ -22,6 +22,7 @@ export default function EditProntuario() {
   const [enchiridionId, setEnchiridionId] = useState(null);
   const [teacherId, setTeacherId] = useState(null);
   const [animalId, setAnimalId] = useState(null);
+  const [vaccinationsToDelete, setVaccinationsToDelete] = useState([]);
 
 
   const { fields, append, remove } = useFieldArray({
@@ -97,6 +98,30 @@ export default function EditProntuario() {
 
 
 
+  const handleDeleteClick = (index, vaccinationId) => {
+    if (vaccinationId) {
+      setVaccinationsToDelete((prev) => [...prev, vaccinationId]); // Armazena o ID para excluir depois
+    }
+    remove(index); // Remove a vacina do array do formulário
+  };
+
+
+  const deleteVaccinations = async () => {
+    try {
+      console.log(vaccinationsToDelete)
+      // Envia um único pedido DELETE com um corpo contendo todos os IDs
+      await axios.delete('http://localhost:3333/delete/vaccinations', {
+        data: {
+          ids: vaccinationsToDelete
+        }
+      });
+    } catch (error) {
+      console.error("Erro ao deletar vacinação:", error);
+    }
+  };
+
+
+
   useEffect(() => {
     if (showToast) {
       const timer = setTimeout(() => {
@@ -140,6 +165,10 @@ export default function EditProntuario() {
       };
 
       console.log(prontuario);
+
+
+      await deleteVaccinations();
+
       await updateEnchiridion(prontuario);
       // setShowToast(true);
       alert("Prontuário atualizado com sucesso!");
@@ -232,21 +261,24 @@ export default function EditProntuario() {
           <h1 className="font-Montserrat font-semibold text-lg text-[#2C2C2C] mb-4">Vacinação</h1>
           <div className="flex flex-col p-8">
             {fields.map((vacina, index) => (
+
               <div key={vacina.id} className="flex flex-col mb-4">
                 <CustomInput
                   label="Qual"
                   name={`prontuario.vaccinations[${index}].name`}
                   control={control}
-                  defaultValue={vacina.name || ""}
                 />
                 <CustomInput
                   label="Data da última"
                   name={`prontuario.vaccinations[${index}].date`}
                   control={control}
-                  defaultValue={vacina.date || ""}
                 />
 
-                <button type="button" onClick={() => remove(index)} className="mt-4 w-[100px] px-2 py-1 bg-[#dd3030]  text-white font-Montserrat  text-[15px]	rounded-[10px] transition-colors duration-300 ease-in-out hover:bg-[#702020]">Remover</button>
+                <button type="button" onClick={() => {
+                   const vaccinationId = getValues(`prontuario.vaccinations[${index}].id`);
+                  //  console.log(`Index: ${index}, ID: ${vaccinationId}`); 
+                  handleDeleteClick(index, vaccinationId);
+                }} className="mt-4 w-[100px] px-2 py-1 bg-[#dd3030]  text-white font-Montserrat  text-[15px]	rounded-[10px] transition-colors duration-300 ease-in-out hover:bg-[#702020]">Remover</button>
               </div>
             ))}
             <div className="flex justify-center items-center ">
