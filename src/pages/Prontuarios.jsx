@@ -14,22 +14,28 @@ export default function Prontuarios() {
   const [namePacient, setNamePacient] = useState("");
   const [nameTutor, setNameTutor] = useState("");
   const [numberPront, setNumberPront] = useState("");
-  const [prontuarios, setProntuarios] = useState([]);
+  const [prontuarios, setProntuarios] = useState([
+    {
+      animal_name: "jorge",
+      animal_id: 1,
+      tutor_name: "joaquim"
+    }
+  ]);
   const [pageSelected, setPageSelected] = useState(1);
 
-  useEffect(() => {
-    getAllAnimals(setProntuarios, pageSelected);
-  }, [pageSelected]);
+  // useEffect(() => {
+  //   getAllAnimals(setProntuarios, pageSelected);
+  // }, [pageSelected]);
 
-  useEffect(() => {
-    if (
-      nameTutor.length == 0 &&
-      namePacient.length == 0 &&
-      numberPront.length == 0
-    ) {
-      getAllAnimals(setProntuarios, pageSelected);
-    }
-  }, [namePacient, nameTutor, numberPront, pageSelected]);
+  // useEffect(() => {
+  //   if (
+  //     nameTutor.length == 0 &&
+  //     namePacient.length == 0 &&
+  //     numberPront.length == 0
+  //   ) {
+  //     getAllAnimals(setProntuarios, pageSelected);
+  //   }
+  // }, [namePacient, nameTutor, numberPront, pageSelected]);
 
   //pegar so o primeiro nome do animal e do tutor
   const getTheFirstOne = (nome) => {

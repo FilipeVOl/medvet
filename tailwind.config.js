@@ -16,6 +16,7 @@ export default {
         Montserrat: ["Montserrat"],
       },
       colors: {
+        "homegray": "#D5D0C7",
         "gray-med": "#989898",
         "border-gray": "#848484",
         "border-blue": "#100F49",

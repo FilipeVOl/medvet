@@ -18,7 +18,7 @@ const Navbar = () => {
         <Link to="home">Início</Link>
       </div>
       <div id="agendar" className='flex py-4'>
-        <img src={agendar} className='pr-4'/>
+        <img src={agendar} className='pr-4 h-6'/>
         <Link to="agendamento">Agendar</Link>
       </div>
       <div id="novo-cadastro" className='flex bg-[#007448]'>
@@ -31,7 +31,7 @@ const Navbar = () => {
         <Accordion text="Novo Cadastro" image={novoCadastro} options={arr}/>
       </div>
       <div id="criarConsulta" className='flex py-4 bg-[#007448]'>
-        <img src={agendar} alt='criar consulta' className='pr-4'/>
+        <img src={agendar} alt='criar consulta' className='pr-4 h-6'/>
         <Link to="criarconsulta">Criar Consulta</Link>
       </div>
       <div id='receita' className='flex py-4 bg-[#007448]'>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getConsults } from '../services/agendamento';
 import iconAgendar from '../images/agendar.svg'
+import iconCadastro from '../images/novo-cadastro.svg'
+import iconProntuario from '../images/prontuario.svg'
 
 const Home = () => {
   const [todayConsults, setTodayConsults] = useState([]);
@@ -15,30 +17,32 @@ const Home = () => {
     return maskDate
   }
   return (
-    <div className="p-8 pl-0 mt-12 font-Montserrat">
+    <div className="p-8 pl-0 mt-12 font-Montserrat w-full ">
       {/* Title */}
-      <div className="flex justify-between items-center mb-8 font-semibold">
+      <div className=" ml-32 flex justify-start items-center mb-8 font-semibold">
         <div className="text-2xl font-bold text-[25px]">Início</div>
       </div>
 
       {/* Buttons */}
-      <div className="flex gap-4 mb-8 text-[20px] font-semibold text-white">
-        <div className='bg-[#100F49] rounded-lg flex'>
-          <button className="text-white p-8 shadow-sm text-left">Nova <br></br>consulta</button>
-          <img src={iconAgendar} className='pr-4'/>
-        </div>
-        <div className='bg-[#7CAB7F] rounded-lg flex shadow-sm'>
-        <button className="p-8 text-left">Buscar <br></br>prontuário</button>
-          <img src={iconAgendar} className='pr-4'/>
-        </div>
-        <div className='bg-[#A54182] rounded-lg flex shadow-sm'>
-        <button className="p-8 text-left self-end">Nova <br></br>receita</button>
-          <img src={iconAgendar} className='pr-4'/>
-        </div>
+      <div className="flex ml-32 gap-4 mb-8 text-[20px] font-semibold text-white justify-start">
+        <button className='bg-[#D5D0C7] flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8 shadow-sm text-center'>
+        <img src={iconAgendar} className='pr-4 h-20 self-center pl-6'/>
+          Nova <br></br>consulta
+        </button>
+        <button className='bg-[#D5D0C7] flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8 shadow-sm text-center'>
+        <img src={iconCadastro} className='pr-4 h-20 self-center pl-6'/>
+          Receita
+        </button>
+        <button className='bg-[#D5D0C7] flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8 shadow-sm text-center'>
+        <img src={iconProntuario} className='pr-4 h-20 self-center pl-6'/>
+          Prontuários
+        </button>
       </div>
 
       {/* Today's Appointments */}
-      <div className="text-xl text-[25px] mb-4 font-medium ml-20 mt-20">Hoje</div>
+      <div className="ml-32 text-xl text-[25px] mb-4 font-medium mt-20">
+        <strong>Hoje</strong>
+      </div>
       <section>
         {Object.keys(todayConsults).map((dados) => {
           return (
