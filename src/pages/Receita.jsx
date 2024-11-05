@@ -5,7 +5,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import AddIcon from "../assets/add.svg";
 import IconButton from "@mui/material/IconButton";
-import CancelIcon from "../images/cancel.svg";
+import CancelIcon from "../images/trash.svg";
 import {
   postPrescription,
   getPrescription,
@@ -574,8 +574,8 @@ export const Receita = () => {
       <div className="mx-24">
         <button
           onClick={() => addMedicamento()}
-          className="font-bold text-nowrap mt-12 w-full justify-center bg-primary text-white flex items-center 
-          rounded-md h-[46px] bg-gray-button border-2
+          className="font-bold text-nowrap mt-12 w-full justify-center bg-[#D5D0C7] text-white flex items-center 
+          rounded-md h-[46px] hover:bg-[#144A36] border-2
         p-2 text-base"
         >
           <img src={AddIcon} alt="adicionar medicamento" />
@@ -588,7 +588,7 @@ export const Receita = () => {
           onClick={() => {
             handleSubmit();
           }}
-          className="rounded-md h-[46px] mt-8 w-1/4 border-2 text-center bg-border-blue text-white font-bold"
+          className="rounded-md h-[46px] mt-8 w-1/4 border-2 text-center hover:bg-[#144A36] bg-[#D5D0C7] text-white font-bold"
         >
           Confirmar
         </button>

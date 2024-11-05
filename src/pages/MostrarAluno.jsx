@@ -45,14 +45,14 @@ const style = {
 const theme = createTheme({
   palette: {
     common: {
-      azul: "#100F49",
+      verde: "#144A36",
     },
   },
 });
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.azul,
+    backgroundColor: theme.palette.common.verde,
     color: theme.palette.common.white,
     paddingLeft: "70px",
     width: "900px",
@@ -190,11 +190,11 @@ const MostrarAluno = () => {
               <Button
                 onClick={handleNewClick}
                 sx={{
-                  backgroundColor: "#100F49",
+                  backgroundColor: "#D5D0C7",
                   width: "200px",
                   borderRadius: "0.5rem;",
                   "&:hover": {
-                    backgroundColor: "#2C2B60",
+                    backgroundColor: "#144A36",
                   },
                 }}
                 variant="contained"

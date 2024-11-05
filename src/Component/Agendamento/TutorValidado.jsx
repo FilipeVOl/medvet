@@ -91,7 +91,7 @@ const InputConsulta = ({
         placeholder={placeHolder}
         disabled={isDisabled}
         className={` ${
-          value === "" ? "border-border-blue" : "border-[#848484]"
+          value === "" ? "bg-[#144A36]" : "border-[#848484]"
         } border rounded-md h-[46px] p-2`}
       />
     </div>
@@ -281,7 +281,7 @@ console.log(species)
                     !handleSubmit
                       ? "cursor-not-allowed opacity-25 disabled"
                       : ""
-                  } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-36 bg-border-blue text-white`}
+                  } font-Montserrat hover:bg-[#144A36] border-2 w-52 rounded-md h-10 mt-36 bg-[#D5D0C7] text-white`}
                   //set the button to disabled if any of the fields are empty
                 >
                   Confirmar

@@ -21,7 +21,7 @@ export default function Stepper(props) {
           <div key={index} className='flex items-center justify-center'>
             {index == 0 ? '' : <img src={`${index === props.stepsPage ? lineOne : lineTwo}`} alt="checked" />}
             <div
-              className={`p-0 m-0 w-14 h-14 rounded-full flex justify-center items-center ${index + 1 === props.stepsPage ? 'bg-blue-button text-white' : 'bg-blue-button text-white opacity-30'}`}
+              className={`p-0 m-0 w-14 h-14 rounded-full flex justify-center items-center ${index + 1 === props.stepsPage ? 'bg-[#144A36] text-white' : 'bg-[#144A36] text-white opacity-30'}`}
             >
               {step.icon.length >= 3 ? <img src={checked} alt="checked" /> : step.icon}
             </div>

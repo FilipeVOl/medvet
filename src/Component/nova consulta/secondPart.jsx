@@ -236,14 +236,14 @@ export default function SecondPart(props) {
         </div>
         <button
           type="button"
-          className="bg-blue-button py-2 px-16 my-32 rounded-lg text-white float-left"
+          className="bg-[#144A36] py-2 px-16 my-32 rounded-lg text-white float-left"
           onClick={() => handleAnt()}
         >
           Anterior
         </button>
         <button
           type="button"
-          className="bg-blue-button py-2 px-16 my-32 rounded-lg text-white float-right"
+          className="bg-[#D5D0C7] hover:bg-[#144A36] py-2 px-16 my-32 rounded-lg text-white float-right"
           onClick={() => handleProx()}
         >
           Próximo

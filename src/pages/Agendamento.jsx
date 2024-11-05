@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import TutorValidado from "../Component/Agendamento/TutorValidado";
 import TutorInvalido from "../Component/Agendamento/TutorInvalido";
 import Box from "@mui/material/Box";
+import iconFilter from "../images/filtro.svg"
 
 const Agendamento = () => {
   const style = {
@@ -66,34 +67,50 @@ const Agendamento = () => {
         <Box sx={style}>
           <h1 className="text-2xl font-bold">Conferir Telefone</h1>
           <div>
-            <InputLabel 
-            sx={{ fontFamily: 'Montserrat' }}
+
+
+            <div className="flex flex-row items-end">
+
+              <div className="w-full ">
+              <InputLabel
+            sx={{ 
+            fontFamily: 'Montserrat',
+             }}
             className="ml-4 mt-6">
               Telefone
             </InputLabel>
             <Input
-            sx={{ fontFamily: 'Montserrat' }}
+            sx={{ 
+              fontFamily: 'Montserrat',
+              borderRadius: '0.75rem'
+            }}
               onChange={(e) => {
                 setTelefone(e.target.value);
               }}
               value={phoneMask(telefone)}
               className="border border-[#848484] rounded-[2px] h-[46px] p-2 text-base w-full"
-              placeholder="Buscar tutor pelo número"
               data-testid="input-modal-agendamento"
             />
-            <div className="flex justify-between mt-20">
+              </div>
+          
+            
+            <img src={iconFilter} className="h-12" alt="filter icon" />
+            </div>
+
+
+            <div className="flex justify-between mt-20 gap-7">
               <button
                 data-testid="button-modal-agendamento"
                 onClick={() => {
                   setOpen(!open);
                 }}
-                className="bg-white border border-[#848484] text-black font-bold rounded-[10px] h-[46px] w-[220px]"
+                className="bg-[#FFFEF9] hover:bg-[#144A36] hover:text-white border-[#B4B0A8] border-[1px] border-solid text-black font-bold rounded-[10px] h-[46px] w-[220px]"
               >
-                Cancelar
+                Voltar
               </button>
               <button
                 onClick={handleConfirmButton}
-                className="bg-[#100F49] text-white font-bold rounded-[10px] h-[46px] w-[220px]"
+                className="bg-[#D5D0C7] hover:bg-[#144A36] text-white font-bold rounded-[10px] h-[46px] w-[220px]"
               >
                 Continuar
               </button>

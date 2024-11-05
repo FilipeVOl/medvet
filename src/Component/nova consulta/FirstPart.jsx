@@ -503,7 +503,7 @@ export default function FirstPart(props) {
           </div>
           <button
             type="button"
-            className="bg-blue-button py-2 px-16 my-32 rounded-lg text-white float-right"
+            className="bg-[#D5D0C7] hover:bg-[#144A36] py-2 px-16 my-32 rounded-lg text-white float-right"
             onClick={handleProx}
           >
             Próximo

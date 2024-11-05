@@ -230,7 +230,7 @@ export default function CreateAnimal() {
           </div>
           <button
             type="button"
-            className="bg-blue-button py-2 px-16 my-32 rounded-lg text-white float-right"
+            className="hover:bg-blue-button bg-[#D5D0C7] py-2 px-16 my-32 rounded-lg text-white float-right"
             onClick={handlePostAnimal}
           >
             Cadastrar

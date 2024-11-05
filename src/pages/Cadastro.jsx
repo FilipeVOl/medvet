@@ -269,7 +269,7 @@ export default function Cadastro(props) {
             }}
             className={`${
               !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
-            } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-20 bg-border-blue text-white`}
+            } font-Montserrat hover:bg-border-blue border-2 w-52 rounded-md h-10 mt-20 bg-[#D5D0C7] text-white`}
           >
             {props.buttonName}
           </button>
