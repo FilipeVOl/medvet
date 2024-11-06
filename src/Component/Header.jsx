@@ -1,7 +1,8 @@
 import medvetlogo from "../assets/medvetlogo.svg";
 import userLogo from "../assets/user.svg";
 import uniLogo from "../assets/unilogo.svg";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Login from "../images/login.svg"
 
 export default function Header() {
   const navigate = useNavigate();
@@ -22,6 +23,9 @@ export default function Header() {
             <h2 className="font-bold">Nome</h2>
             <p className="text-gray-med">Título</p>
           </div>
+          <Link to={"/login"}>
+          <img src={Login} alt="iconLogin" className="h-8 pl-4" />
+          </Link>
 
           <div className="uni-container flex w-1/4 justify-end">
             <img src={uniLogo} alt="logo da universidade" />
