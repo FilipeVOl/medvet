@@ -101,13 +101,13 @@ export default function CreateAnimal() {
   };
 
   return (
-    <div className="font-Montserrat p-28 w-full">
-      <div className="font-semibold">
-        <h1 className="text-[30px]">Novo Animal</h1>
+    <div className="font-Montserrat p-14 w-full">
+      <div className="font-bold font-Montserrat">
+        <h1 className="text-2xl">Novo Animal</h1>
       </div>
       <div>
-        <form className="text-[18px]">
-          <div className="py-8 w-full">
+        <form className="text-[18px] px-10">
+          <div className=" w-full">
             <div id="div-pac-tut" className="flex gap-8 my-4 justify-center">
               <label htmlFor="free-solo-2-demo" className="grow">
                 Tutor
