@@ -129,20 +129,20 @@ export default function Prontuario() {
 
   const handleDelete = (medicationId) => {
     if (isClicked === 'prescricoes') {
-    console.log(medicationId);
-    const updatedEnchiridions = enchiridions.map((enchiridion) => {
-      const updatedMedications = enchiridion.medications.filter(
-        (medication) => medication.id !== medicationId
-      );
-      return {
-        ...enchiridion,
-        medications: updatedMedications,
-      };
-    }).filter((enchiridion) => enchiridion.medications.length > 0);
-    setEnchiridions(updatedEnchiridions);
-    console.log(updatedEnchiridions);
+      console.log(medicationId);
+      const updatedEnchiridions = enchiridions.map((enchiridion) => {
+        const updatedMedications = enchiridion.medications.filter(
+          (medication) => medication.id !== medicationId
+        );
+        return {
+          ...enchiridion,
+          medications: updatedMedications,
+        };
+      });
+      setEnchiridions(updatedEnchiridions);
+      console.log(updatedEnchiridions);
+    }
   }
-}
   
 
   const Wrapper = () => {
@@ -162,8 +162,79 @@ export default function Prontuario() {
 
       return (
         <>
-          {enchiridions.map((enchiridion) => (
-            <div
+
+        {isClicked === "prescricoes" && 
+          medications.map((medication) => (
+
+             <div
+             className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
+           >
+             <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
+               <div className="flex flex-row">
+                 <MedicalInformationIcon
+                   className="text-[#100F49]"
+                   fontSize="24"
+                 />
+                 {date} - {teacherNames || teacherNames[id] || id}
+               </div>
+
+               {isClicked === "prescricoes" && (
+                 <div className="flex gap-4">
+                   <img
+                     onClick={handlePrint}
+                     src={PrinterIcon}
+                     alt="printer icon"
+                     className="h-10 hover:scale-110 duration-75"
+                   />
+                   <img
+                     onClick={handleClick}
+                     src={EditIcon}
+                     alt="printer icon"
+                     className="h-10"
+                   />
+                   <img
+                     onClick={() => handleDelete(medications[0].id)}
+                     src={TrashIcon}
+                     alt="trash icon"
+                     className="h-10"
+                   />
+                 </div>
+               )}
+             </span>
+
+             {isClicked === "consultas" ? (
+               <span className="font-Montserrat text-lg text-[#595959]">
+                 <strong>Motivo da consulta: </strong>
+                 {reasonConsult}
+                 <br />
+                 <strong>Peso: </strong>
+                 {weight}
+               </span>
+             ) : isClicked === "prescricoes" ? (
+                 <span
+                   key={medication.id}
+                   className="font-Montserrat text-lg text-[#595959]"
+                 >
+                   <strong>Prescrição: </strong>
+                   {medication.description}
+                 </span>
+             ) : isClicked === "anexos" ? (
+               <span className="font-Montserrat text-lg text-[#595959]">
+                 <strong>Arquivo: </strong>
+                 <a href="/path/to/your/pdf/file.pdf" download>
+                   Baixar PDF
+                 </a>
+               </span>
+             ) : null}
+           </div>
+          ))
+        }
+
+{/*  */}
+{/*  */}
+{/*  */}
+            {isClicked === "consultas" || isClicked === "anexos" ? (
+              <div
               onClick={() => {
                 if (isClicked === "anexos") {
                   window.location.href = "/path/to/your/pdf/file.pdf";
@@ -212,14 +283,6 @@ export default function Prontuario() {
                   <strong>Peso: </strong>
                   {weight}
                 </span>
-              ) : isClicked === "prescricoes" ? (
-                  <span
-                    key={enchiridion.medications[0].id}
-                    className="font-Montserrat text-lg text-[#595959]"
-                  >
-                    <strong>Prescrição: </strong>
-                    {enchiridion.medications[0].description}
-                  </span>
               ) : isClicked === "anexos" ? (
                 <span className="font-Montserrat text-lg text-[#595959]">
                   <strong>Arquivo: </strong>
@@ -229,7 +292,8 @@ export default function Prontuario() {
                 </span>
               ) : null}
             </div>
-          ))}
+            ) : null }
+            
         </>
       );
     };
