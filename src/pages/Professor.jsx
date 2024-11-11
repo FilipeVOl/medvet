@@ -4,19 +4,67 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { UpdateEditContext } from "../contexts/updateEditContext";
 import { postProf, PutProf } from "../services/professores";
+import InputComponent from "../Component/nova consulta/InputComponent";
 
 export default function Professor(props) {
-  const {selectedUser, setSelectedUser} = useContext(UpdateEditContext);
-  const {openEdit, setOpenEdit} = useContext(UpdateEditContext);
-  const {openNew, setOpenNew} = useContext(UpdateEditContext);
+  const { selectedUser, setSelectedUser } = useContext(UpdateEditContext);
+  const { openEdit, setOpenEdit } = useContext(UpdateEditContext);
+  const { openNew, setOpenNew } = useContext(UpdateEditContext);
   const [nome, setNome] = useState(selectedUser ? selectedUser.name : "");
-  const [registration, setRegistration] = useState(selectedUser ? selectedUser.registration : "");
+  const [registration, setRegistration] = useState(
+    selectedUser ? selectedUser.registration : ""
+  );
   const [cpf, setCpf] = useState(selectedUser ? selectedUser.cpf : "");
   const [phone, setPhone] = useState(selectedUser ? selectedUser.phone : "");
-  const [email, setEmail] = useState(selectedUser ? selectedUser.email : ""  );
+  const [email, setEmail] = useState(selectedUser ? selectedUser.email : "");
   const [course, setCourse] = useState("Medicina Veterinária");
   const [shift, setShift] = useState(selectedUser ? selectedUser.shift : "");
+  const [showToast, setShowToast] = useState(false);
   const [id, setId] = useState(selectedUser ? selectedUser.id : "");
+  const [required, setRequired] = useState({
+    nome: false,
+    registration: false,
+    cpf: false,
+    phone: false,
+    email: false,
+    shift: false,
+  });
+
+  const fullfillValidate = {
+    nome,
+    registration,
+    cpf,
+    phone,
+    email,
+    shift,
+  };
+
+  const validateTrue = (chaves) => {
+    let obj = { ...required };
+    const keys = Object.keys(obj);
+    keys.forEach((e) => {
+      if (e == chaves) {
+        obj[e] = false;
+      }
+    });
+    setRequired(obj);
+  };
+  //botao de Proximo validando lógica se o animal colocado existe
+  const validateInputs = () => {
+    const keys = Object.keys(fullfillValidate);
+    const values = Object.values(fullfillValidate);
+    let validation = false;
+    let obj = { ...required };
+    values.map((e, index) => {
+      if (e == "") {
+        const chaves = keys[index];
+        obj[chaves] = true;
+        validation = true;
+      }
+    });
+    setRequired(obj);
+    return validation;
+  };
 
   {
     Professor.propTypes = {
@@ -37,10 +85,11 @@ export default function Professor(props) {
     id: id,
   };
 
-  function clickError() {
-    if (selectedUser == null) {
-      postProf(data);
+  const clickError = async () => {
+    if (!selectedUser) {
+      await postProf(data);
       setOpenNew(!openNew);
+      setShowToast(!showToast);
       window.location.reload();
     } else {
       PutProf(data);
@@ -55,145 +104,146 @@ export default function Professor(props) {
 
   return (
     <div className="cadastro-container w-full ">
-    <h1 className="font-Montserrat p-14 h-10 font-bold text-2xl">
+      {showToast && (
+        <div className="animate-fadeIn opacity-0 absolute top-32 right-0 m-4">
+          <div
+            class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
+            role="alert"
+            tabindex="-1"
+            aria-labelledby="hs-toast-success-example-label"
+          >
+            <div class="flex p-4">
+              <div class="shrink-0">
+                <svg
+                  class="shrink-0 size-4 text-teal-500 mt-0.5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
+                </svg>
+              </div>
+              <div class="ms-3">
+                <p
+                  id="hs-toast-success-example-label"
+                  class="text-sm text-gray-700 dark:text-neutral-400"
+                >
+                  Tutor criado com sucesso
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      <h1 className="font-Montserrat p-14 h-10 font-bold text-2xl">
         Novo Professor
       </h1>
-        <form>
-          <div className="forms-container px-28 h-auto grid grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
-            <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
-              <label htmlFor="nome" className="font-Montserrat">
-                Nome completo *<br />
-                <input
-                  id="name"
-                  value={nome}
-                  required
-                  onChange={(e) => {
-                    setNome(e.target.value);
-                  }}
-                  name="nome"
-                  type="text"
-                  className={`w-full border-[1px] ${
-                    !nome
-                      ? "border-red-600 outline-red-600"
-                      : "border-border-gray"
-                  } rounded-md h-9 pl-2`}
-                />
-              </label>
+      <form>
+        <div className="forms-container px-28 h-auto grid grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
+          <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
+            <InputComponent
+              nome="Nome"
+              dataType="text"
+              type={nome}
+              setDataCom={setNome}
+              requireVal={required.nome}
+              handleButton={validateTrue}
+              descrHandle="nome"
+            />
 
-              <label htmlFor="registration" className="font-Montserrat">
-                CRMV
-                <br />
-                <input
-                  id="registration"
-                  required
-                  value={registration}
-                  name="registration"
-                  type="number"
-                  onChange={(e) => {
-                    setRegistration(e.target.value);
-                  }}
-                  className={`border-[1px] w-full rounded-md h-9 pl-2 ${
-                    !registration
-                      ? "outline-red-600 border-red-500"
-                      : "border-border-gray"
-                  }`}
-                />
-              </label>
-            </div>
-
-            <div className="box-2 grid grid-cols-[1fr_2fr] gap-[5%]">
-              <label htmlFor="cpf" className="font-Montserrat">
-                CPF *<br />
-                <InputMask
-                  id="cpf"
-                  required
-                  value={cpf}
-                  name="cpf"
-                  mask="999.999.999-99"
-                  onChange={(e) => {
-                    setCpf(e.target.value);
-                  }}
-                  className={`${
-                    !cpf
-                      ? "outline-red-600 border-red-500"
-                      : "border-border-gray"
-                  } border-[1px] w-full rounded-md h-9 pl-2`}
-                />
-              </label>
-
-              <label htmlFor="email" className="font-Montserrat">
-                Email *<br />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                  id="email"
-                  name="email"
-                  className={`${
-                    !email
-                      ? "outline-red-600 border-red-500"
-                      : "border-border-gray"
-                  } w-full border-[1px] rounded-md h-9 pl-2`}
-                />
-              </label>
-            </div>
-
-            <div className="box-3 grid grid-cols-[1fr_2fr] gap-[5%]">
-              <label htmlFor="phone" className="font-Montserrat">
-                Contato *<br />
-                <InputMask
-                  mask="(99)99999-9999"
-                  required
-                  value={phone}
-                  name="phone"
-                  id="phone"
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                  }}
-                  className={`${
-                    !phone
-                      ? "outline-red-600 border-red-500"
-                      : "border-border-gray"
-                  } border-[1px] w-full rounded-md h-9 pl-`}
-                />
-              </label>
-              <label htmlFor="course" className="font-Montserrat">
-                Curso *<br />
-                <input
-                  type="text"
-                  required
-                  value={course}
-                  disabled
-                  name="course"
-                  id="course"
-                  onChange={(e) => {
-                    setCourse(e.target.value);
-                  }}
-                  className="w-full border-[1px] rounded-md h-9 pl-2"
-                />
-              </label>
-            </div>
+            <InputComponent
+              nome="CRMV"
+              dataType="text"
+              type={registration}
+              setDataCom={setRegistration}
+              requireVal={required.registration}
+              handleButton={validateTrue}
+              descrHandle="registration"
+            />
           </div>
-          <div className="button-container flex justify-end px-28 h-[28rem]">
-            <button
-              id="cadastrar"
-              name={props.buttonName}
-              type="submit"
-              onClick={(e) => {
-                e.preventDefault();
-                clickError();
-              }}
-              className={`${
-                !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
-              } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-10 bg-border-blue text-white`}
-            >
-              {props.buttonName}
-            </button>
+
+          <div className="box-2 grid grid-cols-[1fr_2fr] gap-[5%]">
+            <label htmlFor="cpf" className="font-Montserrat">
+              CPF *<br />
+              <InputMask
+                id="cpf"
+                required
+                value={cpf}
+                name="cpf"
+                mask="999.999.999-99"
+                onChange={(e) => {
+                  setCpf(e.target.value);
+                }}
+                className={`${
+                  required.cpf ? "outline-red-600 border-red-500" : "border-gray"
+                } border-2 border-solid w-full rounded-md h-11 pl-2`}
+              />
+            </label>
+
+            <InputComponent
+                nome="Email"
+                dataType="email"
+                type={email}
+                setDataCom={setEmail}
+                requireVal={required.email}
+                handleButton={validateTrue}
+                descrHandle="email"
+              />
           </div>
-        </form>
-      </div>
+
+          <div className="box-3 grid grid-cols-[1fr_2fr] gap-[5%]">
+            <label htmlFor="phone" className="font-Montserrat">
+              Contato *<br />
+              <InputMask
+                mask="(99)99999-9999"
+                required
+                value={phone}
+                name="phone"
+                id="phone"
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                }}
+                className={`${
+                  required.phone ? "outline-red-600 border-red-500" : "border-gray"
+                } border-2 border-solid w-full rounded-md h-11 pl-2`}
+              />
+            </label>
+            <label htmlFor="course" className="font-Montserrat">
+              Curso *<br />
+              <input
+                type="text"
+                required
+                value={course}
+                disabled
+                name="course"
+                id="course"
+                onChange={(e) => {
+                  setCourse(e.target.value);
+                }}
+                className="border-2 border-solid w-full rounded-md h-11 pl-2"
+              />
+            </label>
+          </div>
+        </div>
+        <div className="button-container flex justify-end px-28 h-[28rem]">
+          <button
+            id="cadastrar"
+            name={props.buttonName}
+            type="submit"
+            onClick={(e) => {
+              e.preventDefault();
+              clickError();
+            }}
+            className={`${
+              !ValidateInput() ? "cursor-not-allowed opacity-25 disabled" : ""
+            } font-Montserrat border-border-blue border-2 w-52 rounded-md h-10 mt-10 bg-border-blue text-white`}
+          >
+            {props.buttonName}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

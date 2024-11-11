@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import MedicalInformationIcon from "@mui/icons-material/MedicalInformation";
@@ -9,12 +9,16 @@ import { getTeacherName } from "../services/enchiridion";
 import { useParams } from "react-router-dom";
 import CircularIndeterminate from "../Component/Prontuarios/Loading";
 import { useNavigate } from "react-router-dom";
+import { PrescContext } from "../contexts/prescContext";
 
 
 export default function Prontuario() {
   const { id } = useParams();
   const [prontuario, setProntuario] = useState({});
   const [enchiridions, setEnchiridions] = useState({});
+  const {medications, setMedications} = useContext(PrescContext);
+  const array = [...medications];
+  console.log(array)
   const [isLoading, setIsLoading] = useState(true);
   const [teacherNames, setTeacherNames] = useState({});
   const [isClicked, setIsClicked] = useState("consultas");
@@ -35,6 +39,7 @@ export default function Prontuario() {
         const responses = await getEnchiridionsAnimalId(id);
         console.log(responses);
         setEnchiridions(responses);
+
 
       // Buscar os nomes dos professores
       const uniqueTeacherIds = [...new Set(responses.enchiridions.map(e => e.teacher_id))];
@@ -191,6 +196,7 @@ export default function Prontuario() {
             enchiridionid ={enchiridion.id}
             date={new Date(enchiridion.date).toLocaleDateString()}
             reasonConsult={enchiridion.reason_consult}
+            medicine={medications.measurement}
             weight={enchiridion.weights[0]}
             id={enchiridion.teacher_id}
           />

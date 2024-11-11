@@ -20,12 +20,16 @@ import { PrescProvider } from "./contexts/prescContext";
 import CreateAnimal from "./pages/CreateAnimal";
 import Home from "./pages/Home";
 import EditProntuario from "./pages/EditProntuario";
+import EditProntuario2 from "./pages/EditProntuario2";
+import Receita from "./pages/Receita";
 
 
 export function Router() {
   return (
     <UserProvider>
       <UpdateEditProvider>
+      <PrescProvider>
+
         <Routes>
           <Route path="/" element={<DefaultLayout />}>
             <Route path="home" element={<Home />} />
@@ -49,11 +53,15 @@ export function Router() {
             <Route path="prontuarios" element={<Prontuarios />} />
             <Route path="prontuarios/detalhes/:id" element={<Prontuario />} />
             <Route path="prontuarios/view/:id" element={<InfoProntuario />} />
-            <Route path="prontuarios/edit/:id" element={<EditProntuario />} />
+
             <Route path="receita" element={<PrescProvider />} />
+            <Route path="prontuarios/edit2/:id" element={<EditProntuario2 />} />
+            <Route path="receita" element={<Receita />} />
+
             <Route path="animal" element={<CreateAnimal />} />
           </Route>
         </Routes>
+        </PrescProvider>
       </UpdateEditProvider>
     </UserProvider>
   );
