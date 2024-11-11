@@ -14,7 +14,12 @@ import CircularIndeterminate from "../Component/Prontuarios/Loading";
 import { useNavigate } from "react-router-dom";
 import { PrescContext } from "../contexts/prescContext";
 import { Link } from "react-router-dom";
+import MedicineIcon from "../images/medicine.svg";
+import AnexoIcon from "../images/anexar.svg";
+import { Modal, Box, Typography } from "@mui/material";
 import jsPDF from "jspdf";
+import { BorderAllRounded } from "@mui/icons-material";
+import ModalAnexo from "../Component/Prontuarios/ModalAnexo";
 
 export default function Prontuario() {
   const { id } = useParams();
@@ -38,8 +43,8 @@ export default function Prontuario() {
           id: 1,
           use_type: "oral",
           pharmacy: "farmacia1",
-          unit: "",
-          measurement: "",
+          unit: "6 un",
+          measurement: "Azicox-2 50mg",
           description: "durateston",
         },
       ],
@@ -70,6 +75,24 @@ export default function Prontuario() {
   const fileInputRef = useRef();
   const [selectedFile, setSelectedFile] = useState("");
   const [deletedMedications, setDeletedMedications] = useState([]);
+  const [modal, setModal] = useState(false);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+    borderRadius: '0.5rem', // Add this line to set the border radius
+  };
+
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -128,7 +151,7 @@ export default function Prontuario() {
   };
 
   const handleDelete = (medicationId) => {
-    if (isClicked === 'prescricoes') {
+    if (isClicked === "prescricoes") {
       console.log(medicationId);
       const updatedEnchiridions = enchiridions.map((enchiridion) => {
         const updatedMedications = enchiridion.medications.filter(
@@ -142,8 +165,7 @@ export default function Prontuario() {
       setEnchiridions(updatedEnchiridions);
       console.log(updatedEnchiridions);
     }
-  }
-  
+  };
 
   const Wrapper = () => {
     const ConsultWrapper = ({
@@ -162,79 +184,76 @@ export default function Prontuario() {
 
       return (
         <>
-
-        {isClicked === "prescricoes" && 
-          medications.map((medication) => (
-
-             <div
-             className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
-           >
-             <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
-               <div className="flex flex-row">
-                 <MedicalInformationIcon
-                   className="text-[#100F49]"
-                   fontSize="24"
-                 />
-                 {date} - {teacherNames || teacherNames[id] || id}
-               </div>
-
-               {isClicked === "prescricoes" && (
-                 <div className="flex gap-4">
-                   <img
-                     onClick={handlePrint}
-                     src={PrinterIcon}
-                     alt="printer icon"
-                     className="h-10 hover:scale-110 duration-75"
-                   />
-                   <img
-                     onClick={handleClick}
-                     src={EditIcon}
-                     alt="printer icon"
-                     className="h-10"
-                   />
-                   <img
-                     onClick={() => handleDelete(medications[0].id)}
-                     src={TrashIcon}
-                     alt="trash icon"
-                     className="h-10"
-                   />
-                 </div>
-               )}
-             </span>
-
-             {isClicked === "consultas" ? (
-               <span className="font-Montserrat text-lg text-[#595959]">
-                 <strong>Motivo da consulta: </strong>
-                 {reasonConsult}
-                 <br />
-                 <strong>Peso: </strong>
-                 {weight}
-               </span>
-             ) : isClicked === "prescricoes" ? (
-                 <span
-                   key={medication.id}
-                   className="font-Montserrat text-lg text-[#595959]"
-                 >
-                   <strong>Prescrição: </strong>
-                   {medication.description}
-                 </span>
-             ) : isClicked === "anexos" ? (
-               <span className="font-Montserrat text-lg text-[#595959]">
-                 <strong>Arquivo: </strong>
-                 <a href="/path/to/your/pdf/file.pdf" download>
-                   Baixar PDF
-                 </a>
-               </span>
-             ) : null}
-           </div>
-          ))
-        }
-
-{/*  */}
-{/*  */}
-{/*  */}
-            {isClicked === "consultas" || isClicked === "anexos" ? (
+          {isClicked === "prescricoes" &&
+            medications.map((medication) => (
               <div
+                className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
+                key={medication.id}
+              >
+                <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
+                  <div className="flex flex-row gap-4">
+                    <img
+                      src={MedicineIcon}
+                      alt="medicine icon"
+                      className="h-8"
+                    />
+                    {date} - {teacherNames || teacherNames[id] || id}
+                  </div>
+
+                  {isClicked === "prescricoes" && (
+                    <div className="flex gap-4">
+                      <img
+                        onClick={handlePrint}
+                        src={PrinterIcon}
+                        alt="printer icon"
+                        className="h-10 hover:scale-110 duration-75"
+                      />
+                      <img
+                        onClick={handleClick}
+                        src={EditIcon}
+                        alt="printer icon"
+                        className="h-10"
+                      />
+                      <img
+                        onClick={() => handleDelete(medication.id)}
+                        src={TrashIcon}
+                        alt="trash icon"
+                        className="h-10"
+                      />
+                    </div>
+                  )}
+                </span>
+
+                {isClicked === "consultas" ? (
+                  <span className="font-Montserrat text-lg text-[#595959]">
+                    <strong>Motivo da consulta: </strong>
+                    {reasonConsult}
+                    <br />
+                    <strong>Peso: </strong>
+                    {weight}
+                  </span>
+                ) : isClicked === "prescricoes" ? (
+                  <span className="font-Montserrat text-lg text-[#595959]">
+                    <strong>{medication.measurement}</strong>,{" "}
+                    <strong>({medication.unit})</strong> <br />
+                    <strong>{medication.description}</strong> <br />
+                    <strong>{medication.use_type}</strong>
+                    {" - "}
+                    <strong>{medication.pharmacy}</strong>
+                  </span>
+                ) : isClicked === "anexos" ? (
+                  <span className="font-Montserrat text-lg text-[#595959]">
+                    <strong>Arquivo: </strong>
+                    <a href="/path/to/your/pdf/file.pdf" download>
+                      Baixar PDF
+                    </a>
+                  </span>
+                ) : null}
+              </div>
+            ))}
+
+          {isClicked === "consultas" ? (
+            <div
               onClick={() => {
                 if (isClicked === "anexos") {
                   window.location.href = "/path/to/your/pdf/file.pdf";
@@ -243,11 +262,16 @@ export default function Prontuario() {
               className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
             >
               <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
-                <div className="flex flex-row">
-                  <MedicalInformationIcon
-                    className="text-[#100F49]"
-                    fontSize="24"
-                  />
+                <div className="flex flex-row gap-4">
+                  {isClicked === "consultas" && (
+                    <MedicalInformationIcon
+                      className="text-[#100F49]"
+                      fontSize="24"
+                    />
+                  )}
+                  {isClicked === "anexos" && (
+                    <img src={AnexoIcon} alt="anexar icon" className="h-8" />
+                  )}
                   {date} - {teacherNames || teacherNames[id] || id}
                 </div>
 
@@ -292,8 +316,43 @@ export default function Prontuario() {
                 </span>
               ) : null}
             </div>
-            ) : null }
-            
+          ) : null}
+
+          {isClicked === "anexos" ? (
+            <div
+              onClick={() => {
+                window.location.href = "/path/to/your/pdf/file.pdf";
+              }}
+              className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
+            >
+              <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
+                <div className="date and image flex flex-row gap-4">
+                  <img src={AnexoIcon} alt="anexar icon" className="h-8" />
+                  {date} - {teacherNames || teacherNames[id] || id}
+                </div>
+                <div className="flex gap-4 ml-auto">
+                  <img
+                    onClick={handleClick}
+                    src={EditIcon}
+                    alt="printer icon"
+                    className="h-10"
+                  />
+                  <img
+                    onClick={() => handleDelete(medications[0].id)}
+                    src={TrashIcon}
+                    alt="trash icon"
+                    className="h-10"
+                  />
+                </div>
+              </span>
+              <span className="font-Montserrat text-lg text-[#595959]">
+                <strong>Arquivo: </strong>
+                <a href="/path/to/your/pdf/file.pdf" download>
+                  Baixar PDF
+                </a>
+              </span>
+            </div>
+          ) : null}
         </>
       );
     };
@@ -376,11 +435,25 @@ export default function Prontuario() {
               </div>
               <button
                 className="bg-[#100F49] h-12 w-1/3 text-white rounded-xl flex items-center justify-center gap-3"
-                onClick={() => fileInputRef.current.click()}
+                // onClick={() => fileInputRef.current.click()}
+                onClick={handleOpen}
               >
                 <AddPhotoAlternateOutlinedIcon />
                 Novo Anexo
               </button>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style}>
+                  <ModalAnexo
+                  label="Documento"
+                  type="text"
+                  />
+                </Box>
+              </Modal>
               <input
                 type="file"
                 ref={fileInputRef}
