@@ -59,38 +59,7 @@ export function Router() {
               <Route path="animal" element={<CreateAnimal />} />
             </Route>
           </Routes>
-
-        <Routes>
-          <Route path="/" element={<DefaultLayout />}>
-            <Route path="home" element={<Home />} />
-            <Route path="aluno" element={<Cadastro buttonName="Cadastrar"/>} />
-            <Route path="calendario" element={<Calendar />} />
-            <Route path="agendamento" element={<Agendamento />} />
-            <Route path="criarconsulta" element={<NovaConsulta />} />
-            <Route
-              path="tutor"
-              element={<TelaNovoTutor buttonName="Confirmar" />}
-            />
-            <Route path="agenda" element={<Agenda />} />
-            <Route
-              path="professor"
-              element={<Professor buttonName="Cadastrar" />}
-            />
-            <Route path="showAluno" element={<MostrarAluno />} />
-            <Route path="showProfessor" element={<MostrarProfessor />} />
-            <Route path="criarconsulta" element={<NovaConsulta />} />
-            <Route path="showTutor" element={<MostrarTutor />} />
-            <Route path="prontuarios" element={<Prontuarios />} />
-            <Route path="prontuarios/detalhes/:id" element={<Prontuario />} />
-            <Route path="prontuarios/view/:id" element={<InfoProntuario />} />
-
-            <Route path="receita" element={<PrescProvider />} />
-            <Route path="prontuarios/edit2/:id" element={<EditProntuario2 />} />
-            <Route path="receita" element={<Receita />} />
-
-            <Route path="animal" element={<CreateAnimal />} />
-          </Route>
-        </Routes>
+ 
         </PrescProvider>
       </UpdateEditProvider>
     </UserProvider>
