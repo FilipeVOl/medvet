@@ -20,7 +20,6 @@ import CreateAnimal from "./pages/CreateAnimal";
 import Home from "./pages/Home";
 import EditProntuario from "./pages/EditProntuario";
 import Login from "./pages/Login";
-import EditProntuario2 from "./pages/EditProntuario2";
 import Receita from "./pages/Receita";
 import OTPInput from "./Component/Login/Otp";
 import { RecoveryProvider } from "./contexts/recoveryContext";
@@ -55,7 +54,6 @@ export function Router() {
               <Route path="prontuarios/detalhes/:id" element={<Prontuario />} />
               <Route path="prontuarios/view/:id" element={<InfoProntuario />} />
               <Route path="prontuarios/edit/:id" element={<EditProntuario />} />
-              <Route path="prontuarios/edit2/:id" element={<EditProntuario2 />} />
               <Route path="receita" element={<Receita />} />
               <Route path="animal" element={<CreateAnimal />} />
             </Route>
