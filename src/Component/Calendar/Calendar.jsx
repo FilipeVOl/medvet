@@ -59,7 +59,8 @@ export const Calendar = () => {
           <h1>Agendamento para o dia {dateClicked}</h1>
         </Box>
       </Modal>
-      <div className="flex justify-center w-full p-3 mt-8">
+      <div className="justify-center w-full p-12 mt-8 flex flex-col gap-8">
+        <h1 className="font-bold text-3xl">Calendário</h1>
         <FullCalendar
           locale={"pt-br"}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
