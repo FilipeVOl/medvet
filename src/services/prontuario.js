@@ -9,3 +9,13 @@ export const getProntuario = async (id) => {
     throw new Error('Problema na requisição de prontúario')
   }
 }
+
+export const postProntuario = async (data) => {
+  try {
+    const { data } = await axios.post(``, data)
+    return data
+  } catch (error) {
+    console.error(error)
+    throw new Error ('Problema na criação do prontuario')
+  }
+}

@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import TutorValidado from "../Component/Agendamento/TutorValidado";
 import TutorInvalido from "../Component/Agendamento/TutorInvalido";
 import Box from "@mui/material/Box";
-import iconFilter from "../images/filtro.svg"
+import iconFilter from "../images/filtro.svg";
 
 const Agendamento = () => {
   const style = {
@@ -21,7 +21,6 @@ const Agendamento = () => {
     boxShadow: 24,
     p: 6,
   };
-
 
   const [telefone, setTelefone] = useState("");
   const [open, setOpen] = useState(true);
@@ -47,11 +46,15 @@ const Agendamento = () => {
   const [data, setData] = useState("");
 
   const handleConfirmButton = async () => {
-   const response = await getTutorByNumber(phoneUnmask(telefone));
-      setValidate(true);
-      setData(response);
-      if (response.phone && response.phone === phoneUnmask(telefone) & console.log("Telefone encontrado")) {
-      }
+    const response = await getTutorByNumber(phoneUnmask(telefone));
+    setValidate(true);
+    setData(response);
+    if (
+      response.phone &&
+      (response.phone === phoneUnmask(telefone)) &
+        console.log("Telefone encontrado")
+    ) {
+    }
     handleClose();
   };
 
@@ -67,36 +70,32 @@ const Agendamento = () => {
         <Box sx={style}>
           <h1 className="text-2xl font-bold">Conferir Telefone</h1>
           <div>
-
-
             <div className="flex flex-row items-end">
-
               <div className="w-full ">
-              <InputLabel
-            sx={{ 
-            fontFamily: 'Montserrat',
-             }}
-            className="ml-4 mt-6">
-              Telefone
-            </InputLabel>
-            <Input
-            sx={{ 
-              fontFamily: 'Montserrat',
-              borderRadius: '0.75rem'
-            }}
-              onChange={(e) => {
-                setTelefone(e.target.value);
-              }}
-              value={phoneMask(telefone)}
-              className="border border-[#848484] rounded-[2px] h-[46px] p-2 text-base w-full"
-              data-testid="input-modal-agendamento"
-            />
+                <InputLabel
+                  sx={{
+                    fontFamily: "Montserrat",
+                  }}
+                  className="ml-4 mt-6"
+                >
+                  Telefone
+                </InputLabel>
+                <Input
+                  sx={{
+                    fontFamily: "Montserrat",
+                    borderRadius: "0.75rem",
+                  }}
+                  onChange={(e) => {
+                    setTelefone(e.target.value);
+                  }}
+                  value={phoneMask(telefone)}
+                  className="border border-[#848484] rounded-[2px] h-[46px] p-2 text-base w-full"
+                  data-testid="input-modal-agendamento"
+                />
               </div>
-          
-            
-            <img src={iconFilter} className="h-12" alt="filter icon" />
-            </div>
 
+              <img src={iconFilter} className="h-12" alt="filter icon" />
+            </div>
 
             <div className="flex justify-between mt-20 gap-7">
               <button

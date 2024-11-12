@@ -20,6 +20,9 @@ import { Modal, Box, Typography } from "@mui/material";
 import jsPDF from "jspdf";
 import { BorderAllRounded } from "@mui/icons-material";
 import ModalAnexo from "../Component/Prontuarios/ModalAnexo";
+import ModalViewAnexo from "../Component/Prontuarios/ModalViewAnexo";
+import ModalDelete from "../Component/Prontuarios/ModalDelete";
+import ModalEdit from "../Component/Prontuarios/ModalEdit";
 
 export default function Prontuario() {
   const { id } = useParams();
@@ -76,22 +79,25 @@ export default function Prontuario() {
   const [selectedFile, setSelectedFile] = useState("");
   const [deletedMedications, setDeletedMedications] = useState([]);
   const [modal, setModal] = useState(false);
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [openModal, setOpenModal] = useState(null); // Add this line
+
+  const handleOpenModal = (modalName) => setOpenModal(modalName); // Add this line
+  const handleCloseModal = () => setOpenModal(null); // Add this line
+
+  console.log(openModal)
 
   const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 900,
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "auto",
     height: "auto",
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
+    bgcolor: "background.paper",
+    border: "2px solid #000",
     boxShadow: 24,
     p: 4,
-    borderRadius: '0.5rem', // Add this line to set the border radius
+    borderRadius: "0.5rem", // Add this line to set the border radius
   };
 
   const handleFileUpload = (file) => {
@@ -174,6 +180,11 @@ export default function Prontuario() {
     }
   };
 
+  const handleDeleteConfirm = (medicationId) => {
+    handleDelete(medicationId);
+    handleCloseModal();
+  };
+
   const Wrapper = () => {
     const ConsultWrapper = ({
       date,
@@ -216,13 +227,13 @@ export default function Prontuario() {
                         className="h-10 hover:scale-110 duration-75"
                       />
                       <img
-                        onClick={handleClick}
+                        onClick={() => handleOpenModal("editPresc")}
                         src={EditIcon}
                         alt="printer icon"
                         className="h-10"
                       />
                       <img
-                        onClick={() => handleDelete(medication.id)}
+                        onClick={() => handleOpenModal("delete")}
                         src={TrashIcon}
                         alt="trash icon"
                         className="h-10"
@@ -260,14 +271,7 @@ export default function Prontuario() {
             ))}
 
           {isClicked === "consultas" ? (
-            <div
-              onClick={() => {
-                if (isClicked === "anexos") {
-                  window.location.href = "/path/to/your/pdf/file.pdf";
-                }
-              }}
-              className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
-            >
+            <div className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer">
               <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
                 <div className="flex flex-row gap-4">
                   {isClicked === "consultas" && (
@@ -282,28 +286,6 @@ export default function Prontuario() {
                   {date} - {teacherNames || teacherNames[id] || id}
                 </div>
 
-                {isClicked === "prescricoes" && (
-                  <div className="flex gap-4">
-                    <img
-                      onClick={handlePrint}
-                      src={PrinterIcon}
-                      alt="printer icon"
-                      className="h-10 hover:scale-110 duration-75"
-                    />
-                    <img
-                      onClick={handleClick}
-                      src={EditIcon}
-                      alt="printer icon"
-                      className="h-10"
-                    />
-                    <img
-                      onClick={() => handleDelete(medications[0].id)}
-                      src={TrashIcon}
-                      alt="trash icon"
-                      className="h-10"
-                    />
-                  </div>
-                )}
               </span>
 
               {isClicked === "consultas" ? (
@@ -326,12 +308,7 @@ export default function Prontuario() {
           ) : null}
 
           {isClicked === "anexos" ? (
-            <div
-              onClick={() => {
-                window.location.href = "/path/to/your/pdf/file.pdf";
-              }}
-              className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
-            >
+            <div className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer">
               <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
                 <div className="date and image flex flex-row gap-4">
                   <img src={AnexoIcon} alt="anexar icon" className="h-8" />
@@ -339,13 +316,16 @@ export default function Prontuario() {
                 </div>
                 <div className="flex gap-4 ml-auto">
                   <img
-                    onClick={handleClick}
+                    onClick={() => handleOpenModal("editAnexo")}
                     src={EditIcon}
                     alt="printer icon"
                     className="h-10"
                   />
+                  {/*  */}
+
+                  {/*  */}
                   <img
-                    onClick={() => handleDelete(medications[0].id)}
+                    onClick={() => handleOpenModal("delete")}
                     src={TrashIcon}
                     alt="trash icon"
                     className="h-10"
@@ -442,28 +422,105 @@ export default function Prontuario() {
               </div>
               <button
                 className="bg-[#100F49] h-12 w-1/3 text-white rounded-xl flex items-center justify-center gap-3"
-                onClick={handleOpen}
+                onClick={() => handleOpenModal("newAnexo")}
               >
                 <AddPhotoAlternateOutlinedIcon />
                 Novo Anexo
               </button>
+
+              {/* RENDERIZAÇÃO DOS MODAIS */}
+
               <Modal
-                open={open}
-                onClose={handleClose}
+                open={openModal === "newAnexo"}
+                onClose={handleCloseModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={{ ...style, width: "900px" }}>
+                  <ModalAnexo
+                    label="Nome do documento (exame):"
+                    type="text"
+                    setOpen={setOpenModal}
+                    handleClose={handleCloseModal}
+                    handleFileUpload={handleFileUpload}
+                    selectedFile={selectedFile} // Pass the selected file to the ModalAnexo component
+                  />
+                </Box>
+              </Modal>
+
+              {/* -------------------------------------------- */}
+
+              <Modal
+                open={openModal === "delete"}
+                onClose={handleCloseModal}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
               >
                 <Box sx={style}>
-                  <ModalAnexo
-                  label="Nome do documento (exame):"
-                  type="text"
-                  setOpen={setOpen}
-                  handleClose={handleClose}
-                  handleFileUpload={handleFileUpload}
-                  selectedFile={selectedFile} // Pass the selected file to the ModalAnexo component
+                  <ModalDelete
+                    title="Excluir Prescrição?"
+                    body="Tem certeza de que quer excluir?"
+                    handleClose={handleCloseModal}
+                    handleDelete={() => handleDeleteConfirm(medications[0].id)}
                   />
                 </Box>
               </Modal>
+
+              {/* -------------------------------------------- */}
+
+              <Modal
+                open={openModal === "delete"}
+                onClose={handleCloseModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style}>
+                  <ModalDelete
+                    title="Excluir Anexo?"
+                    body="Tem certeza de que quer excluir?"
+                    handleClose={handleCloseModal}
+                    // handleDelete={() => handleDeleteConfirm(medications[0].id)}
+                  />
+                </Box>
+              </Modal>
+
+              {/* -------------------------------------------- */}
+
+              <Modal
+                open={openModal === "editAnexo"}
+                onClose={handleCloseModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={{ ...style, width: "auto", height: "auto" }}>
+                  <ModalViewAnexo
+                    label="Nome do documento (exame):"
+                    type="text"
+                    setOpen={setOpenModal}
+                    handleClose={handleCloseModal}
+                    selectedFile={selectedFile} // P// ass the selected file to the ModalAnexo component
+                  />
+                </Box>
+              </Modal>
+
+              {/* -------------------------------------------- */}
+
+              <Modal
+                open={openModal === "editPresc"}
+                onClose={handleCloseModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={{ ...style, width: "900px", height: "900px" }}>
+                  <ModalEdit
+                    setOpen={setOpenModal}
+                    handleClose={handleCloseModal}
+                  />
+                </Box>
+              </Modal>
+
+              {/* FIM DA RENDERIZAÇÃO DOS MODAIS */}
+
               <input
                 type="file"
                 ref={fileInputRef}
@@ -477,7 +534,6 @@ export default function Prontuario() {
                   }
                 }}
               />
-              
             </div>
           )}
           {enchiridions.map((enchiridion) => (
@@ -526,6 +582,75 @@ export default function Prontuario() {
           <Wrapper />
         </div>
       )}
+
+      {/* RENDERIZAÇÃO DOS MODAIS */}
+
+      <Modal
+        open={openModal === "newAnexo"}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={{ ...style, width: "900px" }}>
+          <ModalAnexo
+            label="Nome do documento (exame):"
+            type="text"
+            setOpen={setOpenModal}
+            handleClose={handleCloseModal}
+            handleFileUpload={handleFileUpload}
+            selectedFile={selectedFile} // Pass the selected file to the ModalAnexo component
+          />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openModal === "delete"}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <ModalDelete
+            title="Excluir Prescrição?"
+            body="Tem certeza de que quer excluir?"
+            handleClose={handleCloseModal}
+            handleDelete={() => handleDeleteConfirm(medications[0].id)}
+          />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openModal === "editAnexo"}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={{ ...style, width: "auto", height: "auto" }}>
+          <ModalViewAnexo
+            label="Nome do documento (exame):"
+            type="text"
+            setOpen={setOpenModal}
+            handleClose={handleCloseModal}
+            selectedFile={selectedFile} // Pass the selected file to the ModalAnexo component
+          />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openModal === "editPresc"}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={{ ...style, width: "900px", height: "auto" }}>
+          <ModalEdit
+            setOpen={setOpenModal}
+            handleClose={handleCloseModal}
+          />
+        </Box>
+      </Modal>
+
+      {/* FIM DA RENDERIZAÇÃO DOS MODAIS */}
     </>
   );
 }
