@@ -85,7 +85,8 @@ export default function Prontuario() {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 900,
+    height: "auto",
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -93,6 +94,12 @@ export default function Prontuario() {
     borderRadius: '0.5rem', // Add this line to set the border radius
   };
 
+  const handleFileUpload = (file) => {
+    if (file) {
+      setSelectedFile(file); // Set the selected file in the state
+      console.log(file);
+    }
+  };
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -435,7 +442,6 @@ export default function Prontuario() {
               </div>
               <button
                 className="bg-[#100F49] h-12 w-1/3 text-white rounded-xl flex items-center justify-center gap-3"
-                // onClick={() => fileInputRef.current.click()}
                 onClick={handleOpen}
               >
                 <AddPhotoAlternateOutlinedIcon />
@@ -449,8 +455,12 @@ export default function Prontuario() {
               >
                 <Box sx={style}>
                   <ModalAnexo
-                  label="Documento"
+                  label="Nome do documento (exame):"
                   type="text"
+                  setOpen={setOpen}
+                  handleClose={handleClose}
+                  handleFileUpload={handleFileUpload}
+                  selectedFile={selectedFile} // Pass the selected file to the ModalAnexo component
                   />
                 </Box>
               </Modal>
@@ -467,11 +477,7 @@ export default function Prontuario() {
                   }
                 }}
               />
-              {selectedFile && (
-                <div className="mt-2 text-[#007448]">
-                  Arquivo selecionado: {selectedFile}
-                </div>
-              )}
+              
             </div>
           )}
           {enchiridions.map((enchiridion) => (
