@@ -23,8 +23,10 @@ export const PrescProvider = ({children}) => {
   const [medications, setMedications] = useState([
     { use_type: "oral", pharmacy: "farmacia1", unit: "", measurement: "", description: "durateston" },
   ]);
+  const [selectedMedicationId, setSelectedMedicationId] = useState(null); // Add this line
+
   return (
-    <PrescContext.Provider value={{ page, setPage, medications, setMedications }}>
+    <PrescContext.Provider value={{ page, setPage, medications, setMedications, selectedMedicationId, setSelectedMedicationId }}>
       {children}
     </PrescContext.Provider>
   );

@@ -80,9 +80,35 @@ export default function Prontuario() {
   const [deletedMedications, setDeletedMedications] = useState([]);
   const [modal, setModal] = useState(false);
   const [openModal, setOpenModal] = useState(null); // Add this line
+  const { selectedMedicationId, setSelectedMedicationId } = useContext(PrescContext); // Add this line
+  const [selectedAnexoId, setSelectedAnexoId] = useState(null); // Add this line
+  const [anexos, setAnexos] = useState([
+    {
+      id: 1,
+      name: "Exame de Sangue",
+      date: new Date().toISOString().split("T")[0],
+    },
+    {
+      id: 2,
+      name: "Raio-X",
+      date: new Date().toISOString().split("T")[0],
+    },
+  ]);
 
-  const handleOpenModal = (modalName) => setOpenModal(modalName); // Add this line
-  const handleCloseModal = () => setOpenModal(null); // Add this line
+  const handleOpenModal = (modalName, id = null) => {
+    setOpenModal(modalName);
+    if (modalName === "delete" || modalName === "editPresc") {
+      setSelectedMedicationId(id); // Set the selected medication ID in the context
+    } else if (modalName === "deleteAnexo" || modalName === "editAnexo") {
+      setSelectedAnexoId(id); // Set the selected anexo ID in the state
+    }
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(null);
+    setSelectedMedicationId(null); // Reset the selected medication ID in the context
+    setSelectedAnexoId(null); // Reset the selected anexo ID in the state
+  };
 
   console.log(openModal)
 
@@ -154,13 +180,35 @@ export default function Prontuario() {
     }
   };
 
-  const handlePrint = () => {
+  const handlePrint = (selectedEnchiridionId) => {
     const doc = new jsPDF();
-    const content = medications
-      .map((medication, index) => `${index + 1}. ${medication.description}`)
-      .join("\n");
-    doc.text(content, 10, 10);
-    doc.save("prescription.pdf");
+    const selectedEnchiridion = enchiridions.find(
+      (enchiridion) => enchiridion.id === selectedEnchiridionId
+    );
+  
+    if (selectedEnchiridion) {
+      const content = selectedEnchiridion.medications
+        .map((medication) => (
+        `
+        Receita Simples
+        Paciente: ${prontuario.name}
+        Tutor: Clemendes
+        Espécie: ${prontuario.species}
+        Raça: ${prontuario.race}
+        Sexo: ${prontuario.gender}
+        Idade: ${prontuario.age}
+        Peso: ${selectedEnchiridion.weight}
+        ID: ${selectedEnchiridion.id}
+        
+        Medicação: ${medication.measurement}
+        Tipo de Uso: ${medication.use_type}
+        Farmácia: ${medication.pharmacy}
+        `
+        ))
+        .join("\n\n");
+      doc.text(content, 10, 10);
+      doc.save("prescription.pdf");
+    }
   };
 
   const handleDelete = (medicationId) => {
@@ -180,8 +228,18 @@ export default function Prontuario() {
     }
   };
 
-  const handleDeleteConfirm = (medicationId) => {
-    handleDelete(medicationId);
+  const handleDeleteConfirm = () => {
+    handleDelete(selectedMedicationId);
+    handleCloseModal();
+  };
+
+  const handleDeleteAnexo = (anexoId) => {
+    const updatedAnexos = anexos.filter((anexo) => anexo.id !== anexoId);
+    setAnexos(updatedAnexos);
+  };
+  
+  const handleDeleteAnexoConfirm = () => {
+    handleDeleteAnexo(selectedAnexoId);
     handleCloseModal();
   };
 
@@ -221,7 +279,7 @@ export default function Prontuario() {
                   {isClicked === "prescricoes" && (
                     <div className="flex gap-4">
                       <img
-                        onClick={handlePrint}
+                        onClick={() => handlePrint(enchiridionid)}
                         src={PrinterIcon}
                         alt="printer icon"
                         className="h-10 hover:scale-110 duration-75"
@@ -233,7 +291,7 @@ export default function Prontuario() {
                         className="h-10"
                       />
                       <img
-                        onClick={() => handleOpenModal("delete")}
+                        onClick={() => handleOpenModal("delete", medication.id)}
                         src={TrashIcon}
                         alt="trash icon"
                         className="h-10"
@@ -280,9 +338,7 @@ export default function Prontuario() {
                       fontSize="24"
                     />
                   )}
-                  {isClicked === "anexos" && (
-                    <img src={AnexoIcon} alt="anexar icon" className="h-8" />
-                  )}
+
                   {date} - {teacherNames || teacherNames[id] || id}
                 </div>
 
@@ -307,39 +363,6 @@ export default function Prontuario() {
             </div>
           ) : null}
 
-          {isClicked === "anexos" ? (
-            <div className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer">
-              <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
-                <div className="date and image flex flex-row gap-4">
-                  <img src={AnexoIcon} alt="anexar icon" className="h-8" />
-                  {date} - {teacherNames || teacherNames[id] || id}
-                </div>
-                <div className="flex gap-4 ml-auto">
-                  <img
-                    onClick={() => handleOpenModal("editAnexo")}
-                    src={EditIcon}
-                    alt="printer icon"
-                    className="h-10"
-                  />
-                  {/*  */}
-
-                  {/*  */}
-                  <img
-                    onClick={() => handleOpenModal("delete")}
-                    src={TrashIcon}
-                    alt="trash icon"
-                    className="h-10"
-                  />
-                </div>
-              </span>
-              <span className="font-Montserrat text-lg text-[#595959]">
-                <strong>Arquivo: </strong>
-                <a href="/path/to/your/pdf/file.pdf" download>
-                  Baixar PDF
-                </a>
-              </span>
-            </div>
-          ) : null}
         </>
       );
     };
@@ -427,100 +450,6 @@ export default function Prontuario() {
                 <AddPhotoAlternateOutlinedIcon />
                 Novo Anexo
               </button>
-
-              {/* RENDERIZAÇÃO DOS MODAIS */}
-
-              <Modal
-                open={openModal === "newAnexo"}
-                onClose={handleCloseModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={{ ...style, width: "900px" }}>
-                  <ModalAnexo
-                    label="Nome do documento (exame):"
-                    type="text"
-                    setOpen={setOpenModal}
-                    handleClose={handleCloseModal}
-                    handleFileUpload={handleFileUpload}
-                    selectedFile={selectedFile} // Pass the selected file to the ModalAnexo component
-                  />
-                </Box>
-              </Modal>
-
-              {/* -------------------------------------------- */}
-
-              <Modal
-                open={openModal === "delete"}
-                onClose={handleCloseModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={style}>
-                  <ModalDelete
-                    title="Excluir Prescrição?"
-                    body="Tem certeza de que quer excluir?"
-                    handleClose={handleCloseModal}
-                    handleDelete={() => handleDeleteConfirm(medications[0].id)}
-                  />
-                </Box>
-              </Modal>
-
-              {/* -------------------------------------------- */}
-
-              <Modal
-                open={openModal === "delete"}
-                onClose={handleCloseModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={style}>
-                  <ModalDelete
-                    title="Excluir Anexo?"
-                    body="Tem certeza de que quer excluir?"
-                    handleClose={handleCloseModal}
-                    // handleDelete={() => handleDeleteConfirm(medications[0].id)}
-                  />
-                </Box>
-              </Modal>
-
-              {/* -------------------------------------------- */}
-
-              <Modal
-                open={openModal === "editAnexo"}
-                onClose={handleCloseModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={{ ...style, width: "auto", height: "auto" }}>
-                  <ModalViewAnexo
-                    label="Nome do documento (exame):"
-                    type="text"
-                    setOpen={setOpenModal}
-                    handleClose={handleCloseModal}
-                    selectedFile={selectedFile} // P// ass the selected file to the ModalAnexo component
-                  />
-                </Box>
-              </Modal>
-
-              {/* -------------------------------------------- */}
-
-              <Modal
-                open={openModal === "editPresc"}
-                onClose={handleCloseModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={{ ...style, width: "900px", height: "900px" }}>
-                  <ModalEdit
-                    setOpen={setOpenModal}
-                    handleClose={handleCloseModal}
-                  />
-                </Box>
-              </Modal>
-
-              {/* FIM DA RENDERIZAÇÃO DOS MODAIS */}
-
               <input
                 type="file"
                 ref={fileInputRef}
@@ -547,6 +476,40 @@ export default function Prontuario() {
               medications={enchiridion.medications}
             />
           ))}
+          {isClicked === "anexos" &&
+            anexos.map((anexo) => (
+              <div
+                className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
+                key={anexo.id}
+              >
+                <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
+                  <div className="date and image flex flex-row gap-4">
+                    <img src={AnexoIcon} alt="anexar icon" className="h-8" />
+                    {anexo.date} - {anexo.name}
+                  </div>
+                  <div className="flex gap-4 ml-auto">
+                    <img
+                      onClick={() => handleOpenModal("editAnexo", anexo.id)}
+                      src={EditIcon}
+                      alt="edit icon"
+                      className="h-10"
+                    />
+                    <img
+                      onClick={() => handleOpenModal("deleteAnexo", anexo.id)}
+                      src={TrashIcon}
+                      alt="trash icon"
+                      className="h-10"
+                    />
+                  </div>
+                </span>
+                <span className="font-Montserrat text-lg text-[#595959]">
+                  <strong>Arquivo: </strong>
+                  <a href="/path/to/your/pdf/file.pdf" download>
+                    Baixar PDF
+                  </a>
+                </span>
+              </div>
+            ))}
         </div>
       </div>
     );
@@ -614,7 +577,23 @@ export default function Prontuario() {
             title="Excluir Prescrição?"
             body="Tem certeza de que quer excluir?"
             handleClose={handleCloseModal}
-            handleDelete={() => handleDeleteConfirm(medications[0].id)}
+            handleDelete={handleDeleteConfirm}
+          />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openModal === "delete2"}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <ModalDelete
+            title="Excluir Anexo?"
+            body="Tem certeza de que quer excluir?"
+            handleClose={handleCloseModal}
+            handleDelete={handleDeleteAnexoConfirm}
           />
         </Box>
       </Modal>
@@ -646,6 +625,22 @@ export default function Prontuario() {
           <ModalEdit
             setOpen={setOpenModal}
             handleClose={handleCloseModal}
+          />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openModal === "deleteAnexo"}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <ModalDelete
+            title="Excluir Anexo?"
+            body="Tem certeza de que quer excluir?"
+            handleClose={handleCloseModal}
+            handleDelete={handleDeleteAnexoConfirm}
           />
         </Box>
       </Modal>

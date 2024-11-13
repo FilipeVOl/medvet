@@ -19,6 +19,11 @@ export default function Prontuarios() {
       animal_name: "jorge",
       animal_id: 1,
       tutor_name: "joaquim"
+    },
+    {
+      animal_name: "euzequio",
+      animal_id: 2,
+      tutor_name: "belzebo"
     }
   ]);
   const [pageSelected, setPageSelected] = useState(1);
