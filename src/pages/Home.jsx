@@ -10,7 +10,7 @@ const Home = () => {
     {
       nameTutor: "jorgin",
       nameAnimal: "clebin",
-      data: "11112024",
+      data: "13112024",
     },
     {
       nameTutor: "eae",
@@ -44,29 +44,30 @@ const Home = () => {
 
       {/* Buttons */}
       <div className="flex ml-32 gap-4 mb-8 text-[20px] font-semibold text-white justify-start">
-        <button className="bg-[#D5D0C7] flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8 shadow-sm text-center">
-          <Link to="/criarconsulta">
+        <Link to="/criarconsulta">
+          <button className="bg-[#D5D0C7] shadow-lg flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8  text-center">
             <img src={iconAgendar} className="pr-4 h-20 self-center pl-6" />
-            Nova <br></br>consulta
-          </Link>
-        </button>
-        <button className="bg-[#D5D0C7] flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8 shadow-sm text-center">
-          <Link to="/receita">
+            Nova consulta
+          </button>
+        </Link>
+        <Link to="/receita">
+          <button className="bg-[#D5D0C7] flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8 shadow-lg text-center">
             <img src={iconCadastro} className="pr-4 h-20 self-center pl-6" />
             Receita
-          </Link>
-        </button>
-        <button className="bg-[#D5D0C7] flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8 shadow-sm text-center">
-          <Link to="/prontuarios">
+          </button>
+        </Link>
+
+        <Link to="/prontuarios">
+          <button className="bg-[#D5D0C7] flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8 shadow-lg text-center">
             <img src={iconProntuario} className="pr-4 h-20 self-center pl-6" />
             Prontuários
-          </Link>
-        </button>
+          </button>
+        </Link>
       </div>
 
       {/* Today's Appointments */}
       <div className="ml-32 text-xl text-[25px] mb-4 font-medium mt-20">
-        <strong>Hoje</strong>
+        <strong className="text-3xl">Hoje</strong>
       </div>
       <section>
         {todayConsults

@@ -39,7 +39,7 @@ export function Router() {
               <Route path="reset" element={<Reset />} />
             </Route>
             <Route path="/" element={<DefaultLayout />}>
-              <Route path="home" element={<Home />} />
+              <Route path="/" element={<Home />} />
               <Route path="aluno" element={<Cadastro buttonName="Cadastrar" />} />
               <Route path="calendario" element={<Calendar />} />
               <Route path="agendamento" element={<Agendamento />} />

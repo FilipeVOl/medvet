@@ -15,7 +15,7 @@ const Navbar = () => {
     <div className='shadow-md min-h-screen bg-[#007448] p-10 text-white-med top-28 max-w-72 min-w-72'>
       <div id="inicio" className='flex py-4'>
         <img src={house} className='pr-4 '/>
-        <Link to="home">Início</Link>
+        <Link to="/">Início</Link>
       </div>
       <div id="agendar" className='flex py-4'>
         <img src={agendar} className='pr-4 h-6'/>
