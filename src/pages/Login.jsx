@@ -4,17 +4,28 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { Outlet, useNavigate } from "react-router-dom";
 import { RecoveryContext, RecoveryProvider } from "../contexts/recoveryContext";
+import { validateCPF } from "../utils/validateCPF"; // Import CPF validation function
+import { UserContext } from "../contexts/userContext"; // Import UserContext
+import axios from "axios"; // Import axios for making HTTP requests
 
 const Login = () => {
-    const { setPage, setEmail } = useContext(RecoveryContext);
-    const [email, setEmailState] = useState("");
+    const { setPage, setCPF } = useContext(RecoveryContext);
+    const { saveUserAndToken } = useContext(UserContext); // Get saveUserAndToken from UserContext
+    const [cpf, setCPFState] = useState("");
+    const [password, setPassword] = useState(""); // Add state for password
 
-    console.log(email)
-
-    const validateEmail = (email) => {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(String(email).toLowerCase());
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post("http://localhost:3333/sessions", { cpf, password });
+            const { userData, token, refreshToken } = response.data;
+            saveUserAndToken(userData, token, refreshToken);
+            console.log(token);
+        } catch (error) {
+            console.error("Erro ao fazer login:", error);
+        }
     };
+
 
     return (
         <div className="font-Montserrat relative h-[100vh] bg-cover bg-[url('./images/backgroundLogin.png')] flex justify-center items-center">
@@ -29,12 +40,12 @@ const Login = () => {
                 >
                     <div className="flex flex-col justify-center items-center w-full gap-8 my-14">
                         <TextField
-                            type="email"
+                            type="number"
                             id="outlined-error"
                             label="Usuário"
-                            onChange={(e) => setEmailState(e.target.value)}
-                            error={!validateEmail(email) && email !== ""}
-                            helperText={!validateEmail(email) && email !== "" ? "Email inválido." : ""}
+                            onChange={(e) => setCPFState(e.target.value)}
+                            error={!validateCPF(cpf) && cpf !== ""}
+                            helperText={!validateCPF(cpf) && cpf !== "" ? "CPF inválido." : ""}
                             InputProps={{
                                 style: { backgroundColor: "#F2F2ED", border: "none", outline: "none" }
                             }}
@@ -59,6 +70,8 @@ const Login = () => {
                             id="outlined-error-helper-text"
                             label="Password"
                             type="password"
+                            value={password} // Add value prop
+                            onChange={(e) => setPassword(e.target.value)} // Add onChange handler
                             helperText="Incorrect password."
                             InputProps={{
                                 style: { backgroundColor: "#F2F2ED", border: "none", outline: "none" }
@@ -85,17 +98,17 @@ const Login = () => {
                         <button 
                             onClick={(e) => { 
                                 e.preventDefault();
-                                if (validateEmail(email)) {
                                     setEmail(email);
                                     setPage("otp");
-                                }
                             }}
                             className="outline-black decoration-2 underline underline-offset-8 transition-all duration-300 transform hover:scale-105 hover:decoration-[3px]"
                         >
                             <strong>Esqueceu a senha?</strong>
                         </button>
 
-                        <button className="bg-[#144A36] hover:opacity-50  text-white font-bold rounded-[10px] h-[46px] w-[220px] transform duration-300 hover:scale-105">Entrar</button>
+                        <button 
+                            onClick={handleLogin} // Add onClick handler
+                            className="bg-[#144A36] hover:opacity-50  text-white font-bold rounded-[10px] h-[46px] w-[220px] transform duration-300 hover:scale-105">Entrar</button>
                     </div>
                 </Box>
             </div>

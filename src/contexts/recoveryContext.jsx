@@ -8,7 +8,7 @@ const RecoveryContext = createContext();
 
 function RecoveryProvider({ children }) {
   const [page, setPage] = useState("login");
-  const [email, setEmail] = useState();
+  const [cpf, setCPF] = useState();
   const [otp, setOTP] = useState();
 
   const NavigateComponents = () => {
@@ -20,7 +20,7 @@ function RecoveryProvider({ children }) {
 
   return (
     <RecoveryContext.Provider
-      value={{ page, setPage, otp, setOTP, setEmail, email }}
+      value={{ page, setPage, otp, setOTP, setCPF, cpf }}
     >
       <NavigateComponents />
     </RecoveryContext.Provider>

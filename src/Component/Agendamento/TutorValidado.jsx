@@ -91,7 +91,7 @@ const InputConsulta = ({
         placeholder={placeHolder}
         disabled={isDisabled}
         className={` ${
-          value === "" ? "bg-[#144A36]" : "border-[#848484]"
+          value === "" ? "bg-white" : "border-[#848484]"
         } border rounded-md h-[46px] p-2`}
       />
     </div>
