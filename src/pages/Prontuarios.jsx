@@ -14,23 +14,13 @@ export default function Prontuarios() {
   const [namePacient, setNamePacient] = useState("");
   const [nameTutor, setNameTutor] = useState("");
   const [numberPront, setNumberPront] = useState("");
-  const [prontuarios, setProntuarios] = useState([
-    {
-      animal_name: "jorge",
-      animal_id: 1,
-      tutor_name: "joaquim"
-    },
-    {
-      animal_name: "euzequio",
-      animal_id: 2,
-      tutor_name: "belzebo"
-    }
-  ]);
+  const [prontuarios, setProntuarios] = useState([]);
   const [pageSelected, setPageSelected] = useState(1);
 
-  // useEffect(() => {
-  //   getAllAnimals(setProntuarios, pageSelected);
-  // }, [pageSelected]);
+  useEffect(() => {
+    getAllAnimals(setProntuarios);
+  }, [setProntuarios]);
+
 
   // useEffect(() => {
   //   if (
@@ -68,6 +58,8 @@ export default function Prontuarios() {
     getAnimalBySequenceOrName(setProntuarios, value)
   };
   
+  console.log(prontuarios)
+
 
   return (
     <div className="font-Montserrat w-full p-28 flex flex-col">

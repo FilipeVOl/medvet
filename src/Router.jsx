@@ -51,7 +51,7 @@ function AppRoutes() {
         <Route path="recovered" element={<Recovered />} />
         <Route path="reset" element={<Reset />} />
       </Route>
-      {token ? (
+      {!token ? (
         <Route path="/" element={<DefaultLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="aluno" element={<Cadastro buttonName="Cadastrar" />} />

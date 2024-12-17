@@ -4,7 +4,7 @@ import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternate
 import MedicalInformationIcon from "@mui/icons-material/MedicalInformation";
 import { getProntuario } from "../services/prontuario";
 import CircularProgress from "@mui/material/CircularProgress";
-import { getEnchiridionsAnimalId } from "../services/enchiridion";
+import { getEnchiridion, getEnchiridionsAnimalId } from "../services/enchiridion";
 import { getTeacherName } from "../services/enchiridion";
 import TrashIcon from "../images/trashProntu.svg";
 import PrinterIcon from "../images/printer.svg";
@@ -23,6 +23,7 @@ import ModalAnexo from "../Component/Prontuarios/ModalAnexo";
 import ModalViewAnexo from "../Component/Prontuarios/ModalViewAnexo";
 import ModalDelete from "../Component/Prontuarios/ModalDelete";
 import ModalEdit from "../Component/Prontuarios/ModalEdit";
+import {getPrescByAnimalId} from "../services/prescription";
 
 export default function Prontuario() {
   const { id } = useParams();
@@ -33,45 +34,8 @@ export default function Prontuario() {
     species: "t-rex",
     coat: "verde",
   });
-  const [enchiridions, setEnchiridions] = useState([
-    {
-      id: 1,
-      reason_consult: "tomou laxante",
-      measurement: "nao sei",
-      weight: 50,
-      teacher_id: 2,
-      date: new Date().toISOString().split("T")[0],
-      medications: [
-        {
-          id: 1,
-          use_type: "oral",
-          pharmacy: "farmacia1",
-          unit: "6 un",
-          measurement: "Azicox-2 50mg",
-          description: "durateston",
-        },
-      ],
-    },
-    {
-      id: 2,
-      reason_consult: "tremendo",
-      measurement: "nao sei man",
-      weight: 20,
-      teacher_id: 2,
-      date: new Date().toISOString().split("T")[0],
-      medications: [
-        {
-          id: 2,
-          use_type: "oral",
-          pharmacy: "farmacia2",
-          unit: "",
-          measurement: "",
-          description: "doidoi",
-        },
-      ],
-    },
-  ]);
-  // const { medications, setMedications } = useContext(PrescContext);
+  const [enchiridions, setEnchiridions] = useState([]);
+  const [medications, setMedications] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [teacherNames, setTeacherNames] = useState("Jorge");
   const [isClicked, setIsClicked] = useState("consultas");
@@ -110,8 +74,6 @@ export default function Prontuario() {
     setSelectedAnexoId(null); // Reset the selected anexo ID in the state
   };
 
-  console.log(openModal)
-
   const style = {
     position: "absolute",
     top: "50%",
@@ -133,13 +95,18 @@ export default function Prontuario() {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const response = await getProntuario(id);
-  //   };
-  //  console.log(id)
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getEnchiridionsAnimalId(id);
+      const medication = await getPrescByAnimalId(id);
+      setEnchiridions(response.enchiridions);
+      setMedications(medication);
+    };
+
+    fetchData();
+  }, [setEnchiridions, setMedications]);
+
+
 
   // useEffect(() => {
   //   const fetchDatas = async () => {
@@ -185,11 +152,11 @@ export default function Prontuario() {
     const selectedEnchiridion = enchiridions.find(
       (enchiridion) => enchiridion.id === selectedEnchiridionId
     );
-  
+
     if (selectedEnchiridion) {
       const content = selectedEnchiridion.medications
         .map((medication) => (
-        `
+          `
         Receita Simples
         Paciente: ${prontuario.name}
         Tutor: Clemendes
@@ -237,11 +204,14 @@ export default function Prontuario() {
     const updatedAnexos = anexos.filter((anexo) => anexo.id !== anexoId);
     setAnexos(updatedAnexos);
   };
-  
+
   const handleDeleteAnexoConfirm = () => {
     handleDeleteAnexo(selectedAnexoId);
     handleCloseModal();
   };
+
+  console.log(medications[0])
+
 
   const Wrapper = () => {
     const ConsultWrapper = ({
@@ -250,7 +220,6 @@ export default function Prontuario() {
       weight,
       id,
       enchiridionid,
-      medications,
     }) => {
       const navigate = useNavigate();
 
@@ -310,12 +279,12 @@ export default function Prontuario() {
                   </span>
                 ) : isClicked === "prescricoes" ? (
                   <span className="font-Montserrat text-lg text-[#595959]">
-                    <strong>{medication.measurement}</strong>,{" "}
-                    <strong>({medication.unit})</strong> <br />
-                    <strong>{medication.description}</strong> <br />
-                    <strong>{medication.use_type}</strong>
+                    <strong>{medication[0].measurement}</strong>,{" "}
+                    <strong>({medication[0].unit})</strong> <br />
+                    <strong>{medication[0].description}</strong> <br />
+                    <strong>{medication[0].useType}</strong>
                     {" - "}
-                    <strong>{medication.pharmacy}</strong>
+                    <strong>{medication[0].pharmacy}</strong>
                   </span>
                 ) : isClicked === "anexos" ? (
                   <span className="font-Montserrat text-lg text-[#595959]">
@@ -372,25 +341,22 @@ export default function Prontuario() {
         <div className="bg-transparent flex">
           <button
             onClick={() => setIsClicked("consultas")}
-            className={`${
-              isClicked === "consultas" ? "bg-[#007448]" : "bg-[#BDD9BF]"
-            } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl transition-colors duration-300 ease-in-out`}
+            className={`${isClicked === "consultas" ? "bg-[#007448]" : "bg-[#BDD9BF]"
+              } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl transition-colors duration-300 ease-in-out`}
           >
             Consultas
           </button>
           <button
             onClick={() => setIsClicked("prescricoes")}
-            className={`${
-              isClicked === "prescricoes" ? "bg-[#007448]" : "bg-[#BDD9BF]"
-            } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl  transition-colors duration-300 ease-in-out`}
+            className={`${isClicked === "prescricoes" ? "bg-[#007448]" : "bg-[#BDD9BF]"
+              } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl  transition-colors duration-300 ease-in-out`}
           >
             Prescrições
           </button>
           <button
             onClick={() => setIsClicked("anexos")}
-            className={`${
-              isClicked === "anexos" ? "bg-[#007448]" : "bg-[#BDD9BF]"
-            } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl  transition-colors duration-300 ease-in-out`}
+            className={`${isClicked === "anexos" ? "bg-[#007448]" : "bg-[#BDD9BF]"
+              } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl  transition-colors duration-300 ease-in-out`}
           >
             Anexos
           </button>
@@ -471,9 +437,8 @@ export default function Prontuario() {
               enchiridionid={enchiridion.id}
               date={new Date(enchiridion.date).toLocaleDateString()}
               reasonConsult={enchiridion.reason_consult}
-              weight={enchiridion.weight}
+              weight={enchiridion.weights}
               id={enchiridion.teacher_id}
-              medications={enchiridion.medications}
             />
           ))}
           {isClicked === "anexos" &&

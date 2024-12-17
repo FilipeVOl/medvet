@@ -8,6 +8,10 @@ const ModalAnexo = ({ label, type, handleClose, handleFileUpload, selectedFile }
   const [filePreview, setFilePreview] = useState(null);
   const fileInputRef = useRef();
 
+  const SubmitAnexo = async () => {
+    const response = await createAnexo(animal_id, fileInputRef.current.files[0]);
+  }
+
   const handleChange = (e) => {
     setDocumentName(e.target.value);
   };
@@ -78,6 +82,7 @@ const ModalAnexo = ({ label, type, handleClose, handleFileUpload, selectedFile }
               Voltar
             </button>
             <button
+            // onClick={}
               className="border-[1px] hover:scale-105 duration-75 border-solid bg-[#D5D0C7] text-[#FFFEF9] px-14 rounded-lg text-xl font-bold"
             >
               Adicionar

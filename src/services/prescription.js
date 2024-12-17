@@ -17,10 +17,16 @@ const getPrescription = async (id) => {
     return data;
 } 
 
+const getPrescByAnimalId = async (id) => {
+  const { data } = await axios
+    .get(`http://localhost:3333/get/prescription/animalId/${id}`)
+    return data.prescriptions.map(presc => presc.medications);
+}
+
 const getAllPresc = async () => {
   const { data } = await axios
     .get(`http://localhost:3333/get/prescriptions`)
     return data;
 }
 
-export { postPrescription, getPrescription, getAllPresc };
+export { postPrescription, getPrescription, getAllPresc, getPrescByAnimalId };
