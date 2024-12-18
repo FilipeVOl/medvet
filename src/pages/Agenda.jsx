@@ -5,39 +5,7 @@ import iconCalendar from "../images/calendarIcon.svg";
 import { Link } from "react-router-dom";
 
 export default function Agenda() {
-  const [agenda, setAgenda] = useState([
-    {
-      date: generateMockDate(),
-      consults: [
-        {
-          nameTutor: "jorgin",
-          nameAnimal: "clebin",
-          phone: "123456789",
-          species: "dog",
-          description: "Healthy",
-        },
-        {
-          nameTutor: "adalfredo",
-          nameAnimal: "cachorrinho",
-          phone: "9854321",
-          species: "dog",
-          description: "de boas",
-        },
-      ],
-    },
-    {
-      date: generateMockDate(),
-      consults: [
-        {
-          nameTutor: "eae",
-          nameAnimal: "eae",
-          phone: "987654321",
-          species: "cat",
-          description: "Needs vaccination",
-        },
-      ],
-    },
-  ]);
+  const [agenda, setAgenda] = useState([]);
 
   function generateMockDate() {
     const date = new Date();
@@ -53,32 +21,59 @@ export default function Agenda() {
   const [nome, setNome] = useState("");
   const [dateFilter, setDateFilter] = useState("");
 
-  // useEffect(() => {
-  // getConsults(setAgenda, setAlteredAgenda)
-  // }, []);
-
   useEffect(() => {
-    const filteredConsultas = consultasFiltradas();
+    getConsults(setAgenda, setAlteredAgenda);
+  }, []);
+  
+  useEffect(() => {
+    const agendaArray = Object.keys(agenda).flatMap((dateKey) => {
+      const consults = agenda[dateKey];
+      return consults.map((item) => ({
+        date: dateKey, 
+        ...item,       
+      }));
+    });
+  
+    const filteredConsultas = consultasFiltradas(agendaArray);
+  
     setAlteredAgenda(
-      nome.length === 0 && dateFilter.length === 0 ? agenda : filteredConsultas
+      nome.length === 0 && dateFilter.length === 0
+        ? agendaArray
+        : filteredConsultas
     );
-    console.log(nome, dateFilter);
   }, [nome, dateFilter, agenda]);
 
-  const consultasFiltradas = () => {
-    const dateAlt = agenda.reduce((acc, day) => {
-      const consultasDoDia = day.consults.filter(
-        (consulta) =>
-          consulta.nameTutor.toLowerCase().includes(nome.toLowerCase()) ||
-          consulta.nameAnimal.toLowerCase().includes(nome.toLowerCase())
-      );
-      if (consultasDoDia.length > 0 && (dateFilter === "" || day.date.startsWith(dateFilter))) {
+
+  const consultasFiltradas = (agendaArray) => {
+    const dateAlt = agendaArray.reduce((acc, day) => {
+      // Verifica se o objeto tem o campo 'consults' e se é um array
+      const consultasDoDia = Array.isArray(day.consults)
+        ? day.consults.filter(
+            (consulta) =>
+              consulta.nameTutor
+                .toLowerCase()
+                .includes(nome.toLowerCase()) ||
+              consulta.nameAnimal
+                .toLowerCase()
+                .includes(nome.toLowerCase())
+          )
+        : [];
+  
+      // Se há consultas filtradas e a data coincide com o filtro
+      if (
+        consultasDoDia.length > 0 &&
+        (dateFilter === "" || day.date.startsWith(dateFilter))
+      ) {
         acc.push({ ...day, consults: consultasDoDia });
       }
       return acc;
     }, []);
-    return dateAlt.length === 0 ? agenda : dateAlt;
+  
+    // Se nenhuma consulta for encontrada, retorna o array original
+    return dateAlt.length === 0 ? agendaArray : dateAlt;
   };
+  
+
 
   function transData(dateString) {
     const day = dateString.toString().substring(0, 2);
@@ -146,47 +141,50 @@ export default function Agenda() {
         </Link>
       </section>
       <section className="mx-24">
-        {alteredAgenda.map((day) => {
-          console.log(day);
-          return (
-            <div key={day.date} className="m-12 pr-40 max-w-4xl">
-              <h2 className="text-2xl pr-0 text-text-gray font-semibold">
-                {transData(day.date)}
-              </h2>
-              {day.consults.map((e) => {
-                return (
-                  <div
-                    key={e.nameTutor}
-                    className="flex bg-side-gray my-4 rounded-lg ml-4"
-                    data-testid="agenda"
-                  >
-                    <div className="bg-card-green m-0 text-transparent rounded-lg">
-                      a
-                    </div>
-                    <div className="flex flex-col p-4 w-screen">
-                      <div className="m-2">
-                        <span>
-                          Tutor:{" "}
-                          <span className="font-bold pl-1">{e.nameTutor}</span>
-                        </span>
-                        <span>, {e.phone}</span>
-                      </div>
-                      <div className="m-2">
-                        <span className="ml-0 pr-1">
-                          Paciente:{" "}
-                          <span className="font-bold pl-1">{e.nameAnimal}</span>
-                        </span>
-                        <span className="ml-0 pl-1">{`- ${e.species}`}</span>
-                      </div>
-                      <span className="m-2">{`Observações: ${e.description}`}</span>
-                    </div>
-                  </div>
-                );
-              })}
+  {/* Itera sobre as chaves do alteredAgenda */}
+  {Object.keys(alteredAgenda).map((day) => {
+    const consultas = alteredAgenda[day];
+    console.log(Object.keys(alteredAgenda)) // Pega o array de consultas para a chave atual
+
+    return (
+      <div key={day} className="m-12 pr-40 max-w-4xl">
+        {/* Renderiza a chave (data) como título */}
+        <h2 className="text-2xl pr-0 text-text-gray font-semibold">
+          {transData(day)} {/* Formata a chave da data para DD/MM/YYYY */}
+        </h2>
+
+        {/* Verifica se alteredAgenda[day] é um array e faz o map */}
+        {Array.isArray(consultas) &&
+          consultas.map((e, index) => (
+            <div
+              key={index}
+              className="flex bg-side-gray my-4 rounded-lg ml-4"
+              data-testid="agenda"
+            >
+              <div className="bg-card-green m-0 text-transparent rounded-lg">a</div>
+              <div className="flex flex-col p-4 w-screen">
+                <div className="m-2">
+                  <span>
+                    Tutor: <span className="font-bold pl-1">{e.nameTutor}</span>
+                  </span>
+                  <span>, {e.phone}</span>
+                </div>
+                <div className="m-2">
+                  <span className="ml-0 pr-1">
+                    Paciente:{" "}
+                    <span className="font-bold pl-1">{e.nameAnimal}</span>
+                  </span>
+                  <span className="ml-0 pl-1">{`- ${e.species}`}</span>
+                </div>
+                <span className="m-2">{`Observações: ${e.description}`}</span>
+              </div>
             </div>
-          );
-        })}
-      </section>
+          ))}
+      </div>
+    );
+  })}
+</section>
+
     </main>
   );
 }

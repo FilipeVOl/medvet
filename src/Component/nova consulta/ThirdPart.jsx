@@ -86,12 +86,17 @@ export default function ThirdPart(props) {
     await axios
       .post("http://localhost:3333/create/enchiridion", allDataState)
       .then((response) => {
-        console.log(response.data);
+        console.log(response);
+        if (response) {
+          handleButtonClick()
+          } else {
+            toast.error("Erro ao criar consulta")
+          }
       })
       .catch((error) => {
         console.error(error);
       });
-      handleButtonClick()
+      
   };
 
   const handleAnt = () => {
