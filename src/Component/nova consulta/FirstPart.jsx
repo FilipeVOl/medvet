@@ -66,8 +66,6 @@ export default function FirstPart(props) {
     getAnimalsAndTutorByTutorName(setTutores, '');
   }, []);
 
-  console.log(professores)
-
   //tipo de obj, qual chave e setter
   const handleInput = (objReceived, chave, valor, set) => {
     let obj = { ...objReceived }
@@ -235,6 +233,7 @@ export default function FirstPart(props) {
                     descrHandle="data"
                     locale="pt-BR"
                     />
+                    
                   </div>
                   <div id="div-pac-tut" className="flex gap-8 my-4 justify-center">
                     <label htmlFor="free-solo-2-demo" className="grow">

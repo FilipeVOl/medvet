@@ -25,7 +25,7 @@ export const getTutores = async (set, page) => {
 
 export const getAllTutores = async (res) => {
   try {
-    const { data } = await axios.get('http://localhost:3333/get/tutor?numberOfItems=5&page=1')
+    const { data } = await axios.get('http://localhost:3333/get/tutor?numberOfItems=10000&page=1')
     res (data.tutor)
     return data
   } catch (e) {

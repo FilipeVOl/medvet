@@ -20,7 +20,7 @@ export const getAnimalById = async (id) => {
 
 export const getAllAnimals = async (res) => {
     try {
-        const { data } = await axios.get(`http://localhost:3333/get/animals?numberOfItems=10&page=1`);
+        const { data } = await axios.get(`http://localhost:3333/get/animals?numberOfItems=100000&page=1`);
         console.log('Returning first animal:', data[0].animal_name);
         res(data);
         return data;

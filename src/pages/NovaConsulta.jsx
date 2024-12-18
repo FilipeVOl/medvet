@@ -18,7 +18,7 @@ const pagOneData = {
   historico: "",
   professor: "",
   vacina: [{ name: '', date: '' }],
-  desmer: { name: "", date: "2024-17-05" },
+  desmer: { name: "", date: " " },
   motivo: "",
   idAnimal: [],
   viewAnimal: true,
