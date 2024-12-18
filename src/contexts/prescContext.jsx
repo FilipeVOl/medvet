@@ -21,7 +21,7 @@ const pageData = {
 export const PrescProvider = ({children}) => {
   const [page, setPage] = useState(pageData);
   const [medications, setMedications] = useState([
-    { use_type: "oral", pharmacy: "farmacia1", unit: "", measurement: "", description: "durateston" },
+    { use_type: "oral", pharmacy: "farmacia1", unit: "", measurement: "", description: "" },
   ]);
   const [selectedMedicationId, setSelectedMedicationId] = useState(null); // Add this line
 

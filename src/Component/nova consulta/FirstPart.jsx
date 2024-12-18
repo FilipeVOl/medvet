@@ -66,6 +66,8 @@ export default function FirstPart(props) {
     getAnimalsAndTutorByTutorName(setTutores, '');
   }, []);
 
+  console.log(professores)
+
   //tipo de obj, qual chave e setter
   const handleInput = (objReceived, chave, valor, set) => {
     let obj = { ...objReceived }
@@ -129,7 +131,6 @@ export default function FirstPart(props) {
   const validateTrue = (chaves) => {
     let obj = { ...required }
     const keys = Object.keys(obj)
-    console.log(keys)
     keys.forEach((e) => {
       if (e == chaves) {
         obj[e] = false;
@@ -143,7 +144,6 @@ export default function FirstPart(props) {
     const values = Object.values(fullfillValidate)
     let validation = false
     let obj = { ...required }
-    console.log(obj[keys[0]])
     values.map((e, index) => {
       if (e == '' || e == 'Preencha Tutor') {
         const chaves = keys[index]
@@ -215,35 +215,36 @@ export default function FirstPart(props) {
                         setProfessor(value)
                         e.target.value.length == 0 ? getAllTeachers(setProfs) : getTeacherByName(e.target.value)
                         validateTrue('professor');
-                      }}
-                      {...params}
-                      InputProps={{
+                        }}
+                        {...params}
+                        InputProps={{
                         ...params.InputProps,
                         type: "search",
-                      }}
+                        }}
+                      />
+                      )}
                     />
-                  )}
-                />
-              </label>
-              <InputComponent
-                nome="Data"
-                dataType="date"
-                type={data}
-                setDataCom={setData}
-                requireVal={required.data}
-                handleButton={validateTrue}
-                descrHandle="data"
-              />
-            </div>
-            <div id="div-pac-tut" className="flex gap-8 my-4 justify-center">
-              <label htmlFor="free-solo-2-demo" className="grow">
-                Tutor
-                <Autocomplete
-                  freeSolo
-                  disableClearable
-                  id="free-solo-2-demo"
-                  disabled={viewTutor}
-                  onChange={(_e, newValue) => {
+                    </label>
+                    <InputComponent
+                    nome="Data"
+                    dataType="date"
+                    type={data}
+                    setDataCom={setData}
+                    requireVal={required.data}
+                    handleButton={validateTrue}
+                    descrHandle="data"
+                    locale="pt-BR"
+                    />
+                  </div>
+                  <div id="div-pac-tut" className="flex gap-8 my-4 justify-center">
+                    <label htmlFor="free-solo-2-demo" className="grow">
+                    Tutor
+                    <Autocomplete
+                      freeSolo
+                      disableClearable
+                      id="free-solo-2-demo"
+                      disabled={viewTutor}
+                      onChange={(_e, newValue) => {
                     setTutor(newValue)
                     getAnimalsAndTutorByTutorName(setTutores, newValue)
                     setViewAnimal(false)

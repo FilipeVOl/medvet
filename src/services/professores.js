@@ -16,7 +16,7 @@ const getProfessores = async (set, page) => {
 
 const getAllTeachers = async (set) => {
   try {
-    const { data } = await axios.get('http://localhost:3333/get/teacher?numberOfItems=5&page=1')
+    const { data } = await axios.get('http://localhost:3333/get/teacher?numberOfItems=10000&page=1')
     set(data.teacher)
     return data
     } catch (e) {

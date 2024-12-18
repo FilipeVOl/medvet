@@ -58,8 +58,6 @@ export default function Prontuarios() {
     getAnimalBySequenceOrName(setProntuarios, value)
   };
   
-  console.log(prontuarios)
-
 
   return (
     <div className="font-Montserrat w-full p-28 flex flex-col">

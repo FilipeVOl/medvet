@@ -2,15 +2,16 @@ import React, { useState, useRef, useEffect } from "react";
 import imagePlaceholder from "../../images/imagePlaceh.svg";
 import pdfIcon from "../../images/pdfIcon.svg"; // Add an icon for PDF files
 import { Input, InputLabel } from "@mui/material";
+import {createAnexo} from "../../services/anexos";
+import { useParams } from "react-router-dom";
 
-const ModalAnexo = ({ label, type, handleClose, handleFileUpload, selectedFile }) => {
+const ModalAnexo = ({ label, type, handleClose, handleFileUpload, selectedFile, animal_id }) => {
   const [documentName, setDocumentName] = useState("");
   const [filePreview, setFilePreview] = useState(null);
   const fileInputRef = useRef();
 
-  const SubmitAnexo = async () => {
-    const response = await createAnexo(animal_id, fileInputRef.current.files[0]);
-  }
+
+
 
   const handleChange = (e) => {
     setDocumentName(e.target.value);
@@ -30,6 +31,15 @@ const ModalAnexo = ({ label, type, handleClose, handleFileUpload, selectedFile }
       }
     }
   }, [selectedFile]); // Watch for changes to the selectedFile state
+
+  const SubmitAnexo = async () => {
+    try {
+      const response = await createAnexo(animal_id, selectedFile, documentName);
+      console.log(response)
+    } catch (error) {
+      console.log("Failed to create anexo:", error)
+    }
+  }
 
   return (
     <div className="font-Montserrat">
@@ -82,7 +92,7 @@ const ModalAnexo = ({ label, type, handleClose, handleFileUpload, selectedFile }
               Voltar
             </button>
             <button
-            // onClick={}
+              onClick={SubmitAnexo}
               className="border-[1px] hover:scale-105 duration-75 border-solid bg-[#D5D0C7] text-[#FFFEF9] px-14 rounded-lg text-xl font-bold"
             >
               Adicionar

@@ -24,16 +24,12 @@ import ModalViewAnexo from "../Component/Prontuarios/ModalViewAnexo";
 import ModalDelete from "../Component/Prontuarios/ModalDelete";
 import ModalEdit from "../Component/Prontuarios/ModalEdit";
 import {getPrescByAnimalId} from "../services/prescription";
+import { getAnexos } from "../services/anexos";
+import { getAnimalById } from "../services/animals";
 
 export default function Prontuario() {
   const { id } = useParams();
-  const [prontuario, setProntuario] = useState({
-    name: "joaquim",
-    gender: "homem",
-    race: "dinossauro",
-    species: "t-rex",
-    coat: "verde",
-  });
+  const [animal, setAnimal] = useState({});
   const [enchiridions, setEnchiridions] = useState([]);
   const [medications, setMedications] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,18 +42,7 @@ export default function Prontuario() {
   const [openModal, setOpenModal] = useState(null); // Add this line
   const { selectedMedicationId, setSelectedMedicationId } = useContext(PrescContext); // Add this line
   const [selectedAnexoId, setSelectedAnexoId] = useState(null); // Add this line
-  const [anexos, setAnexos] = useState([
-    {
-      id: 1,
-      name: "Exame de Sangue",
-      date: new Date().toISOString().split("T")[0],
-    },
-    {
-      id: 2,
-      name: "Raio-X",
-      date: new Date().toISOString().split("T")[0],
-    },
-  ]);
+  const [anexos, setAnexos] = useState([])
 
   const handleOpenModal = (modalName, id = null) => {
     setOpenModal(modalName);
@@ -91,7 +76,6 @@ export default function Prontuario() {
   const handleFileUpload = (file) => {
     if (file) {
       setSelectedFile(file); // Set the selected file in the state
-      console.log(file);
     }
   };
 
@@ -99,41 +83,16 @@ export default function Prontuario() {
     const fetchData = async () => {
       const response = await getEnchiridionsAnimalId(id);
       const medication = await getPrescByAnimalId(id);
+      const anexos = await getAnexos(id);
+      const animal = await getAnimalById(id);
+      setAnimal(animal.data);
       setEnchiridions(response.enchiridions);
       setMedications(medication);
+      setAnexos(anexos);
     };
 
     fetchData();
-  }, [setEnchiridions, setMedications]);
-
-
-
-  // useEffect(() => {
-  //   const fetchDatas = async () => {
-  //     console.log("useEffect executada");
-  //     try {
-  //       setIsLoading(true);
-  //       const responses = await getEnchiridionsAnimalId(id);
-  //       console.log(responses);
-  //       setEnchiridions(responses.enchiridions); // Update to set the array of objects
-
-  //     // Buscar os nomes dos professores
-  //     const uniqueTeacherIds = [...new Set(responses.enchiridions.map(e => e.teacher_id))];
-  //     const names = {};
-  //     for (const teacherId of uniqueTeacherIds) {
-  //       const name = await getTeacherName(teacherId);
-  //       names[teacherId] = name;
-  //     }
-  //     setTeacherNames(names);
-
-  //     } catch (error) {
-  //       console.error('Erro ao buscar os dados:', error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-  //   fetchDatas();
-  // }, [id]);
+  }, [setEnchiridions, setMedications, setAnexos]);
 
   const firstCapitalLetter = (string) => {
     if (string) {
@@ -180,7 +139,6 @@ export default function Prontuario() {
 
   const handleDelete = (medicationId) => {
     if (isClicked === "prescricoes") {
-      console.log(medicationId);
       const updatedEnchiridions = enchiridions.map((enchiridion) => {
         const updatedMedications = enchiridion.medications.filter(
           (medication) => medication.id !== medicationId
@@ -191,7 +149,6 @@ export default function Prontuario() {
         };
       });
       setEnchiridions(updatedEnchiridions);
-      console.log(updatedEnchiridions);
     }
   };
 
@@ -209,9 +166,6 @@ export default function Prontuario() {
     handleDeleteAnexo(selectedAnexoId);
     handleCloseModal();
   };
-
-  console.log(medications[0])
-
 
   const Wrapper = () => {
     const ConsultWrapper = ({
@@ -425,7 +379,6 @@ export default function Prontuario() {
                   const file = e.target.files[0];
                   if (file) {
                     setSelectedFile(file.name);
-                    console.log(file);
                   }
                 }}
               />
@@ -444,6 +397,7 @@ export default function Prontuario() {
           {isClicked === "anexos" &&
             anexos.map((anexo) => (
               <div
+              onClick={() => window.location.href = "https://res.cloudinary.com/dyivjpkpv/image/upload/v1734541626/attachments/jly4k31mwhr1sqdhpu7b.png"}
                 className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
                 key={anexo.id}
               >
@@ -491,19 +445,19 @@ export default function Prontuario() {
           </h1>
           <div className="flex flex-col gap-2">
             <span className="font-Montserrat font-semibold text-2xl text-[#2C2C2C">
-              {firstCapitalLetter(prontuario.name)}, ID {prontuario.id}
+              {firstCapitalLetter(animal.name)}, ID {animal.id}
             </span>
             <span className="font-Montserrat font-semibold text-2xl text-[#595959]">
-              {firstCapitalLetter(prontuario.gender)} -{" "}
-              {firstCapitalLetter(prontuario.race)} -{" "}
-              {firstCapitalLetter(prontuario.species)} -{" "}
-              {firstCapitalLetter(prontuario.coat)}
+              {firstCapitalLetter(animal.gender)} -{" "}
+              {firstCapitalLetter(animal.race)} -{" "}
+              {firstCapitalLetter(animal.species)} -{" "}
+              {firstCapitalLetter(animal.coat)}
             </span>
             <span className="font-Montserrat font-semibold text-xl  text-[#595959]">
-              {prontuario &&
-                prontuario.tutor &&
-                `${prontuario.tutor.name} - ${formatPhoneBRL(
-                  prontuario.tutor.phone
+              {animal &&
+                animal.tutor &&
+                `${animal.tutor.name} - ${formatPhoneBRL(
+                  animal.tutor.phone
                 )}`}
             </span>
           </div>
@@ -521,6 +475,7 @@ export default function Prontuario() {
       >
         <Box sx={{ ...style, width: "900px" }}>
           <ModalAnexo
+            animal_id = {id}
             label="Nome do documento (exame):"
             type="text"
             setOpen={setOpenModal}
