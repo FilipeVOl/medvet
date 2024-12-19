@@ -13,12 +13,10 @@ export const UserProvider = ({ children }) => {
   const saveUserAndToken = async (userData, token, refreshToken) => {
     try {
       setIsLoadingUserStorageData(true);
-      // Salvar no estado
       setUser(userData);
       setToken(token);
       setRefreshToken(refreshToken);
 
-      // Salvar no localStorage (ou similar)
       localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", token);
       localStorage.setItem("refreshToken", refreshToken);
@@ -35,7 +33,6 @@ export const UserProvider = ({ children }) => {
     try {
       setIsLoadingUserStorageData(true);
 
-      // Recuperar do localStorage (ou similar)
       const storedUser = localStorage.getItem("user");
       const storedToken = localStorage.getItem("token");
       const storedRefreshToken = localStorage.getItem("refreshToken");
@@ -64,7 +61,6 @@ export const UserProvider = ({ children }) => {
       setToken(null);
       setRefreshToken(null);
 
-      // Remover do localStorage (ou similar)
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");

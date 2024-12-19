@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import MedicalInformationIcon from "@mui/icons-material/MedicalInformation";
@@ -43,6 +43,8 @@ export default function Prontuario() {
   const { selectedMedicationId, setSelectedMedicationId } = useContext(PrescContext); // Add this line
   const [selectedAnexoId, setSelectedAnexoId] = useState(null); // Add this line
   const [anexos, setAnexos] = useState([])
+  const [search, setSearch] = useState("");
+  const [filteredEnchiridions, setFilteredEnchiridions] = useState([]);
 
   const handleOpenModal = (modalName, id = null) => {
     setOpenModal(modalName);
@@ -151,6 +153,17 @@ export default function Prontuario() {
       setEnchiridions(updatedEnchiridions);
     }
   };
+
+  const handleSearchChange = useCallback((e) => {
+    const value = e.target.value;
+    setSearch(value);
+    const filteredEnchiridions = enchiridions.filter(
+      (enchiridion) =>
+        enchiridion.reason_consult.toLowerCase().includes(value.toLowerCase()) ||
+        enchiridion.weights.toString().toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredEnchiridions(filteredEnchiridions);
+  }, [enchiridions]);
 
   const handleDeleteConfirm = () => {
     handleDelete(selectedMedicationId);
@@ -320,7 +333,9 @@ export default function Prontuario() {
             <div className="flex justify-between gap-8">
               <div className="relative w-2/3">
                 <input
+                  onChange={handleSearchChange}
                   type="text"
+                  value={search}
                   className=" h-12  rounded-xl w-full px-10 focus:outline-none focus:ring-2 focus:ring-[#007448]"
                   placeholder="Buscar Consulta"
                 />

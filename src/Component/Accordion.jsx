@@ -25,7 +25,7 @@ const Accordion = (props) => {
         } overflow-hidden flex gap-2 flex-col self-end ml-9`}
       >
         {values.map((option, index) => (
-          <Link to={option} className='cursor-pointer'>{keys[index]}</Link>
+          <Link key={index} to={option} className='cursor-pointer'>{keys[index]}</Link>
         ))}
       </div>
     </div>

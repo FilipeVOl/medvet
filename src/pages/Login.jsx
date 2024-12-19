@@ -7,6 +7,7 @@ import { RecoveryContext, RecoveryProvider } from "../contexts/recoveryContext";
 import { validateCPF } from "../utils/validateCPF"; // Import CPF validation function
 import { UserContext } from "../contexts/userContext"; // Import UserContext
 import axios from "axios"; // Import axios for making HTTP requests
+import { ToastContainer, toast } from "react-toastify"; // Import toast for showing notifications
 
 const Login = () => {
     const { setPage, setCPF } = useContext(RecoveryContext);
@@ -23,12 +24,14 @@ const Login = () => {
             console.log(token);
         } catch (error) {
             console.error("Erro ao fazer login:", error);
+            toast.error("Erro ao fazer login. Verifique o CPF e a senha.");
         }
     };
 
 
     return (
         <div className="font-Montserrat relative h-[100vh] bg-cover bg-[url('./images/backgroundLogin.png')] flex justify-center items-center">
+            <ToastContainer />
             <div className="absolute inset-0 bg-[#BDD9BFCC] opacity-80 "></div>
             <div className="relative z-10 h-auto w-[50%] bg-white rounded-lg flex justify-center flex-col">
                 <img src={logoLogin} alt="logo login" className="place-self-center mt-12" />
@@ -68,11 +71,11 @@ const Login = () => {
                         />
                         <TextField
                             id="outlined-error-helper-text"
-                            label="Password"
+                            label="Senha"
                             type="password"
                             value={password} // Add value prop
                             onChange={(e) => setPassword(e.target.value)} // Add onChange handler
-                            helperText="Incorrect password."
+                            // helperText="Senha Incorreta."
                             InputProps={{
                                 style: { backgroundColor: "#F2F2ED", border: "none", outline: "none" }
                             }}

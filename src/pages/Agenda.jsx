@@ -85,7 +85,7 @@ export default function Agenda() {
     return maskDate;
   }
 
-  console.log(Object.keys(alteredAgenda)) // Pega o array de consultas para a chave atual
+  window.localStorage.setItem("agenda", JSON.stringify(agenda));
 
   return (
     <main className="font-Montserrat !important w-full">

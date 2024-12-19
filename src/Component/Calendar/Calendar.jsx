@@ -1,80 +1,86 @@
 import "./calendar.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import { Input, InputLabel } from "@mui/material";
 import { style } from "./calendar_utils.jsx";
+import multiMonthPlugin from '@fullcalendar/multimonth'
 
 export const Calendar = () => {
-  const [view, setView] = useState("dayGridMonth");
+  const [agenda, setAgenda] = useState(() => {
+    const storedAgenda = window.localStorage.getItem("agenda");
+    return storedAgenda ? JSON.parse(storedAgenda) : {};
+  });
+
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    const parsedEvents = Object.keys(agenda).flatMap((date) =>
+      agenda[date].map((item) => ({
+        title: `${item.nameTutor} - ${item.nameAnimal}`, // Concatena Tutor e Animal como título
+        date: `${date.substring(4)}-${date.substring(2, 4)}-${date.substring(0, 2)}`, // Converte o formato de data (ddmmyyyy -> yyyy-mm-dd)
+      }))
+    );
+    setEvents(parsedEvents);
+  }, [agenda]);
+
+  // Gerencia a data selecionada
   const [dateClicked, setDateClicked] = useState("");
-  const [events, setEvents] = useState([
-    { title: "event 1", date: "2022-01-01" },
-    { title: "event 2", date: "2022-01-02" },
-  ]);
-  const handleCreateEvent = (event) => {
-    setEvents([...events, event]);
-  };
+  const [view, setView] = useState("dayGridMonth");
+
+  // Abre o modal quando uma data é clicada
+  const [open, setOpen] = useState(false);
+
   const handleDateSelect = (selectInfo) => {
     setOpen(true);
-    const calendarApi = selectInfo.view.calendar;
     setDateClicked(selectInfo.dateStr);
-    calendarApi.unselect(); // clear date selection
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const handleEventClick = (clickInfo) => {
     if (
       confirm(
-        `Are you sure you want to delete the event '${clickInfo.event.title}'`
+        `Tem certeza de que deseja excluir o evento '${clickInfo.event.title}'?`
       )
     ) {
       clickInfo.event.remove();
     }
   };
 
-  const handleEventContent = (arg) => {
-    return { html: `<b>${arg.timeText}</b> ${arg.event.title}` };
-  };
-
-  const [open, setOpen] = useState(false);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
     <>
-      <Modal
+      {/* <Modal
         disableEscapeKeyDown
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
+      > */}
+        {/* <Box sx={style}>
           <h1>Agendamento para o dia {dateClicked}</h1>
-        </Box>
-      </Modal>
+        </Box> */}
+      {/* </Modal> */}
       <div className="justify-center w-full p-12 mt-8 flex flex-col gap-8">
         <h1 className="font-bold text-3xl">Calendário</h1>
         <FullCalendar
           locale={"pt-br"}
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView={view}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, multiMonthPlugin]}
+          initialView="multiMonthYear"
           selectable={true}
           editable={true}
           weekends={true}
-          eventContent={handleEventContent}
           headerToolbar={{
             left: "prev",
             center: "title",
             right: "next",
           }}
-          events={events}
+          events={events} // Eventos dinâmicos
           dateClick={handleDateSelect}
           eventClick={handleEventClick}
         />
