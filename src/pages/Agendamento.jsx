@@ -7,6 +7,8 @@ import TutorValidado from "../Component/Agendamento/TutorValidado";
 import TutorInvalido from "../Component/Agendamento/TutorInvalido";
 import Box from "@mui/material/Box";
 import iconFilter from "../images/filtro.svg";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Agendamento = () => {
   const style = {
@@ -46,6 +48,7 @@ const Agendamento = () => {
   const [data, setData] = useState("");
 
   const handleConfirmButton = async () => {
+    try {
     const response = await getTutorByNumber(phoneUnmask(telefone));
     setValidate(true);
     setData(response);
@@ -56,10 +59,14 @@ const Agendamento = () => {
     ) {
     }
     handleClose();
+  } catch (error) {
+    toast.error("Número não encontrado.");
+  }
   };
 
   return (
     <div className="w-full font-Montserrat" id="main-agendamento">
+      <ToastContainer />
       <Modal
         disableEscapeKeyDown
         open={open}

@@ -5,17 +5,7 @@ import iconCalendar from "../images/calendarIcon.svg";
 import { Link } from "react-router-dom";
 
 export default function Agenda() {
-  const [agenda, setAgenda] = useState([]);
-
-  function generateMockDate() {
-    const date = new Date();
-    const randomDays = Math.floor(Math.random() * 30);
-    date.setDate(date.getDate() + randomDays);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}${month}${year}`;
-  }
+  const [agenda, setAgenda] = useState({});
 
   const [alteredAgenda, setAlteredAgenda] = useState([]);
   const [nome, setNome] = useState("");
@@ -26,15 +16,18 @@ export default function Agenda() {
   }, []);
   
   useEffect(() => {
-    const agendaArray = Object.keys(agenda).flatMap((dateKey) => {
-      const consults = agenda[dateKey];
-      return consults.map((item) => ({
-        date: dateKey, 
-        ...item,       
+    const agendaArray = Object.keys(agenda).reduce((acc, dateKey) => {
+      acc[dateKey] = agenda[dateKey].map((item) => ({
+        date: dateKey,
+        ...item,
       }));
-    });
+      return acc;
+    }, {});
   
-    const filteredConsultas = consultasFiltradas(agendaArray);
+    const filteredConsultas = consultasFiltradas(Object.values(agendaArray).flat());
+
+    const result = nome.length === 0 && dateFilter.length === 0 ? agendaArray : groupByDate(filteredConsultas);
+
   
     setAlteredAgenda(
       nome.length === 0 && dateFilter.length === 0
@@ -42,6 +35,17 @@ export default function Agenda() {
         : filteredConsultas
     );
   }, [nome, dateFilter, agenda]);
+
+  const groupByDate = (consultas) => {
+    return consultas.reduce((acc, consulta) => {
+      const date = consulta.date;
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(consulta);
+      return acc;
+    }, {});
+  };
 
 
   const consultasFiltradas = (agendaArray) => {
@@ -73,8 +77,6 @@ export default function Agenda() {
     return dateAlt.length === 0 ? agendaArray : dateAlt;
   };
   
-
-
   function transData(dateString) {
     const day = dateString.toString().substring(0, 2);
     const month = dateString.toString().substring(2, 4);
@@ -82,6 +84,9 @@ export default function Agenda() {
     const maskDate = `${day}/${month}/${year}`;
     return maskDate;
   }
+
+  console.log(Object.keys(alteredAgenda)) // Pega o array de consultas para a chave atual
+
   return (
     <main className="font-Montserrat !important w-full">
       <section>
@@ -144,7 +149,6 @@ export default function Agenda() {
   {/* Itera sobre as chaves do alteredAgenda */}
   {Object.keys(alteredAgenda).map((day) => {
     const consultas = alteredAgenda[day];
-    console.log(Object.keys(alteredAgenda)) // Pega o array de consultas para a chave atual
 
     return (
       <div key={day} className="m-12 pr-40 max-w-4xl">

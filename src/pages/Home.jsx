@@ -34,12 +34,10 @@ const Home = () => {
 
   return (
     <div className="p-8 pl-0 mt-12 font-Montserrat w-full ">
-      {/* Title */}
       <div className=" ml-32 flex justify-start items-center mb-8 font-semibold">
         <div className="text-2xl font-bold text-[25px]">Início</div>
       </div>
 
-      {/* Buttons */}
       <div className="flex ml-32 gap-4 mb-8 text-[20px] font-semibold text-white justify-start">
         <Link to="/criarconsulta">
           <button className="bg-[#D5D0C7] shadow-lg flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8  text-center">
