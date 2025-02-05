@@ -26,6 +26,7 @@ import { RecoveryProvider } from "./contexts/recoveryContext";
 import Recovered from "./Component/Login/Recovered";
 import Reset from "./Component/Login/Reset";
 import { useContext, useEffect } from "react";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 export function Router() {
   return (
@@ -42,8 +43,6 @@ export function Router() {
 function AppRoutes() {
   const { token } = useContext(UserContext);
   
-
-
   return (
     <Routes>
       <Route path="/login" element={<RecoveryProvider><Login /></RecoveryProvider>}>
@@ -51,7 +50,7 @@ function AppRoutes() {
         <Route path="recovered" element={<Recovered />} />
         <Route path="reset" element={<Reset />} />
       </Route>
-      {!token ? (
+      <Route element={<ProtectedRoute token={token} />}>
         <Route path="/" element={<DefaultLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="aluno" element={<Cadastro buttonName="Cadastrar" />} />
@@ -71,9 +70,8 @@ function AppRoutes() {
           <Route path="receita" element={<Receita />} />
           <Route path="animal" element={<CreateAnimal />} />
         </Route>
-      ) : (
-        <Route path="*" element={<RecoveryProvider><Login /></RecoveryProvider>} />
-      )}
+      </Route>
+      <Route path="*" element={<RecoveryProvider><Login /></RecoveryProvider>} />
     </Routes>
   );
 }

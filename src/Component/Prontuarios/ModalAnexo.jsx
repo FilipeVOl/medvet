@@ -5,13 +5,10 @@ import { Input, InputLabel } from "@mui/material";
 import {createAnexo} from "../../services/anexos";
 import { useParams } from "react-router-dom";
 
-const ModalAnexo = ({ label, type, handleClose, handleFileUpload, selectedFile, animal_id }) => {
+const ModalAnexo = ({ animal_id, label, type, setOpen, handleClose, handleFileUpload, selectedFile }) => {
   const [documentName, setDocumentName] = useState("");
   const [filePreview, setFilePreview] = useState(null);
   const fileInputRef = useRef();
-
-
-
 
   const handleChange = (e) => {
     setDocumentName(e.target.value);

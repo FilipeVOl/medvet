@@ -46,13 +46,15 @@ export default function Prontuario() {
   const [search, setSearch] = useState("");
   const [filteredEnchiridions, setFilteredEnchiridions] = useState([]);
 
-  const handleOpenModal = (modalName, id = null) => {
+  const handleOpenModal = (modalName, id = null, name = "") => {
     setOpenModal(modalName);
     if (modalName === "delete" || modalName === "editPresc") {
       setSelectedMedicationId(id); // Set the selected medication ID in the context
     } else if (modalName === "deleteAnexo" || modalName === "editAnexo") {
       setSelectedAnexoId(id); // Set the selected anexo ID in the state
     }
+    setSelectedFile(name);
+    console.log(selectedFile) // Set the selected anexo name in the state
   };
 
   const handleCloseModal = () => {
@@ -412,8 +414,8 @@ export default function Prontuario() {
           {isClicked === "anexos" &&
             anexos.map((anexo) => (
               <div
-              onClick={() => window.location.href = "https://res.cloudinary.com/dyivjpkpv/image/upload/v1734541626/attachments/jly4k31mwhr1sqdhpu7b.png"}
-                className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
+                onClick={() => window.location.href = "https://res.cloudinary.com/dyivjpkpv/image/upload/v1734541626/attachments/jly4k31mwhr1sqdhpu7b.png"}
+                className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer relative"
                 key={anexo.id}
               >
                 <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
@@ -421,18 +423,18 @@ export default function Prontuario() {
                     <img src={AnexoIcon} alt="anexar icon" className="h-8" />
                     {anexo.date} - {anexo.name}
                   </div>
-                  <div className="flex gap-4 ml-auto">
+                  <div className="flex gap-4 ml-auto z-10">
                     <img
-                      onClick={() => handleOpenModal("editAnexo", anexo.id)}
+                      onClick={(e) => { e.stopPropagation(); handleOpenModal("editAnexo", anexo.id, anexo.name); }}
                       src={EditIcon}
                       alt="edit icon"
-                      className="h-10"
+                      className="h-10 hover:scale-105"
                     />
                     <img
-                      onClick={() => handleOpenModal("deleteAnexo", anexo.id)}
+                      onClick={(e) => { e.stopPropagation(); handleOpenModal("deleteAnexo", anexo.id); }}
                       src={TrashIcon}
                       alt="trash icon"
-                      className="h-10"
+                      className="h-10 hover:scale-105"
                     />
                   </div>
                 </span>
@@ -491,7 +493,7 @@ export default function Prontuario() {
         <Box sx={{ ...style, width: "900px" }}>
           <ModalAnexo
             animal_id = {id}
-            label="Nome do documento (exame):"
+            label={`Nome do documento (exame): ${selectedFile}`}
             type="text"
             setOpen={setOpenModal}
             handleClose={handleCloseModal}
@@ -541,11 +543,12 @@ export default function Prontuario() {
       >
         <Box sx={{ ...style, width: "auto", height: "auto" }}>
           <ModalViewAnexo
-            label="Nome do documento (exame):"
+            label={`Nome do documento (exame): ${selectedFile}`}
             type="text"
             setOpen={setOpenModal}
             handleClose={handleCloseModal}
             selectedFile={selectedFile} // Pass the selected file to the ModalAnexo component
+            anexoName={selectedFile} // Pass the anexo name to the ModalViewAnexo component
           />
         </Box>
       </Modal>

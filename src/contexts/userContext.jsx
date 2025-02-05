@@ -39,7 +39,11 @@ export const UserProvider = ({ children }) => {
 
       // Atualizar o estado caso existam dados armazenados
       if (storedUser && storedToken) {
-        setUser(JSON.parse(storedUser));
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (error) {
+          console.error("Erro ao analisar JSON do usuário:", error);
+        }
         setToken(storedToken);
         setRefreshToken(storedRefreshToken);
       }
@@ -71,6 +75,10 @@ export const UserProvider = ({ children }) => {
       setIsLoadingUserStorageData(false);
     }
   };
+
+  useEffect(() => {
+    loadUserData();
+  }, []);
 
   return (
     <UserContext.Provider

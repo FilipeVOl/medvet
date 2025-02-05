@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import logoLogin from "../images/logoLogin.png";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -11,9 +11,18 @@ import { ToastContainer, toast } from "react-toastify"; // Import toast for show
 
 const Login = () => {
     const { setPage, setCPF } = useContext(RecoveryContext);
-    const { saveUserAndToken } = useContext(UserContext); // Get saveUserAndToken from UserContext
+    const { saveUserAndToken, loadUserData } = useContext(UserContext); // Get saveUserAndToken and loadUserData from UserContext
     const [cpf, setCPFState] = useState("");
     const [password, setPassword] = useState(""); // Add state for password
+    const navigate = useNavigate(); // Initialize useNavigate
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            loadUserData(); // Load user data from local storage
+            navigate("/"); // Redirect to home if token exists
+        }
+    }, [navigate, loadUserData]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -21,6 +30,8 @@ const Login = () => {
             const response = await axios.post("http://localhost:3333/sessions", { cpf, password });
             const { userData, token, refreshToken } = response.data;
             saveUserAndToken(userData, token, refreshToken);
+            localStorage.setItem("token", token); // Save token to localStorage
+            navigate("/"); // Redirect to home after login
             console.log(token);
         } catch (error) {
             console.error("Erro ao fazer login:", error);
