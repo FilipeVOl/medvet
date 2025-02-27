@@ -42,10 +42,17 @@ export function Router() {
 
 function AppRoutes() {
   const { token } = useContext(UserContext);
-  
+
   return (
     <Routes>
-      <Route path="/login" element={<RecoveryProvider><Login /></RecoveryProvider>}>
+      <Route
+        path="/login"
+        element={
+          <RecoveryProvider>
+            <Login />
+          </RecoveryProvider>
+        }
+      >
         <Route path="otp" element={<OTPInput />} />
         <Route path="recovered" element={<Recovered />} />
         <Route path="reset" element={<Reset />} />
@@ -57,9 +64,15 @@ function AppRoutes() {
           <Route path="calendario" element={<Calendar />} />
           <Route path="agendamento" element={<Agendamento />} />
           <Route path="criarconsulta" element={<NovaConsulta />} />
-          <Route path="tutor" element={<TelaNovoTutor buttonName="Confirmar" />} />
+          <Route
+            path="tutor"
+            element={<TelaNovoTutor buttonName="Confirmar" />}
+          />
           <Route path="agenda" element={<Agenda />} />
-          <Route path="professor" element={<Professor buttonName="Cadastrar" />} />
+          <Route
+            path="professor"
+            element={<Professor buttonName="Cadastrar" />}
+          />
           <Route path="showAluno" element={<MostrarAluno />} />
           <Route path="showProfessor" element={<MostrarProfessor />} />
           <Route path="showTutor" element={<MostrarTutor />} />
@@ -71,7 +84,14 @@ function AppRoutes() {
           <Route path="animal" element={<CreateAnimal />} />
         </Route>
       </Route>
-      <Route path="*" element={<RecoveryProvider><Login /></RecoveryProvider>} />
+      <Route
+        path="*"
+        element={
+          <RecoveryProvider>
+            <Login />
+          </RecoveryProvider>
+        }
+      />
     </Routes>
   );
 }

@@ -7,8 +7,7 @@ import TutorValidado from "../Component/Agendamento/TutorValidado";
 import TutorInvalido from "../Component/Agendamento/TutorInvalido";
 import Box from "@mui/material/Box";
 import iconFilter from "../images/filtro.svg";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Snackbar, Alert } from "@mui/material";
 
 const Agendamento = () => {
   const style = {
@@ -49,83 +48,114 @@ const Agendamento = () => {
 
   const handleConfirmButton = async () => {
     try {
-    const response = await getTutorByNumber(phoneUnmask(telefone));
-    setValidate(true);
-    setData(response);
-    if (
-      response.phone &&
-      (response.phone === phoneUnmask(telefone)) &
-        console.log("Telefone encontrado")
-    ) {
+      const response = await getTutorByNumber(phoneUnmask(telefone));
+      setValidate(true);
+      setData(response);
+      if (
+        response.phone &&
+        (response.phone === phoneUnmask(telefone)) &
+          console.log("Telefone encontrado")
+      ) {
+      }
+      handleClose();
+    } catch (error) {
+      muiSnackAlert("Número não encontrado.");
     }
-    handleClose();
-  } catch (error) {
-    toast.error("Número não encontrado.");
-  }
+  };
+
+  const [openAlert, setOpenAlert] = useState(false);
+  const [severity, setSeverity] = useState("success");
+  const [message, setMessage] = useState("");
+
+  const muiSnackAlert = (severity, message) => {
+    setSeverity(severity);
+    setMessage(message);
+    setOpen(true);
+  };
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
-    <div className="w-full font-Montserrat" id="main-agendamento">
-      <ToastContainer />
-      <Modal
-        disableEscapeKeyDown
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+    <>
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={2000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Box sx={style}>
-          <h1 className="text-2xl font-bold">Conferir Telefone</h1>
-          <div>
-            <div className="flex flex-row items-end">
-              <div className="w-full ">
-                <InputLabel
-                  sx={{
-                    fontFamily: "Montserrat",
-                  }}
-                  className="ml-4 mt-6"
-                >
-                  Telefone
-                </InputLabel>
-                <Input
-                  sx={{
-                    fontFamily: "Montserrat",
-                    borderRadius: "0.75rem",
-                  }}
-                  onChange={(e) => {
-                    setTelefone(e.target.value);
-                  }}
-                  value={phoneMask(telefone)}
-                  className="border border-[#848484] rounded-[2px] h-[46px] p-2 text-base w-full"
-                  data-testid="input-modal-agendamento"
-                />
+        <Alert
+          severity={severity}
+          sx={{ width: "100%" }}
+          onClose={handleCloseAlert}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
+      <div className="w-full font-Montserrat" id="main-agendamento">
+        <Modal
+          disableEscapeKeyDown
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <h1 className="text-2xl font-bold">Conferir Telefone</h1>
+            <div>
+              <div className="flex flex-row items-end">
+                <div className="w-full ">
+                  <InputLabel
+                    sx={{
+                      fontFamily: "Montserrat",
+                    }}
+                    className="ml-4 mt-6"
+                  >
+                    Telefone
+                  </InputLabel>
+                  <Input
+                    sx={{
+                      fontFamily: "Montserrat",
+                      borderRadius: "0.75rem",
+                    }}
+                    onChange={(e) => {
+                      setTelefone(e.target.value);
+                    }}
+                    value={phoneMask(telefone)}
+                    className="border border-[#848484] rounded-[2px] h-[46px] p-2 text-base w-full"
+                    data-testid="input-modal-agendamento"
+                  />
+                </div>
+
+                <img src={iconFilter} className="h-12" alt="filter icon" />
               </div>
 
-              <img src={iconFilter} className="h-12" alt="filter icon" />
+              <div className="flex justify-between mt-20 gap-7">
+                <button
+                  data-testid="button-modal-agendamento"
+                  onClick={() => {
+                    setOpen(!open);
+                  }}
+                  className="bg-[#FFFEF9] hover:bg-[#144A36] hover:text-white border-[#B4B0A8] border-[1px] border-solid text-black font-bold rounded-[10px] h-[46px] w-[220px]"
+                >
+                  Voltar
+                </button>
+                <button
+                  onClick={handleConfirmButton}
+                  className="bg-[#D5D0C7] hover:bg-[#144A36] text-white font-bold rounded-[10px] h-[46px] w-[220px]"
+                >
+                  Continuar
+                </button>
+              </div>
             </div>
-
-            <div className="flex justify-between mt-20 gap-7">
-              <button
-                data-testid="button-modal-agendamento"
-                onClick={() => {
-                  setOpen(!open);
-                }}
-                className="bg-[#FFFEF9] hover:bg-[#144A36] hover:text-white border-[#B4B0A8] border-[1px] border-solid text-black font-bold rounded-[10px] h-[46px] w-[220px]"
-              >
-                Voltar
-              </button>
-              <button
-                onClick={handleConfirmButton}
-                className="bg-[#D5D0C7] hover:bg-[#144A36] text-white font-bold rounded-[10px] h-[46px] w-[220px]"
-              >
-                Continuar
-              </button>
-            </div>
-          </div>
-        </Box>
-      </Modal>
-      {validate ? <TutorValidado tel={data[0]} /> : <TutorInvalido />}
-    </div>
+          </Box>
+        </Modal>
+        {validate ? <TutorValidado tel={data[0]} /> : <TutorInvalido />}
+      </div>
+    </>
   );
 };
 

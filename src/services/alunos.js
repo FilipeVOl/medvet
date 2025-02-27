@@ -44,18 +44,17 @@ const getAlunoByReg = async (registration) => {
   }
 };
 
-const patchAluno = async (set, id, toast) => {
+const patchAluno = async (set, id, muiSnackAlert) => {
   try {
-  const response = await axios
-    .patch("http://localhost:3333/delete/student", {
-        id
-    })
+    const response = await axios.patch("http://localhost:3333/delete/student", {
+      id,
+    });
     set(response.data);
-    toast(true)
-    console.log(response.data)
+    muiSnackAlert("success", "");
+    // console.log(response.data);
   } catch (error) {
-      console.log(error);
-    };
+    console.log(error);
+  }
 };
 
 export { getAluno, PutAluno, getAlunoByReg, patchAluno };

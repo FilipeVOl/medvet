@@ -7,7 +7,23 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [refreshToken, setRefreshToken] = useState(null);
-  const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(false);
+  const [isLoadingUserStorageData, setIsLoadingUserStorageData] =
+    useState(false);
+
+  // Function to validate the token with the backend
+  const validateToken = async (token) => {
+    try {
+      const response = await axios.get("http://localhost:3333/validate-token", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.status === 200; // Token is valid
+    } catch (error) {
+      console.error("Erro ao validar token:", error);
+      return false; // Token is invalid
+    }
+  };
 
   // Função para salvar os dados do usuário e tokens no armazenamento local
   const saveUserAndToken = async (userData, token, refreshToken) => {
@@ -37,34 +53,38 @@ export const UserProvider = ({ children }) => {
       const storedToken = localStorage.getItem("token");
       const storedRefreshToken = localStorage.getItem("refreshToken");
 
-      // Atualizar o estado caso existam dados armazenados
       if (storedUser && storedToken) {
-        try {
+        // Validate the token with the backend
+        const isValid = await validateToken(storedToken);
+
+        if (isValid) {
           setUser(JSON.parse(storedUser));
-        } catch (error) {
-          console.error("Erro ao analisar JSON do usuário:", error);
+          setToken(storedToken);
+          setRefreshToken(storedRefreshToken);
+        } else {
+          // Token is invalid, clear local storage
+          signOut();
         }
-        setToken(storedToken);
-        setRefreshToken(storedRefreshToken);
       }
     } catch (error) {
       console.error("Erro ao carregar dados do usuário:", error);
-      throw error;
+      signOut(); // Clear local storage if token validation fails
     } finally {
       setIsLoadingUserStorageData(false);
     }
   };
 
-  // Função para remover os dados do usuário e tokens do armazenamento local
+  // Function to remove user data and tokens from local storage
   const signOut = async () => {
     try {
       setIsLoadingUserStorageData(true);
 
-      // Limpar o estado
+      // Clear state
       setUser(null);
       setToken(null);
       setRefreshToken(null);
 
+      // Clear local storage
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
@@ -76,6 +96,7 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  // Load user data on component mount
   useEffect(() => {
     loadUserData();
   }, []);
