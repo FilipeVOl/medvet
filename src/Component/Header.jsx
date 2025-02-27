@@ -1,14 +1,14 @@
 import medvetlogo from "../assets/medvetlogo.svg";
 import userLogo from "../assets/user.svg";
 import uniLogo from "../assets/unilogo.svg";
-import { Link, useNavigate } from "react-router-dom";
-import Login from "../images/login.svg"
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/userContext";
 import { useContext } from "react";
+import { IconButton, Divider } from "@mui/material";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function Header() {
-  const { token, signOut } = useContext(UserContext);
-
+  const { token, signOut, userData } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -26,26 +26,33 @@ export default function Header() {
           alt="logo"
         />
 
-        <div className="perfil-container flex justify-end items-center ">
-          <img src={userLogo} alt="foto do usuario" className="userlogo mr-6" />
-
-          <div className="perfil-box">
-            <h2 className="font-bold">Nome</h2>
-            <p className="text-gray-med">Título</p>
+        <div className="perfil-container flex justify-end items-center gap-4">
+          <div className="flex items-center gap-4">
+            <img src={userLogo} alt="foto do usuario" className="w-10 h-10" />
+            <div className="perfil-box">
+              <h2 className="font-bold text-[#144A36]">{userData?.name || 'Nome'}</h2>
+              <p className="text-gray-600 text-sm">{userData?.role || 'Título'}</p>
+            </div>
           </div>
+
           {token && (
-            <img 
-              src={Login} 
-              alt="iconLogin" 
-              className="h-8 pl-4 cursor-pointer" 
-              onClick={handleSignOut} 
-            />
+            <>
+              <Divider orientation="vertical" flexItem sx={{ height: '30px', alignSelf: 'center' }} />
+              <IconButton
+                onClick={handleSignOut}
+                sx={{ 
+                  color: '#144A36',
+                  '&:hover': {
+                    backgroundColor: 'rgba(20, 74, 54, 0.1)'
+                  }
+                }}
+                size="small"
+              >
+                <LogoutIcon />
+              </IconButton>
+            </>
           )}
-          
-
-          <div className="uni-container flex w-1/4 justify-end">
-            <img src={uniLogo} alt="logo da universidade" />
-          </div>
+        
         </div>
       </div>
     </>

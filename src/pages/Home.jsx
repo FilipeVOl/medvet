@@ -9,13 +9,16 @@ const Home = () => {
   const [todayConsults, setTodayConsults] = useState([]);
 
   useEffect(() => {
-    getConsults((data) => {
-      const today = new Date();
-      const todayString = `${String(today.getDate()).padStart(2, "0")}${String(
-        today.getMonth() + 1
-      ).padStart(2, "0")}${today.getFullYear()}`;
-      setTodayConsults(data[todayString] || []);
-    }, () => "today");
+    getConsults(
+      (data) => {
+        const today = new Date();
+        const todayString = `${String(today.getDate()).padStart(2, "0")}${String(
+          today.getMonth() + 1
+        ).padStart(2, "0")}${today.getFullYear()}`;
+        setTodayConsults(data[todayString] || []);
+      },
+      () => "today"
+    );
   }, []);
 
   function transData(dateString) {
@@ -33,78 +36,86 @@ const Home = () => {
   const todayFormatted = transData(todayString);
 
   return (
-    <div className="p-8 pl-0 mt-12 font-Montserrat w-full ">
-      <div className=" ml-32 flex justify-start items-center mb-8 font-semibold">
-        <div className="text-2xl font-bold text-[25px]">Início</div>
+    <div className=" pl-0 mt-6 md:mt-12 font-Montserrat w-full">
+      <div className="mx-4 md:mx-32 flex justify-start items-center mb-6 md:mb-8 font-semibold">
+        <div className="text-xl md:text-2xl font-bold">Início</div>
       </div>
 
-      <div className="flex ml-32 gap-4 mb-8 text-[20px] font-semibold text-white justify-start">
-        <Link to="/criarconsulta">
-          <button className="bg-[#D5D0C7] shadow-lg flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8  text-center">
-            <img src={iconAgendar} className="pr-4 h-20 self-center pl-6" />
-            Nova consulta
+      <div className="flex flex-col md:flex-row mx-4 md:mx-32 gap-3 mb-8 text-base md:text-lg font-semibold text-white justify-start">
+        <Link to="/criarconsulta" className="w-full md:w-1/3">
+          <button className="w-full bg-[#D5D0C7] shadow-lg flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-4 text-center transition-colors min-h-[140px] md:min-h-[160px]">
+            <img
+              src={iconAgendar}
+              className="h-10 md:h-14 mb-3"
+              alt="Agendar"
+            />
+            <span className="whitespace-nowrap">Nova consulta</span>
           </button>
         </Link>
-        <Link to="/receita">
-          <button className="bg-[#D5D0C7] flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8 shadow-lg text-center">
-            <img src={iconCadastro} className="pr-4 h-20 self-center pl-6" />
-            Receita
+        <Link to="/receita" className="w-full md:w-1/3">
+          <button className="w-full bg-[#D5D0C7] shadow-lg flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-4 text-center transition-colors min-h-[140px] md:min-h-[160px]">
+            <img
+              src={iconCadastro}
+              className="h-10 md:h-14 mb-3"
+              alt="Cadastro"
+            />
+            <span className="whitespace-nowrap">Receita</span>
           </button>
         </Link>
-
-        <Link to="/prontuarios">
-          <button className="bg-[#D5D0C7] flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-8 shadow-lg text-center">
-            <img src={iconProntuario} className="pr-4 h-20 self-center pl-6" />
-            Prontuários
+        <Link to="/prontuarios" className="w-full md:w-1/3">
+          <button className="w-full bg-[#D5D0C7] shadow-lg flex flex-col hover:bg-[#100F49] rounded-lg items-center justify-center p-4 text-center transition-colors min-h-[140px] md:min-h-[160px]">
+            <img
+              src={iconProntuario}
+              className="h-10 md:h-14 mb-3"
+              alt="Prontuário"
+            />
+            <span className="whitespace-nowrap">Prontuários</span>
           </button>
         </Link>
       </div>
 
-      {/* Today's Appointments */}
-      <div className="ml-32 text-xl text-[25px] mb-4 font-medium mt-20">
-        <strong className="text-3xl">Hoje</strong>
-      </div>
-      <section>
-        {todayConsults.length > 0 && (
-          <div className="m-12 mt-8 pr-40 max-w-4xl">
-            <h2 className="text-2xl pr-0 text-text-gray font-semibold">
-              {todayFormatted}
-            </h2>
-            {todayConsults.map((dados) => (
-              <div
-                key={dados.data}
-                className="flex bg-side-gray my-4 rounded-lg ml-4"
-                data-testid="agenda"
-              >
-                <div className="bg-card-green m-0 text-transparent rounded-lg">
-                  a
-                </div>
-                <div className="flex flex-col p-4 w-screen">
-                  <div className="m-2">
-                    <span>
-                      Tutor:{" "}
-                      <span className="font-bold pl-1">
-                        {dados.nameTutor}
-                      </span>
-                    </span>
-                    <span>, {dados.phone}</span>
+      <div className="mx-4 md:mx-32 mt-6 md:mt-10">
+        <div className="text-lg md:text-2xl font-medium mb-4">
+          <strong>Hoje</strong>
+        </div>
+        <section>
+          {todayConsults.length > 0 && (
+            <div className="mt-4 pr-4 md:pr-8 max-w-4xl">
+              <h2 className="text-xl md:text-2xl text-text-gray font-semibold mb-4">
+                {todayFormatted}
+              </h2>
+              {todayConsults.map((dados) => (
+                <div
+                  key={dados.data}
+                  className="flex bg-side-gray my-3 rounded-lg"
+                  data-testid="agenda"
+                >
+                  <div className="bg-card-green m-0 text-transparent rounded-lg">
+                    a
                   </div>
-                  <div className="m-2">
-                    <span className="ml-0 pr-1">
-                      Paciente:{" "}
-                      <span className="font-bold pl-1">
-                        {dados.nameAnimal}
+                  <div className="flex flex-col p-3 md:p-4 w-full">
+                    <div className="m-2">
+                      <span>
+                        Tutor:{" "}
+                        <span className="font-bold pl-1">{dados.nameTutor}</span>
                       </span>
-                    </span>
-                    <span className="ml-0 pl-1">{`- ${dados.species}`}</span>
+                      <span>, {dados.phone}</span>
+                    </div>
+                    <div className="m-2">
+                      <span className="ml-0 pr-1">
+                        Paciente:{" "}
+                        <span className="font-bold pl-1">{dados.nameAnimal}</span>
+                      </span>
+                      <span className="ml-0 pl-1">{`- ${dados.species}`}</span>
+                    </div>
+                    <span className="m-2">{`Observações: ${dados.description}`}</span>
                   </div>
-                  <span className="m-2">{`Observações: ${dados.description}`}</span>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 };
