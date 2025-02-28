@@ -24,6 +24,7 @@ import Professor from "./Professor";
 import { UpdateEditContext } from "../contexts/updateEditContext";
 import { patchProf } from "../services/professores";
 import { Snackbar, Alert } from "@mui/material";
+import Swal from "sweetalert2";
 
 const style = {
   position: "absolute",
@@ -88,6 +89,7 @@ const MostrarProf = () => {
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   const handleNewClick = () => setOpenNew(!openNew);
+  const [signal, setSignal] = useState(true);
 
   const [data, setData] = useState("");
 
@@ -95,7 +97,7 @@ const MostrarProf = () => {
     getProfByReg(query).then((data) => {
       setFilteredData(data);
     });
-  }, [selectedUser, openNew, query]);
+  }, [selectedUser, openNew, query, signal]);
 
   const handlePage = (event, value) => {
     setCurrPage(value);
@@ -115,6 +117,23 @@ const MostrarProf = () => {
       return;
     }
     setOpen(false);
+  };
+
+  const handleDelete = (row) => {
+    Swal.fire({
+      title: "Excluir cadastro?",
+      text: "Tem certeza de que quer excluir?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#100F49",
+      cancelButtonColor: "#D5D0C7",
+      confirmButtonText: "Excluir",
+      cancelButtonText: "Voltar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        patchProf(setStatusDelete, row.id, muiSnackAlert, "Professor excluído");
+      }
+    });
   };
 
   return (
@@ -248,8 +267,8 @@ const MostrarProf = () => {
                           <IconButton
                             className="delete-button"
                             onClick={() => {
-                              handleDeleteClick();
-                              setSelectedUser(row);
+                              // setSelectedUser(row);
+                              handleDelete(row);
                             }}
                           >
                             <img src={TrashIcon} />
@@ -280,7 +299,7 @@ const MostrarProf = () => {
             </Box>
           </Modal>
 
-          <Modal
+          {/* <Modal
             open={openDelete}
             onClose={handleDeleteClick}
             aria-labelledby="modal-modal-deletetitle"
@@ -352,7 +371,7 @@ const MostrarProf = () => {
                 </div>
               </Typography>
             </Box>
-          </Modal>
+          </Modal> */}
         </div>
       </UpdateEditContext.Provider>
     </ThemeProvider>

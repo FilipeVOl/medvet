@@ -132,13 +132,13 @@ export const PutTutor = (att) => {
     });
 };
 
-export const patchTutor = async (set, id, muiSnackAlert) => {
+export const patchTutor = async (set, id, muiSnackAlert, message) => {
   try {
     const response = await axios.patch("http://localhost:3333/delete/tutor", {
-      id
+      id,
     });
     set(response.data);
-    muiSnackAlert(true ? axios.status === 200 : false);
+    muiSnackAlert("success", message);
     console.log(response.data);
   } catch (error) {
     console.log(error);
