@@ -94,9 +94,7 @@ const Home = () => {
                   className="flex bg-side-gray my-3 rounded-lg"
                   data-testid="agenda"
                 >
-                  <div className="bg-card-green m-0 text-transparent rounded-lg">
-                    a
-                  </div>
+                  <div className="bg-card-green m-0 text-transparent rounded-lg px-1" />
                   <div className="flex flex-col p-3 md:p-4 w-full">
                     <div className="m-2">
                       <span>
