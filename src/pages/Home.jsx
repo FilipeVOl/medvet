@@ -12,9 +12,13 @@ const Home = () => {
     getConsults(
       (data) => {
         const today = new Date();
-        const todayString = `${String(today.getDate()).padStart(2, "0")}${String(
-          today.getMonth() + 1
-        ).padStart(2, "0")}${today.getFullYear()}`;
+        const todayString = `${String(today.getDate()).padStart(
+          2,
+          "0"
+        )}${String(today.getMonth() + 1).padStart(
+          2,
+          "0"
+        )}${today.getFullYear()}`;
         setTodayConsults(data[todayString] || []);
       },
       () => "today"
@@ -80,8 +84,8 @@ const Home = () => {
         </div>
         <section>
           {todayConsults.length > 0 && (
-            <div className="mt-4 pr-4 md:pr-8 max-w-4xl">
-              <h2 className="text-xl md:text-2xl text-text-gray font-semibold mb-4">
+            <div className="mt-4 max-w-4xl w-full">
+              <h2 className="text-xl md:text-2xl w-full text-text-gray text-lg md:text-2xl font-medium mb-4">
                 {todayFormatted}
               </h2>
               {todayConsults.map((dados) => (
@@ -97,14 +101,18 @@ const Home = () => {
                     <div className="m-2">
                       <span>
                         Tutor:{" "}
-                        <span className="font-bold pl-1">{dados.nameTutor}</span>
+                        <span className="font-bold pl-1">
+                          {dados.nameTutor}
+                        </span>
                       </span>
                       <span>, {dados.phone}</span>
                     </div>
                     <div className="m-2">
                       <span className="ml-0 pr-1">
                         Paciente:{" "}
-                        <span className="font-bold pl-1">{dados.nameAnimal}</span>
+                        <span className="font-bold pl-1">
+                          {dados.nameAnimal}
+                        </span>
                       </span>
                       <span className="ml-0 pl-1">{`- ${dados.species}`}</span>
                     </div>
