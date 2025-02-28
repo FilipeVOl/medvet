@@ -4,10 +4,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import { style } from "./calendar_utils.jsx";
-import multiMonthPlugin from '@fullcalendar/multimonth'
+
 
 export const Calendar = () => {
   const [agenda, setAgenda] = useState(() => {
@@ -66,21 +63,21 @@ export const Calendar = () => {
           <h1>Agendamento para o dia {dateClicked}</h1>
         </Box> */}
       {/* </Modal> */}
-      <div className="justify-center w-full p-12 mt-8 flex flex-col gap-8">
-        <h1 className="font-bold text-3xl">Calendário</h1>
+      <div className="justify-center w-full p-12 mt-2 flex flex-col gap-8 Montserrat">
+        <span className="font-bold text-3xl Montserrat">Calendário</span>
         <FullCalendar
           locale={"pt-br"}
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, multiMonthPlugin]}
-          initialView="multiMonthYear"
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth" // Changed from multiMonthYear to dayGridMonth
           selectable={true}
           editable={true}
           weekends={true}
           headerToolbar={{
-            left: "prev",
+            left: "prev,next today", // Added today button
             center: "title",
-            right: "next",
+            right: "dayGridMonth,timeGridWeek" // Added week view option
           }}
-          events={events} // Eventos dinâmicos
+          events={events}
           dateClick={handleDateSelect}
           eventClick={handleEventClick}
         />

@@ -44,7 +44,7 @@ export default function Prontuarios() {
   };
 
   return (
-    <div className="font-Montserrat w-full p-4 md:p-8 lg:p-28 flex flex-col">
+    <div className="font-Montserrat w-full  md:p-8 lg:p-16 flex flex-col">
       <div id="header">
         <h1 className="font-bold text-2xl md:text-3xl">Prontuários</h1>
       </div>
