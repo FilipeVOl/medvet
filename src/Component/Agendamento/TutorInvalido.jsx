@@ -85,15 +85,21 @@ const TutorInvalido = () => {
   };
 
   const ConsultaSchema = z.object({
-    species: z.string().min(1),
-    stringDate: z.string().min(1),
-    hora: z.string().min(1),
-    phone: z.string().min(1),
-    description: z.string().min(1),
-    nameAnimal: z.string().min(1),
-    nameTutor: z.string().min(0),
+    species: z.string().min(1, "Espécie é obrigatória"),
+    stringDate: z.string()
+      .length(8, "Data deve ter 8 dígitos")
+      .regex(/^\d{8}$/, "Data deve conter apenas números")
+      .refine((date) => {
+        const day = parseInt(date.substring(0, 2));
+        const month = parseInt(date.substring(2, 4));
+        const year = parseInt(date.substring(4, 8));
+        return day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 2024;
+      }, "Data inválida"),
+    phone: z.string().min(10, "Telefone inválido"),
+    description: z.string().nullable().default(''),
+    nameAnimal: z.string().min(1, "Nome do animal é obrigatório"),
+    nameTutor: z.string().min(1, "Nome do tutor é obrigatório"),
   });
-
   const handleClose = () => {
     setOpen(!open);
   };
@@ -104,32 +110,41 @@ const TutorInvalido = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const [year, month, day] = stringDate.split('-');
+      const paddedDay = day.padStart(2, '0');
+      const paddedMonth = month.padStart(2, '0');
+      const formattedDate = `${paddedDay}${paddedMonth}${year}`;
+  
+      if (formattedDate.length !== 8) {
+        throw new Error('Data inválida: formato incorreto');
+      }
+  
       const consulta = ConsultaSchema.parse({
-        nameAnimal: nameAnimal,
-        species: species,
-        stringDate: stringDate,
-        hora: hora,
-        description: description,
+        nameAnimal,
+        species,
+        stringDate: formattedDate,
+        description: description || '',
         phone: phoneUnmask(phoneWMask),
-        nameTutor: nameTutor,
+        nameTutor,
       });
-      await CreateConsult(consulta);
+  
+      console.log('Sending data:', consulta); 
+      const response = await CreateConsult(consulta);
+      console.log('Response:', response); 
       handleClose();
-      console.log();
+      
+      setName('');
+      setEspecie('');
+      setDate('');
+      setHora('');
+      setDesc('');
+      setPhone('');
+      setTutor('');
     } catch (error) {
-      console.error(error.errors);
+      console.error('Error details:', error);
       handleError();
     }
   };
-
-  const phoneMask = (value) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/^(\d{2})(9\d{4})/, "($1)$2")
-      .replace(/(\d{5})(\d)/, "$1-$2")
-      .replace(/(-\d{4})\d+?$/, "$1");
-  };
-
   const phoneUnmask = (value) => {
     return value
       .replace(/\D/g, "")
@@ -320,7 +335,6 @@ const TutorInvalido = () => {
                       ? "cursor-not-allowed opacity-25"
                       : "hover:bg-[#144A36]"
                   } font-Montserrat border-2 w-full md:w-52 rounded-md h-10 bg-[#D5D0C7] text-white transition-colors`}
-                  //set the button to disabled if any of the fields are empty
                 >
                   Confirmar
                 </button>

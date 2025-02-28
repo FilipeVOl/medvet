@@ -1,6 +1,5 @@
 import medvetlogo from "../assets/medvetlogo.svg";
 import userLogo from "../assets/user.svg";
-import uniLogo from "../assets/unilogo.svg";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/userContext";
 import { useContext } from "react";
@@ -8,13 +7,14 @@ import { IconButton, Divider } from "@mui/material";
 import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function Header() {
-  const { token, signOut, userData } = useContext(UserContext);
+  const { token, signOut, user } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
     await signOut();
     navigate("/login");
   };
+
 
   return (
     <>
@@ -28,10 +28,9 @@ export default function Header() {
 
         <div className="perfil-container flex justify-end items-center gap-4">
           <div className="flex items-center gap-4">
-            <img src={userLogo} alt="foto do usuario" className="w-10 h-10" />
             <div className="perfil-box">
-              <h2 className="font-bold text-[#144A36]">{userData?.name || 'Nome'}</h2>
-              <p className="text-gray-600 text-sm">{userData?.role || 'Título'}</p>
+            <h2 className="font-bold text-[#144A36]">{user?.name || 'Nome'}</h2>
+            <p className="text-gray-600 text-sm">{user?.role || 'Título'}</p>
             </div>
           </div>
 

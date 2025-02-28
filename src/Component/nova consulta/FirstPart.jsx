@@ -374,7 +374,7 @@ export default function FirstPart(props) {
             <div id="ida-pes-pela" className="flex gap-8 my-4 justify-center">
               <InputComponent
                 nome="Idade"
-                dataType="text"
+                dataType="number"
                 type={idade}
                 setDataCom={setIdade}
                 requireVal={required.idade}
@@ -384,7 +384,7 @@ export default function FirstPart(props) {
               />
               <InputComponent
                 nome="Peso"
-                dataType="text"
+                dataType="number"
                 type={peso}
                 setDataCom={setPeso}
                 requireVal={required.peso}
