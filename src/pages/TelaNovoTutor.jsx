@@ -6,8 +6,10 @@ import { PutTutor } from "../services/tutores";
 import { UpdateEditContext } from "../contexts/updateEditContext";
 import InputComponent from "../Component/nova consulta/InputComponent";
 import { Snackbar, Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function Tutor(props) {
+  const navigate = useNavigate();
   const { selectedUser, setSelectedUser } = useContext(UpdateEditContext);
   const { openEdit, setOpenEdit } = useContext(UpdateEditContext);
   const { openNew, setOpenNew } = useContext(UpdateEditContext);
@@ -78,13 +80,26 @@ export default function Tutor(props) {
 
   const clickError = async () => {
     if (!selectedUser) {
-      await postTutor(data);
-      muiSnackAlert("Tutor criado com sucesso");
-      setOpenNew(!openNew);
+      try {
+        await postTutor(data);
+        muiSnackAlert("success", "Tutor criado com sucesso");
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } catch (error) {
+        muiSnackAlert("error", "Erro ao criar tutor");
+      }
     } else {
-      console.log(selectedUser);
-      PutTutor(data);
-      setOpenEdit(!openEdit);
+      try {
+        await PutTutor(data);
+        setOpenEdit(!openEdit);
+        muiSnackAlert("success", "Tutor atualizado com sucesso");
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } catch (error) {
+        muiSnackAlert("error", "Erro ao atualizar tutor");
+      }
     }
   };
 
@@ -126,7 +141,7 @@ export default function Tutor(props) {
         </h1>
 
         <form>
-          <div className="forms-container w-full px-28 grid grid-rows-4 md:grid-rows-2 gap-x-8 gap-y-4">
+          <div className="forms-container w-full px-12 grid grid-rows-4 md:grid-rows-2 gap-x-8 gap-y-4">
             <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
               <InputComponent
                 nome="Nome completo"
