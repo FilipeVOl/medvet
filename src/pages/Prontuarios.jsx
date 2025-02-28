@@ -4,16 +4,11 @@ import { Link } from "react-router-dom";
 import { getAllAnimals, getAnimalBySequenceOrName } from "../services/animals";
 import Pagination from "@mui/material/Pagination";
 import { getAnimalsByTutorName } from "../services/tutores";
-
-//melhorias
-//paginação condicional, vir da rota do back um valor com as páginas.
-//buscar por nome do prontuário, agora está pelo número do paciente.
-//verificar paginação com as novas rotas
+import { Select, MenuItem } from "@mui/material";
 
 export default function Prontuarios() {
-  const [namePacient, setNamePacient] = useState("");
-  const [nameTutor, setNameTutor] = useState("");
-  const [numberPront, setNumberPront] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  const [searchType, setSearchType] = useState("patient");
   const [prontuarios, setProntuarios] = useState([]);
   const [pageSelected, setPageSelected] = useState(1);
 
@@ -21,18 +16,6 @@ export default function Prontuarios() {
     getAllAnimals(setProntuarios);
   }, [setProntuarios]);
 
-
-  // useEffect(() => {
-  //   if (
-  //     nameTutor.length == 0 &&
-  //     namePacient.length == 0 &&
-  //     numberPront.length == 0
-  //   ) {
-  //     getAllAnimals(setProntuarios, pageSelected);
-  //   }
-  // }, [namePacient, nameTutor, numberPront, pageSelected]);
-
-  //pegar so o primeiro nome do animal e do tutor
   const getTheFirstOne = (nome) => {
     const names = nome.split(" ");
     let firstName = names[0];
@@ -41,74 +24,98 @@ export default function Prontuarios() {
     return capitalizedFirstName.substring(0, 10);
   };
 
-  //rota de pegar animais pelo nome
-  const filtersByTutorName = async (value) => {
-    setNameTutor(value);
-    const data = await getAnimalsByTutorName(value);
-    setProntuarios(data)
-  };
+  const handleSearch = async (value) => {
+    setSearchValue(value);
 
-  const filterByAnimalSequence = (value) => {
-    setNumberPront(value);
-    getAnimalBySequenceOrName(setProntuarios, value)
+    switch (searchType) {
+      case "patient":
+        getAnimalBySequenceOrName(setProntuarios, value);
+        break;
+      case "tutor":
+        const data = await getAnimalsByTutorName(value);
+        setProntuarios(data);
+        break;
+      case "number":
+        getAnimalBySequenceOrName(setProntuarios, value);
+        break;
+      default:
+        break;
+    }
   };
-
-  const filterByAnimalName = (value) => {
-    setNamePacient(value);
-    getAnimalBySequenceOrName(setProntuarios, value)
-  };
-  
 
   return (
-    <div className="font-Montserrat w-full p-28 flex flex-col">
+    <div className="font-Montserrat w-full p-4 md:p-8 lg:p-28 flex flex-col">
       <div id="header">
-        <h1 className="font-bold text-3xl">Prontuários</h1>
+        <h1 className="font-bold text-2xl md:text-3xl">Prontuários</h1>
       </div>
-      <div id="filtros" className="flex my-16 w-full justify-between ml-8">
-        <FilterInput
-          placeHolder="Nome do Paciente"
-          valueInput={namePacient}
-          handleFilter={filterByAnimalName}
-          type={'text'}
-        />
-        <FilterInput
-          placeHolder="Nome do Tutor"
-          valueInput={nameTutor}
-          handleFilter={filtersByTutorName}
-          type={'text'}
-        />
-        <FilterInput
-          placeHolder="Nº do Paciente"
-          valueInput={numberPront}
-          handleFilter={filterByAnimalSequence}
-          type={'number'}
-        />
+
+      <div
+        id="filtros"
+        className="flex flex-col sm:flex-row items-start gap-4 my-8 w-full"
+      >
+        <div className="flex flex-col sm:flex-row gap-4 w-full">
+          <Select
+            value={searchType}
+            onChange={(e) => setSearchType(e.target.value)}
+            className="h-[42px] w-full sm:w-[200px]"
+            sx={{
+              fontFamily: "Montserrat",
+              backgroundColor: "#F2F2ED",
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#9F9F9F",
+              },
+            }}
+          >
+            <MenuItem value="patient">Nome do Paciente</MenuItem>
+            <MenuItem value="tutor">Nome do Tutor</MenuItem>
+            <MenuItem value="number">Nº do Paciente</MenuItem>
+          </Select>
+
+          <FilterInput
+            placeHolder={
+              searchType === "patient"
+                ? "Buscar por nome do paciente"
+                : searchType === "tutor"
+                ? "Buscar por nome do tutor"
+                : "Buscar por número do paciente"
+            }
+            valueInput={searchValue}
+            handleFilter={handleSearch}
+            type={searchType === "number" ? "number" : "text"}
+            inputMode={searchType === "number" ? "numeric" : "text"}
+            onKeyPress={(e) => {
+              if (searchType === "number" && !/[0-9]/.test(e.key)) {
+                e.preventDefault();
+              }
+            }}
+            className="w-full"
+          />
+        </div>
       </div>
-      <div className="grid grid-cols-5 grid-rows-2 gap-8 rounded-lg ml-16 mr-16">
-        {prontuarios.map((e) => {
-          return (
-            <Link
-              to={`detalhes/${e.animal_id}`}
-              key={e.animal_id}
-              id={e.animal_id}
-              className="p-4 pt-[111.24%] rounded-lg bg-prontuario-box bg-no-repeat bg-contain flex flex-col justify-end
-          hover:bg-hover-box hover:scale-110 cursor-pointer w-[105%] h-0 transition-all"
-            >
-              <div className="bg-other-white rounded-lg text-[1.7vh] flex flex-col p-2 m-2 w-fit">
-                <p className="font-bold pr-6">
-                  {getTheFirstOne(e.animal_name)}
-                </p>
-                <p className="">{e.tutor_name}</p>
-              </div>
-            </Link>
-          );
-        })}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8">
+        {prontuarios.map((e) => (
+          <Link
+            to={`detalhes/${e.animal_id}`}
+            key={e.animal_id}
+            id={e.animal_id}
+            className="p-4 pt-[111.24%] rounded-lg bg-prontuario-box bg-no-repeat bg-contain flex flex-col justify-end
+      hover:bg-hover-box hover:scale-105 cursor-pointer w-full transition-all relative"
+          >
+            <div className="bg-other-white rounded-lg text-[1.7vh] flex flex-col p-2 m-2 w-fit">
+              <p className="font-bold pr-6">{getTheFirstOne(e.animal_name)}</p>
+              <p className="text-gray-600">{getTheFirstOne(e.tutor_name)}</p>
+            </div>
+          </Link>
+        ))}
       </div>
-      <div className="self-center p-8 flex-end items-end">
+
+      <div className="self-center p-4 md:p-8 mt-8">
         <Pagination
           count={10}
           shape="rounded"
           onChange={(e, page) => setPageSelected(page)}
+          size="medium"
         />
       </div>
     </div>

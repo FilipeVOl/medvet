@@ -13,7 +13,7 @@ export default function Stepper(props) {
 
   return (
     <div className="font-Montserrat mt-6 w-full">
-    <div className=" md:mx-32 flex justify-start items-center mb-6 md:mb-8 font-semibold">
+    <div className=" md:mx-28 flex justify-start items-center mb-  md:mb-8 font-semibold">
       <span className="text-xl md:text-2xl font-bold">Nova Consulta</span>
     </div>
       <div className="flex items-center justify-center">
