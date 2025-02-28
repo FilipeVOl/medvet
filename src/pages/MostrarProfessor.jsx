@@ -23,6 +23,7 @@ import { getProfByReg } from "../services/professores";
 import Professor from "./Professor";
 import { UpdateEditContext } from "../contexts/updateEditContext";
 import { patchProf } from "../services/professores";
+import { Snackbar, Alert } from "@mui/material";
 
 const style = {
   position: "absolute",
@@ -79,7 +80,6 @@ const MostrarProf = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openNew, setOpenNew] = useState(false);
-  const [showToast, setShowToast] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [status_delete, setStatusDelete] = useState("");
   const [registration, setRegistration] = useState("");
@@ -101,14 +101,21 @@ const MostrarProf = () => {
     setCurrPage(value);
   };
 
-  useEffect(() => {
-    if (showToast) {
-      const timer = setTimeout(() => {
-        setShowToast(false);
-      }, 10000);
-      return () => clearTimeout(timer);
+  const [open, setOpen] = useState(false);
+  const [severity, setSeverity] = useState("success");
+  const [message, setMessage] = useState("");
+
+  const muiSnackAlert = (severity, message) => {
+    setSeverity(severity);
+    setMessage(message);
+    setOpen(true);
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
     }
-  }, [showToast]);
+    setOpen(false);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -122,40 +129,21 @@ const MostrarProf = () => {
           setSelectedUser,
         }}
       >
+        <Snackbar
+          open={open}
+          autoHideDuration={2000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert
+            severity={severity}
+            sx={{ width: "100%" }}
+            onClose={handleClose}
+          >
+            {message}
+          </Alert>
+        </Snackbar>
         <div className="container">
-          {showToast && (
-            <div className="animate-fadeIn fixed opacity-0 z-10 top-32 right-0 m-4">
-              <div
-                class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
-                role="alert"
-                tabindex="-1"
-                aria-labelledby="hs-toast-success-example-label"
-              >
-                <div class="flex p-4">
-                  <div class="shrink-0">
-                    <svg
-                      class="shrink-0 size-4 text-teal-500 mt-0.5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
-                    </svg>
-                  </div>
-                  <div class="ms-3">
-                    <p
-                      id="hs-toast-success-example-label"
-                      class="text-sm text-gray-700 dark:text-neutral-400"
-                    >
-                      Professor excluído com sucesso
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
           <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
             Professores cadastrados
           </h1>
@@ -343,7 +331,11 @@ const MostrarProf = () => {
                     onClick={() => {
                       console.log(selectedUser.id);
                       handleDeleteClick();
-                      patchProf(setStatusDelete, selectedUser.id, setShowToast);
+                      patchProf(
+                        setStatusDelete,
+                        selectedUser.id,
+                        muiSnackAlert
+                      );
                     }}
                     style={{
                       backgroundColor: "#100F49",

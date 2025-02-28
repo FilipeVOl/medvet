@@ -3,28 +3,35 @@ import logoLogin from "../images/logoLogin.svg";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { Outlet, useNavigate } from "react-router-dom";
-import { RecoveryContext, RecoveryProvider } from "../contexts/recoveryContext";
-import { validateCPF } from "../utils/validateCPF"; // Import CPF validation function
-import { UserContext } from "../contexts/userContext"; // Import UserContext
-import axios from "axios"; // Import axios for making HTTP requests
-import { ToastContainer, toast } from "react-toastify"; // Import toast for showing notifications
+import { RecoveryContext } from "../contexts/recoveryContext";
+import { validateCPF } from "../utils/validateCPF";
+import { UserContext } from "../contexts/userContext";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import InputMask from "react-input-mask";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import { Snackbar, Alert } from "@mui/material";
 
 const Login = () => {
-    const { setPage, setCPF } = useContext(RecoveryContext);
-    const { saveUserAndToken, loadUserData } = useContext(UserContext); // Get saveUserAndToken and loadUserData from UserContext
+    const { setPage } = useContext(RecoveryContext);
+    const { saveUserAndToken, loadUserData } = useContext(UserContext);
+    const navigate = useNavigate();
+
     const [cpf, setCPFState] = useState("");
-    const [password, setPassword] = useState(""); // Add state for password
-    const navigate = useNavigate(); // Initialize useNavigate
+    const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
+    const [openAlert, setOpenAlert] = useState(false);
+    const [severity, setSeverity] = useState("success");
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         const token = localStorage.getItem("token");
         const rememberedCPF = localStorage.getItem("rememberedCPF");
         const rememberedPassword = localStorage.getItem("rememberedPassword");
+        
         if (token) {
             loadUserData();
             navigate("/");
@@ -35,17 +42,6 @@ const Login = () => {
             setRememberMe(true);
         }
     }, [navigate, loadUserData]);
-
-    const handleRememberMe = (event) => {
-        setRememberMe(event.target.checked);
-        if (event.target.checked) {
-            localStorage.setItem("rememberedCPF", cpf);
-            localStorage.setItem("rememberedPassword", password);
-        } else {
-            localStorage.removeItem("rememberedCPF");
-            localStorage.removeItem("rememberedPassword");
-        }
-    };
 
     const formatCPF = (cpf) => {
         return cpf.replace(/[^\d]/g, "");
@@ -64,33 +60,77 @@ const Login = () => {
         return true;
     };
 
+    const handleRememberMe = (event) => {
+        setRememberMe(event.target.checked);
+        if (event.target.checked) {
+            localStorage.setItem("rememberedCPF", cpf);
+            localStorage.setItem("rememberedPassword", password);
+        } else {
+            localStorage.removeItem("rememberedCPF");
+            localStorage.removeItem("rememberedPassword");
+        }
+    };
+
+    const handleCloseAlert = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+        setOpenAlert(false);
+    };
+
+    const muiSnackAlert = (severity, message) => {
+        setSeverity(severity);
+        setMessage(message);
+        setOpenAlert(true);
+    };
+
     const handleLogin = async (e) => {
         e.preventDefault();
-    
+
+        if (!validateCPF(formatCPF(cpf))) {
+            muiSnackAlert("error", "CPF inválido.");
+            return;
+        }
+
         if (!validatePassword(password)) {
             return;
         }
-    
+
         try {
             const formattedCPF = formatCPF(cpf);
             const response = await axios.post("http://localhost:3333/sessions", {
                 cpf: formattedCPF,
                 password,
             });
+            
             const { userData, token, refreshToken } = response.data;
             saveUserAndToken(userData, token, refreshToken);
             localStorage.setItem("token", token);
+
+            if (rememberMe) {
+                localStorage.setItem("rememberedCPF", formattedCPF);
+                localStorage.setItem("rememberedPassword", password);
+            }
+            
             navigate("/");
         } catch (error) {
             console.error("Erro ao fazer login:", error);
-            toast.error("Erro ao fazer login. Verifique o CPF e a senha.");
+            muiSnackAlert("error", "Erro ao fazer login. Verifique o CPF e a senha.");
         }
     };
-
-
     return (
         <div className="font-Montserrat relative min-h-screen bg-cover bg-[url('./images/backgroundLogin.png')] flex justify-center items-center p-4">
           <ToastContainer />
+          <Snackbar
+                open={openAlert}
+                autoHideDuration={2000}
+                onClose={handleCloseAlert}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+                <Alert severity={severity} sx={{ width: "100%" }} onClose={handleCloseAlert}>
+                    {message}
+                </Alert>
+            </Snackbar>
           <div className="absolute inset-0 bg-[#BDD9BFCC] opacity-80"></div>
           <div className="relative z-10 w-full max-w-[600px] bg-white rounded-lg flex justify-center flex-col p-4">
             <img

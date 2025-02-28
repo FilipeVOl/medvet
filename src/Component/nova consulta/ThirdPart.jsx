@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
+import { Snackbar, Alert } from "@mui/material";
 
 export default function ThirdPart(props) {
   const { pagTh, setPagTh, allPagesData } = useContext(ConsultContext);
@@ -81,22 +82,21 @@ export default function ThirdPart(props) {
       trataments: sTratamento,
       observations: sObs,
     };
-    
+
     //tirar axios daqui e passar para services
     await axios
       .post("http://localhost:3333/create/enchiridion", allDataState)
       .then((response) => {
         console.log(response);
         if (response) {
-          handleButtonClick()
-          } else {
-            toast.error("Erro ao criar consulta")
-          }
+          handleButtonClick();
+        } else {
+          muiSnackAlert("error", "Erro ao criar consulta");
+        }
       })
       .catch((error) => {
         console.error(error);
       });
-      
   };
 
   const handleAnt = () => {
@@ -104,40 +104,67 @@ export default function ThirdPart(props) {
     props.setSteps(2);
   };
 
+  const [open, setOpen] = useState(false);
+  const [severity, setSeverity] = useState("success");
+  const [message, setMessage] = useState("");
+
+  const muiSnackAlert = (severity, message) => {
+    setSeverity(severity);
+    setMessage(message);
+    setOpen(true);
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
   return (
-    <div className="font-Montserrat w-full p-28">
-      <div className="font-bold">
-        <h1 className="text-[30px]">Exames</h1>
-      </div>
-      <form className="text-[18px]">
-        <div className="my-20">
-          {renderTextArea.map((e) => {
-            return (
-              <TextAreaComponent
-                key={e}
-                value={e.value}
-                id={e.id}
-                setSomething={e.setSomething}
-              />
-            );
-          })}
+    <>
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert severity={severity} sx={{ width: "100%" }} onClose={handleClose}>
+          {message}
+        </Alert>
+      </Snackbar>
+      <div className="font-Montserrat w-full p-28">
+        <div className="font-bold">
+          <h1 className="text-[30px]">Exames</h1>
         </div>
-        <button
-          type="button"
-          className="bg-[#144A36] py-2 px-16 my-32 rounded-lg text-white float-left"
-          onClick={() => handleAnt()}
-        >
-          Anterior
-        </button>
-        <button
-          type="button"
-          className="bg-[#D5D0C7] hover:bg-[#144A36] py-2 px-16 my-32 rounded-lg text-white float-right"
-          onClick={() => handleFinish()}
-        >
-          Finalizar
-        </button>
-      </form>
-      <Modal
+        <form className="text-[18px]">
+          <div className="my-20">
+            {renderTextArea.map((e) => {
+              return (
+                <TextAreaComponent
+                  key={e}
+                  value={e.value}
+                  id={e.id}
+                  setSomething={e.setSomething}
+                />
+              );
+            })}
+          </div>
+          <button
+            type="button"
+            className="bg-[#144A36] py-2 px-16 my-32 rounded-lg text-white float-left"
+            onClick={() => handleAnt()}
+          >
+            Anterior
+          </button>
+          <button
+            type="button"
+            className="bg-[#D5D0C7] hover:bg-[#144A36] py-2 px-16 my-32 rounded-lg text-white float-right"
+            onClick={() => handleFinish()}
+          >
+            Finalizar
+          </button>
+        </form>
+        <Modal
           open={openModal}
           aria-labelledby="modal-modal-deletetitle"
           aria-describedby="modal-modal-description2"
@@ -153,7 +180,9 @@ export default function ThirdPart(props) {
               <div className="flex justify-between my-12">
                 <IconButton
                   id="fechar-modal"
-                onClick={() => {handleButtonClick(), handleContinueReceita()}}
+                  onClick={() => {
+                    handleButtonClick(), handleContinueReceita();
+                  }}
                 >
                   OK
                 </IconButton>
@@ -166,33 +195,32 @@ export default function ThirdPart(props) {
           open={continueReceita}
           aria-labelledby="modal-modal-deletetitle"
           aria-describedby="modal-modal-description2"
-          >
-            <Box id="box-modal-pag1">
-              <Typography
-                id="modal-modal-deletetitle"
-                variant="h6"
-                component="h1"
-              >
-                Deseja Continuar para Receita?
-                <div className="flex justify-between my-12">
-                  <Link to="/receita" smooth={true} duration={1000}>
-                  <IconButton
-                    id="fechar-modal"
-                  >
-                    Sim
-                  </IconButton>
-                  </Link>
-                  <IconButton
-                    id="fechar-modal"
-                  onClick={() => {handleContinueReceita()}}
-                  >
-                    Não
-                  </IconButton>
-                </div>
-              </Typography>
-              </Box>
-          </Modal>
-    </div>
+        >
+          <Box id="box-modal-pag1">
+            <Typography
+              id="modal-modal-deletetitle"
+              variant="h6"
+              component="h1"
+            >
+              Deseja Continuar para Receita?
+              <div className="flex justify-between my-12">
+                <Link to="/receita" smooth={true} duration={1000}>
+                  <IconButton id="fechar-modal">Sim</IconButton>
+                </Link>
+                <IconButton
+                  id="fechar-modal"
+                  onClick={() => {
+                    handleContinueReceita();
+                  }}
+                >
+                  Não
+                </IconButton>
+              </div>
+            </Typography>
+          </Box>
+        </Modal>
+      </div>
+    </>
   );
 }
 

@@ -16,13 +16,17 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
-import { getTutorByNumber, getTutores, getTutoresByName, patchTutor } from "../services/tutores";
-import TelaNovoTutor from "../pages/TelaNovoTutor";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 import {
-  UpdateEditContext,
-} from "../contexts/updateEditContext";
+  getTutorByNumber,
+  getTutores,
+  getTutoresByName,
+  patchTutor,
+} from "../services/tutores";
+import TelaNovoTutor from "../pages/TelaNovoTutor";
+import { UpdateEditContext } from "../contexts/updateEditContext";
+import { Snackbar, Alert } from "@mui/material";
 
 const style = {
   position: "absolute",
@@ -77,7 +81,6 @@ const MostrarTutor = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openNew, setOpenNew] = useState(false);
-  const [showToast, setShowToast] = useState(false);
   const [selectedUser, setSelectedUser] = useState("");
   const [status_delete, setStatusDelete] = useState("");
   const [currPage, setCurrPage] = useState(1);
@@ -90,21 +93,28 @@ const MostrarTutor = () => {
   const [data, setData] = useState("");
 
   const handlePage = (event, value) => {
-    setCurrPage(value)
-  }
+    setCurrPage(value);
+  };
 
   useEffect(() => {
     getTutorByNumber(query).then((data) => setFilteredData(data));
   }, [selectedUser, openNew, query]);
 
-  useEffect(() => {
-    if (showToast) {
-      const timer = setTimeout(() => {
-        setShowToast(false);
-      }, 10000);
-      return () => clearTimeout(timer);
+  const [open, setOpen] = useState(false);
+  const [severity, setSeverity] = useState("success");
+  const [message, setMessage] = useState("");
+
+  const muiSnackAlert = (severity, message) => {
+    setSeverity(severity);
+    setMessage(message);
+    setOpen(true);
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
     }
-  }, [showToast]);
+    setOpen(false);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -118,40 +128,21 @@ const MostrarTutor = () => {
           setSelectedUser,
         }}
       >
+        <Snackbar
+          open={open}
+          autoHideDuration={2000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert
+            severity={severity}
+            sx={{ width: "100%" }}
+            onClose={handleClose}
+          >
+            {message}
+          </Alert>
+        </Snackbar>
         <div className="container h-[100vh]">
-          {showToast && (
-            <div className="animate-fadeIn opacity-0 z-10 fixed top-32 right-0 m-4">
-              <div
-                class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
-                role="alert"
-                tabindex="-1"
-                aria-labelledby="hs-toast-success-example-label"
-              >
-                <div class="flex p-4">
-                  <div class="shrink-0">
-                    <svg
-                      class="shrink-0 size-4 text-teal-500 mt-0.5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
-                    </svg>
-                  </div>
-                  <div class="ms-3">
-                    <p
-                      id="hs-toast-success-example-label"
-                      class="text-sm text-gray-700 dark:text-neutral-400"
-                    >
-                      Tutor excluído com sucesso
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
           <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
             Tutores cadastrados
           </h1>
@@ -206,9 +197,12 @@ const MostrarTutor = () => {
             </div>
           </div>
           <div className="ml-36 sm:w-[80%] mt-16">
-            <TableContainer sx={{
-              height: "auto"
-            }} component={Paper}>
+            <TableContainer
+              sx={{
+                height: "auto",
+              }}
+              component={Paper}
+            >
               <Table aria-label="customized table">
                 <TableHead>
                   <TableRow>
@@ -231,33 +225,34 @@ const MostrarTutor = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {filteredData && filteredData
-                .filter((row) => !row.status_delete)
-                .map((row) => (
-                    <StyledTableRow key={row.id}>
-                      <StyledTableCell>{row.name}</StyledTableCell>
-                      <StyledTableCell>{row.phone}</StyledTableCell>
-                      <IconButton
-                        className="edit-button"
-                        onClick={() => {
-                          handleButtonClick();
-                          setSelectedUser(row);
-                        }}
-                      >
-                        <img src={EditIcon} />
-                      </IconButton>
+                  {filteredData &&
+                    filteredData
+                      .filter((row) => !row.status_delete)
+                      .map((row) => (
+                        <StyledTableRow key={row.id}>
+                          <StyledTableCell>{row.name}</StyledTableCell>
+                          <StyledTableCell>{row.phone}</StyledTableCell>
+                          <IconButton
+                            className="edit-button"
+                            onClick={() => {
+                              handleButtonClick();
+                              setSelectedUser(row);
+                            }}
+                          >
+                            <img src={EditIcon} />
+                          </IconButton>
 
-                      <IconButton
-                        className="delete-button"
-                        onClick={() => {
-                          handleDeleteClick();
-                          setSelectedUser(row);
-                        }}
-                      >
-                        <img src={TrashIcon} />
-                      </IconButton>
-                    </StyledTableRow>
-                  ))}
+                          <IconButton
+                            className="delete-button"
+                            onClick={() => {
+                              handleDeleteClick();
+                              setSelectedUser(row);
+                            }}
+                          >
+                            <img src={TrashIcon} />
+                          </IconButton>
+                        </StyledTableRow>
+                      ))}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -333,7 +328,11 @@ const MostrarTutor = () => {
                     onClick={() => {
                       console.log(selectedUser.id);
                       handleDeleteClick();
-                      patchTutor(setStatusDelete, selectedUser.id, setShowToast);
+                      patchTutor(
+                        setStatusDelete,
+                        selectedUser.id,
+                        muiSnackAlert
+                      );
                     }}
                     style={{
                       backgroundColor: "#100F49",
