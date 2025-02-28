@@ -182,8 +182,8 @@ export default function FirstPart(props) {
   return (
     <div className="font-Montserrat p-28 w-full">
       <div className="font-semibold">
-        <h1 className="text-[30px]">Identificação</h1>
-      </div>
+      <span className="text-xl md:text-2xl font-bold">Identificação</span>
+     </div>
       <div>
         <form className="text-[18px]">
           <div className="py-8 w-full">
@@ -402,10 +402,10 @@ export default function FirstPart(props) {
           </div>
           <div>
             <div className="font-bold">
-              <h1 className="text-[30px]">Anamnese</h1>
+            <span className="text-xl md:text-2xl font-bold">Anamnese</span>
             </div>
             <div id="div-cons-hist" className="gap-8 my-8">
-              <label htmlFor="motivo" className="grow my-2 mx-8">
+              <label htmlFor="motivo" >
                 Motivo da Consulta
                 <textarea
                   name="consult"
@@ -417,7 +417,7 @@ export default function FirstPart(props) {
                   onChange={(e) => setMotivo(e.target.value)}
                 ></textarea>
               </label>
-              <label htmlFor="historico" className="grow mx-8">
+              <label htmlFor="historico">
                 Histórico
                 <textarea
                   id="historico"
@@ -433,7 +433,7 @@ export default function FirstPart(props) {
           </div>
           <div>
             <div className="font-bold">
-              <h1 className="text-[30px]">Vacinação</h1>
+            <span className="text-xl md:text-2xl font-bold">Vacinação</span>
             </div>
             <div id="div-vac" className="w-full my-4 flex flex-col gap-8">
               {vacina.map((e, index) => {
@@ -474,7 +474,7 @@ export default function FirstPart(props) {
 
             </div>
             <div className="font-bold mt-16">
-              <h1 className="text-[30px]">Desverminação</h1>
+            <span className="text-xl md:text-2xl font-bold">Desverminação</span>
             </div>
             <div id="div-vac" className="gap-8 flex justify-center my-8">
               <label className="grow">

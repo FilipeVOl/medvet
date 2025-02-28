@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
 import { CreateConsult } from "../../services/agendamento";
+import InputMask from "react-input-mask";
+import { TextField } from "@mui/material";
 
 const InputConsulta = ({ label, type, setter, value }) => {
   const handleChange = useCallback(
@@ -15,17 +17,26 @@ const InputConsulta = ({ label, type, setter, value }) => {
 
   return (
     <div className="flex flex-col mb-4">
-      <InputLabel sx={{ fontFamily: 'Montserrat' }} className="ml-4" htmlFor={label}>
+      <InputLabel
+        sx={{
+          fontFamily: "Montserrat",
+          fontSize: "1rem",
+          color: "black",
+          marginBottom: "0.5rem",
+        }}
+        htmlFor={label}
+      >
         {label}
       </InputLabel>
       <Input
-        sx={{ fontFamily: 'Montserrat' }}
+        sx={{ fontFamily: "Montserrat" }}
         onChange={handleChange}
         type={type}
         value={value}
         className={` ${
-          value === "" ? "border-[#144A36]" : "border-[#848484]"
+          value === "" ? "border-[#9F9F9F]" : "border-[#9F9F9F]"
         } border rounded-md h-[46px] p-2 text-base`}
+        disableUnderline={true}
       />
     </div>
   );
@@ -55,6 +66,22 @@ const TutorInvalido = () => {
       .replace(/\D/g, "")
       .replace(/(\d{2})(\d)/, "$1:$2")
       .replace(/(:\d{2})\d+?$/, "$1");
+  };
+  const textAreaStyles = {
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#9F9F9F",
+      },
+      "&:hover fieldset": {
+        borderColor: "#9F9F9F",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#9F9F9F",
+      },
+    },
+    "& .MuiInputBase-root": {
+      fontFamily: "Montserrat",
+    },
   };
 
   const ConsultaSchema = z.object({
@@ -91,7 +118,7 @@ const TutorInvalido = () => {
       console.log();
     } catch (error) {
       console.error(error.errors);
-      handleError()
+      handleError();
     }
   };
 
@@ -109,15 +136,15 @@ const TutorInvalido = () => {
       .replace(/^(\d{2})\((\d{2})\)(\d{4})-(\d{4})$/, "$1$2$3$4");
   };
 
-   const handlePhone = (e) => {
+  const handlePhone = (e) => {
     setPhone(e.target.value);
     setMask(e.target.value);
   };
 
   return (
     <>
-      <div className="p-16 w-full h-screen">
-        <h1 className=" text-2xl font-bold">Agendar Consulta</h1>
+      <div className=" md:p-16 w-full min-h-screen font-Montserrat">
+        <h1 className="text-2xl font-bold  ml-6  ">Agendar Consulta</h1>
         <form>
           <div className="pt-12 ml-4 w-auto">
             <div className="w-auto">
@@ -137,7 +164,7 @@ const TutorInvalido = () => {
                 />
               </div>
 
-              <div className="flex flex-col sm:grid sm:grid-cols-[25%_2fr_1fr_1fr] gap-8 ">
+              <div className="flex flex-col sm:grid sm:grid-cols-[25%_1fr_2fr_1fr] gap-8 ">
                 <InputConsulta
                   label="Espécie"
                   type="text"
@@ -145,44 +172,133 @@ const TutorInvalido = () => {
                   value={species}
                 />
 
-                <InputConsulta
-                  label="Hora"
-                  type="text"
-                  setter={setHora}
-                  value={hourMask(hora)}
-                />
-
                 <div className="flex flex-col mb-4">
-                  <label className="ml-4">
-                    Telefone
-                    <input
-                      type="text"
-                      onChange={handlePhone}
-                      value={phoneMask(phone)}
-                      className={` ${
-                        phone === ""
-                          ? "border-[#144A36]"
-                          : "border-[#848484]"
-                      } 
-                border rounded-md h-[46px] p-2 text-base`}
-                    />
-                  </label>
+                  <InputLabel
+                    sx={{
+                      fontFamily: "Montserrat",
+                      color: "#000000",
+                      fontSize: "1rem",
+                      marginLeft: "1rem",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    Hora
+                  </InputLabel>{" "}
+                  <InputMask
+                    mask="99:99"
+                    value={hora}
+                    onChange={(e) => setHora(e.target.value)}
+                    maskChar={null}
+                  >
+                    {(inputProps) => (
+                      <Input
+                        {...inputProps}
+                        type="text"
+                        className={`${
+                          hora === "" ? "border-[#9F9F9F]" : "border-[#9F9F9F]"
+                        } border rounded-md h-[46px] p-2 text-base font-Montserrat`}
+                        disableUnderline={true}
+                        sx={{
+                          fontFamily: "Montserrat",
+                          "& .MuiInputBase-root::before": {
+                            borderBottom: "none",
+                          },
+                          "&:hover:before": {
+                            borderBottom: "none !important",
+                          },
+                          "&::after": {
+                            borderBottom: "none",
+                          },
+                        }}
+                      />
+                    )}
+                  </InputMask>
                 </div>
 
-                <InputConsulta
-                  label="Data"
-                  type="text"
-                  setter={setDate}
-                  value={dateMask(stringDate)}
-                >
-                  <img src="" alt="" />
-                </InputConsulta>
+                <div className="flex flex-col mb-4">
+                  <InputLabel
+                    sx={{
+                      fontFamily: "Montserrat",
+                      color: "#000000",
+                      fontSize: "1rem",
+                      marginLeft: "1rem",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    Telefone
+                  </InputLabel>
+                  <InputMask
+                    mask="(99) 99999-9999"
+                    value={phone}
+                    onChange={handlePhone}
+                  >
+                    {(inputProps) => (
+                      <Input
+                        {...inputProps}
+                        type="text"
+                        className={`${
+                          phone === "" ? "border-[#144A36]" : "border-[#9F9F9F]"
+                        } border rounded-md h-[46px] p-2 text-base font-Montserrat`}
+                        disableUnderline={true}
+                        sx={{
+                          fontFamily: "Montserrat",
+                          "& .MuiInputBase-root::before": {
+                            borderBottom: "none",
+                          },
+                          "&:hover:before": {
+                            borderBottom: "none !important",
+                          },
+                          "&::after": {
+                            borderBottom: "none",
+                          },
+                        }}
+                      />
+                    )}
+                  </InputMask>
+                </div>
+
+                <div className="flex flex-col mb-4">
+                  <InputLabel
+                    sx={{
+                      fontFamily: "Montserrat",
+                      color: "#000000",
+                      fontSize: "1rem",
+                      marginLeft: "1rem",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    Data
+                  </InputLabel>
+                  <TextField
+                    type="date"
+                    value={stringDate}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="border rounded-md h-[46px] font-Montserrat"
+                    sx={{
+                      "& .MuiInputBase-root": {
+                        height: "46px",
+                        fontFamily: "Montserrat",
+                        border: "none",
+                      },
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor:
+                            stringDate === "" ? "#144A36" : "#9F9F9F",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#9F9F9F",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#9F9F9F",
+                        },
+                      },
+                    }}
+                  />
+                </div>
               </div>
 
               <div className="mt-[5%]">
-                <label htmlFor="observation" className="ml-4">
-                  Observação
-                </label>
+                <label htmlFor="observation">Observação</label>
                 <Textarea
                   disabled={false}
                   minRows={7}
@@ -191,6 +307,8 @@ const TutorInvalido = () => {
                   onChange={(e) => {
                     setDesc(e.target.value);
                   }}
+                  disableUnderline={true}
+                  sx={textAreaStyles}
                 />
               </div>
 
@@ -199,9 +317,9 @@ const TutorInvalido = () => {
                   onClick={handleSubmit}
                   className={`${
                     !handleSubmit
-                      ? "cursor-not-allowed opacity-25 disabled"
-                      : ""
-                  } font-Montserrat hover:bg-[#144A36] border-2 w-52 rounded-md h-10 mt-36 bg-[#D5D0C7] text-white`}
+                      ? "cursor-not-allowed opacity-25"
+                      : "hover:bg-[#144A36]"
+                  } font-Montserrat border-2 w-full md:w-52 rounded-md h-10 bg-[#D5D0C7] text-white transition-colors`}
                   //set the button to disabled if any of the fields are empty
                 >
                   Confirmar
@@ -211,21 +329,21 @@ const TutorInvalido = () => {
           </div>
         </form>
         <Snackbar
-              anchorOrigin={{vertical: 'bottom',horizontal: 'center'}}
-              open={open}
-              autoHideDuration={3000}
-              onClose={handleClose}
-              message="Consulta Criada com Sucesso!"
-              sx={{ marginBottom: '10vh'}}
-            />
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          open={open}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          message="Consulta Criada com Sucesso!"
+          sx={{ marginBottom: "10vh" }}
+        />
         <Snackbar
-              anchorOrigin={{vertical: 'bottom',horizontal: 'center'}}
-              open={openError}
-              autoHideDuration={3000}
-              onClose={handleError}
-              message="Error ao criar Consulta!"
-              sx={{ marginBottom: '10vh'}}
-            />
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          open={openError}
+          autoHideDuration={3000}
+          onClose={handleError}
+          message="Error ao criar Consulta!"
+          sx={{ marginBottom: "10vh" }}
+        />
       </div>
     </>
   );

@@ -3,10 +3,11 @@ import { useState, useEffect } from "react";
 import { getConsults } from "../services/agendamento";
 import iconCalendar from "../images/calendarIcon.svg";
 import { Link } from "react-router-dom";
+import { Select, MenuItem } from "@mui/material";
 
 export default function Agenda() {
   const [agenda, setAgenda] = useState({});
-
+  const [searchType, setSearchType] = useState("name");
   const [alteredAgenda, setAlteredAgenda] = useState([]);
   const [nome, setNome] = useState("");
   const [dateFilter, setDateFilter] = useState("");
@@ -88,107 +89,115 @@ export default function Agenda() {
   window.localStorage.setItem("agenda", JSON.stringify(agenda));
 
   return (
-    <main className="font-Montserrat !important w-full">
-      <section>
-        <h1 className="text-2xl font-bold m-16">Agendamentos</h1>
-      </section>
-      <section className="flex flex-row items-center mx-24">
-        <div className="relative w-full">
-          <div className="absolute top-3 start-0 flex items-center ps-3 pointer-events-none">
-            <img src={iconSearch} />
-          </div>
-          <div className="flex flex-row justify-between">
-            <div className="relative w-3/12">
-              <div className="absolute top-3 start-0 flex items-center ps-3 pointer-events-none">
-                <img src={iconSearch} />
-              </div>
-              <input
-                data-testid="filter-agenda"
-                type="text"
-                id="simple-search"
-                className="bg-gray-50 border border-gray-300
-              text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
-              block ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
-              dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full"
-                placeholder="Buscar por Nome"
-                required
-                value={nome}
-                onChange={(e) => {
+    <div className="w-full min-h-screen m-6 md:p-8 font-Montserrat">
+    <div className="max-w-7xl mx-auto space-y-6">
+
+      <div>
+        <h1 className="text-xl md:text-2xl font-bold">Agendamentos</h1>
+      </div>
+
+
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex-1 flex flex-col sm:flex-row gap-4">
+          <Select
+            value={searchType}
+            onChange={(e) => setSearchType(e.target.value)}
+            className="h-[42px] w-full sm:w-[120px]"
+            sx={{
+              fontFamily: 'Montserrat',
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#9F9F9F',
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#9F9F9F',
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#9F9F9F',
+              },
+            }}
+          >
+            <MenuItem value="name">Nome</MenuItem>
+            <MenuItem value="date">Data</MenuItem>
+          </Select>
+
+          <div className="relative flex-1">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <img src={iconSearch} alt="Search" className="w-5 h-5" />
+            </div>
+            <input
+              type="text"
+              className="w-full h-[42px] pl-10 pr-4 border border-[#9F9F9F] rounded-md font-Montserrat text-sm focus:outline-none focus:border-[#9F9F9F]"
+              placeholder={searchType === "name" ? "Buscar por Nome" : "Buscar por Data (DDMMYYYY)"}
+              value={searchType === "name" ? nome : dateFilter}
+              onChange={(e) => {
+                if (searchType === "name") {
                   setNome(e.target.value);
-                }}
-              />
-            </div>
-            <div className="relative w-3/12 ml-4">
-              <div className="absolute top-3 start-0 flex items-center ps-3 pointer-events-none">
-                <img src={iconSearch} />
-              </div>
-              <input
-                data-testid="filter-date"
-                type="text"
-                id="date-search"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block ps-10 p-2.5 w-full"
-                placeholder="Buscar por Data"
-                required
-                value={dateFilter}
-                onChange={(e) => {
+                  setDateFilter("");
+                } else {
                   setDateFilter(e.target.value);
-                }}
-              />
-            </div>
+                  setNome("");
+                }
+              }}
+            />
           </div>
         </div>
+
         <Link
           to="/calendario"
-          className="bg-[#D5D0C7] text-white rounded-lg ml-4 flex flex-row items-center justify-center text-nowrap px-8 py-2"
+          className="w-full sm:w-[42px] h-[42px] bg-[#D5D0C7] rounded-md flex items-center justify-center hover:bg-[#c2bdb4] transition-colors"
         >
-          <img src={iconCalendar} className="h-8 mr-2" />
-          Ver calendário
+          <img src={iconCalendar} alt="Calendar" className="w-6 h-6" />
         </Link>
-      </section>
-      <section className="mx-24">
-  {/* Itera sobre as chaves do alteredAgenda */}
-  {Object.keys(alteredAgenda).map((day) => {
-    const consultas = alteredAgenda[day];
+      </div>
 
-    return (
-      <div key={day} className="m-12 pr-40 max-w-4xl">
-        {/* Renderiza a chave (data) como título */}
-        <h2 className="text-2xl pr-0 text-text-gray font-semibold">
-          {transData(day)} {/* Formata a chave da data para DD/MM/YYYY */}
-        </h2>
 
-        {/* Verifica se alteredAgenda[day] é um array e faz o map */}
-        {Array.isArray(consultas) &&
-          consultas.map((e, index) => (
-            <div
-              key={index}
-              className="flex bg-side-gray my-4 rounded-lg ml-4"
-              data-testid="agenda"
-            >
-              <div className="bg-card-green m-0 text-transparent rounded-lg">a</div>
-              <div className="flex flex-col p-4 w-screen">
-                <div className="m-2">
-                  <span>
-                    Tutor: <span className="font-bold pl-1">{e.nameTutor}</span>
-                  </span>
-                  <span>, {e.phone}</span>
-                </div>
-                <div className="m-2">
-                  <span className="ml-0 pr-1">
-                    Paciente:{" "}
-                    <span className="font-bold pl-1">{e.nameAnimal}</span>
-                  </span>
-                  <span className="ml-0 pl-1">{`- ${e.species}`}</span>
-                </div>
-                <span className="m-2">{`Observações: ${e.description}`}</span>
+      <div className="space-y-6">
+        {Object.keys(alteredAgenda).map((day) => {
+          const consultas = alteredAgenda[day];
+
+          return (
+            <div key={day}>
+              <h2 className="text-lg md:text-xl font-semibold text-gray-700 mb-4">
+                {transData(day)}
+              </h2>
+
+              <div className="space-y-4">
+                {Array.isArray(consultas) &&
+                  consultas.map((e, index) => (
+                    <div
+                      key={index}
+                      className="flex bg-gray-50 rounded-lg overflow-hidden shadow-sm"
+                      data-testid="agenda"
+                    >
+                      <div className="w-2 bg-[#144A36]"></div>
+                      <div className="flex flex-col p-4 flex-1">
+                        <div className="mb-2 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                          <span className="text-gray-700">
+                            Tutor: <span className="font-semibold">{e.nameTutor}</span>
+                          </span>
+                          <span className="text-gray-600 sm:before:content-[',_']">
+                            {e.phone}
+                          </span>
+                        </div>
+                        <div className="mb-2 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                          <span className="text-gray-700">
+                            Paciente: <span className="font-semibold">{e.nameAnimal}</span>
+                          </span>
+                          <span className="text-gray-600">- {e.species}</span>
+                        </div>
+                        <div className="text-gray-700">
+                          <span className="block sm:inline">Observações: </span>
+                          <span className="text-gray-600 block sm:inline">{e.description}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
               </div>
             </div>
-          ))}
+          );
+        })}
       </div>
-    );
-  })}
-</section>
-
-    </main>
-  );
+    </div>
+  </div>
+);
 }

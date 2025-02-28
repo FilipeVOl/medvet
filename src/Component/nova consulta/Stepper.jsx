@@ -12,10 +12,10 @@ export default function Stepper(props) {
   ];
 
   return (
-    <div className='w-full flex justify-center items-center flex-col font-Montserrat font-bold pt-10'>
-      <div className='self-start ml-20 mb-28'>
-        <h1 className="text-[30px]">Nova Consulta</h1>
-      </div>
+    <div className="font-Montserrat mt-6 w-full">
+    <div className=" md:mx-32 flex justify-start items-center mb-6 md:mb-8 font-semibold">
+      <span className="text-xl md:text-2xl font-bold">Nova Consulta</span>
+    </div>
       <div className="flex items-center justify-center">
         {steps.map((step, index) => (
           <div key={index} className='flex items-center justify-center'>
