@@ -3,24 +3,24 @@ import logoLogin from "../images/logoLogin.png";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { Outlet, useNavigate } from "react-router-dom";
-import { RecoveryContext, RecoveryProvider } from "../contexts/recoveryContext";
-import { validateCPF } from "../utils/validateCPF"; // Import CPF validation function
-import { UserContext } from "../contexts/userContext"; // Import UserContext
-import axios from "axios"; // Import axios for making HTTP requests
+import { RecoveryContext } from "../contexts/recoveryContext";
+import { validateCPF } from "../utils/validateCPF";
+import { UserContext } from "../contexts/userContext";
+import axios from "axios";
 import { Snackbar, Alert } from "@mui/material";
 
 const Login = () => {
   const { setPage, setCPF } = useContext(RecoveryContext);
-  const { saveUserAndToken, loadUserData } = useContext(UserContext); // Get saveUserAndToken and loadUserData from UserContext
+  const { saveUserAndToken, loadUserData } = useContext(UserContext);
   const [cpf, setCPFState] = useState("");
-  const [password, setPassword] = useState(""); // Add state for password
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      loadUserData(); // Load user data from local storage
-      navigate("/"); // Redirect to home if token exists
+      loadUserData();
+      navigate("/");
     }
   }, [navigate, loadUserData]);
 
