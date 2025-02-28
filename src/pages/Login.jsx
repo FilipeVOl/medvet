@@ -85,30 +85,32 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!validateCPF(formatCPF(cpf))) {
+    if (!validateCPF(cpf)) {
       muiSnackAlert("error", "CPF inválido.");
       return;
     }
 
-    if (!validatePassword(password)) {
-      return;
-    }
-
     try {
-      const formattedCPF = formatCPF(cpf);
       const response = await axios.post("http://localhost:3333/sessions", {
-        cpf: formattedCPF,
+        cpf,
         password,
       });
+      console.log("response session: ", response.data);
 
-      const { userData, token, refreshToken } = response.data;
-      saveUserAndToken(userData, token, refreshToken);
+      const { token, user } = response.data;
+      const { name, cpf: userCpf, role, created_at, email, phone } = user;
+      const userData = {
+        name,
+        cpf: userCpf,
+        role,
+        created_at,
+        email,
+        phone,
+      };
+      console.log("userData: ", userData);
+
       localStorage.setItem("token", token);
-
-      if (rememberMe) {
-        localStorage.setItem("rememberedCPF", formattedCPF);
-        localStorage.setItem("rememberedPassword", password);
-      }
+      saveUserAndToken(userData, token);
 
       navigate("/");
     } catch (error) {
@@ -116,6 +118,7 @@ const Login = () => {
       muiSnackAlert("error", "Erro ao fazer login. Verifique o CPF e a senha.");
     }
   };
+
   return (
     <div className="font-Montserrat relative min-h-screen bg-cover bg-[url('./images/backgroundLogin.png')] flex justify-center items-center p-4">
       <Snackbar
