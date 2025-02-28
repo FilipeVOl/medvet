@@ -24,20 +24,14 @@ export default function Agenda() {
       }));
       return acc;
     }, {});
-
-    const filteredConsultas = consultasFiltradas(
-      Object.values(agendaArray).flat()
-    );
-
-    const result =
-      nome.length === 0 && dateFilter.length === 0
-        ? agendaArray
-        : groupByDate(filteredConsultas);
-
+  
+    const flatArray = Object.values(agendaArray).flat();
+    const filteredConsultas = consultasFiltradas(flatArray);
+  
     setAlteredAgenda(
       nome.length === 0 && dateFilter.length === 0
         ? agendaArray
-        : filteredConsultas
+        : groupByDate(filteredConsultas)
     );
   }, [nome, dateFilter, agenda]);
 
@@ -53,28 +47,16 @@ export default function Agenda() {
   };
 
   const consultasFiltradas = (agendaArray) => {
-    const dateAlt = agendaArray.reduce((acc, day) => {
-      // Verifica se o objeto tem o campo 'consults' e se é um array
-      const consultasDoDia = Array.isArray(day.consults)
-        ? day.consults.filter(
-            (consulta) =>
-              consulta.nameTutor.toLowerCase().includes(nome.toLowerCase()) ||
-              consulta.nameAnimal.toLowerCase().includes(nome.toLowerCase())
-          )
-        : [];
-
-      // Se há consultas filtradas e a data coincide com o filtro
-      if (
-        consultasDoDia.length > 0 &&
-        (dateFilter === "" || day.date.startsWith(dateFilter))
-      ) {
-        acc.push({ ...day, consults: consultasDoDia });
-      }
-      return acc;
-    }, []);
-
-    // Se nenhuma consulta for encontrada, retorna o array original
-    return dateAlt.length === 0 ? agendaArray : dateAlt;
+    return agendaArray.filter(item => {
+      const nameMatch = nome.length === 0 || 
+        (item.nameTutor && item.nameTutor.toLowerCase().includes(nome.toLowerCase())) ||
+        (item.nameAnimal && item.nameAnimal.toLowerCase().includes(nome.toLowerCase()));
+      
+      const dateMatch = dateFilter.length === 0 || 
+        (item.date && item.date.startsWith(dateFilter));
+  
+      return nameMatch && dateMatch;
+    });
   };
 
   function transData(dateString) {
