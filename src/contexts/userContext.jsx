@@ -1,5 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const UserContext = createContext();
 
@@ -9,6 +11,7 @@ export const UserProvider = ({ children }) => {
   const [refreshToken, setRefreshToken] = useState(null);
   const [isLoadingUserStorageData, setIsLoadingUserStorageData] =
     useState(false);
+  const navigate = useNavigate();
 
   // Function to validate the token with the backend
   const validateToken = async (token) => {
@@ -18,14 +21,34 @@ export const UserProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.status === 200; // Token is valid
+      return response.status === 200;
     } catch (error) {
-      console.error("Erro ao validar token:", error);
-      return false; // Token is invalid
+      if (error.response && error.response.status === 401) {
+        const newToken = await refreshAccessToken();
+        return newToken !== null;
+      }
+      return false;
     }
-  }; 
+  };
 
-  // Função para salvar os dados do usuário e tokens no armazenamento local
+  // Function to refresh the access token
+  const refreshAccessToken = async () => {
+    try {
+      const response = await axios.post("http://localhost:3333/token/refresh", {
+        refreshToken: localStorage.getItem("refreshToken"),
+      });
+      const { token } = response.data;
+      localStorage.setItem("token", token);
+      setToken(token);
+      return token;
+    } catch (error) {
+      console.error("Erro ao atualizar token:", error);
+      signOut();
+      return null;
+    }
+  };
+
+  // Function to save user data and tokens in local storage
   const saveUserAndToken = async (userData, token, refreshToken) => {
     try {
       setIsLoadingUserStorageData(true);
@@ -44,7 +67,7 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  // Função para carregar os dados do usuário e tokens do armazenamento local
+  // Function to load user data and tokens from local storage
   const loadUserData = async () => {
     try {
       setIsLoadingUserStorageData(true);
@@ -53,22 +76,26 @@ export const UserProvider = ({ children }) => {
       const storedToken = localStorage.getItem("token");
       const storedRefreshToken = localStorage.getItem("refreshToken");
 
+      console.log("Loading user data...");
+      console.log("Stored Token:", storedToken);
+      console.log("Stored User:", storedUser);
+
       if (storedUser && storedToken) {
-        // Validate the token with the backend
         const isValid = await validateToken(storedToken);
+        console.log("Token is valid:", isValid);
 
         if (isValid) {
           setUser(JSON.parse(storedUser));
           setToken(storedToken);
           setRefreshToken(storedRefreshToken);
         } else {
-          // Token is invalid, clear local storage
+          console.log("Token is invalid, signing out...");
           signOut();
         }
       }
     } catch (error) {
       console.error("Erro ao carregar dados do usuário:", error);
-      signOut(); // Clear local storage if token validation fails
+      signOut();
     } finally {
       setIsLoadingUserStorageData(false);
     }
@@ -88,6 +115,9 @@ export const UserProvider = ({ children }) => {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
+
+      // Redirect to login page
+      navigate("/login");
     } catch (error) {
       console.error("Erro ao realizar logout:", error);
       throw error;
@@ -100,6 +130,14 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     loadUserData();
   }, []);
+
+  // Redirect to login if no token is found
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   return (
     <UserContext.Provider

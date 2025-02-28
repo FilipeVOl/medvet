@@ -112,7 +112,7 @@ const Login = () => {
       console.log("userData: ", userData);
 
       localStorage.setItem("token", token);
-      saveUserAndToken(userData, token);
+      saveUserAndToken(userData, token, token);
 
       navigate("/");
     } catch (error) {
