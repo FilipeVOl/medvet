@@ -3,7 +3,7 @@ import { Input, InputLabel, TextField, createTheme } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import AddIcon from "../assets/add.svg";
+import AddIcon from '@mui/icons-material/Add';
 import IconButton from "@mui/material/IconButton";
 import CancelIcon from "../images/trash.svg";
 import {
@@ -57,7 +57,7 @@ export const InputReceita = ({
 
   if (isTutor) {
     return (
-      <label htmlFor="free-solo-2-demo " className="grow text-mui">
+      <label htmlFor="free-solo-2-demo " className="grow ">
         Tutor
         <Autocomplete
           freeSolo
@@ -85,10 +85,11 @@ export const InputReceita = ({
       </label>
     );
   }
+  
 
   if (isProf) {
     return (
-      <label htmlFor="free-solo-2-demo" className="grow text-mui">
+      <label htmlFor="free-solo-2-demo" className="grow  ">
         Professor
         <Autocomplete
           freeSolo
@@ -119,7 +120,7 @@ export const InputReceita = ({
 
   if (isPaciente) {
     return (
-      <label htmlFor="free-solo-2-demo" className="grow text-mui">
+      <label htmlFor="free-solo-2-demo" className="grow ">
         Paciente
         <Autocomplete
           freeSolo
@@ -156,16 +157,22 @@ export const InputReceita = ({
 
   return (
     <div className="flex flex-col mb-4">
-      <InputLabel className="ml-4">{label}</InputLabel>
+      <label className="text-sm mb-1">{label}</label>
       <Input
         type="text"
-        variant="outlined"
+        disableUnderline
         onChange={handleChanges}
         onClick={() => handleButton(descrValue)}
         value={value}
+        sx={{
+          '&:before': { borderBottom: 'none' },
+          '&:after': { borderBottom: 'none' },
+          '&:hover:not(.Mui-disabled):before': { borderBottom: 'none' },
+          '& .MuiInput-input': { padding: '8px' }
+        }}
         className={`${
           requireVal ? "outline-red-600 border-red-500" : "outline-gray-input"
-        } border rounded-md h-[46px] p-2 text-base border-border-gray`}
+        } border rounded-md h-[46px] text-base border-gray-400`}
       />
     </div>
   );
@@ -338,8 +345,8 @@ export const Receita = () => {
   return (
     <div className="font-Montserrat">
       <h1 className="p-14 h-10 text-2xl font-bold">Receita</h1>
-      <p className="text-xl px-20 py-8">Identificação</p>
-      <form className="px-24">
+      <p className="text-xl px-14 py-8">Identificação</p>
+      <form className="px-14">
         <div className="grid grid-cols-2 gap-4 mb-4">
           <InputReceita
             label="Tutor"
@@ -413,41 +420,44 @@ export const Receita = () => {
             handleButton={validateTrue}
           />
         </div>
-        <div className="grid grid-cols-3 gap-4 w-3/4">
+        <div className="grid grid-cols-3 gap-4 w-full">
+          <label>Idade
+            <InputReceita
+              setter={setIdade}
+              value={idade}
+              descrValue="idade"
+              requireVal={required.idade}
+              handleButton={validateTrue}
+            />
+          </label>
+          <label>Peso
+            <InputReceita
+              setter={setPeso}
+              value={peso}
+              descrValue="peso"
+              requireVal={required.peso}
+              handleButton={validateTrue}
+            />
+          </label>
+          <label>ID
           <InputReceita
-            label="Idade"
-            setter={setIdade}
-            value={idade}
-            descrValue="idade"
-            requireVal={required.idade}
-            handleButton={validateTrue}
-          />
-          <InputReceita
-            label="Peso"
-            setter={setPeso}
-            value={peso}
-            descrValue="peso"
-            requireVal={required.peso}
-            handleButton={validateTrue}
-          />
-          <InputReceita
-            label="ID"
             setter={setId}
             value={id}
             descrValue="id"
             requireVal={required.id}
             handleButton={validateTrue}
-          />
+          /></label>
         </div>
       </form>
+ 
 
-      <p className="text-xl px-20 py-8">Medicação</p>
+      <p className="text-xl px-14 py-8">Medicação</p>
       <div>
         {medications.map((e, index) => {
           return (
             <form
               key={index}
-              className="px-24 w-auto mb-20 border-2 mx-8 py-8 flex flex-col gap-4"
+              className="px-14 w-auto mb-20 border-2 rounded-xl mx-12 py-8 flex flex-col gap-4"
             >
               <img
                 src={CancelIcon}
@@ -467,7 +477,7 @@ export const Receita = () => {
                         "use_type"
                       )
                     }
-                    className="border flex-col flex w-full rounded-md h-[46px] grow p-2 text-base border-border-gray"
+                    className="border flex-col flex w-full rounded-md  grow  p-3 text-base border-border-gray"
                   >
                     <option value="oral">Oral</option>
                     <option value="retal">Retal</option>
@@ -491,7 +501,7 @@ export const Receita = () => {
                         "pharmacy"
                       )
                     }
-                    className="border flex-col grow flex w-full rounded-md h-[46px] p-2 text-base border-border-gray"
+                    className="border flex-col grow flex w-full rounded-md  p-3 text-base border-border-gray"
                   >
                     <option value="farmacia1">Farmacia 1</option>
                     <option value="farmacia 2">Farmacia 2</option>
@@ -515,7 +525,7 @@ export const Receita = () => {
                       required.unit
                         ? "outline-red-600 border-red-500"
                         : "outline-gray-input"
-                    } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}
+                    } border rounded-md h-[46px] w-full p-3 text-base border-border-gray`}
                   ></input>
                 </label>
               </div>
@@ -562,7 +572,7 @@ export const Receita = () => {
                       required.description
                         ? "outline-red-600 border-red-500"
                         : "outline-gray-input"
-                    } border rounded-md h-[46px] w-full p-2 text-base border-border-gray`}
+                    } border rounded-lg h-[46px] w-full p-2 text-base border-border-gray`}
                   ></input>
                 </label>
               </div>
@@ -578,7 +588,7 @@ export const Receita = () => {
           rounded-md h-[46px] hover:bg-[#144A36] border-2
         p-2 text-base"
         >
-          <img src={AddIcon} alt="adicionar medicamento" />
+            <AddIcon />
           Adicionar Medicamento
         </button>
       </div>
