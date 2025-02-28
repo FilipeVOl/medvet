@@ -26,15 +26,35 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (!validateCPF(cpf)) {
+      muiSnackAlert("error", "CPF inválido.");
+      return;
+    }
+
     try {
       const response = await axios.post("http://localhost:3333/sessions", {
         cpf,
         password,
       });
-      const { userData, token, refreshToken } = response.data;
-      saveUserAndToken(userData, token, refreshToken);
-      localStorage.setItem("token", token); // Save token to localStorage
-      navigate("/"); // Redirect to home after login
+      console.log("response session: ", response.data);
+
+      const { token, user } = response.data;
+      const { name, cpf: userCpf, role, created_at, email, phone } = user;
+      const userData = {
+        name,
+        cpf: userCpf,
+        role,
+        created_at,
+        email,
+        phone,
+      };
+      console.log("userData: ", userData);
+
+      localStorage.setItem("token", token);
+      saveUserAndToken(userData, token);
+
+      navigate("/");
     } catch (error) {
       console.error("Erro ao fazer login:", error);
       muiSnackAlert("error", "Erro ao fazer login. Verifique o CPF e a senha.");

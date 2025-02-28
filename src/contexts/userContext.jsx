@@ -23,7 +23,7 @@ export const UserProvider = ({ children }) => {
       console.error("Erro ao validar token:", error);
       return false; // Token is invalid
     }
-  };
+  }; 
 
   // Função para salvar os dados do usuário e tokens no armazenamento local
   const saveUserAndToken = async (userData, token, refreshToken) => {
