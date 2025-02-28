@@ -136,7 +136,7 @@ export default function Professor(props) {
           Novo Professor
         </h1>
         <form>
-          <div className="forms-container px-28 h-auto grid grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
+          <div className="forms-container font-Montserrat px-14 h-auto grid grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
             <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
               <InputComponent
                 nome="Nome"
@@ -148,15 +148,15 @@ export default function Professor(props) {
                 descrHandle="nome"
               />
 
-              <InputComponent
-                nome="CRMV"
-                dataType="text"
-                type={registration}
-                setDataCom={setRegistration}
-                requireVal={required.registration}
-                handleButton={validateTrue}
-                descrHandle="registration"
-              />
+                <InputComponent
+                  nome="CRMV"
+                  dataType="text"
+                  type={registration}
+                  setDataCom={setRegistration}
+                  requireVal={required.registration}
+                  handleButton={validateTrue}
+                  descrHandle="registration"
+                />
             </div>
 
             <div className="box-2 grid grid-cols-[1fr_2fr] gap-[5%]">

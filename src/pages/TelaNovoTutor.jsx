@@ -141,7 +141,7 @@ export default function Tutor(props) {
         </h1>
 
         <form>
-          <div className="forms-container w-full px-12 grid grid-rows-4 md:grid-rows-2 gap-x-8 gap-y-4">
+          <div className="forms-container w-full font-Montserrat px-12 grid grid-rows-4 md:grid-rows-2 gap-x-8 gap-y-4">
             <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
               <InputComponent
                 nome="Nome completo"

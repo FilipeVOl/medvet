@@ -106,7 +106,7 @@ export default function CreateAnimal() {
         <h1 className="text-2xl">Novo Animal</h1>
       </div>
       <div>
-        <form className="text-[18px] px-10">
+        <form className="text-[18px] ">
           <div className=" w-full">
             <div id="div-pac-tut" className="flex gap-8 my-4 justify-center">
               <label htmlFor="free-solo-2-demo" className="grow">

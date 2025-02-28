@@ -45,7 +45,6 @@ export default function Cadastro(props) {
     period,
   };
 
-  
   const validateTrue = (chaves) => {
     let obj = { ...required };
     const keys = Object.keys(obj);
@@ -60,7 +59,7 @@ export default function Cadastro(props) {
   const shiftOptions = [
     { value: "matutino", label: "Matutino" },
     { value: "vespertino", label: "Vespertino" },
-    { value: "noturno", label: "Noturno" }
+    { value: "noturno", label: "Noturno" },
   ];
 
   const validateInputs = () => {
@@ -105,7 +104,7 @@ export default function Cadastro(props) {
         await postAluno(data);
         muiSnackAlert("success", "Aluno criado com sucesso");
         setTimeout(() => {
-          navigate('/');
+          navigate("/");
         }, 1000); // Reduced to 1 second
       } catch (error) {
         muiSnackAlert("error", "Erro ao criar aluno");
@@ -116,7 +115,7 @@ export default function Cadastro(props) {
         setOpenEdit(!openEdit);
         muiSnackAlert("success", "Aluno atualizado com sucesso");
         setTimeout(() => {
-          navigate('/');
+          navigate("/");
         }, 2000);
       } catch (error) {
         muiSnackAlert("error", "Erro ao atualizar aluno");
@@ -155,14 +154,14 @@ export default function Cadastro(props) {
           {message}
         </Alert>
       </Snackbar>
-     <div className="cadastro-container w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="font-Montserrat py-8 text-2xl font-bold">
+      <div className="cadastro-container w-full ">
+        <h1 className="font-Montserrat p-14 h-10 font-bold text-2xl">
           Novo aluno
         </h1>
 
-        <form className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4">
+        <form className="space-y-6 font-Montserrat">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-14">
+            <div className="md:col-span-2 grid  grid-cols-1 md:grid-cols-[2fr_1fr] gap-4">
               <InputComponent
                 nome="Nome completo"
                 dataType="text"
@@ -183,7 +182,7 @@ export default function Cadastro(props) {
               />
             </div>
 
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
+            <div className="md:col-span-2 font-Montserrat grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
               <label htmlFor="cpf" className="font-Montserrat">
                 CPF *<br />
                 <InputMask
@@ -260,14 +259,13 @@ export default function Cadastro(props) {
                 descrHandle="period"
               />
 
-            
-<div className="w-full">
+              <div className="w-full">
                 <label className="font-Montserrat">
                   Turno *
                   <Select
                     value={shift}
                     onChange={(e) => setShift(e.target.value)}
-                    className="w-full h-11 mt-1"
+                    className="w-full h-11"
                     error={required.shift}
                     required
                     sx={{
@@ -278,8 +276,8 @@ export default function Cadastro(props) {
                     }}
                   >
                     {shiftOptions.map((option) => (
-                      <MenuItem 
-                        key={option.value} 
+                      <MenuItem
+                        key={option.value}
                         value={option.value}
                         sx={{ fontFamily: "Montserrat" }}
                       >
