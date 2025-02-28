@@ -37,6 +37,7 @@
     "react-router-dom": "^6.22.3",
     "react-scroll": "^1.9.0",
     "styled-components": "^6.1.11",
+    "sweetalert2": "^11.17.2",
     "vite-plugin-svgr": "^4.2.0",
     "zod": "^3.22.4"
   },

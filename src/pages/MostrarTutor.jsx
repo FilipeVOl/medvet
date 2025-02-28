@@ -27,6 +27,7 @@ import {
 import TelaNovoTutor from "../pages/TelaNovoTutor";
 import { UpdateEditContext } from "../contexts/updateEditContext";
 import { Snackbar, Alert } from "@mui/material";
+import Swal from "sweetalert2";
 
 const style = {
   position: "absolute",
@@ -89,6 +90,7 @@ const MostrarTutor = () => {
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   const handleNewClick = () => setOpenNew(!openNew);
+  const [signal, setSignal] = useState(true);
 
   const [data, setData] = useState("");
 
@@ -98,7 +100,7 @@ const MostrarTutor = () => {
 
   useEffect(() => {
     getTutorByNumber(query).then((data) => setFilteredData(data));
-  }, [selectedUser, openNew, query]);
+  }, [selectedUser, openNew, query, signal]);
 
   const [open, setOpen] = useState(false);
   const [severity, setSeverity] = useState("success");
@@ -114,6 +116,37 @@ const MostrarTutor = () => {
       return;
     }
     setOpen(false);
+  };
+
+  const handleDelete = (row) => {
+    Swal.fire({
+      title: "Excluir cadastro?",
+      text: "Tem certeza de que quer excluir?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#144A36",
+      cancelButtonColor: "#D5D0C7",
+      confirmButtonText: "Excluir",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        patchTutor(
+          setStatusDelete,
+          row.id,
+          muiSnackAlert,
+          "Tutor excluído com sucesso!"
+        )
+          .then(() => {
+            setFilteredData((prevData) =>
+              prevData.filter((item) => item.id !== row.id)
+            );
+          })
+          .catch((error) => {
+            console.error("Erro ao excluir tutor:", error);
+            muiSnackAlert("error", "Erro ao excluir tutor.");
+          });
+      }
+    });
   };
 
   return (
@@ -245,8 +278,7 @@ const MostrarTutor = () => {
                           <IconButton
                             className="delete-button"
                             onClick={() => {
-                              handleDeleteClick();
-                              setSelectedUser(row);
+                              handleDelete(row);
                             }}
                           >
                             <img src={TrashIcon} />
@@ -277,7 +309,7 @@ const MostrarTutor = () => {
             </Box>
           </Modal>
 
-          <Modal
+          {/* <Modal
             open={openDelete}
             onClose={handleDeleteClick}
             aria-labelledby="modal-modal-deletetitle"
@@ -349,7 +381,7 @@ const MostrarTutor = () => {
                 </div>
               </Typography>
             </Box>
-          </Modal>
+          </Modal> */}
         </div>
       </UpdateEditContext.Provider>
     </ThemeProvider>

@@ -95,13 +95,13 @@ const getProfByReg = async (registration) => {
   }
 };
 
-const patchProf = async (set, id, muiSnackAlert) => {
+const patchProf = async (set, id, muiSnackAlert, message) => {
   try {
     const response = await axios.patch("http://localhost:3333/delete/teacher", {
       id,
     });
     set(response.data);
-    muiSnackAlert(true);
+    muiSnackAlert("success", message);
     console.log(response.data);
   } catch (error) {
     console.log(error);

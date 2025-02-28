@@ -26,6 +26,7 @@ import {
   UpdateEditProvider,
 } from "../contexts/updateEditContext";
 import { Snackbar, Alert } from "@mui/material";
+import Swal from "sweetalert2";
 
 const style = {
   position: "absolute",
@@ -91,6 +92,7 @@ const MostrarAluno = () => {
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [currPage, setCurrPage] = useState(1);
+  const [signal, setSignal] = useState(true);
 
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
@@ -102,7 +104,7 @@ const MostrarAluno = () => {
     getAlunoByReg(query).then((data) => {
       setFilteredData(data);
     });
-  }, [selectedUser, query]);
+  }, [selectedUser, query, signal]);
 
   const handlePage = (event, value) => {
     setCurrPage(value);
@@ -122,6 +124,37 @@ const MostrarAluno = () => {
       return;
     }
     setOpen(false);
+  };
+
+  const handleDelete = (row) => {
+    Swal.fire({
+      title: "Excluir cadastro?",
+      text: "Tem certeza que quer excluir?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#144A36",
+      cancelButtonColor: "#D5D0C7",
+      confirmButtonText: "Excluir",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        patchAluno(
+          setStatusDelete,
+          row.id,
+          muiSnackAlert,
+          "Aluno excluído com sucesso!"
+        )
+          .then(() => {
+            setFilteredData((prevData) =>
+              prevData.filter((item) => item.id !== row.id)
+            );
+          })
+          .catch((error) => {
+            console.error("Erro ao excluir aluno:", error);
+            muiSnackAlert("error", "Erro ao excluir aluno.");
+          });
+      }
+    });
   };
 
   return (
@@ -256,11 +289,12 @@ const MostrarAluno = () => {
                           <IconButton
                             className="delete-button"
                             onClick={() => {
-                              handleDeleteClick();
-                              setSelectedUser(row);
+                              // handleDeleteClick();
+                              // setSelectedUser(row);
+                              handleDelete(row);
                             }}
                           >
-                            <img src={TrashIcon} />
+                            <img src={TrashIcon} className=" text-black" />
                           </IconButton>
                         </StyledTableRow>
                       ))}
@@ -288,80 +322,6 @@ const MostrarAluno = () => {
                   openEdit={setOpenEdit}
                   buttonName="Atualizar"
                 />
-              </Typography>
-            </Box>
-          </Modal>
-
-          <Modal
-            open={openDelete}
-            onClose={handleDeleteClick}
-            aria-labelledby="modal-modal-deletetitle"
-            aria-describedby="modal-modal-description2"
-          >
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "500px",
-                height: "1/3",
-                bgcolor: "background.paper",
-                border: "2px solid #000",
-                boxShadow: 24,
-                p: 4,
-              }}
-            >
-              <Typography
-                style={{
-                  fontSize: "27px",
-                }}
-                className="font-Montserrat flex flex-col gap-12"
-                id="modal-modal-deletetitle"
-                variant="h6"
-                component="h1"
-              >
-                Excluir cadastro?
-                <p>Tem certeza de que quer excluir?</p>
-                <div className="grid grid-cols-2">
-                  <IconButton
-                    style={{
-                      backgroundColor: "white",
-                      width: "200px",
-                      borderRadius: "6px",
-                      border: "1px solid black",
-                      color: "black",
-                      "&:hover": {
-                        backgroundColor: "#2C2B60",
-                      },
-                    }}
-                    onClick={handleDeleteClick}
-                  >
-                    Voltar
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      handleDeleteClick();
-                      console.log(selectedUser.id);
-                      patchAluno(
-                        setStatusDelete,
-                        selectedUser.id,
-                        muiSnackAlert
-                      );
-                    }}
-                    style={{
-                      backgroundColor: "#100F49",
-                      width: "200px",
-                      borderRadius: "6px",
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "#2C2B60",
-                      },
-                    }}
-                  >
-                    Excluir
-                  </IconButton>
-                </div>
               </Typography>
             </Box>
           </Modal>
