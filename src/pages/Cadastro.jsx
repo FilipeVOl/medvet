@@ -103,12 +103,10 @@ export default function Cadastro(props) {
     if (!selectedUser) {
       try {
         await postAluno(data);
-        console.log("Aluno criado com sucesso");
-        setOpenNew(!openNew);
         muiSnackAlert("success", "Aluno criado com sucesso");
         setTimeout(() => {
           navigate('/');
-        }, 2000); 
+        }, 1000); // Reduced to 1 second
       } catch (error) {
         muiSnackAlert("error", "Erro ao criar aluno");
       }
@@ -176,7 +174,7 @@ export default function Cadastro(props) {
               />
               <InputComponent
                 nome="Matrícula"
-                dataType="text"
+                dataType="number"
                 type={registration}
                 setDataCom={setRegistration}
                 requireVal={required.registration}

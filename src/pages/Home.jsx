@@ -84,8 +84,8 @@ const Home = () => {
         </div>
         <section>
           {todayConsults.length > 0 && (
-            <div className="mt-4 pr-4 md:pr-8 max-w-4xl">
-              <h2 className="text-xl md:text-2xl text-text-gray font-semibold mb-4">
+            <div className="mt-4 max-w-4xl w-full">
+              <h2 className="text-xl md:text-2xl w-full text-text-gray text-lg md:text-2xl font-medium mb-4">
                 {todayFormatted}
               </h2>
               {todayConsults.map((dados) => (
