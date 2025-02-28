@@ -12,9 +12,13 @@ const Home = () => {
     getConsults(
       (data) => {
         const today = new Date();
-        const todayString = `${String(today.getDate()).padStart(2, "0")}${String(
-          today.getMonth() + 1
-        ).padStart(2, "0")}${today.getFullYear()}`;
+        const todayString = `${String(today.getDate()).padStart(
+          2,
+          "0"
+        )}${String(today.getMonth() + 1).padStart(
+          2,
+          "0"
+        )}${today.getFullYear()}`;
         setTodayConsults(data[todayString] || []);
       },
       () => "today"
@@ -90,21 +94,23 @@ const Home = () => {
                   className="flex bg-side-gray my-3 rounded-lg"
                   data-testid="agenda"
                 >
-                  <div className="bg-card-green m-0 text-transparent rounded-lg">
-                    a
-                  </div>
+                  <div className="bg-card-green m-0 text-transparent rounded-lg px-1" />
                   <div className="flex flex-col p-3 md:p-4 w-full">
                     <div className="m-2">
                       <span>
                         Tutor:{" "}
-                        <span className="font-bold pl-1">{dados.nameTutor}</span>
+                        <span className="font-bold pl-1">
+                          {dados.nameTutor}
+                        </span>
                       </span>
                       <span>, {dados.phone}</span>
                     </div>
                     <div className="m-2">
                       <span className="ml-0 pr-1">
                         Paciente:{" "}
-                        <span className="font-bold pl-1">{dados.nameAnimal}</span>
+                        <span className="font-bold pl-1">
+                          {dados.nameAnimal}
+                        </span>
                       </span>
                       <span className="ml-0 pl-1">{`- ${dados.species}`}</span>
                     </div>
