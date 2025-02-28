@@ -85,14 +85,16 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!validateCPF(cpf)) {
+    const formattedCPF = formatCPF(cpf);
+
+    if (!validateCPF(formattedCPF)) {
       muiSnackAlert("error", "CPF inválido.");
       return;
     }
 
     try {
       const response = await axios.post("http://localhost:3333/sessions", {
-        cpf,
+        cpf: formattedCPF,
         password,
       });
       console.log("response session: ", response.data);
