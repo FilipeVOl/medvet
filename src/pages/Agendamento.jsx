@@ -6,8 +6,6 @@ import PropTypes from "prop-types";
 import TutorValidado from "../Component/Agendamento/TutorValidado";
 import TutorInvalido from "../Component/Agendamento/TutorInvalido";
 import Box from "@mui/material/Box";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import InputMask from "react-input-mask";
 import { Snackbar, Alert } from "@mui/material";
 
@@ -73,7 +71,6 @@ const Agendamento = () => {
   return (
     <>
       <div className="w-full font-Montserrat" id="main-agendamento">
-        <ToastContainer />
         <Snackbar
           open={openAlert}
           autoHideDuration={2000}
