@@ -6,8 +6,10 @@ import InputComponent from "../Component/nova consulta/InputComponent";
 import { postAnimal } from "../services/animals";
 import { getAnimalsAndTutorByTutorName } from "../services/tutores";
 import { Snackbar } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateAnimal() {
+  const navigate = useNavigate();
   const [paciente, setPaciente] = useState('');
   const [tutor, setTutor] = useState('');
   const [especie, setEspecie] = useState('');
@@ -91,11 +93,12 @@ export default function CreateAnimal() {
       }
       const validyCreateAnimal = await postAnimal(animal, tutores[0].id)
       if (validyCreateAnimal) {
-        handleSucess()
-        //snackbar sucess
+        handleSucess();
+        setTimeout(() => {
+          navigate('/');
+        }, 1000); // Navigate after showing success message
       } else {
-        handleFailed()
-        //snakcbar failed
+        handleFailed();
       }
     }
   };

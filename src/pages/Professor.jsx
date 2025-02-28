@@ -6,8 +6,10 @@ import { UpdateEditContext } from "../contexts/updateEditContext";
 import { postProf, PutProf } from "../services/professores";
 import InputComponent from "../Component/nova consulta/InputComponent";
 import { Snackbar, Alert } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 
 export default function Professor(props) {
+  const navigate = useNavigate();
   const { selectedUser, setSelectedUser } = useContext(UpdateEditContext);
   const { openEdit, setOpenEdit } = useContext(UpdateEditContext);
   const { openNew, setOpenNew } = useContext(UpdateEditContext);
@@ -87,16 +89,29 @@ export default function Professor(props) {
 
   const clickError = async () => {
     if (!selectedUser) {
-      await postProf(data);
-      setOpenNew(!openNew);
-      muiSnackAlert("success", "Professor cadastrado com sucesso!");
-      window.location.reload();
+      try {
+        await postProf(data);
+        muiSnackAlert("success", "Professor cadastrado com sucesso!");
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } catch (error) {
+        muiSnackAlert("error", "Erro ao cadastrar professor");
+      }
     } else {
-      PutProf(data);
-      setOpenEdit(!openEdit);
-      window.location.reload();
+      try {
+        await PutProf(data);
+        setOpenEdit(!openEdit);
+        muiSnackAlert("success", "Professor atualizado com sucesso!");
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } catch (error) {
+        muiSnackAlert("error", "Erro ao atualizar professor");
+      }
     }
   };
+
 
   function ValidateInput() {
     return nome && registration && cpf && phone && email && course;
