@@ -87,19 +87,18 @@ const TutorInvalido = () => {
   const ConsultaSchema = z.object({
     species: z.string().min(1, "Espécie é obrigatória"),
     stringDate: z.string()
-      .length(8, "Data deve ter 8 dígitos")
-      .regex(/^\d{8}$/, "Data deve conter apenas números")
-      .refine((date) => {
-        const day = parseInt(date.substring(0, 2));
-        const month = parseInt(date.substring(2, 4));
-        const year = parseInt(date.substring(4, 8));
-        return day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 2024;
-      }, "Data inválida"),
-    phone: z.string().min(10, "Telefone inválido"),
+    .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Data deve estar no formato DD/MM/YYYY")
+    .refine((date) => {
+      const [day, month, year] = date.split('/').map(Number);
+      return day >= 1 && day <= 31 && month >= 1 && month <= 12;
+    }, "Data inválida"),
+    phone: z.string()
+    .regex(/^\(\d{2}\)\d{5}-\d{4}$/, "Telefone deve estar no formato (XX)XXXXX-XXXX"),
     description: z.string().nullable().default(''),
     nameAnimal: z.string().min(1, "Nome do animal é obrigatório"),
     nameTutor: z.string().min(1, "Nome do tutor é obrigatório"),
   });
+
   const handleClose = () => {
     setOpen(!open);
   };
@@ -111,28 +110,25 @@ const TutorInvalido = () => {
     e.preventDefault();
     try {
       const [year, month, day] = stringDate.split('-');
-      const paddedDay = day.padStart(2, '0');
-      const paddedMonth = month.padStart(2, '0');
-      const formattedDate = `${paddedDay}${paddedMonth}${year}`;
+      const formattedDate = `${day}/${month}/${year}`;
   
-      if (formattedDate.length !== 8) {
-        throw new Error('Data inválida: formato incorreto');
-      }
+      const formattedPhone = phoneWMask.replace(/\s/g, '');
   
       const consulta = ConsultaSchema.parse({
         nameAnimal,
         species,
         stringDate: formattedDate,
         description: description || '',
-        phone: phoneUnmask(phoneWMask),
+        phone: formattedPhone,
         nameTutor,
       });
   
-      console.log('Sending data:', consulta); 
+      console.log('Sending data:', consulta);
       const response = await CreateConsult(consulta);
-      console.log('Response:', response); 
+      console.log('Response:', response);
       handleClose();
       
+      // Reset form fields
       setName('');
       setEspecie('');
       setDate('');
@@ -145,15 +141,18 @@ const TutorInvalido = () => {
       handleError();
     }
   };
-  const phoneUnmask = (value) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/^(\d{2})\((\d{2})\)(\d{4})-(\d{4})$/, "$1$2$3$4");
-  };
 
   const handlePhone = (e) => {
-    setPhone(e.target.value);
-    setMask(e.target.value);
+    const value = e.target.value;
+    const formattedPhone = value
+      .replace(/\(\d{2}\)\s/, '($&') 
+      .replace(/\s/g, '')             
+      .replace(/\({2,}/g, '(')       
+      .replace(/\){2,}/g, ')')        
+      .replace(/\(\)/g, '');        
+    
+    setPhone(value);
+    setMask(formattedPhone);
   };
 
   return (
@@ -187,8 +186,8 @@ const TutorInvalido = () => {
                   value={species}
                 />
 
-                <div className="flex flex-col mb-4">
-                  <InputLabel
+              {/*     <div className="flex flex-col mb-4">
+              <InputLabel
                     sx={{
                       fontFamily: "Montserrat",
                       color: "#000000",
@@ -229,7 +228,7 @@ const TutorInvalido = () => {
                     )}
                   </InputMask>
                 </div>
-
+*/}
                 <div className="flex flex-col mb-4">
                   <InputLabel
                     sx={{

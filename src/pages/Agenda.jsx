@@ -4,6 +4,7 @@ import { getConsults } from "../services/agendamento";
 import iconCalendar from "../images/calendarIcon.svg";
 import { Link } from "react-router-dom";
 import { Select, MenuItem } from "@mui/material";
+import InputMask from "react-input-mask";
 
 export default function Agenda() {
   const [agenda, setAgenda] = useState({});
@@ -69,13 +70,21 @@ export default function Agenda() {
 
   window.localStorage.setItem("agenda", JSON.stringify(agenda));
 
+  const EmptyState = () => (
+    <div className="text-center py-8">
+      <p className="text-gray-500 text-lg">
+        Nenhum agendamento encontrado
+      </p>
+    </div>
+  );
+
   return (
     <div className="w-full min-h-screen m-6 md:p-8 font-Montserrat">
       <div className="max-w-7xl mx-auto space-y-6">
         <div>
           <h1 className="text-xl md:text-2xl font-bold">Agendamentos</h1>
         </div>
-
+  
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 flex flex-col sm:flex-row gap-4">
             <Select
@@ -98,33 +107,39 @@ export default function Agenda() {
               <MenuItem value="name">Nome</MenuItem>
               <MenuItem value="date">Data</MenuItem>
             </Select>
-
+  
             <div className="relative flex-1">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <img src={iconSearch} alt="Search" className="w-5 h-5" />
               </div>
-              <input
-                type="text"
-                className="w-full h-[42px] pl-10 pr-4 border border-[#9F9F9F] rounded-md font-Montserrat text-sm focus:outline-none focus:border-[#9F9F9F]"
-                placeholder={
-                  searchType === "name"
-                    ? "Buscar por Nome"
-                    : "Buscar por Data (DDMMYYYY)"
-                }
-                value={searchType === "name" ? nome : dateFilter}
-                onChange={(e) => {
-                  if (searchType === "name") {
+              {searchType === "name" ? (
+                <input
+                  type="text"
+                  className="w-full h-[42px] pl-10 pr-4 border border-[#9F9F9F] rounded-md font-Montserrat text-sm focus:outline-none focus:border-[#9F9F9F]"
+                  placeholder="Buscar por Nome"
+                  value={nome}
+                  onChange={(e) => {
                     setNome(e.target.value);
                     setDateFilter("");
-                  } else {
-                    setDateFilter(e.target.value);
+                  }}
+                />
+              ) : (
+                <InputMask
+                  mask="99/99/9999"
+                  maskChar={null}
+                  value={dateFilter}
+                  onChange={(e) => {
+                    const cleanDate = e.target.value.replace(/[^\d]/g, "");
+                    setDateFilter(cleanDate);
                     setNome("");
-                  }
-                }}
-              />
+                  }}
+                  className="w-full h-[42px] pl-10 pr-4 border border-[#9F9F9F] rounded-md font-Montserrat text-sm focus:outline-none focus:border-[#9F9F9F]"
+                  placeholder="DD/MM/YYYY"
+                />
+              )}
             </div>
           </div>
-
+  
           <Link
             to="/calendario"
             className="w-full sm:w-[42px] h-[42px] bg-[#D5D0C7] rounded-md flex items-center justify-center hover:bg-[#100F49] transition-colors"
@@ -132,16 +147,27 @@ export default function Agenda() {
             <img src={iconCalendar} alt="Calendar" className="w-6 h-6" />
           </Link>
         </div>
-
+  
         <div className="space-y-6">
-          {Object.keys(alteredAgenda).map((day) => {
-            const consultas = alteredAgenda[day];
-
-            return (
-              <div key={day}>
-                <h2 className="text-lg md:text-xl font-semibold text-gray-700 mb-4">
-                  {transData(day)}
-                </h2>
+          {Object.keys(alteredAgenda).length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500 text-lg">
+                Nenhum agendamento encontrado
+              </p>
+            </div>
+          ) : (
+            Object.keys(alteredAgenda).map((day) => {
+              const consultas = alteredAgenda[day];
+  
+              if (!Array.isArray(consultas) || consultas.length === 0) {
+                return null;
+              }
+  
+              return (
+                <div key={day}>
+                  <h2 className="text-lg md:text-xl font-semibold text-gray-700 mb-4">
+                    {transData(day)}
+                  </h2>
 
                 <div className="space-y-4">
                   {Array.isArray(consultas) &&
@@ -186,10 +212,11 @@ export default function Agenda() {
                     ))}
                 </div>
               </div>
-            );
-          })}
-        </div>
+           );
+          })
+        )}
       </div>
     </div>
-  );
+  </div>
+);
 }

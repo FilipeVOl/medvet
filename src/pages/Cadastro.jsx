@@ -6,6 +6,8 @@ import { PutAluno } from "../services/alunos";
 import { UpdateEditContext } from "../contexts/updateEditContext";
 import InputComponent from "../Component/nova consulta/InputComponent";
 import { Snackbar, Alert } from "@mui/material";
+import { Select, MenuItem } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function Cadastro(props) {
   const { selectedUser, setSelectedUser } = useContext(UpdateEditContext);
@@ -15,6 +17,7 @@ export default function Cadastro(props) {
   const [registration, setRegistration] = useState(
     selectedUser ? selectedUser.registration : ""
   );
+  const navigate = useNavigate();
   const [cpf, setCpf] = useState(selectedUser ? selectedUser.cpf : "");
   const [phone, setPhone] = useState(selectedUser ? selectedUser.phone : "");
   const [email, setEmail] = useState(selectedUser ? selectedUser.email : "");
@@ -42,6 +45,7 @@ export default function Cadastro(props) {
     period,
   };
 
+  
   const validateTrue = (chaves) => {
     let obj = { ...required };
     const keys = Object.keys(obj);
@@ -52,6 +56,12 @@ export default function Cadastro(props) {
     });
     setRequired(obj);
   };
+
+  const shiftOptions = [
+    { value: "matutino", label: "Matutino" },
+    { value: "vespertino", label: "Vespertino" },
+    { value: "noturno", label: "Noturno" }
+  ];
 
   const validateInputs = () => {
     const keys = Object.keys(fullfillValidate);
@@ -92,20 +102,29 @@ export default function Cadastro(props) {
   const clickError = async () => {
     if (!selectedUser) {
       try {
-        postAluno(data);
+        await postAluno(data);
         console.log("Aluno criado com sucesso");
-
         setOpenNew(!openNew);
+        muiSnackAlert("success", "Aluno criado com sucesso");
+        setTimeout(() => {
+          navigate('/');
+        }, 2000); 
       } catch (error) {
-        muiSnackAlert("Erro ao criar aluno");
+        muiSnackAlert("error", "Erro ao criar aluno");
       }
     } else {
-      console.log(selectedUser);
-      PutAluno(data);
-      setOpenEdit(!openEdit);
+      try {
+        await PutAluno(data);
+        setOpenEdit(!openEdit);
+        muiSnackAlert("success", "Aluno atualizado com sucesso");
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
+      } catch (error) {
+        muiSnackAlert("error", "Erro ao atualizar aluno");
+      }
     }
   };
-
   function ValidateInput() {
     return nome && registration && cpf && phone;
   }
@@ -138,14 +157,14 @@ export default function Cadastro(props) {
           {message}
         </Alert>
       </Snackbar>
-      <div className="cadastro-container w-full">
-        <h1 className="font-Montserrat p-14 h-10 text-2xl font-bold">
+     <div className="cadastro-container w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="font-Montserrat py-8 text-2xl font-bold">
           Novo aluno
         </h1>
 
-        <form>
-          <div className="forms-container px-28 grid grid-rows-4 md:grid-rows-4 gap-x-8 gap-y-4">
-            <div className="box-1 grid grid-cols-[2fr_1fr] gap-[5%]">
+        <form className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4">
               <InputComponent
                 nome="Nome completo"
                 dataType="text"
@@ -166,7 +185,7 @@ export default function Cadastro(props) {
               />
             </div>
 
-            <div className="box-2 grid grid-cols-[1fr_2fr] gap-[5%]">
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
               <label htmlFor="cpf" className="font-Montserrat">
                 CPF *<br />
                 <InputMask
@@ -195,7 +214,7 @@ export default function Cadastro(props) {
                 descrHandle="email"
               />
             </div>
-            <div className="box-3 grid grid-cols-[1fr_2fr] gap-[5%]">
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
               <label htmlFor="phone" className="font-Montserrat">
                 Contato *<br />
                 <InputMask
@@ -232,7 +251,7 @@ export default function Cadastro(props) {
               </label>
             </div>
 
-            <div className="box-4 grid grid-cols-[1fr_2fr] gap-[2%] md:gap-[5%]">
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
               <InputComponent
                 nome="Período"
                 dataType="number"
@@ -243,19 +262,39 @@ export default function Cadastro(props) {
                 descrHandle="period"
               />
 
-              <InputComponent
-                nome="Turno"
-                dataType="text"
-                type={shift}
-                setDataCom={setShift}
-                requireVal={required.shift}
-                handleButton={validateTrue}
-                descrHandle="shift"
-              />
+            
+<div className="w-full">
+                <label className="font-Montserrat">
+                  Turno *
+                  <Select
+                    value={shift}
+                    onChange={(e) => setShift(e.target.value)}
+                    className="w-full h-11 mt-1"
+                    error={required.shift}
+                    required
+                    sx={{
+                      fontFamily: "Montserrat",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: required.shift ? "#ef4444" : "#9F9F9F",
+                      },
+                    }}
+                  >
+                    {shiftOptions.map((option) => (
+                      <MenuItem 
+                        key={option.value} 
+                        value={option.value}
+                        sx={{ fontFamily: "Montserrat" }}
+                      >
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </label>
+              </div>
             </div>
           </div>
 
-          <div className="button-container flex justify-end px-28 h-[28rem]">
+          <div className="flex justify-end pt-8 pb-6">
             <button
               id="cadastrar"
               name={props.buttonName}
