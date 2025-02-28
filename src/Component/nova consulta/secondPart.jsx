@@ -78,9 +78,9 @@ export default function SecondPart(props) {
   return (
     <div className="font-Montserrat p-28 w-full">
       <div className="font-bold">
-        <h1 className="text-[30px]">Exame Físico</h1>
+      <span className="text-xl md:text-2xl font-bold">Exame Físico</span>
       </div>
-      <form className="text-[18px] py-16">
+      <form className="text-[18px] py-12">
         <div className="flex gap-8 w-full">
           <InputComponent
             nome="Temperatura"
@@ -124,7 +124,7 @@ export default function SecondPart(props) {
           />
         </div>
         <div className="font-bold my-12">
-          <h1 className="text-[30px]">Mucosas</h1>
+        <span className="text-xl md:text-2xl font-bold">Mucosas</span>
         </div>
         <div>
           <label className="w-full grid grid-cols-[repeat(5,1fr)]" >
@@ -217,11 +217,11 @@ export default function SecondPart(props) {
             </label>
           </div>
         </div>
-        <div>
+        <div> 
           <div className="font-bold my-12">
-            <h1 className="text-[30px]">Avaliação dos Sistemas</h1>
+          <span className="text-xl md:text-2xl font-bold">Avaliação dos Sistemas</span>
           </div>
-          <div className="my-20">
+          <div>
             {renderTextArea.map((e) => {
               return (
                 <TextAreaComponent

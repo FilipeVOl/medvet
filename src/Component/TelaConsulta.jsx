@@ -71,8 +71,11 @@ const TelaConsulta = () => {
 
   return (
     <>
-      <div className="flex flex-col p-16 w-full h-screen">
-        <h1 className="text-2xl font-bold">Agendar Consulta</h1>
+      <div className="font-Montserrat mt-6 w-full">
+      <div className=" md:mx-32 flex justify-start items-center mb-6 md:mb-8 font-semibold">
+      <span className="text-xl md:text-2xl font-bold">Agendar Consulta
+      </span>
+      </div>
         <form onSubmit={(e) => e.preventDefault()} className="pt-12 ml-4">
           <div className="flex gap-8">
             <Dropdown

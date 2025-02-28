@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import logoLogin from "../images/logoLogin.png";
+import logoLogin from "../images/logoLogin.svg";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -123,6 +123,7 @@ const Login = () => {
                     <TextField
                       {...inputProps}
                       label="CPF"
+                      required
                       error={!validateCPF(formatCPF(cpf)) && cpf !== ""}
                       helperText={
                         !validateCPF(formatCPF(cpf)) && cpf !== ""

@@ -73,7 +73,37 @@ const InputConsulta = ({
       </div>
     );
   }
-
+  const textAreaStyles = {
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: '#9F9F9F',
+      },
+      '&:hover fieldset': {
+        borderColor: '#9F9F9F',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#9F9F9F',
+      },
+    },
+    '& .MuiInputBase-root': {
+      fontFamily: 'Montserrat',
+    }
+  };
+  
+  // Update the Input component styles
+  const inputStyles = {
+    fontFamily: 'Montserrat', 
+    fontWeight: 'medium',
+    '&::before': {
+      borderBottom: 'none'
+    },
+    '&:hover:before': {
+      borderBottom: 'none !important'
+    },
+    '&::after': {
+      borderBottom: 'none'
+    }
+  };
   return (
     <div className="flex flex-col mb-4 font-Montserrat">
       <InputLabel
@@ -186,8 +216,8 @@ console.log(species)
 
   return (
     <>
-      <div className="p-16 w-full h-screen font-Montserrat">
-        <h1 className=" text-2xl font-bold">Agendar Consulta</h1>
+      <div className="p-4 md:p-16 w-full min-h-screen font-Montserrat ">
+      <h1 className="text-2xl font-bold mb-8">Agendar Consulta</h1>
         <form>
           <div className="pt-12 ml-4 w-auto">
             <div className="w-auto">

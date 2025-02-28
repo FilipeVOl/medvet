@@ -73,7 +73,7 @@ export default function NovaConsulta() {
     pagTh,
   };
   return (
-    <div className="flex flex-col mt-16 w-full">
+    <div className="flex flex-col mt-6 w-full">
       <ConsultContext.Provider
         value={{
           pagOne,

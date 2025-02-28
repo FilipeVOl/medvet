@@ -36,7 +36,7 @@ const Home = () => {
   const todayFormatted = transData(todayString);
 
   return (
-    <div className=" pl-0 mt-6 md:mt-12 font-Montserrat w-full">
+    <div className=" mt-6 md:mt-12 font-Montserrat w-full">
       <div className="mx-4 md:mx-32 flex justify-start items-center mb-6 md:mb-8 font-semibold">
         <div className="text-xl md:text-2xl font-bold">Início</div>
       </div>

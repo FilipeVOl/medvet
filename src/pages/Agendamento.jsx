@@ -7,8 +7,9 @@ import TutorValidado from "../Component/Agendamento/TutorValidado";
 import TutorInvalido from "../Component/Agendamento/TutorInvalido";
 import Box from "@mui/material/Box";
 import iconFilter from "../images/filtro.svg";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import InputMask from "react-input-mask";
 
 const Agendamento = () => {
   const style = {
@@ -23,18 +24,13 @@ const Agendamento = () => {
     boxShadow: 24,
     p: 6,
   };
-
+  
+  
   const [telefone, setTelefone] = useState("");
   const [open, setOpen] = useState(true);
   const [validate, setValidate] = useState(false);
 
-  const phoneMask = (value) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/^(\d{2})(9\d{4})/, "($1)$2")
-      .replace(/(\d{5})(\d)/, "$1-$2")
-      .replace(/(-\d{4})\d+?$/, "$1");
-  };
+
   const phoneUnmask = (value) => {
     return value
       .replace(/\D/g, "")
@@ -49,23 +45,23 @@ const Agendamento = () => {
 
   const handleConfirmButton = async () => {
     try {
-    const response = await getTutorByNumber(phoneUnmask(telefone));
-    setValidate(true);
-    setData(response);
-    if (
-      response.phone &&
-      (response.phone === phoneUnmask(telefone)) &
-        console.log("Telefone encontrado")
-    ) {
+      const response = await getTutorByNumber(phoneUnmask(telefone));
+      setValidate(true);
+      setData(response);
+      if (
+        response.phone &&
+        (response.phone === phoneUnmask(telefone)) &
+          console.log("Telefone encontrado")
+      ) {
+      }
+      handleClose();
+    } catch (error) {
+      toast.error("Número não encontrado.");
     }
-    handleClose();
-  } catch (error) {
-    toast.error("Número não encontrado.");
-  }
   };
 
   return (
-    <div className="w-full font-Montserrat" id="main-agendamento">
+    <div className="w-full font-Montserrat " id="main-agendamento">
       <ToastContainer />
       <Modal
         disableEscapeKeyDown
@@ -83,25 +79,40 @@ const Agendamento = () => {
                   sx={{
                     fontFamily: "Montserrat",
                   }}
-                  className="ml-4 mt-6"
+                  className=" mt-6"
                 >
                   Telefone
                 </InputLabel>
-                <Input
-                  sx={{
-                    fontFamily: "Montserrat",
-                    borderRadius: "0.75rem",
-                  }}
-                  onChange={(e) => {
-                    setTelefone(e.target.value);
-                  }}
-                  value={phoneMask(telefone)}
-                  className="border border-[#848484] rounded-[2px] h-[46px] p-2 text-base w-full"
-                  data-testid="input-modal-agendamento"
-                />
+                <InputMask
+                  mask="(99) 99999-9999"
+                  value={telefone}
+                  onChange={(e) => setTelefone(e.target.value)}
+                  maskChar={null}
+                >
+                  {() => (
+                    <Input
+                      sx={{
+                        fontFamily: "Montserrat",
+                        borderRadius: "0.75rem",
+                        padding: "8px 12px",
+                        width: "100%",
+                        "& .MuiInput-input": {
+                          padding: 0,
+                        },
+                        "&:before": {
+                          display: "none",
+                        },
+                        "&:after": {
+                          display: "none",
+                        },
+                      }}
+                      placeholder="(00) 00000-0000"
+                      className="border border-[#848484] rounded-xl h-[46px] text-base w-full"
+                      data-testid="input-modal-agendamento"
+                    />
+                  )}
+                </InputMask>
               </div>
-
-              <img src={iconFilter} className="h-12" alt="filter icon" />
             </div>
 
             <div className="flex justify-between mt-20 gap-7">
@@ -110,7 +121,7 @@ const Agendamento = () => {
                 onClick={() => {
                   setOpen(!open);
                 }}
-                className="bg-[#FFFEF9] hover:bg-[#144A36] hover:text-white border-[#B4B0A8] border-[1px] border-solid text-black font-bold rounded-[10px] h-[46px] w-[220px]"
+                className="bg-[#FFFEF9] hover:bg-[#144A36] hover:text-white text-[#144A36] border-[#B4B0A8] border-[1px] border-solid  font-bold rounded-[10px] h-[46px] w-[220px]"
               >
                 Voltar
               </button>
