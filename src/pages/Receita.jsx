@@ -3,7 +3,7 @@ import { Input, InputLabel, TextField, createTheme } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import CancelIcon from "../images/trash.svg";
 import {
@@ -85,11 +85,10 @@ export const InputReceita = ({
       </label>
     );
   }
-  
 
   if (isProf) {
     return (
-      <label htmlFor="free-solo-2-demo" className="grow  ">
+      <label htmlFor="free-solo-2-demo" className="grow">
         Professor
         <Autocomplete
           freeSolo
@@ -165,10 +164,10 @@ export const InputReceita = ({
         onClick={() => handleButton(descrValue)}
         value={value}
         sx={{
-          '&:before': { borderBottom: 'none' },
-          '&:after': { borderBottom: 'none' },
-          '&:hover:not(.Mui-disabled):before': { borderBottom: 'none' },
-          '& .MuiInput-input': { padding: '8px' }
+          "&:before": { borderBottom: "none" },
+          "&:after": { borderBottom: "none" },
+          "&:hover:not(.Mui-disabled):before": { borderBottom: "none" },
+          "& .MuiInput-input": { padding: "8px" },
         }}
         className={`${
           requireVal ? "outline-red-600 border-red-500" : "outline-gray-input"
@@ -421,7 +420,8 @@ export const Receita = () => {
           />
         </div>
         <div className="grid grid-cols-3 gap-4 w-full">
-          <label>Idade
+          <label>
+            Idade
             <InputReceita
               setter={setIdade}
               value={idade}
@@ -430,7 +430,8 @@ export const Receita = () => {
               handleButton={validateTrue}
             />
           </label>
-          <label>Peso
+          <label>
+            Peso
             <InputReceita
               setter={setPeso}
               value={peso}
@@ -439,17 +440,18 @@ export const Receita = () => {
               handleButton={validateTrue}
             />
           </label>
-          <label>ID
-          <InputReceita
-            setter={setId}
-            value={id}
-            descrValue="id"
-            requireVal={required.id}
-            handleButton={validateTrue}
-          /></label>
+          <label>
+            ID
+            <InputReceita
+              setter={setId}
+              value={id}
+              descrValue="id"
+              requireVal={required.id}
+              handleButton={validateTrue}
+            />
+          </label>
         </div>
       </form>
- 
 
       <p className="text-xl px-14 py-8">Medicação</p>
       <div>
@@ -588,7 +590,7 @@ export const Receita = () => {
           rounded-md h-[46px] hover:bg-[#144A36] border-2
         p-2 text-base"
         >
-            <AddIcon />
+          <AddIcon />
           Adicionar Medicamento
         </button>
       </div>
