@@ -117,26 +117,49 @@ export default function FirstPart(props) {
     setVacina(arr.filter((_i, index) => index != e));
   };
 
-  const pageOneData = {
-    data,
-    paciente,
-    tutor,
-    especie,
-    raca,
-    sexo,
-    idade,
-    peso,
-    pelagem,
-    historico,
-    professor,
-    vacina,
-    desmer,
-    motivo,
-    idAnimal: pacientes.filter((e) => e.name == paciente),
-    viewAnimal,
-    viewTutor,
-    teacher_id: professores.filter((e) => e.name == professor)[0],
-  };
+  // sim, surpreendentemente isso é mais eficiente
+  const pageOneData = useMemo(
+    () => ({
+      data,
+      paciente,
+      tutor,
+      especie,
+      raca,
+      sexo,
+      idade,
+      peso,
+      pelagem,
+      historico,
+      professor,
+      vacina,
+      desmer,
+      motivo,
+      idAnimal: pacientes.filter((e) => e.name === paciente),
+      viewAnimal,
+      viewTutor,
+      teacher_id: professores.find((e) => e.name === professor),
+    }),
+    [
+      data,
+      paciente,
+      tutor,
+      especie,
+      raca,
+      sexo,
+      idade,
+      peso,
+      pelagem,
+      historico,
+      professor,
+      vacina,
+      desmer,
+      motivo,
+      pacientes,
+      viewAnimal,
+      viewTutor,
+      professores,
+    ]
+  );
 
   const fullfillValidate = {
     paciente,
@@ -177,8 +200,8 @@ export default function FirstPart(props) {
     return validation;
   };
 
-  //botao de Proximo validando lógica se o animal colocado existe
-  const handleProx = () => {
+  // useCallback previne a recriação da função a cada renderização
+  const handleProx = useCallback(() => {
     const validacaoCampos = validateInputs();
     if (validacaoCampos) {
       window.scrollTo({
@@ -188,13 +211,20 @@ export default function FirstPart(props) {
       });
       return;
     }
-    if (pacientes.some((e) => e.name == paciente)) {
+    if (pacientes.some((e) => e.name === paciente)) {
       props.setSteps(2);
       setPagOne(pageOneData);
     } else {
       handleButtonClick();
     }
-  };
+  }, [
+    validateInputs,
+    pacientes,
+    paciente,
+    props.setSteps,
+    pageOneData,
+    handleButtonClick,
+  ]);
 
   const notification = () => {
     alert("Animal adicionado com sucesso!");
