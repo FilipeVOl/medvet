@@ -1,11 +1,12 @@
 import { useContext, useState, useEffect } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { Input, InputLabel, TextField, createTheme } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
-import CancelIcon from "../images/trash.svg";
+import { useNavigate } from "react-router-dom";
 import {
   postPrescription,
   getPrescription,
@@ -85,7 +86,6 @@ export const InputReceita = ({
       </label>
     );
   }
-  
 
   if (isProf) {
     return (
@@ -165,10 +165,10 @@ export const InputReceita = ({
         onClick={() => handleButton(descrValue)}
         value={value}
         sx={{
-          '&:before': { borderBottom: 'none' },
-          '&:after': { borderBottom: 'none' },
-          '&:hover:not(.Mui-disabled):before': { borderBottom: 'none' },
-          '& .MuiInput-input': { padding: '8px' }
+          "&:before": { borderBottom: "none" },
+          "&:after": { borderBottom: "none" },
+          "&:hover:not(.Mui-disabled):before": { borderBottom: "none" },
+          "& .MuiInput-input": { padding: "8px" },
         }}
         className={`${
           requireVal ? "outline-red-600 border-red-500" : "outline-gray-input"
@@ -180,6 +180,8 @@ export const InputReceita = ({
 
 export const Receita = () => {
   // FAZER REQUISIÇÃO DO TEACHER_ID DA TELA DE NOVACONSULTA
+  const navigate = useNavigate();
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
   const { medications, setMedications } = useContext(PrescContext);
   const [animal_id, setAnimal] = useState("");
   const [paciente, setPaciente] = useState("");
@@ -205,11 +207,14 @@ export const Receita = () => {
     sexo: false,
     idade: false,
     peso: false,
-    id: false,
     unit: false,
     measurement: false,
     description: false,
   });
+  const handleRedirectToRegister = () => {
+    setShowRegisterModal(false);
+    navigate("/animal");
+  };
 
   const handleButtonClick = () => {
     setOpenModal(!openModal);
@@ -232,18 +237,6 @@ export const Receita = () => {
 
   useEffect(() => {}, [medications]);
 
-  const fullfillValidate = {
-    professor,
-    paciente,
-    tutor,
-    species,
-    raca,
-    sexo,
-    idade,
-    peso,
-    id,
-  };
-
   const validateTrue = (chaves) => {
     let obj = { ...required };
     const keys = Object.keys(obj);
@@ -256,76 +249,148 @@ export const Receita = () => {
   };
 
   const validateInputs = () => {
-    medications.forEach((e) => {
-      Object.entries(e).forEach(([key, value]) => {
-        fullfillValidate[key] = value;
-      });
-    });
-    const keys = Object.keys(fullfillValidate);
-    const values = Object.values(fullfillValidate);
-    let validation = false;
+    let hasErrors = false;
     let obj = { ...required };
 
-    values.map((e, index) => {
-      if (e == "") {
-        const chaves = keys[index];
-        obj[chaves] = true;
-        validation = true;
+    Object.keys(obj).forEach((key) => {
+      obj[key] = false;
+    });
+
+    if (!paciente) {
+      obj.paciente = true;
+      hasErrors = true;
+      return hasErrors;
+    }
+
+    if (!animal_id && !id) {
+      setShowRegisterModal(true);
+      return true;
+    }
+
+    const basicFields = {
+      professor,
+      tutor,
+      species,
+      raca,
+      sexo,
+      idade,
+      peso,
+    };
+
+    Object.entries(basicFields).forEach(([key, value]) => {
+      if (!value || value === "null" || value === "undefined") {
+        obj[key] = true;
+        hasErrors = true;
+        console.log(`Field ${key} is invalid:`, value);
       }
     });
-    setRequired(obj);
-    return validation;
-  };
 
-  const array = [...medications];
+    medications.forEach((med, index) => {
+      if (!med.unit || !med.measurement || !med.description) {
+        if (!med.unit) obj.unit = true;
+        if (!med.measurement) obj.measurement = true;
+        if (!med.description) obj.description = true;
+        hasErrors = true;
+        console.log(`Validation failed for medication ${index + 1}:`, med);
+      }
+    });
+
+    setRequired(obj);
+    return hasErrors;
+  };
 
   const addMedicamento = () => {
-    const obj = {
-      use_type: "",
-      farmacia: "",
-      unidade: "",
-      medicacao: "",
-      descricao: "",
+    const newMedication = {
+      use_type: "oral",
+      pharmacy: "farmacia1",
+      unit: "",
+      measurement: "",
+      description: "",
     };
-    array.push(obj);
-    setMedications(array);
+    setMedications((prev) => [...prev, newMedication]);
   };
 
-  const deleteMedicamento = () => {
-    array.splice(array.length - 1, 1);
-    setMedications(array);
+  const deleteMedicamento = (index) => {
+    const updatedMedications = medications.filter((_, i) => i !== index);
+    setMedications(updatedMedications);
   };
 
   const handleMedicamento = (arr, index, valor, key) => {
-    const array = [...arr];
-    array[index] = { ...array[index], [key]: valor };
-    setMedications(array);
+    setMedications((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        [key]: valor,
+      };
+      return updated;
+    });
   };
 
   const handleSubmit = async () => {
     try {
-      const validacaoCampos = validateInputs();
-      if (validacaoCampos) {
+      const hasErrors = validateInputs();
+
+      if (hasErrors) {
         window.scrollTo({
           top: 0,
           left: 0,
           behavior: "smooth",
         });
-      } else {
+        return;
+      }
+
+      const formattedMedications = medications.map((med) => ({
+        use_type: med.use_type || "oral",
+        pharmacy: med.pharmacy || "farmacia1",
+        unit: String(med.unit),
+        measurement: med.measurement,
+        description: med.description,
+      }));
+
+      const animalIdentifier = animal_id || id;
+      if (!animalIdentifier) {
+        throw new Error("No animal ID available");
+      }
+
+      const prescriptionData = {
+        teacher_id: String(teacher_id),
+        animal_id: String(animal_id),
+        tutor: String(tutor),
+        species: String(species),
+        raca: String(raca),
+        sexo: String(sexo),
+        idade: String(idade),
+        peso: String(peso),
+        medications: formattedMedications,
+      };
+
+      const prescriptionId = await postPrescription(prescriptionData);
+
+      if (prescriptionId) {
         handleButtonClick();
-        const id = await postPrescription(data);
 
-        console.log(id);
-        if (id) {
-          const prescriptionData = await getPrescription(id); // Faz a requisição com o ID
-          console.log(prescriptionData); // Exibe os dados da prescrição
+        try {
+          const prescriptionResponse = await getPrescription(prescriptionId);
+          console.log("Prescription created:", prescriptionResponse);
 
-          // Inicia o download no navegador
-          window.open(`http://localhost:3333/pdf/prescription/${id}`, "_blank");
+          setTimeout(() => {
+            if (typeof window !== "undefined") {
+              window.open(
+                `http://localhost:3333/pdf/prescription/${prescriptionId}`,
+                "_blank"
+              );
+            }
+          }, 1000);
+        } catch (error) {
+          console.error("Error getting prescription details:", error);
+          alert("Erro ao buscar detalhes da receita");
         }
       }
     } catch (error) {
-      console.error("Erro durante o processo:", error);
+      console.error("Error submitting prescription:", error);
+      alert(
+        "Erro ao criar receita. Verifique se um paciente foi selecionado e tente novamente."
+      );
     }
   };
 
@@ -421,7 +486,8 @@ export const Receita = () => {
           />
         </div>
         <div className="grid grid-cols-3 gap-4 w-full">
-          <label>Idade
+          <label>
+            Idade
             <InputReceita
               setter={setIdade}
               value={idade}
@@ -430,7 +496,8 @@ export const Receita = () => {
               handleButton={validateTrue}
             />
           </label>
-          <label>Peso
+          <label>
+            Peso
             <InputReceita
               setter={setPeso}
               value={peso}
@@ -439,17 +506,8 @@ export const Receita = () => {
               handleButton={validateTrue}
             />
           </label>
-          <label>ID
-          <InputReceita
-            setter={setId}
-            value={id}
-            descrValue="id"
-            requireVal={required.id}
-            handleButton={validateTrue}
-          /></label>
         </div>
       </form>
- 
 
       <p className="text-xl px-14 py-8">Medicação</p>
       <div>
@@ -459,11 +517,15 @@ export const Receita = () => {
               key={index}
               className="px-14 w-auto mb-20 border-2 rounded-xl mx-12 py-8 flex flex-col gap-4"
             >
-              <img
-                src={CancelIcon}
-                onClick={() => deleteMedicamento()}
-                className="cursor-pointer w-6 h-6 fill-red-500 self-end"
-              />
+              {index > 0 && (
+                <button
+                  type="button"
+                  onClick={() => deleteMedicamento(index)}
+                  className="self-end text-red-700 cursor-pointer"
+                >
+                  <DeleteIcon className="w-6 h-6 fill-red-500" />
+                </button>
+              )}
               <div className="grid grid-cols-3 gap-10">
                 <label>
                   Uso
@@ -477,7 +539,7 @@ export const Receita = () => {
                         "use_type"
                       )
                     }
-                    className="border flex-col flex w-full rounded-md  grow  p-3 text-base border-border-gray"
+                    className="border flex-col flex w-full rounded-md grow p-3 text-base border-border-gray"
                   >
                     <option value="oral">Oral</option>
                     <option value="retal">Retal</option>
@@ -501,7 +563,7 @@ export const Receita = () => {
                         "pharmacy"
                       )
                     }
-                    className="border flex-col grow flex w-full rounded-md  p-3 text-base border-border-gray"
+                    className="border flex-col grow flex w-full rounded-md p-3 text-base border-border-gray"
                   >
                     <option value="farmacia1">Farmacia 1</option>
                     <option value="farmacia 2">Farmacia 2</option>
@@ -588,7 +650,7 @@ export const Receita = () => {
           rounded-md h-[46px] hover:bg-[#144A36] border-2
         p-2 text-base"
         >
-            <AddIcon />
+          <AddIcon />
           Adicionar Medicamento
         </button>
       </div>
@@ -604,28 +666,84 @@ export const Receita = () => {
         </button>
       </div>
       <div>
-        <Modal
+      <Modal
           open={openModal}
-          aria-labelledby="modal-modal-deletetitle"
-          aria-describedby="modal-modal-description2"
+          onClose={handleButtonClick}
+          aria-labelledby="success-modal-title"
+          className="font-Montserrat"
         >
-          <Box id="box-modal-pag1">
-            <Typography
-              id="modal-modal-deletetitle"
-              variant="h6"
-              component="h1"
-            >
-              Consulta Criada
-              <p id="descri-modal">Consulta Criada com Sucesso</p>
-              <div className="flex justify-between my-12">
-                <IconButton id="fechar-modal" onClick={handleButtonClick}>
-                  OK
-                </IconButton>
-              </div>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400,
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              borderRadius: "8px",
+            }}
+          >
+            <Typography id="success-modal-title" variant="h6" component="h2">
+              Receita Criada
             </Typography>
+            <Typography sx={{ mt: 2 }}>
+              Receita criada com sucesso
+            </Typography>
+            <div className="flex justify-between mt-4 w-full">
+              <button
+                onClick={handleButtonClick}
+                className="px-4 py-2 bg-[#144A36]  w-full text-white rounded-md hover:bg-[#0d3526]"
+              >
+                OK
+              </button>
+            </div>
           </Box>
         </Modal>
       </div>
+      <Modal
+        open={showRegisterModal}
+        onClose={() => setShowRegisterModal(false)}
+        aria-labelledby="register-modal-title"
+        className="font-Montserrat"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: "8px",
+          }}
+        >
+          <Typography id="register-modal-title" variant="h6" component="h2">
+            Paciente não encontrado
+          </Typography>
+          <Typography sx={{ mt: 2 }}>
+            Este paciente não está cadastrado no sistema. Deseja cadastrá-lo
+            agora?
+          </Typography>
+          <div className="flex justify-between mt-4">
+            <button
+              onClick={() => setShowRegisterModal(false)}
+              className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleRedirectToRegister}
+              className="px-4 py-2 bg-[#144A36] text-white rounded-md hover:bg-[#0d3526]"
+            >
+              Cadastrar
+            </button>
+          </div>
+        </Box>
+      </Modal>
     </div>
   );
 };
