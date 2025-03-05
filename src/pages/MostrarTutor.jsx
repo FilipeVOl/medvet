@@ -89,7 +89,6 @@ const MostrarTutor = () => {
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState("");
 
-  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
   const handleButtonClick = () => setOpenEdit(!openEdit);
@@ -104,6 +103,8 @@ const MostrarTutor = () => {
   const endIndex = startIndex + itemsPerPage;
   const paginatedData = filteredData.slice(startIndex, endIndex);
 
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
   const handlePage = (event, value) => {
     setCurrPage(value);
   };
@@ -114,7 +115,6 @@ const MostrarTutor = () => {
       try {
         const response = await getTutoresByName(setFilteredData, query);
         setFilteredData(response);
-        // setTotalPages(response.totalPages);
       } catch (error) {
         console.error("Erro ao buscar tutores:", error);
       } finally {
@@ -319,7 +319,11 @@ const MostrarTutor = () => {
               className="flex justify-center items-center mt-4"
               spacing={2}
             >
-              <Pagination count={data.numberOfPages} onChange={handlePage} />
+              <Pagination
+                count={totalPages}
+                page={currPage}
+                onChange={handlePage}
+              />
             </Stack>
           </div>
 
