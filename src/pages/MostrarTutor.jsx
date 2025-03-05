@@ -28,6 +28,7 @@ import TelaNovoTutor from "../pages/TelaNovoTutor";
 import { UpdateEditContext } from "../contexts/updateEditContext";
 import { Snackbar, Alert } from "@mui/material";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -87,6 +88,10 @@ const MostrarTutor = () => {
   const [currPage, setCurrPage] = useState(1);
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState("");
+
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
   const handleButtonClick = () => setOpenEdit(!openEdit);
   const handleDeleteClick = () => setOpenDelete(!openDelete);
   const handleNewClick = () => setOpenNew(!openNew);
@@ -94,13 +99,31 @@ const MostrarTutor = () => {
 
   const [data, setData] = useState("");
 
+  const itemsPerPage = 10; // Number of items per page
+  const startIndex = (currPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = filteredData.slice(startIndex, endIndex);
+
   const handlePage = (event, value) => {
     setCurrPage(value);
   };
 
   useEffect(() => {
-    getTutorByNumber(query).then((data) => setFilteredData(data));
-  }, [selectedUser, openNew, query, signal]);
+    const fetchTutors = async () => {
+      setLoading(true);
+      try {
+        const response = await getTutoresByName(setFilteredData, query);
+        setFilteredData(response);
+        // setTotalPages(response.totalPages);
+      } catch (error) {
+        console.error("Erro ao buscar tutores:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTutors();
+  }, [query]);
 
   const [open, setOpen] = useState(false);
   const [severity, setSeverity] = useState("success");
@@ -182,7 +205,7 @@ const MostrarTutor = () => {
           <div className="mid grid grid-cols-[2fr_1fr] ml-36 sm:w-[80%]">
             <div className="flex items-center">
               <input
-                placeholder="Nome"
+                placeholder="Nome do Tutor"
                 name="searchRegist"
                 type="text"
                 className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
@@ -258,8 +281,14 @@ const MostrarTutor = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {filteredData &&
-                    filteredData
+                  {paginatedData.length === 0 ? (
+                    <StyledTableRow>
+                      <StyledTableCell colSpan={3} align="center">
+                        Nenhum tutor registrado
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ) : (
+                    paginatedData
                       .filter((row) => !row.status_delete)
                       .map((row) => (
                         <StyledTableRow key={row.id}>
@@ -272,19 +301,17 @@ const MostrarTutor = () => {
                               setSelectedUser(row);
                             }}
                           >
-                            <img src={EditIcon} />
+                            <img src={EditIcon} alt="Edit" />
                           </IconButton>
-
                           <IconButton
                             className="delete-button"
-                            onClick={() => {
-                              handleDelete(row);
-                            }}
+                            onClick={() => handleDelete(row)}
                           >
-                            <img src={TrashIcon} />
+                            <img src={TrashIcon} alt="Delete" />
                           </IconButton>
                         </StyledTableRow>
-                      ))}
+                      ))
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>

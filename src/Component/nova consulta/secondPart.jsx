@@ -78,7 +78,7 @@ export default function SecondPart(props) {
   return (
     <div className="font-Montserrat p-28 w-full">
       <div className="font-bold">
-      <span className="text-xl md:text-2xl font-bold">Exame Físico</span>
+        <span className="text-xl md:text-2xl font-bold">Exame Físico</span>
       </div>
       <form className="text-[18px] py-12">
         <div className="flex gap-8 w-full">
@@ -124,14 +124,11 @@ export default function SecondPart(props) {
           />
         </div>
         <div className="font-bold my-12">
-        <span className="text-xl md:text-2xl font-bold">Mucosas</span>
+          <span className="text-xl md:text-2xl font-bold">Mucosas</span>
         </div>
         <div>
-          <label className="w-full grid grid-cols-[repeat(5,1fr)]" >
-            <label
-              
-              className="flex w-full items-center justify-center"
-            >
+          <label className="w-full grid grid-cols-[repeat(5,1fr)]">
+            <label className="flex w-full items-center justify-center">
               <input
                 type="checkbox"
                 name="Normocoradas"
@@ -143,10 +140,7 @@ export default function SecondPart(props) {
               />
               <p className="ml-4">Normocoradas</p>
             </label>
-            <label
-              
-              className="flex w-full  items-center pr-4 justify-center"
-            >
+            <label className="flex w-full  items-center pr-4 justify-center">
               <input
                 type="checkbox"
                 name="Pálidas"
@@ -158,10 +152,7 @@ export default function SecondPart(props) {
               />
               <p className="ml-4">Pálidas</p>
             </label>
-            <label
-              
-              className="flex w-full items-center pr-4 justify-center"
-            >
+            <label className="flex w-full items-center pr-4 justify-center">
               <input
                 type="checkbox"
                 name="Congestas"
@@ -173,10 +164,7 @@ export default function SecondPart(props) {
               />
               <p className="ml-4">Congestas</p>
             </label>
-            <label
-              
-              className="flex w-full items-center pr-4 justify-center"
-            >
+            <label className="flex w-full items-center pr-4 justify-center">
               <input
                 type="checkbox"
                 name="Cianóticas"
@@ -188,10 +176,7 @@ export default function SecondPart(props) {
               />
               <p className="ml-4">Cianóticas</p>
             </label>
-            <label
-              
-              className="flex w-full items-center justify-center"
-            >
+            <label className="flex w-full items-center justify-center">
               <input
                 type="checkbox"
                 name="Icterícias"
@@ -217,9 +202,11 @@ export default function SecondPart(props) {
             </label>
           </div>
         </div>
-        <div> 
+        <div>
           <div className="font-bold my-12">
-          <span className="text-xl md:text-2xl font-bold">Avaliação dos Sistemas</span>
+            <span className="text-xl md:text-2xl font-bold">
+              Avaliação dos Sistemas
+            </span>
           </div>
           <div>
             {renderTextArea.map((e) => {

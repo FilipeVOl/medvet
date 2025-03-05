@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useMemo, useCallback } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import InputComponent from "./InputComponent";
@@ -91,12 +91,14 @@ export default function FirstPart(props) {
     getAnimalsAndTutorByTutorName(setTutores, "");
   }, []);
 
-  //tipo de obj, qual chave e setter
-  const handleInput = (objReceived, chave, valor, set) => {
-    let obj = { ...objReceived };
-    obj[chave] = valor;
-    set(obj);
-  };
+  // verifica se o novo valor é diferente do valor atual antes de chamar o set
+  const handleInput = useCallback((objReceived, chave, valor, set) => {
+    if (objReceived[chave] !== valor) {
+      let obj = { ...objReceived };
+      obj[chave] = valor;
+      set(obj);
+    }
+  }, []);
 
   //usa o set para vacina que modifica o array de vacinas
   const handleVacina = (arr, index, valor, key) => {

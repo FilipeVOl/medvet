@@ -7,6 +7,8 @@ import { UpdateEditContext } from "../contexts/updateEditContext";
 import InputComponent from "../Component/nova consulta/InputComponent";
 import { Snackbar, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import axios from "axios";
 
 export default function Tutor(props) {
   const navigate = useNavigate();
@@ -43,6 +45,7 @@ export default function Tutor(props) {
     });
     setRequired(obj);
   };
+
   //botao de Proximo validando lógica se o animal colocado existe
   const validateInputs = () => {
     const keys = Object.keys(fullfillValidate);
@@ -81,21 +84,31 @@ export default function Tutor(props) {
   const clickError = async () => {
     if (!selectedUser) {
       try {
-        await postTutor(data);
-        muiSnackAlert("success", "Tutor criado com sucesso");
-        setTimeout(() => {
-          navigate('/');
-        }, 1000);
+        const response = await axios.post("http://localhost:3333/tutor", data);
+        console.log("criando: ", response);
+        if (response.status === 200) {
+          Swal.fire({
+            title: "Tutor registrado",
+            text: "Tutor cadastrado com sucesso",
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#144A36",
+          }).then(() => {
+            navigate("/");
+          });
+        } else {
+          muiSnackAlert("error", "Erro ao criar tutor");
+        }
       } catch (error) {
-        muiSnackAlert("error", "Erro ao criar tutor");
+        muiSnackAlert("error", "Erro ao criar tutor!");
       }
     } else {
       try {
-        await PutTutor(data);
+        PutTutor(data);
         setOpenEdit(!openEdit);
         muiSnackAlert("success", "Tutor atualizado com sucesso");
         setTimeout(() => {
-          navigate('/');
+          navigate("/");
         }, 1000);
       } catch (error) {
         muiSnackAlert("error", "Erro ao atualizar tutor");

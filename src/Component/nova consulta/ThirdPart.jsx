@@ -8,8 +8,9 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Snackbar, Alert } from "@mui/material";
+import Swal from "sweetalert2";
 
 export default function ThirdPart(props) {
   const { pagTh, setPagTh, allPagesData } = useContext(ConsultContext);
@@ -17,8 +18,10 @@ export default function ThirdPart(props) {
   const [sDiagnostico, setDiag] = useState(pagTh.sDiagnostico);
   const [sTratamento, setTrata] = useState(pagTh.sTratamento);
   const [sObs, setObs] = useState(pagTh.sObs);
-  const [openModal, setOpenModal] = useState(!open);
+  const [openModal, setOpenModal] = useState(false);
   const [continueReceita, setContinueReceita] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleButtonClick = () => setOpenModal(!openModal);
   const handleContinueReceita = () => setContinueReceita(!continueReceita);
@@ -89,7 +92,8 @@ export default function ThirdPart(props) {
       .then((response) => {
         console.log(response);
         if (response) {
-          handleButtonClick();
+          // muiSnackAlert("success", "Consulta criada com sucesso");
+          handleGoToDash();
         } else {
           muiSnackAlert("error", "Erro ao criar consulta");
         }
@@ -118,6 +122,18 @@ export default function ThirdPart(props) {
       return;
     }
     setOpen(false);
+  };
+
+  const handleGoToDash = () => {
+    Swal.fire({
+      title: "Consulta Criada",
+      text: "Consulta criada com sucesso",
+      icon: "success",
+      confirmButtonText: "OK",
+      confirmButtonColor: "#144A36",
+    }).then(() => {
+      navigate("/");
+    });
   };
 
   return (

@@ -51,11 +51,25 @@ export const postTutor = async (consulta) => {
   }
 };
 
-export const getTutoresByName = async (set, params) => {
+// export const getTutoresByName = async (set, params) => {
+//   try {
+//     const { data } = await axios.get(
+//       `http://localhost:3333/get/tutor/name?q=${params}`
+//     );
+//     set(data.tutors);
+//     return data.tutors;
+//   } catch (e) {
+//     console.log(e);
+//     throw new Error("Problema na requisição de tutores por nome.", e);
+//   }
+// };
+
+export const getTutoresByName = async (set, params = "") => {
   try {
     const { data } = await axios.get(
       `http://localhost:3333/get/tutor/name?q=${params}`
     );
+    console.log("tutores data:", data);
     set(data.tutors);
     return data.tutors;
   } catch (e) {
@@ -64,12 +78,26 @@ export const getTutoresByName = async (set, params) => {
   }
 };
 
-export const getTutorByNumber = async (tel) => {
+// export const getTutorByNumber = async (tel) => {
+//   try {
+//     const { data } = await axios.get(
+//       `http://localhost:3333/get/tutor/searchphone?q=${tel}`
+//     );
+//     console.log("data tutoprs aqui:", data.tutors);
+//     return data.tutors;
+//   } catch (e) {
+//     console.log(e);
+//     throw new Error("Problema na requisição de tutores por telefone.");
+//   }
+// };
+
+export const getTutorByNumber = async (tel, page = 1, limit = 10) => {
   try {
     const { data } = await axios.get(
-      `http://localhost:3333/get/tutor/searchphone?q=${tel}&page=1`
+      `http://localhost:3333/get/tutor/searchphone?q=${tel}&page=${page}&limit=${limit}`
     );
-    return data.tutors;
+    console.log("data tutores aqui:", data.tutors);
+    return data; // Return the entire response, not just data.tutors
   } catch (e) {
     console.log(e);
     throw new Error("Problema na requisição de tutores por telefone.");
