@@ -89,7 +89,7 @@ export const InputReceita = ({
 
   if (isProf) {
     return (
-      <label htmlFor="free-solo-2-demo" className="grow  ">
+      <label htmlFor="free-solo-2-demo" className="grow">
         Professor
         <Autocomplete
           freeSolo

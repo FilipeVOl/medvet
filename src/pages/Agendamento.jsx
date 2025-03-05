@@ -27,9 +27,6 @@ const Agendamento = () => {
   const [open, setOpen] = useState(true);
   const [validate, setValidate] = useState(false);
   const [data, setData] = useState("");
-  const [openAlert, setOpenAlert] = useState(false);
-  const [severity, setSeverity] = useState("success");
-  const [message, setMessage] = useState("");
 
   const phoneUnmask = (value) => {
     return value
@@ -39,19 +36,6 @@ const Agendamento = () => {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleCloseAlert = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpenAlert(false);
-  };
-
-  const muiSnackAlert = (severity, message) => {
-    setSeverity(severity);
-    setMessage(message);
-    setOpenAlert(true);
   };
 
   const handleConfirmButton = async () => {
@@ -66,6 +50,22 @@ const Agendamento = () => {
     } catch (error) {
       muiSnackAlert("error", "Número não encontrado");
     }
+  };
+
+  // Snackbar Alert
+  const [openAlert, setOpenAlert] = useState(false);
+  const [severity, setSeverity] = useState("success");
+  const [message, setMessage] = useState("");
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenAlert(false);
+  };
+  const muiSnackAlert = (severity, message) => {
+    setSeverity(severity);
+    setMessage(message);
+    setOpenAlert(true);
   };
 
   return (
