@@ -199,7 +199,7 @@ const Agendamento = () => {
           </Box>
         </Modal>
         {validate ? (
-          <TutorValidado tel={selectedTutor} />
+          <TutorValidado tel={selectedTutor}  />
         ) : (
           <TutorInvalido tel={{ phone: telefone }} />
         )}

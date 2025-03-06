@@ -47,25 +47,43 @@ const InputConsulta = ({
           {label}
         </InputLabel>
         <Autocomplete
-          freeSolo
-          disableClearable
-          id="free-solo-2-demo"
+          freeSolo={true} 
+          id="paciente-select"
           onChange={(_e, newValue) => {
-            handleChange({ target: { value: newValue } });
-            const filter = ArrAnimais.filter((e) => e.name === newValue);
-            setSpecies(filter[0].species);
-            setRaca(filter[0].race);
-            setSexo(filter[0].gender);
-            setIdade(filter[0].age);
-            setId(filter[0].sequence);
+            if (typeof newValue === 'string') {
+              handleChange({ target: { value: newValue } });
+              setSpecies('');
+              setRaca('');
+              setSexo('');
+              setIdade('');
+              setId('');
+            } else if (newValue) {
+              handleChange({ target: { value: newValue.name } });
+              setSpecies(newValue.species);
+              setRaca(newValue.race);
+              setSexo(newValue.gender);
+              setIdade(newValue.age);
+              setId(newValue.sequence);
+            }
           }}
-          options={ArrAnimais.map((option) => option.name)}
+          getOptionLabel={(option) => {
+            return typeof option === 'string' ? option : option.name;
+          }}
+          options={ArrAnimais}
+          renderOption={(props, option) => (
+            <li {...props}>
+              <div className="flex flex-col">
+                <div className="font-medium">{option.name}</div>
+                <div className="text-sm text-gray-500">
+                  {option.species} • {option.race} • {option.age} anos
+                </div>
+              </div>
+            </li>
+          )}
           renderInput={(params) => (
             <TextField
-              onChange={(e) => {
-                handleChange(e);
-              }}
               {...params}
+              placeholder="Digite ou selecione um paciente"
               InputProps={{
                 ...params.InputProps,
                 type: "search",
@@ -89,21 +107,6 @@ const InputConsulta = ({
       </div>
     );
   }
-  
-  // Update the Input component styles
-  const inputStyles = {
-    fontFamily: "Montserrat",
-    fontWeight: "medium",
-    "&::before": {
-      borderBottom: "none",
-    },
-    "&:hover:before": {
-      borderBottom: "none !important",
-    },
-    "&::after": {
-      borderBottom: "none",
-    },
-  };
   return (
     <div className="flex flex-col mb-4">
       <InputLabel
