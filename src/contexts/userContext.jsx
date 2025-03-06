@@ -9,6 +9,7 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [refreshToken, setRefreshToken] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isLoadingUserStorageData, setIsLoadingUserStorageData] =
     useState(false);
   const navigate = useNavigate();
@@ -21,8 +22,10 @@ export const UserProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log("Token validation response:", response);
       return response.status === 200;
     } catch (error) {
+      // Token is expired, try refreshing it
       if (error.response && error.response.status === 401) {
         const newToken = await refreshAccessToken();
         return newToken !== null;
@@ -128,16 +131,24 @@ export const UserProvider = ({ children }) => {
 
   // Load user data on component mount
   useEffect(() => {
-    loadUserData();
+    loadData();
   }, []);
+  const loadData = async () => {
+    await loadUserData();
+    setIsLoading(false);
+  };
 
-  // Redirect to login if no token is found
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-    }
-  }, [navigate]);
+  // Redirect to login if no token is found (ProtectedRoute lida com isso já)
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (!token) {
+  //     navigate("/login");
+  //   }
+  // }, [navigate]);
+
+  if (isLoading) {
+    return <div>Loading...</div>; // loading spinner talvez
+  }
 
   return (
     <UserContext.Provider
