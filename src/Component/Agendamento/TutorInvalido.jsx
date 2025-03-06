@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback ,useEffect } from "react";
 import { Input, InputLabel, Snackbar } from "@mui/material";
 import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
@@ -6,6 +6,7 @@ import z from "zod";
 import { CreateConsult } from "../../services/agendamento";
 import InputMask from "react-input-mask";
 import { TextField } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 
 const InputConsulta = ({ label, type, setter, value }) => {
   const handleChange = useCallback(
@@ -42,9 +43,31 @@ const InputConsulta = ({ label, type, setter, value }) => {
   );
 };
 
-const TutorInvalido = () => {
-  const [phone, setPhone] = useState("");
-  const [phoneWMask, setMask] = useState("");
+const formatInitialPhone = (phoneNumber) => {
+  if (!phoneNumber) return "";
+  let cleaned = phoneNumber.replace(/\D/g, '');
+  
+  if (phoneNumber.includes('(')) {
+    cleaned = phoneNumber.replace(/[\(\)\s-]/g, '');
+  }
+
+  if (cleaned.length >= 11) {
+    return `(${cleaned.slice(0,2)}) ${cleaned.slice(2,7)}-${cleaned.slice(7,11)}`;
+  }
+  return phoneNumber;
+};
+
+const TutorInvalido = ({ tel }) => {
+  const navigate = useNavigate();
+  const initialPhone = formatInitialPhone(tel?.phone);
+     const [phone, setPhone] = useState(() => {
+    const formatted = formatInitialPhone(tel?.phone);
+    return formatted;
+  });
+     const [phoneWMask, setMask] = useState(() => {
+    const formatted = formatInitialPhone(tel?.phone);
+    return formatted;
+  });
   const [nameAnimal, setName] = useState("");
   const [nameTutor, setTutor] = useState("");
   const [species, setEspecie] = useState("");
@@ -99,6 +122,14 @@ const TutorInvalido = () => {
     nameTutor: z.string().min(1, "Nome do tutor é obrigatório"),
   });
 
+ useEffect(() => {
+    if (tel?.phone) {
+      const formatted = formatInitialPhone(tel.phone);
+      setPhone(formatted);
+      setMask(formatted);
+    }
+  }, [tel?.phone]);
+
   const handleClose = () => {
     setOpen(!open);
   };
@@ -126,16 +157,13 @@ const TutorInvalido = () => {
       console.log('Sending data:', consulta);
       const response = await CreateConsult(consulta);
       console.log('Response:', response);
+      
       handleClose();
       
-      // Reset form fields
-      setName('');
-      setEspecie('');
-      setDate('');
-      setHora('');
-      setDesc('');
-      setPhone('');
-      setTutor('');
+      setTimeout(() => {
+        navigate('/agendamentos'); 
+      }, 1000);
+      
     } catch (error) {
       console.error('Error details:', error);
       handleError();
@@ -144,16 +172,20 @@ const TutorInvalido = () => {
 
   const handlePhone = (e) => {
     const value = e.target.value;
-    const formattedPhone = value
-      .replace(/\(\d{2}\)\s/, '($&') 
-      .replace(/\s/g, '')             
-      .replace(/\({2,}/g, '(')       
-      .replace(/\){2,}/g, ')')        
-      .replace(/\(\)/g, '');        
-    
-    setPhone(value);
-    setMask(formattedPhone);
+    let formattedValue = value;
+
+    if (value.replace(/\D/g, '').length > 0) {
+      const digits = value.replace(/\D/g, '');
+      if (digits.length >= 11) {
+        formattedValue = `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7,11)}`;
+      }
+    }
+
+    setPhone(formattedValue);
+    setMask(formattedValue);
   };
+
+  
 
   return (
     <>
@@ -377,7 +409,9 @@ TutorInvalido.propTypes = {
   type: PropTypes.string,
   value: PropTypes.string,
   width: PropTypes.number,
-  tel: PropTypes.object,
+  tel: PropTypes.shape({
+    phone: PropTypes.string
+  }),
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string,

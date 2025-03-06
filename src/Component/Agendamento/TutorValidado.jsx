@@ -149,15 +149,15 @@ const InputConsulta = ({
 };
 
 const TutorValidado = (props) => {
-  const [phoneWMask, setMask] = useState(props.tel.phone);
+  const [phoneWMask, setMask] = useState(props?.tel?.phone ?? '');
   const [animais, setAnimais] = useState([]);
   const [nameAnimal, setName] = useState("");
   const [raca, setRaca] = useState("");
   const [sexo, setSexo] = useState("");
   const [idade, setIdade] = useState("");
   const [id, setId] = useState("");
-  const [dadosTutor, setDadosTutor] = useState(props.tel.id);
-  const [nameTutor, setTutor] = useState("");
+  const [dadosTutor, setDadosTutor] = useState(props?.tel?.id ?? '');
+  const [nameTutor, setTutor] = useState(props?.tel?.name ?? '');
   const [species, setEspecie] = useState("");
   const [stringDate, setDate] = useState("");
   const [hora, setHora] = useState("");
@@ -229,8 +229,18 @@ const TutorValidado = (props) => {
   };
 
   useEffect(() => {
-    getAnimalByTutorId(props.tel.id, setAnimais);
-  }, []);
+    if (props?.tel?.id) {
+      getAnimalByTutorId(props.tel.id, setAnimais);
+    }
+  }, [props?.tel?.id]);
+
+  if (!props?.tel) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p>Carregando dados do tutor...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -296,7 +306,7 @@ const TutorValidado = (props) => {
                   <Input
                     type="text"
                     onChange={handlePhone}
-                    value={phoneMask(props.tel.phone)}
+                    value={phoneMask(props?.tel?.phone ?? '')}
                     disabled={true}
                     className={`border-[#9F9F9F] border rounded-md h-[46px] p-2 text-base font-Montserrat`}
                     disableUnderline={true}
@@ -408,7 +418,11 @@ TutorValidado.propTypes = {
   type: PropTypes.string,
   value: PropTypes.string,
   width: PropTypes.number,
-  tel: PropTypes.object,
+  tel: PropTypes.shape({
+    phone: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  }).isRequired,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string,

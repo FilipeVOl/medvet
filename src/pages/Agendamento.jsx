@@ -8,6 +8,7 @@ import TutorInvalido from "../Component/Agendamento/TutorInvalido";
 import Box from "@mui/material/Box";
 import InputMask from "react-input-mask";
 import { Snackbar, Alert } from "@mui/material";
+import TutorSelector from "../Component/Agendamento/TutorSelector";
 
 const Agendamento = () => {
   const style = {
@@ -27,6 +28,8 @@ const Agendamento = () => {
   const [open, setOpen] = useState(true);
   const [validate, setValidate] = useState(false);
   const [data, setData] = useState("");
+  const [selectedTutor, setSelectedTutor] = useState(null);
+  const [openSelector, setOpenSelector] = useState(false);
 
   const phoneUnmask = (value) => {
     return value
@@ -37,22 +40,42 @@ const Agendamento = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  const handleSelectorClose = () => {
+    setOpenSelector(false);
+  };
 
   const handleConfirmButton = async () => {
     try {
       const response = await getTutorByNumber(phoneUnmask(telefone));
-      setValidate(true);
-      setData(response);
-      if (response.phone && response.phone === phoneUnmask(telefone)) {
-        console.log("Telefone encontrado");
+
+      if (!response?.tutors || response.tutors.length === 0) {
+        setValidate(false);
+        setData(null);
+        setSelectedTutor({ phone: telefone }); 
+        handleClose();
+        return;
       }
-      handleClose();
+
+      const tutors = response.tutors;
+
+      if (tutors.length > 1) {
+        setData(tutors);
+        setValidate(false);
+        setSelectedTutor(null);
+      } else if (tutors.length === 1) {
+        setValidate(true);
+        setData(tutors);
+        setSelectedTutor(tutors[0]);
+        handleClose();
+      }
     } catch (error) {
-      muiSnackAlert("error", "Número não encontrado");
+      setValidate(false);
+      setData(null);
+      setSelectedTutor({ phone: telefone }); 
+      handleClose();
     }
   };
 
-  // Snackbar Alert
   const [openAlert, setOpenAlert] = useState(false);
   const [severity, setSeverity] = useState("success");
   const [message, setMessage] = useState("");
@@ -85,7 +108,6 @@ const Agendamento = () => {
             {message}
           </Alert>
         </Snackbar>
-
         <Modal
           disableEscapeKeyDown
           open={open}
@@ -93,17 +115,20 @@ const Agendamento = () => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={style}>
-            <h1 className="text-2xl font-bold">Conferir Telefone</h1>
+          <Box
+            sx={{
+              ...style,
+              height: "auto",
+              maxHeight: "90vh",
+              width: Array.isArray(data) && data.length > 1 ? "600px" : "auto",
+              overflow: "auto",
+            }}
+          >
+            <h1 className="text-2xl font-bold mb-6">Conferir Telefone</h1>
             <div>
-              <div className="flex flex-row items-end">
+              <div className="flex flex-col space-y-6">
                 <div className="w-full">
-                  <InputLabel
-                    sx={{
-                      fontFamily: "Montserrat",
-                    }}
-                    className="mt-6"
-                  >
+                  <InputLabel sx={{ fontFamily: "Montserrat" }}>
                     Telefone
                   </InputLabel>
                   <InputMask
@@ -119,15 +144,9 @@ const Agendamento = () => {
                           borderRadius: "0.75rem",
                           padding: "8px 12px",
                           width: "100%",
-                          "& .MuiInput-input": {
-                            padding: 0,
-                          },
-                          "&:before": {
-                            display: "none",
-                          },
-                          "&:after": {
-                            display: "none",
-                          },
+                          "& .MuiInput-input": { padding: 0 },
+                          "&:before": { display: "none" },
+                          "&:after": { display: "none" },
                         }}
                         placeholder="(00) 00000-0000"
                         className="border border-[#848484] rounded-xl h-[46px] text-base w-full"
@@ -136,27 +155,54 @@ const Agendamento = () => {
                     )}
                   </InputMask>
                 </div>
-              </div>
 
-              <div className="flex justify-between mt-20 gap-7">
-                <button
-                  data-testid="button-modal-agendamento"
-                  onClick={() => setOpen(false)}
-                  className="bg-[#FFFEF9] hover:bg-[#144A36] hover:text-white text-[#144A36] border-[#B4B0A8] border-[1px] border-solid font-bold rounded-[10px] h-[46px] w-[220px]"
-                >
-                  Voltar
-                </button>
-                <button
-                  onClick={handleConfirmButton}
-                  className="bg-[#D5D0C7] hover:bg-[#144A36] text-white font-bold rounded-[10px] h-[46px] w-[220px]"
-                >
-                  Continuar
-                </button>
+                {Array.isArray(data) && data.length > 1 && !validate && (
+                  <div className="w-full">
+                    <h1 className="text-xl font-bold mb-6 font-Montserrat">
+                      Selecione o Tutor
+                    </h1>
+                    <TutorSelector
+                      tutores={data}
+                      selectedTutor={selectedTutor}
+                      onTutorSelect={(tutor) => {
+                        console.log("Selected tutor:", tutor);
+                        if (tutor) {
+                          setSelectedTutor(tutor);
+                          setValidate(true);
+                          handleClose();
+                        }
+                      }}
+                    />
+                  </div>
+                )}
+
+            
+                <div className="flex justify-between gap-7 mt-4">
+                  <button
+                    data-testid="button-modal-agendamento"
+                    onClick={() => setOpen(false)}
+                    className="bg-[#FFFEF9] hover:bg-[#144A36] hover:text-white text-[#144A36] border-[#B4B0A8] border-[1px] border-solid font-bold rounded-[10px] h-[46px] w-[220px]"
+                  >
+                    Voltar
+                  </button>
+                  {(!Array.isArray(data) || data.length === 0) && (
+                    <button
+                      onClick={handleConfirmButton}
+                      className="bg-[#D5D0C7] hover:bg-[#144A36] text-white font-bold rounded-[10px] h-[46px] w-[220px]"
+                    >
+                      Continuar
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </Box>
         </Modal>
-        {validate ? <TutorValidado tel={data[0]} /> : <TutorInvalido />}
+        {validate ? (
+          <TutorValidado tel={selectedTutor} />
+        ) : (
+          <TutorInvalido tel={{ phone: telefone }} />
+        )}
       </div>
     </>
   );
