@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/userContext";
 import { useContext } from "react";
 import { IconButton, Divider } from "@mui/material";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
+import Swal from "sweetalert2";
 
 export default function Header() {
   const { token, signOut, user } = useContext(UserContext);
@@ -14,7 +15,6 @@ export default function Header() {
     await signOut();
     navigate("/login");
   };
-
 
   return (
     <>
@@ -29,21 +29,41 @@ export default function Header() {
         <div className="perfil-container flex justify-end items-center gap-4">
           <div className="flex items-center gap-4">
             <div className="perfil-box">
-            <h2 className="font-bold text-[#144A36]">{user?.name || 'Nome'}</h2>
-            <p className="text-gray-600 text-sm">{user?.role || 'Título'}</p>
+              <h2 className="font-bold text-[#144A36]">
+                {user?.name || "Nome"}
+              </h2>
+              <p className="text-gray-600 text-sm">{user?.role || "Título"}</p>
             </div>
           </div>
 
           {token && (
             <>
-              <Divider orientation="vertical" flexItem sx={{ height: '30px', alignSelf: 'center' }} />
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ height: "30px", alignSelf: "center" }}
+              />
               <IconButton
-                onClick={handleSignOut}
-                sx={{ 
-                  color: '#144A36',
-                  '&:hover': {
-                    backgroundColor: 'rgba(20, 74, 54, 0.1)'
-                  }
+                onClick={() => {
+                  Swal.fire({
+                    title: "Deseja realmente sair?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Sim",
+                    cancelButtonText: "Cancelar",
+                    confirmButtonColor: "#144A36",
+                    cancelButtonColor: "#000",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      handleSignOut();
+                    }
+                  });
+                }}
+                sx={{
+                  color: "#144A36",
+                  "&:hover": {
+                    backgroundColor: "rgba(20, 74, 54, 0.1)",
+                  },
                 }}
                 size="small"
               >
@@ -51,7 +71,6 @@ export default function Header() {
               </IconButton>
             </>
           )}
-        
         </div>
       </div>
     </>
