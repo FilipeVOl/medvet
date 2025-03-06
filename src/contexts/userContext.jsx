@@ -38,9 +38,12 @@ export const UserProvider = ({ children }) => {
   // Function to refresh the access token
   const refreshAccessToken = async () => {
     try {
-      const response = await axios.post("http://localhost:3333/token/refresh", {
-        refreshToken: localStorage.getItem("refreshToken"),
-      });
+      const response = await axios.patch(
+        "http://localhost:3333/token/refresh",
+        {
+          refreshToken: localStorage.getItem("refreshToken"),
+        }
+      );
       const { token } = response.data;
       localStorage.setItem("token", token);
       setToken(token);
