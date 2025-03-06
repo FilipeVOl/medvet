@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { LinearProgress } from "@mui/material";
 
 export const UserContext = createContext();
 
@@ -147,7 +148,11 @@ export const UserProvider = ({ children }) => {
   // }, [navigate]);
 
   if (isLoading) {
-    return <div>Loading...</div>; // loading spinner talvez
+    return (
+      <div className="min-h-screen flex items-center">
+        <LinearProgress color="success" />
+      </div>
+    );
   }
 
   return (
