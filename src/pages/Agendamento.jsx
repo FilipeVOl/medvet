@@ -51,7 +51,7 @@ const Agendamento = () => {
       if (!response?.tutors || response.tutors.length === 0) {
         setValidate(false);
         setData(null);
-        setSelectedTutor({ phone: telefone }); 
+        setSelectedTutor({ phone: telefone });
         handleClose();
         return;
       }
@@ -71,7 +71,7 @@ const Agendamento = () => {
     } catch (error) {
       setValidate(false);
       setData(null);
-      setSelectedTutor({ phone: telefone }); 
+      setSelectedTutor({ phone: telefone });
       handleClose();
     }
   };
@@ -176,24 +176,24 @@ const Agendamento = () => {
                   </div>
                 )}
 
-            
-                <div className="flex justify-between gap-7 mt-4">
-                  <button
-                    data-testid="button-modal-agendamento"
-                    onClick={() => setOpen(false)}
-                    className="bg-[#FFFEF9] hover:bg-[#144A36] hover:text-white text-[#144A36] border-[#B4B0A8] border-[1px] border-solid font-bold rounded-[10px] h-[46px] w-[220px]"
-                  >
-                    Voltar
-                  </button>
-                  {(!Array.isArray(data) || data.length === 0) && (
+                {(!Array.isArray(data) || data.length === 0) && (
+                  <div className="flex justify-between gap-7 mt-4">
+                    <button
+                      data-testid="button-modal-agendamento"
+                      onClick={() => setOpen(false)}
+                      className="bg-[#FFFEF9] hover:bg-[#144A36] hover:text-white text-[#144A36] border-[#B4B0A8] border-[1px] border-solid font-bold rounded-[10px] h-[46px] w-[220px]"
+                    >
+                      Voltar
+                    </button>
+
                     <button
                       onClick={handleConfirmButton}
                       className="bg-[#D5D0C7] hover:bg-[#144A36] text-white font-bold rounded-[10px] h-[46px] w-[220px]"
                     >
                       Continuar
                     </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           </Box>

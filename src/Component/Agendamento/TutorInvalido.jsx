@@ -72,7 +72,7 @@ const TutorInvalido = ({ tel }) => {
   const [nameTutor, setTutor] = useState("");
   const [species, setEspecie] = useState("");
   const [stringDate, setDate] = useState("");
-  const [hora, setHora] = useState("");
+ // const [hora, setHora] = useState("");
   const [description, setDesc] = useState("");
   const [open, setOpen] = useState(false);
   const [openError, setError] = useState(false);
@@ -161,7 +161,7 @@ const TutorInvalido = ({ tel }) => {
       handleClose();
       
       setTimeout(() => {
-        navigate('/agendamentos'); 
+        navigate('/agenda'); 
       }, 1000);
       
     } catch (error) {

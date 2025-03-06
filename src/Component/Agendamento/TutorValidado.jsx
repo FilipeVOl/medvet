@@ -6,6 +6,7 @@ import Textarea from "@mui/joy/Textarea";
 import z from "zod";
 import { ConsultTutorExist } from "../../services/agendamento";
 import { getAnimalByTutorId } from "../../services/animals";
+import { useNavigate } from "react-router-dom";
 
 const InputConsulta = ({
   label,
@@ -88,23 +89,7 @@ const InputConsulta = ({
       </div>
     );
   }
-  const textAreaStyles = {
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "#9F9F9F",
-      },
-      "&:hover fieldset": {
-        borderColor: "#9F9F9F",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "#9F9F9F",
-      },
-    },
-    "& .MuiInputBase-root": {
-      fontFamily: "Montserrat",
-    },
-  };
-
+  
   // Update the Input component styles
   const inputStyles = {
     fontFamily: "Montserrat",
@@ -149,22 +134,38 @@ const InputConsulta = ({
 };
 
 const TutorValidado = (props) => {
-  const [phoneWMask, setMask] = useState(props?.tel?.phone ?? '');
+  const navigate = useNavigate();
+  const [phoneWMask, setMask] = useState(props?.tel?.phone ?? "");
   const [animais, setAnimais] = useState([]);
   const [nameAnimal, setName] = useState("");
   const [raca, setRaca] = useState("");
   const [sexo, setSexo] = useState("");
   const [idade, setIdade] = useState("");
   const [id, setId] = useState("");
-  const [dadosTutor, setDadosTutor] = useState(props?.tel?.id ?? '');
-  const [nameTutor, setTutor] = useState(props?.tel?.name ?? '');
+  const [dadosTutor, setDadosTutor] = useState(props?.tel?.id ?? "");
+  const [nameTutor, setTutor] = useState(props?.tel?.name ?? "");
   const [species, setEspecie] = useState("");
   const [stringDate, setDate] = useState("");
-  const [hora, setHora] = useState("");
+  //const [hora, setHora] = useState("");
   const [description, setDesc] = useState("");
   const [open, setOpen] = useState(false);
   const [openError, setError] = useState(false);
-
+  const textAreaStyles = {
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#9F9F9F",
+      },
+      "&:hover fieldset": {
+        borderColor: "#9F9F9F",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#9F9F9F",
+      },
+    },
+    "& .MuiInputBase-root": {
+      fontFamily: "Montserrat",
+    },
+  };
   const dateMask = (value) => {
     return value
       .replace(/\D/g, "")
@@ -183,7 +184,7 @@ const TutorValidado = (props) => {
   const ConsultaSchema = z.object({
     species: z.string().min(1),
     stringDate: z.string().min(1),
-    hora: z.string().min(1),
+    //hora: z.string().min(1),
     phone: z.string().min(1),
     description: z.string().min(1),
     nameAnimal: z.string().min(1),
@@ -200,18 +201,24 @@ const TutorValidado = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+  
       const consulta = ConsultaSchema.parse({
         nameAnimal: nameAnimal,
         species: species,
         stringDate: stringDate,
-        hora: hora,
         description: description,
         phone: phoneWMask,
         nameTutor: nameTutor,
       });
+
+
       ConsultTutorExist(props.tel.id, consulta);
       handleClose();
+      setTimeout(() => {
+        navigate("/agenda");
+      }, 1000);
     } catch (error) {
+      console.error("Validation Error:", error);
       handleError();
     }
   };
@@ -284,7 +291,7 @@ const TutorValidado = (props) => {
                   value={species}
                 />
 
-            {/*        <InputConsulta
+                {/*        <InputConsulta
                   label="Hora"
                   type="text"
                   setter={setHora}
@@ -306,7 +313,7 @@ const TutorValidado = (props) => {
                   <Input
                     type="text"
                     onChange={handlePhone}
-                    value={phoneMask(props?.tel?.phone ?? '')}
+                    value={phoneMask(props?.tel?.phone ?? "")}
                     disabled={true}
                     className={`border-[#9F9F9F] border rounded-md h-[46px] p-2 text-base font-Montserrat`}
                     disableUnderline={true}
@@ -365,6 +372,20 @@ const TutorValidado = (props) => {
                   />
                 </div>
               </div>
+              <div className="mt-[5%]">
+                <label htmlFor="observation">Observação</label>
+                <Textarea
+                  disabled={false}
+                  minRows={7}
+                  size="md"
+                  variant="outlined"
+                  onChange={(e) => {
+                    setDesc(e.target.value);
+                  }}
+                  disableUnderline={true}
+                  sx={textAreaStyles}
+                />
+              </div>
 
               <div className="flex justify-end ml-4 mt-8">
                 <button
@@ -421,7 +442,7 @@ TutorValidado.propTypes = {
   tel: PropTypes.shape({
     phone: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired,
   }).isRequired,
   options: PropTypes.arrayOf(
     PropTypes.shape({
