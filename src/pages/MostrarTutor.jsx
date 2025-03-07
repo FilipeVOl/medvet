@@ -9,8 +9,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import SearchIcon from "@mui/icons-material/Search";
-import EditIcon from "../images/edit.svg";
-import TrashIcon from "../images/trash.svg";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Novoprofessor from "../images/novoaluno.png";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -18,6 +18,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import {
   getTutorByNumber,
   getTutores,
@@ -198,12 +199,12 @@ const MostrarTutor = () => {
             {message}
           </Alert>
         </Snackbar>
-        <div className="container h-[100vh]">
-          <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
+        <div className="container h-[100vh] pl-14 pr-8">
+          <h1 className="font-Montserrat p-16 h-10 text-2xl font-bold">
             Tutores cadastrados
           </h1>
-          <div className="mid grid grid-cols-[2fr_1fr] ml-36 sm:w-[80%]">
-            <div className="flex items-center">
+          <div className="mid grid grid-cols-[2fr_1fr] ml-14 sm:w-[80%]">
+            <div className="flex items-center relative">
               <input
                 placeholder="Nome do Tutor"
                 name="searchRegist"
@@ -213,7 +214,14 @@ const MostrarTutor = () => {
                   setQuery(target.value);
                 }}
               />
-              <SearchIcon className="absolute p-4" />
+              <SearchIcon
+                sx={{
+                  position: "absolute",
+                  left: "10px",
+                  color: "gray",
+                  fontSize: "20px",
+                }}
+              />
             </div>
 
             <div className="flex justify-end">
@@ -230,7 +238,7 @@ const MostrarTutor = () => {
                 variant="contained"
               >
                 <div className="flex flex-row justify-center mr-auto gap-8">
-                  <img src={Novoprofessor} alt="imagem do botao" />
+                  <PersonAddIcon />
                   Novo Tutor
                 </div>
               </Button>
@@ -252,7 +260,7 @@ const MostrarTutor = () => {
               </Modal>
             </div>
           </div>
-          <div className="ml-36 sm:w-[80%] mt-16">
+          <div className="ml-14 sm:w-[80%] mt-16">
             <TableContainer
               sx={{
                 height: "auto",
@@ -301,13 +309,13 @@ const MostrarTutor = () => {
                               setSelectedUser(row);
                             }}
                           >
-                            <img src={EditIcon} alt="Edit" />
+                            <EditIcon sx={{ color: "#144A36" }} />
                           </IconButton>
                           <IconButton
                             className="delete-button"
                             onClick={() => handleDelete(row)}
                           >
-                            <img src={TrashIcon} alt="Delete" />
+                            <DeleteIcon sx={{ color: "#d32f2f" }} />
                           </IconButton>
                         </StyledTableRow>
                       ))

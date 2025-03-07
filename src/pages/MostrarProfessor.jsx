@@ -9,9 +9,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import SearchIcon from "@mui/icons-material/Search";
-import EditIcon from "../images/edit.svg";
-import TrashIcon from "../images/trash.svg";
-import Novoaluno from "../images/novoaluno.png";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -25,6 +22,9 @@ import { UpdateEditContext } from "../contexts/updateEditContext";
 import { patchProf } from "../services/professores";
 import { Snackbar, Alert } from "@mui/material";
 import Swal from "sweetalert2";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 const style = {
   position: "absolute",
@@ -162,12 +162,12 @@ const MostrarProf = () => {
             {message}
           </Alert>
         </Snackbar>
-        <div className="container">
-          <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
+        <div className="container pl-14 pr-8">
+          <h1 className="font-Montserrat p-16 h-10 text-2xl font-bold">
             Professores cadastrados
           </h1>
-          <div className="mid grid grid-cols-[2fr_1fr] ml-36 sm:w-[80%]">
-            <div className="flex items-center">
+          <div className="mid grid grid-cols-[2fr_1fr] ml-14 sm:w-[80%]">
+            <div className="flex items-center relative"> {/* Added relative positioning */}
               <input
                 placeholder="N° de matricula"
                 name="searchRegist"
@@ -178,10 +178,12 @@ const MostrarProf = () => {
                 className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
               />
               <SearchIcon
-                style={{
+                sx={{
+                  position: "absolute",
+                  left: "10px",
                   color: "gray",
+                  fontSize: "20px",
                 }}
-                className="absolute translate-x-4"
               />
             </div>
 
@@ -199,7 +201,7 @@ const MostrarProf = () => {
                 variant="contained"
               >
                 <div className="flex flex-row justify-center mr-auto gap-2">
-                  <img src={Novoaluno} alt="imagem do botao" />
+                  <PersonAddIcon />
                   <h1 className="whitespace-nowrap">Novo Professor</h1>
                 </div>
               </Button>
@@ -222,7 +224,7 @@ const MostrarProf = () => {
               </Modal>
             </div>
           </div>
-          <div className="ml-36 sm:w-[80%] mt-16">
+          <div className="ml-14 sm:w-[80%] mt-16">
             <TableContainer component={Paper}>
               <Table aria-label="customized table">
                 <TableHead>
@@ -261,7 +263,7 @@ const MostrarProf = () => {
                               setSelectedUser(row);
                             }}
                           >
-                            <img src={EditIcon} />
+                            <EditIcon sx={{ color: "#144A36" }} />
                           </IconButton>
 
                           <IconButton
@@ -271,7 +273,7 @@ const MostrarProf = () => {
                               handleDelete(row);
                             }}
                           >
-                            <img src={TrashIcon} />
+                            <DeleteIcon sx={{ color: "#d32f2f" }} />
                           </IconButton>
                         </StyledTableRow>
                       ))}

@@ -8,10 +8,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import SearchIcon from "@mui/icons-material/Search";
-import EditIcon from "../images/edit.svg";
-import TrashIcon from "../images/trash.svg";
-import Novoaluno from "../images/novoaluno.png";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -27,6 +23,10 @@ import {
 } from "../contexts/updateEditContext";
 import { Snackbar, Alert } from "@mui/material";
 import Swal from "sweetalert2";
+import SearchIcon from "@mui/icons-material/Search";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 const style = {
   position: "absolute",
@@ -183,12 +183,12 @@ const MostrarAluno = () => {
             {message}
           </Alert>
         </Snackbar>
-        <div className="container">
-          <h1 className="font-Montserrat p-20 h-10 text-2xl font-bold">
+        <div className="container pl-14 pr-8">
+          <h1 className="font-Montserrat p-16 h-10 text-2xl font-bold">
             Alunos cadastrados
           </h1>
-          <div className="mid grid grid-cols-[2fr_1fr] ml-36 sm:w-[80%]">
-            <div className="flex items-center">
+          <div className="mid grid grid-cols-[2fr_1fr] ml-14 sm:w-[80%]">
+            <div className="flex items-center relative">
               <input
                 placeholder="N° de matricula"
                 name="searchRegist"
@@ -199,10 +199,13 @@ const MostrarAluno = () => {
                 className="relative border-border-gray border-[1px] rounded-md pl-2 h-9 w-[50%] indent-10 bg-search"
               />
               <SearchIcon
-                style={{
+                sx={{
+                  position: "absolute",
+                  left: "10px",
                   color: "gray",
+                  fontSize: "20px",
+                  zIndex: 1,
                 }}
-                className="absolute translate-x-4"
               />
             </div>
 
@@ -220,8 +223,8 @@ const MostrarAluno = () => {
                 variant="contained"
               >
                 <div className="flex flex-row justify-center mr-auto gap-8">
-                  <img src={Novoaluno} alt="imagem do botao" />
-                  Novo aluno
+                  <PersonAddIcon />
+                  <h1 className="whitespace-nowrap">  Novo aluno</h1>
                 </div>
               </Button>
 
@@ -243,7 +246,7 @@ const MostrarAluno = () => {
               </Modal>
             </div>
           </div>
-          <div className="ml-36 sm:w-[80%] mt-16">
+          <div className="ml-14 sm:w-[80%] mt-16">
             <TableContainer component={Paper}>
               <Table aria-label="customized table">
                 <TableHead>
@@ -283,7 +286,7 @@ const MostrarAluno = () => {
                               setSelectedUser(row);
                             }}
                           >
-                            <img src={EditIcon} />
+                            <EditIcon sx={{ color: "#144A36" }} />
                           </IconButton>
 
                           <IconButton
@@ -294,7 +297,7 @@ const MostrarAluno = () => {
                               handleDelete(row);
                             }}
                           >
-                            <img src={TrashIcon} className=" text-black" />
+                            <DeleteIcon sx={{ color: "#d32f2f" }} />
                           </IconButton>
                         </StyledTableRow>
                       ))}
