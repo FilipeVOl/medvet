@@ -40,8 +40,9 @@ export const UserProvider = ({ children }) => {
     try {
       const response = await axios.patch(
         "http://localhost:3333/token/refresh",
+        null,
         {
-          refreshToken: localStorage.getItem("refreshToken"),
+          withCredentials: true,
         }
       );
       const { token } = response.data;
@@ -50,7 +51,19 @@ export const UserProvider = ({ children }) => {
       return token;
     } catch (error) {
       console.error("Erro ao atualizar token:", error);
-      signOut();
+
+      // Handle specific error cases
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+        console.error("Response headers:", error.response.headers);
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+      } else {
+        console.error("Error setting up the request:", error.message);
+      }
+
+      signOut(); // Ensure the user is signed out if the refresh fails
       return null;
     }
   };
