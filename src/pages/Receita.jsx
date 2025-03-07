@@ -236,15 +236,18 @@ export const Receita = () => {
   }, []);
 
   useEffect(() => {
-    getAnimalBySequenceOrName(paciente).then((data) => {
-      setAnimal(data);
-    });
+    if (paciente) {
+      getAnimalBySequenceOrName(paciente).then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setAnimal(data[0].animal_id);
+        }
+      });
+    }
+    
     getTeacherIdByName(professor).then((data) => {
       setTeacherId(data);
     });
   }, [paciente, professor]);
-
-  useEffect(() => {}, [medications]);
 
   const validateTrue = (chaves) => {
     let obj = { ...required };
@@ -335,56 +338,56 @@ export const Receita = () => {
     });
   };
 
-const handleSubmit = async () => {
-  try {
-    const hasErrors = validateInputs();
 
-    if (hasErrors) {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth",
-      });
-      return;
-    }
-
-    let finalAnimalId = animal_id;
-    
-    if (!finalAnimalId) {
-      console.error('No animal_id available');
-      return;
-    }
-
-    const formattedMedications = medications.map((med) => ({
-      use_type: med.use_type || "oral",
-      pharmacy: med.pharmacy || "farmacia1",
-      unit: String(med.unit),
-      measurement: med.measurement,
-      description: med.description,
-    }));
-
-    const prescriptionData = {
-      teacher_id: String(teacher_id),
-      animal_id: String(finalAnimalId),
-      tutor: String(tutor),
-      species: String(species),
-      raca: String(raca),
-      sexo: String(sexo),
-      idade: String(idade),
-      peso: String(peso),
-      medications: formattedMedications,
-    };
-
-
-    const prescriptionId = await postPrescription(prescriptionData);
-
+  const handleSubmit = async () => {
+    try {
+      const hasErrors = validateInputs();
+  
+      if (hasErrors) {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "smooth",
+        });
+        return;
+      }
+  
+      console.log('Current animal_id:', animal_id);
+  
+      if (!animal_id || typeof animal_id !== 'string') {
+        console.error('Invalid animal_id:', animal_id);
+        alert('ID do animal inválido');
+        return;
+      }
+  
+      const prescriptionData = {
+        teacher_id: String(teacher_id),
+        animal_id: animal_id,
+        tutor: String(tutor),
+        species: String(species),
+        raca: String(raca),
+        sexo: String(sexo),
+        idade: String(idade),
+        peso: String(peso),
+        medications: medications.map((med) => ({
+          use_type: med.use_type || "oral",
+          pharmacy: med.pharmacy || "farmacia1",
+          unit: String(med.unit),
+          measurement: med.measurement,
+          description: med.description,
+        })),
+      };
+  
+      const prescriptionId = await postPrescription(prescriptionData);
+  
       if (prescriptionId) {
         handleButtonClick();
-
+  
         try {
           const prescriptionResponse = await getPrescription(prescriptionId);
           console.log("Prescription created:", prescriptionResponse);
-
+  
+          // Open PDF in new tab
           setTimeout(() => {
             if (typeof window !== "undefined") {
               window.open(
@@ -393,6 +396,11 @@ const handleSubmit = async () => {
               );
             }
           }, 1000);
+  
+          setTimeout(() => {
+            navigate('/');
+          }, 2000);
+  
         } catch (error) {
           console.error("Error getting prescription details:", error);
           alert("Erro ao buscar detalhes da receita");
