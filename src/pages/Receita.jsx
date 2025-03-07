@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import AddIcon from "@mui/icons-material/Add";
+import Swal from "sweetalert2";
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
 import {
@@ -50,6 +51,9 @@ export const InputReceita = ({
   setSexo,
   setIdade,
   setPeso,
+  setIdadeUnidade, // Add this
+  setIdadeMeses,
+  setPesoUnidade,
   setId,
 }) => {
   const handleChanges = (e) => {
@@ -118,6 +122,18 @@ export const InputReceita = ({
     );
   }
 
+  const parseAgeString = (ageString) => {
+    if (!ageString) return { years: "", months: "" };
+
+    const anosMatch = ageString.match(/(\d+)\s*anos?/);
+    const mesesMatch = ageString.match(/(\d+)\s*meses?/);
+
+    return {
+      years: anosMatch ? anosMatch[1] : "",
+      months: mesesMatch ? mesesMatch[1] : "",
+    };
+  };
+
   if (isPaciente) {
     return (
       <label htmlFor="free-solo-2-demo" className="grow ">
@@ -134,10 +150,34 @@ export const InputReceita = ({
             if (filter.length > 0) {
               setSpecies(filter[0].species);
               setRaca(filter[0].race);
-              setSexo(filter[0].gender);
-              setIdade(filter[0].age);
+              const genderMap = {
+                Fêmea: "F",
+                Macho: "M",
+                Indefinido: "",
+              };
+              setSexo(genderMap[filter[0].gender] || "");
+
+              const { years, months } = parseAgeString(filter[0].age);
+              if (years) {
+                setIdadeUnidade("anos");
+                setIdade(years);
+                setIdadeMeses(months);
+              } else if (months) {
+                setIdadeUnidade("meses");
+                setIdade(months);
+              }
+
+              if (filter[0].weight) {
+                const weightMatch =
+                  filter[0].weight.match(/(\d+\.?\d*)\s*(kg|g)/);
+                if (weightMatch) {
+                  setPeso(weightMatch[1]);
+                  setPesoUnidade(weightMatch[2]);
+                }
+              }
+
               setId(filter[0].sequence);
-              setAnimal(filter[0].animal_id);
+              setAnimal(filter[0].id);
               if (filter[0].tutor_name) {
                 setTutor(filter[0].tutor_name);
               }
@@ -362,31 +402,10 @@ export const Receita = () => {
     });
   };
 
-  const StyledInput = ({ label, value, onChange, className, ...props }) => {
-    return (
-      <div className="flex flex-col mb-4">
-        <label className="text-sm mb-1">{label}</label>
-        <Input
-          disableUnderline
-          value={value}
-          onChange={onChange}
-          sx={{
-            "&:before": { borderBottom: "none" },
-            "&:after": { borderBottom: "none" },
-            "&:hover:not(.Mui-disabled):before": { borderBottom: "none" },
-            "& .MuiInput-input": { padding: "8px" },
-          }}
-          className={`border border-gray-400 rounded-md h-[46px] text-base ${className}`}
-          {...props}
-        />
-      </div>
-    );
-  };
-
   const handleSubmit = async () => {
     try {
       const hasErrors = validateInputs();
-
+  
       if (hasErrors) {
         window.scrollTo({
           top: 0,
@@ -395,14 +414,14 @@ export const Receita = () => {
         });
         return;
       }
-
+  
       const formattedAge =
         idadeUnidade === "anos"
           ? `${idade} anos${idadeMeses ? ` e ${idadeMeses} meses` : ""}`
           : `${idade} meses`;
-
+  
       const formattedWeight = `${peso} ${pesoUnidade}`;
-
+  
       const prescriptionData = {
         teacher_id: String(teacher_id),
         animal_id: animal_id,
@@ -420,43 +439,48 @@ export const Receita = () => {
           description: med.description,
         })),
       };
-
-      console.log("Sending prescription data:", prescriptionData);
-
+  
       const prescriptionId = await postPrescription(prescriptionData);
-
+  
       if (prescriptionId) {
-        handleButtonClick();
-
         try {
           const prescriptionResponse = await getPrescription(prescriptionId);
           console.log("Prescription created:", prescriptionResponse);
-
-          setTimeout(() => {
-            if (typeof window !== "undefined") {
-              window.open(
-                `http://localhost:3333/pdf/prescription/${prescriptionId}`,
-                "_blank"
-              );
-            }
-          }, 1000);
-
-          setTimeout(() => {
+  
+          Swal.fire({
+            icon: "success",
+            title: "Receita criada com sucesso!",
+            showConfirmButton: true,
+            confirmButtonText: "OK",
+            confirmButtonColor: "#144A36",
+          }).then(() => {
+            window.open(
+              `http://localhost:3333/pdf/prescription/${prescriptionId}`,
+              "_blank"
+            );
             navigate("/");
-          }, 2000);
+          });
+  
         } catch (error) {
           console.error("Error getting prescription details:", error);
-          alert("Erro ao buscar detalhes da receita");
+          Swal.fire({
+            icon: "error",
+            title: "Erro!",
+            text: "Erro ao buscar detalhes da receita",
+            confirmButtonColor: "#144A36",
+          });
         }
       }
     } catch (error) {
       console.error("Error submitting prescription:", error);
-      alert(
-        "Erro ao criar receita. Verifique se um paciente foi selecionado e tente novamente."
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Erro!",
+        text: "Erro ao criar receita. Verifique se um paciente foi selecionado e tente novamente.",
+        confirmButtonColor: "#144A36",
+      });
     }
   };
-
   const data = {
     teacher_id,
     animal_id,
@@ -521,6 +545,10 @@ export const Receita = () => {
             descrValue="paciente"
             requireVal={required.paciente}
             handleButton={validateTrue}
+            setIdadeUnidade={setIdadeUnidade}
+            setIdadeMeses={setIdadeMeses}
+            setPesoUnidade={setPesoUnidade}
+            setAnimal={setAnimal}
             isPaciente
           />
 
@@ -535,7 +563,7 @@ export const Receita = () => {
                   : "outline-gray-input"
               }`}
             >
-              <option value="">Selecione</option>
+              <option value="">Indefinido</option>
               <option value="M">Macho</option>
               <option value="F">Fêmea</option>
             </select>
@@ -570,16 +598,14 @@ export const Receita = () => {
             <label className="text-sm mb-1">Idade</label>
             <div
               className={`flex items-center border border-gray-400 rounded-md h-[46px] overflow-hidden ${
-                idadeUnidade === "meses" ? "w-36" : "w-auto"
+                idadeUnidade === "meses" ? "w-40" : "w-full max-w-md"
               }`}
             >
               <Input
                 type="number"
                 value={idade}
                 onChange={(e) => setIdade(e.target.value)}
-                className={`  px-2 ${
-                  idadeUnidade === "meses" ? "w-20" : "w-20"
-                } text-center ${
+                className={`px-2 min-w-[60px] max-w-[80px] text-center ${
                   required.idade ? "outline-red-600" : "outline-none"
                 }`}
                 disableUnderline
@@ -587,21 +613,23 @@ export const Receita = () => {
               <select
                 value={idadeUnidade}
                 onChange={(e) => setIdadeUnidade(e.target.value)}
-                className="border-l border-gray-400 h-full px-2 bg-transparent"
+                className="border-l border-gray-400 h-full px-2 bg-transparent min-w-[90px]"
               >
                 <option value="anos">Anos</option>
                 <option value="meses">Meses</option>
               </select>
               {idadeUnidade === "anos" && (
-                <div className="flex items-center border-l border-gray-400">
+                <div className="flex items-center border-l border-gray-400 flex-1">
                   <Input
                     type="number"
                     value={idadeMeses}
                     onChange={(e) => setIdadeMeses(e.target.value)}
-                    className="w-20   px-2 text-center"
+                    className="min-w-[60px] max-w-[80px] px-2 text-center"
                     disableUnderline
                   />
-                  <span className="px-2 text-sm text-gray-600">Meses</span>
+                  <span className="px-2 text-sm text-gray-600 whitespace-nowrap">
+                    Meses
+                  </span>
                 </div>
               )}
             </div>
