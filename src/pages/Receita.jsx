@@ -128,15 +128,24 @@ export const InputReceita = ({
           disableClearable
           onChange={(_e, newValue) => {
             setter(newValue);
-            const filter = arrPacientes.filter((e) => e.name === newValue);
-            setSpecies(filter[0].species);
-            setRaca(filter[0].race);
-            setSexo(filter[0].gender);
-            setIdade(filter[0].age);
-            // setPeso(filter[0].weigth);
-            setId(filter[0].sequence);
+            const filter = arrPacientes.filter((e) => 
+              e.name === newValue || e.animal_name === newValue
+            );
+            if (filter.length > 0) {
+              setSpecies(filter[0].species);
+              setRaca(filter[0].race);
+              setSexo(filter[0].gender);
+              setIdade(filter[0].age);
+              setId(filter[0].sequence);
+              setAnimal(filter[0].animal_id);
+              if (filter[0].tutor_name) {
+                setTutor(filter[0].tutor_name);
+              }
+            }
           }}
-          options={arrPacientes.map((option) => option.name)}
+          options={arrPacientes.map((option) => 
+            option.animal_name || option.name
+          )}
           renderInput={(params) => (
             <TextField
               id="textField"
@@ -326,45 +335,48 @@ export const Receita = () => {
     });
   };
 
-  const handleSubmit = async () => {
-    try {
-      const hasErrors = validateInputs();
+const handleSubmit = async () => {
+  try {
+    const hasErrors = validateInputs();
 
-      if (hasErrors) {
-        window.scrollTo({
-          top: 0,
-          left: 0,
-          behavior: "smooth",
-        });
-        return;
-      }
+    if (hasErrors) {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+      return;
+    }
 
-      const formattedMedications = medications.map((med) => ({
-        use_type: med.use_type || "oral",
-        pharmacy: med.pharmacy || "farmacia1",
-        unit: String(med.unit),
-        measurement: med.measurement,
-        description: med.description,
-      }));
+    let finalAnimalId = animal_id;
+    
+    if (!finalAnimalId) {
+      console.error('No animal_id available');
+      return;
+    }
 
-      const animalIdentifier = animal_id || id;
-      if (!animalIdentifier) {
-        throw new Error("No animal ID available");
-      }
+    const formattedMedications = medications.map((med) => ({
+      use_type: med.use_type || "oral",
+      pharmacy: med.pharmacy || "farmacia1",
+      unit: String(med.unit),
+      measurement: med.measurement,
+      description: med.description,
+    }));
 
-      const prescriptionData = {
-        teacher_id: String(teacher_id),
-        animal_id: String(animal_id),
-        tutor: String(tutor),
-        species: String(species),
-        raca: String(raca),
-        sexo: String(sexo),
-        idade: String(idade),
-        peso: String(peso),
-        medications: formattedMedications,
-      };
+    const prescriptionData = {
+      teacher_id: String(teacher_id),
+      animal_id: String(finalAnimalId),
+      tutor: String(tutor),
+      species: String(species),
+      raca: String(raca),
+      sexo: String(sexo),
+      idade: String(idade),
+      peso: String(peso),
+      medications: formattedMedications,
+    };
 
-      const prescriptionId = await postPrescription(prescriptionData);
+
+    const prescriptionId = await postPrescription(prescriptionData);
 
       if (prescriptionId) {
         handleButtonClick();
