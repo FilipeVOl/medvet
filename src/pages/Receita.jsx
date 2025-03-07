@@ -128,8 +128,8 @@ export const InputReceita = ({
           disableClearable
           onChange={(_e, newValue) => {
             setter(newValue);
-            const filter = arrPacientes.filter((e) => 
-              e.name === newValue || e.animal_name === newValue
+            const filter = arrPacientes.filter(
+              (e) => e.name === newValue || e.animal_name === newValue
             );
             if (filter.length > 0) {
               setSpecies(filter[0].species);
@@ -143,8 +143,8 @@ export const InputReceita = ({
               }
             }
           }}
-          options={arrPacientes.map((option) => 
-            option.animal_name || option.name
+          options={arrPacientes.map(
+            (option) => option.animal_name || option.name
           )}
           renderInput={(params) => (
             <TextField
@@ -193,6 +193,9 @@ export const Receita = () => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const { medications, setMedications } = useContext(PrescContext);
   const [animal_id, setAnimal] = useState("");
+  const [idadeUnidade, setIdadeUnidade] = useState("anos");
+  const [idadeMeses, setIdadeMeses] = useState("");
+  const [pesoUnidade, setPesoUnidade] = useState("kg");
   const [paciente, setPaciente] = useState("");
   const [tutor, setTutor] = useState("");
   const [species, setSpecies] = useState("");
@@ -243,7 +246,7 @@ export const Receita = () => {
         }
       });
     }
-    
+
     getTeacherIdByName(professor).then((data) => {
       setTeacherId(data);
     });
@@ -267,6 +270,28 @@ export const Receita = () => {
     Object.keys(obj).forEach((key) => {
       obj[key] = false;
     });
+    if (!idade || idade <= 0) {
+      obj.idade = true;
+      hasErrors = true;
+    }
+
+    if (idadeUnidade === "anos" && idadeMeses) {
+      if (idadeMeses < 0 || idadeMeses > 11) {
+        obj.idade = true;
+        hasErrors = true;
+        alert("Meses deve estar entre 0 e 11");
+      }
+    }
+
+    if (!tutor) {
+      alert("É necessário selecionar um tutor cadastrado");
+      navigate("/tutor");
+      return true;
+    }
+    if (!peso || peso <= 0) {
+      obj.peso = true;
+      hasErrors = true;
+    }
 
     if (!paciente) {
       obj.paciente = true;
@@ -274,8 +299,9 @@ export const Receita = () => {
       return hasErrors;
     }
 
-    if (!animal_id && !id) {
-      setShowRegisterModal(true);
+    if (!animal_id) {
+      alert("É necessário cadastrar o animal primeiro");
+      navigate("/animal");
       return true;
     }
 
@@ -293,7 +319,6 @@ export const Receita = () => {
       if (!value || value === "null" || value === "undefined") {
         obj[key] = true;
         hasErrors = true;
-        console.log(`Field ${key} is invalid:`, value);
       }
     });
 
@@ -303,7 +328,6 @@ export const Receita = () => {
         if (!med.measurement) obj.measurement = true;
         if (!med.description) obj.description = true;
         hasErrors = true;
-        console.log(`Validation failed for medication ${index + 1}:`, med);
       }
     });
 
@@ -338,11 +362,31 @@ export const Receita = () => {
     });
   };
 
+  const StyledInput = ({ label, value, onChange, className, ...props }) => {
+    return (
+      <div className="flex flex-col mb-4">
+        <label className="text-sm mb-1">{label}</label>
+        <Input
+          disableUnderline
+          value={value}
+          onChange={onChange}
+          sx={{
+            "&:before": { borderBottom: "none" },
+            "&:after": { borderBottom: "none" },
+            "&:hover:not(.Mui-disabled):before": { borderBottom: "none" },
+            "& .MuiInput-input": { padding: "8px" },
+          }}
+          className={`border border-gray-400 rounded-md h-[46px] text-base ${className}`}
+          {...props}
+        />
+      </div>
+    );
+  };
 
   const handleSubmit = async () => {
     try {
       const hasErrors = validateInputs();
-  
+
       if (hasErrors) {
         window.scrollTo({
           top: 0,
@@ -351,15 +395,14 @@ export const Receita = () => {
         });
         return;
       }
-  
-      console.log('Current animal_id:', animal_id);
-  
-      if (!animal_id || typeof animal_id !== 'string') {
-        console.error('Invalid animal_id:', animal_id);
-        alert('ID do animal inválido');
-        return;
-      }
-  
+
+      const formattedAge =
+        idadeUnidade === "anos"
+          ? `${idade} anos${idadeMeses ? ` e ${idadeMeses} meses` : ""}`
+          : `${idade} meses`;
+
+      const formattedWeight = `${peso} ${pesoUnidade}`;
+
       const prescriptionData = {
         teacher_id: String(teacher_id),
         animal_id: animal_id,
@@ -367,8 +410,8 @@ export const Receita = () => {
         species: String(species),
         raca: String(raca),
         sexo: String(sexo),
-        idade: String(idade),
-        peso: String(peso),
+        idade: formattedAge,
+        peso: formattedWeight,
         medications: medications.map((med) => ({
           use_type: med.use_type || "oral",
           pharmacy: med.pharmacy || "farmacia1",
@@ -377,17 +420,18 @@ export const Receita = () => {
           description: med.description,
         })),
       };
-  
+
+      console.log("Sending prescription data:", prescriptionData);
+
       const prescriptionId = await postPrescription(prescriptionData);
-  
+
       if (prescriptionId) {
         handleButtonClick();
-  
+
         try {
           const prescriptionResponse = await getPrescription(prescriptionId);
           console.log("Prescription created:", prescriptionResponse);
-  
-          // Open PDF in new tab
+
           setTimeout(() => {
             if (typeof window !== "undefined") {
               window.open(
@@ -396,11 +440,10 @@ export const Receita = () => {
               );
             }
           }, 1000);
-  
+
           setTimeout(() => {
-            navigate('/');
+            navigate("/");
           }, 2000);
-  
         } catch (error) {
           console.error("Error getting prescription details:", error);
           alert("Erro ao buscar detalhes da receita");
@@ -458,7 +501,9 @@ export const Receita = () => {
             handleButton={validateTrue}
             isProf
           />
+        </div>
 
+        <div className="grid grid-cols-3 gap-4 mb-4">
           <InputReceita
             label="Paciente"
             setter={setPaciente}
@@ -478,16 +523,104 @@ export const Receita = () => {
             handleButton={validateTrue}
             isPaciente
           />
+
+          <div className="flex flex-col">
+            <label className="text-sm mb-1">Sexo</label>
+            <select
+              value={sexo}
+              onChange={(e) => setSexo(e.target.value)}
+              className={`border border-gray-400 rounded-md h-[46px] px-2 text-base ${
+                required.sexo
+                  ? "outline-red-600 border-red-500"
+                  : "outline-gray-input"
+              }`}
+            >
+              <option value="">Selecione</option>
+              <option value="M">Macho</option>
+              <option value="F">Fêmea</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm mb-1">Peso</label>
+            <div className="flex items-center border border-gray-400 rounded-md h-[46px] w-32 overflow-hidden">
+              <Input
+                type="number"
+                value={peso}
+                onChange={(e) => setPeso(e.target.value)}
+                className={`flex-1 px-2 text-center ${
+                  required.peso ? "outline-red-600" : "outline-none"
+                }`}
+                disableUnderline
+              />
+              <select
+                value={pesoUnidade}
+                onChange={(e) => setPesoUnidade(e.target.value)}
+                className="border-l border-gray-400 h-full px-2 bg-transparent"
+              >
+                <option value="kg">kg</option>
+                <option value="g">g</option>
+              </select>
+            </div>
+          </div>
         </div>
-        <div className="grid grid-cols-3 gap-4">
-          <InputReceita
-            label="Espécie"
-            setter={setSpecies}
-            value={species}
-            descrValue="species"
-            requireVal={required.species}
-            handleButton={validateTrue}
-          />
+
+        <div className="grid grid-cols-3 gap-4 mb-4">
+          <div className="flex flex-col">
+            <label className="text-sm mb-1">Idade</label>
+            <div
+              className={`flex items-center border border-gray-400 rounded-md h-[46px] overflow-hidden ${
+                idadeUnidade === "meses" ? "w-36" : "w-auto"
+              }`}
+            >
+              <Input
+                type="number"
+                value={idade}
+                onChange={(e) => setIdade(e.target.value)}
+                className={`  px-2 ${
+                  idadeUnidade === "meses" ? "w-20" : "w-20"
+                } text-center ${
+                  required.idade ? "outline-red-600" : "outline-none"
+                }`}
+                disableUnderline
+              />
+              <select
+                value={idadeUnidade}
+                onChange={(e) => setIdadeUnidade(e.target.value)}
+                className="border-l border-gray-400 h-full px-2 bg-transparent"
+              >
+                <option value="anos">Anos</option>
+                <option value="meses">Meses</option>
+              </select>
+              {idadeUnidade === "anos" && (
+                <div className="flex items-center border-l border-gray-400">
+                  <Input
+                    type="number"
+                    value={idadeMeses}
+                    onChange={(e) => setIdadeMeses(e.target.value)}
+                    className="w-20   px-2 text-center"
+                    disableUnderline
+                  />
+                  <span className="px-2 text-sm text-gray-600">Meses</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm mb-1">Espécie</label>
+            <div className="flex items-center border border-gray-400 rounded-md h-[46px] overflow-hidden">
+              <Input
+                value={species}
+                onChange={(e) => setSpecies(e.target.value)}
+                className={`w-full px-2 ${
+                  required.species ? "outline-red-600" : "outline-none"
+                }`}
+                disableUnderline
+              />
+            </div>
+          </div>
+
           <InputReceita
             label="Raça"
             setter={setRaca}
@@ -496,36 +629,6 @@ export const Receita = () => {
             requireVal={required.raca}
             handleButton={validateTrue}
           />
-          <InputReceita
-            label="Sexo"
-            setter={setSexo}
-            value={sexo}
-            descrValue="sexo"
-            requireVal={required.sexo}
-            handleButton={validateTrue}
-          />
-        </div>
-        <div className="grid grid-cols-3 gap-4 w-full">
-          <label>
-            Idade
-            <InputReceita
-              setter={setIdade}
-              value={idade}
-              descrValue="idade"
-              requireVal={required.idade}
-              handleButton={validateTrue}
-            />
-          </label>
-          <label>
-            Peso
-            <InputReceita
-              setter={setPeso}
-              value={peso}
-              descrValue="peso"
-              requireVal={required.peso}
-              handleButton={validateTrue}
-            />
-          </label>
         </div>
       </form>
 
@@ -572,7 +675,7 @@ export const Receita = () => {
                 </label>
 
                 <label>
-                  Farmácia
+                  Tipo de Farmácia
                   <select
                     value={e.pharmacy}
                     onChange={(e) =>
@@ -585,8 +688,8 @@ export const Receita = () => {
                     }
                     className="border flex-col grow flex w-full rounded-md p-3 text-base border-border-gray"
                   >
-                    <option value="farmacia1">Farmacia 1</option>
-                    <option value="farmacia 2">Farmacia 2</option>
+                    <option value="comum">Farmácia Comum</option>
+                    <option value="manipulada">Farmácia Manipulada</option>
                   </select>
                 </label>
 
@@ -686,7 +789,7 @@ export const Receita = () => {
         </button>
       </div>
       <div>
-      <Modal
+        <Modal
           open={openModal}
           onClose={handleButtonClick}
           aria-labelledby="success-modal-title"
@@ -708,9 +811,7 @@ export const Receita = () => {
             <Typography id="success-modal-title" variant="h6" component="h2">
               Receita Criada
             </Typography>
-            <Typography sx={{ mt: 2 }}>
-              Receita criada com sucesso
-            </Typography>
+            <Typography sx={{ mt: 2 }}>Receita criada com sucesso</Typography>
             <div className="flex justify-between mt-4 w-full">
               <button
                 onClick={handleButtonClick}

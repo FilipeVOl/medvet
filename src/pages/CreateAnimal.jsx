@@ -16,6 +16,9 @@ export default function CreateAnimal() {
   const [especie, setEspecie] = useState("");
   const [raca, setRaca] = useState("");
   const [sexo, setSexo] = useState("");
+  const [idadeUnidade, setIdadeUnidade] = useState("anos");
+  const [idadeMeses, setIdadeMeses] = useState("");
+  const [pesoUnidade, setPesoUnidade] = useState("kg");
   const [idade, setIdade] = useState("");
   const [peso, setPeso] = useState("");
   const [pelagem, setPelagem] = useState("");
@@ -248,31 +251,79 @@ export default function CreateAnimal() {
                   </select>
                 </label>
               </div>
-              <div id="ida-pes-pela" className="flex gap-8 my-4 justify-center">
-                <InputComponent
-                  nome="Idade"
-                  dataType="text"
-                  type={idade}
-                  setDataCom={setIdade}
-                  requireVal={required.idade}
-                  handleButton={validateTrue}
-                  descrHandle="idade"
-                />
-                <InputComponent
-                  nome="Peso"
-                  dataType="text"
-                  type={peso}
-                  setDataCom={setPeso}
-                  requireVal={required.peso}
-                  handleButton={validateTrue}
-                  descrHandle="peso"
-                />
-                <InputComponent
-                  nome="Pelagem"
-                  dataType="text"
-                  type={pelagem}
-                  setDataCom={setPelagem}
-                />
+              <div className="flex gap-8 justify-center my-4" id="ida-pes-pela">
+                <div className="grid h-full w-1/3">
+                  <label className="text-lg mb-1">Idade</label>
+                  <div
+                    className={`flex items-center border-2 border-gray rounded-lg h-[42px] overflow-hidden ${
+                      idadeUnidade === "meses" ? "w-36" : "w-[190px]"
+                    }`}
+                  >
+                    <input
+                      type="number"
+                      value={idade}
+                      onChange={(e) => {
+                        setIdade(e.target.value);
+                        validateTrue("idade");
+                      }}
+                      className={`w-14 px-2 text-center focus:outline-none focus:ring-0 ${
+                        required.idade ? "outline-red-600" : ""
+                      }`}
+                    />
+                    <select
+                      value={idadeUnidade}
+                      onChange={(e) => setIdadeUnidade(e.target.value)}
+                      className="border-l-2 border-gray h-full px-1 bg-white text-sm"
+                    >
+                      <option value="anos">Anos</option>
+                      <option value="meses">Meses</option>
+                    </select>
+                    {idadeUnidade === "anos" && (
+                      <div className="flex items-center border-l-2 border-gray">
+                        <input
+                          type="number"
+                          value={idadeMeses}
+                          onChange={(e) => setIdadeMeses(e.target.value)}
+                          className="w-14 px-2 text-center outline-none"
+                        />
+                        <span className="px-1 text-sm text-gray-600">m</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid h-full w-1/3">
+                  <label className="text-lg  mb-1">Peso</label>
+                  <div className="flex items-center border-2 border-gray rounded-lg h-[42px] overflow-hidden w-36">
+                    <input
+                      type="number"
+                      value={peso}
+                      onChange={(e) => {
+                        setPeso(e.target.value);
+                        validateTrue("peso");
+                      }}
+                      className={`w-20 px-2 text-center focus:outline-none focus:ring-0 ${
+                        required.peso ? "outline-red-600" : ""
+                      }`}
+                    />
+                    <select
+                      value={pesoUnidade}
+                      onChange={(e) => setPesoUnidade(e.target.value)}
+                      className="border-l-2 border-gray h-full px-1 bg-white text-sm"
+                    >
+                      <option value="kg">kg</option>
+                      <option value="g">g</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="grid h-full w-1/3">
+                  <InputComponent
+                    nome="Pelagem"
+                    dataType="text"
+                    type={pelagem}
+                    setDataCom={setPelagem}
+                  />
+                </div>
               </div>
             </div>
             <button
