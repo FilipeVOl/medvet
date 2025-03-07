@@ -79,14 +79,14 @@ export default function Agenda() {
   );
 
   return (
-    <div className="w-full min-h-screen m-6 md:p-8 font-Montserrat">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold">Agendamentos</h1>
-        </div>
+    <div className="w-full pl-24 pt-12 min-h-screen font-Montserrat overflow-x-hidden">
+    <div className="pr-6 md:pr-8 max-w-[calc(100%-2rem)] mx-auto space-y-6">
+      <div>
+        <h1 className="text-xl md:text-2xl font-bold">Agendamentos</h1>
+      </div>
   
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-4 w-full">
+      <div className="flex-1 flex flex-col sm:flex-row gap-4">
             <Select
               value={searchType}
               onChange={(e) => setSearchType(e.target.value)}
@@ -148,7 +148,7 @@ export default function Agenda() {
           </Link>
         </div>
   
-        <div className="space-y-6">
+        <div className="space-y-6 pb-4">
           {Object.keys(alteredAgenda).length === 0 ? (
             <div className="text-center py-8">
               <p className="text-gray-500 text-lg">

@@ -4,13 +4,15 @@ import Navbar from "../Component/Navbar";
 
 export function DefaultLayout() {
   return (
-    <div>
+    <div className="min-h-screen">
       <Header />
-      <div className="h-20"></div>
-      <div className="flex">
-        <div className=""></div>
-        <Navbar />
-        <Outlet />
+      <div className="pt-20 overflow-x-hidden"> 
+        <div className="flex">
+          <Navbar />
+          <main className="ml-60 w-full "> 
+            <Outlet />
+          </main>
+        </div>
       </div>
     </div>
   );

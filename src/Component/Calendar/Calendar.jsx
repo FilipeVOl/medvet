@@ -63,7 +63,7 @@ export const Calendar = () => {
           <h1>Agendamento para o dia {dateClicked}</h1>
         </Box> */}
       {/* </Modal> */}
-      <div className="justify-center w-full p-12 mt-2 flex flex-col gap-8 Montserrat">
+      <div className="justify-center w-full pl-28 pr-8 py-8  flex flex-col gap-8 Montserrat">
         <span className="font-bold text-3xl Montserrat">Calendário</span>
         <FullCalendar
           locale={"pt-br"}

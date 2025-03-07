@@ -22,7 +22,7 @@ const Navbar = () => {
     Professor: "showProfessor",
   };
   return (
-    <div className="shadow-md min-h-screen bg-[#007448] p-10 text-white-med top-28 max-w-72 min-w-72">
+    <div className=" fixed shadow-md min-h-screen bg-[#007448] p-10 text-white-med max-w-72 min-w-72">
       <div
         id="inicio"
         className="flex py-4 hover:bg-[#008854] rounded-md px-2 transition-all duration-300"

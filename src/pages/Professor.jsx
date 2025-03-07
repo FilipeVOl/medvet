@@ -146,7 +146,7 @@ export default function Professor(props) {
         </Alert>
       </Snackbar>
 
-      <div className="cadastro-container w-full ">
+      <div className="cadastro-container w-full pl-14">
         <h1 className="font-Montserrat p-14 h-10 font-bold text-2xl">
           Novo Professor
         </h1>
@@ -241,7 +241,7 @@ export default function Professor(props) {
               </label>
             </div>
           </div>
-          <div className="button-container flex justify-end px-28 h-[28rem]">
+          <div className="button-container flex justify-end px-12 h-[28rem]">
             <button
               id="cadastrar"
               name={props.buttonName}

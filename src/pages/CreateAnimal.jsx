@@ -142,7 +142,7 @@ export default function CreateAnimal() {
           {message}
         </Alert>
       </Snackbar>
-      <div className="font-Montserrat p-14 w-full">
+      <div className="font-Montserrat pl-28 py-14 pr-12 p w-full">
         <div className="font-bold font-Montserrat">
           <h1 className="text-2xl">Novo Animal</h1>
         </div>

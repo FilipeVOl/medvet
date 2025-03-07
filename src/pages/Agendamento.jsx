@@ -93,7 +93,7 @@ const Agendamento = () => {
 
   return (
     <>
-      <div className="w-full font-Montserrat" id="main-agendamento">
+      <div className="w-full font-Montserrat pl-8" id="main-agendamento">
         <Snackbar
           open={openAlert}
           autoHideDuration={2000}

@@ -154,7 +154,7 @@ export default function Cadastro(props) {
           {message}
         </Alert>
       </Snackbar>
-      <div className="cadastro-container w-full ">
+      <div className="cadastro-container w-full pl-14 pr-8">
         <h1 className="font-Montserrat p-14 h-10 font-bold text-2xl">
           Novo aluno
         </h1>
@@ -290,7 +290,7 @@ export default function Cadastro(props) {
             </div>
           </div>
 
-          <div className="flex justify-end pt-8 pb-6">
+          <div className="flex justify-end pt-8 pr-12 pb-6">
             <button
               id="cadastrar"
               name={props.buttonName}

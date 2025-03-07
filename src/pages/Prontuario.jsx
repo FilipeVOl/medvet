@@ -201,7 +201,7 @@ export default function Prontuario() {
           {isClicked === "prescricoes" &&
             medications.map((medication) => (
               <div
-                className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
+                className="flex flex-col bg-[#FFFEF9] px-11 py-6 zrounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
                 key={medication.id}
               >
                 <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">

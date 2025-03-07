@@ -408,7 +408,7 @@ export const Receita = () => {
   };
 
   return (
-    <div className="font-Montserrat">
+    <div className="font-Montserrat pl-14">
       <h1 className="p-14 h-10 text-2xl font-bold">Receita</h1>
       <p className="text-xl px-14 py-8">Identificação</p>
       <form className="px-14">

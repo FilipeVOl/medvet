@@ -148,7 +148,7 @@ export default function Tutor(props) {
           {message}
         </Alert>
       </Snackbar>
-      <div className="cadastro-container w-full">
+      <div className="cadastro-container w-full pl-14">
         <h1 className="font-Montserrat p-14 h-10 text-2xl font-bold">
           Novo tutor
         </h1>
@@ -218,7 +218,7 @@ export default function Tutor(props) {
             </div>
           </div>
 
-          <div className="button-container flex justify-end px-28 h-auto">
+          <div className="button-container flex justify-end px-12 h-auto">
             <button
               id="cadastrar"
               name={props.buttonName}
