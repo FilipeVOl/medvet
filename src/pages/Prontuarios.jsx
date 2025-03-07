@@ -26,22 +26,31 @@ export default function Prontuarios() {
 
   const handleSearch = async (value) => {
     setSearchValue(value);
-
-    switch (searchType) {
-      case "patient":
-        getAnimalBySequenceOrName(setProntuarios, value);
-        break;
-      case "tutor":
-        const data = await getAnimalsByTutorName(value);
-        setProntuarios(data);
-        break;
-      case "number":
-        getAnimalBySequenceOrName(setProntuarios, value);
-        break;
-      default:
-        break;
+    
+    if (value === '') {
+      getAllAnimals(setProntuarios);
+      return;
     }
-  };
+  
+    try {
+      switch (searchType) {
+        case "patient":
+        case "number":
+          const animals = await getAnimalBySequenceOrName(value);
+          setProntuarios(animals);
+          break;
+        case "tutor":
+          const data = await getAnimalsByTutorName(value);
+          setProntuarios(data);
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error('Error during search:', error);
+      setProntuarios([]);
+    }
+};
 
   return (
     <div className="font-Montserrat w-full pl-24 py-12 pr-12 flex flex-col ">
@@ -68,7 +77,6 @@ export default function Prontuarios() {
           >
             <MenuItem value="patient">Nome do Paciente</MenuItem>
             <MenuItem value="tutor">Nome do Tutor</MenuItem>
-            <MenuItem value="number">Nº do Paciente</MenuItem>
           </Select>
 
           <FilterInput

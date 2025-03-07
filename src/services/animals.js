@@ -42,8 +42,9 @@ export const getAnimalByTutorId = async (id, res) => {
 export const getAnimalBySequenceOrName = async (q) => {
     try {
         const { data } = await axios.get(`http://localhost:3333/search/animal?q=${q}`);
-        return data[0].animal_id
+        return data; 
     } catch(e) {
-        return null
+        console.error('Error searching animals:', e);
+        return [];
     }
 }
