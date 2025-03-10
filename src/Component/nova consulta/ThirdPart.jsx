@@ -59,7 +59,7 @@ export default function ThirdPart(props) {
       vaccination: allPagesData.pagOne.vacina,
       stringDate: replaceDateToBrl(allPagesData.pagOne.data),
       animal_id: allPagesData.pagOne.idAnimal[0].id,
-      teacher_id: allPagesData.pagOne.teacher_id.id,
+      teacher_id: allPagesData.pagOne.teacher_id.id, // mudar para id do professor
       weight: parseInt(allPagesData.pagOne.peso),
       history: allPagesData.pagOne.historico,
       reason_consult: allPagesData.pagOne.motivo,

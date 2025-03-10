@@ -15,13 +15,12 @@ const getProfessores = async (set, page) => {
   }
 };
 
-const getAllTeachers = async (set) => {
+const getAllTeachers = async () => {
   try {
     const { data } = await axios.get(
       "http://localhost:3333/get/teacher?numberOfItems=10000&page=1"
     );
-    set(data.teacher);
-    return data;
+    return data.teacher;
   } catch (e) {
     console.error("Erro ao buscar todos os professores", e);
   }

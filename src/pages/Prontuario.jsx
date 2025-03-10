@@ -4,8 +4,10 @@ import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternate
 import MedicalInformationIcon from "@mui/icons-material/MedicalInformation";
 import { getProntuario } from "../services/prontuario";
 import CircularProgress from "@mui/material/CircularProgress";
-import { getEnchiridion, getEnchiridionsAnimalId } from "../services/enchiridion";
-import { getTeacherName } from "../services/enchiridion";
+import {
+  getEnchiridion,
+  getEnchiridionsAnimalId,
+} from "../services/enchiridion";
 import TrashIcon from "../images/trashProntu.svg";
 import PrinterIcon from "../images/printer.svg";
 import EditIcon from "../images/editProntu.svg";
@@ -23,28 +25,31 @@ import ModalAnexo from "../Component/Prontuarios/ModalAnexo";
 import ModalViewAnexo from "../Component/Prontuarios/ModalViewAnexo";
 import ModalDelete from "../Component/Prontuarios/ModalDelete";
 import ModalEdit from "../Component/Prontuarios/ModalEdit";
-import {getPrescByAnimalId} from "../services/prescription";
+import { getPrescByAnimalId } from "../services/prescription";
 import { getAnexos } from "../services/anexos";
 import { getAnimalById } from "../services/animals";
+import { getAllTeachers, getTeacherByName } from "../services/professores";
+import axios from "axios";
 
 export default function Prontuario() {
   const { id } = useParams();
   const [animal, setAnimal] = useState({});
   const [enchiridions, setEnchiridions] = useState([]);
   const [medications, setMedications] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [teacherNames, setTeacherNames] = useState("Jorge");
+  const [isLoading, setIsLoading] = useState(true);
+  const [teacherNames, setTeacherNames] = useState([]);
   const [isClicked, setIsClicked] = useState("consultas");
   const fileInputRef = useRef();
   const [selectedFile, setSelectedFile] = useState("");
   const [deletedMedications, setDeletedMedications] = useState([]);
   const [modal, setModal] = useState(false);
   const [openModal, setOpenModal] = useState(null); // Add this line
-  const { selectedMedicationId, setSelectedMedicationId } = useContext(PrescContext); // Add this line
   const [selectedAnexoId, setSelectedAnexoId] = useState(null); // Add this line
-  const [anexos, setAnexos] = useState([])
+  const [anexos, setAnexos] = useState([]);
   const [search, setSearch] = useState("");
   const [filteredEnchiridions, setFilteredEnchiridions] = useState([]);
+  const { selectedMedicationId, setSelectedMedicationId } =
+    useContext(PrescContext); // Add this line
 
   const handleOpenModal = (modalName, id = null, name = "") => {
     setOpenModal(modalName);
@@ -54,13 +59,12 @@ export default function Prontuario() {
       setSelectedAnexoId(id); // Set the selected anexo ID in the state
     }
     setSelectedFile(name);
-    console.log(selectedFile) // Set the selected anexo name in the state
   };
 
   const handleCloseModal = () => {
     setOpenModal(null);
-    setSelectedMedicationId(null); // Reset the selected medication ID in the context
-    setSelectedAnexoId(null); // Reset the selected anexo ID in the state
+    setSelectedMedicationId(null);
+    setSelectedAnexoId(null);
   };
 
   const style = {
@@ -93,10 +97,17 @@ export default function Prontuario() {
       setEnchiridions(response.enchiridions);
       setMedications(medication);
       setAnexos(anexos);
+      await getTeacherNames();
     };
 
-    fetchData();
+    fetchData().then(() => setIsLoading(false));
   }, [setEnchiridions, setMedications, setAnexos]);
+
+  const getTeacherNames = async () => {
+    const response = await getAllTeachers();
+    console.log("Professores: ", response);
+    setTeacherNames(response);
+  };
 
   const firstCapitalLetter = (string) => {
     if (string) {
@@ -118,8 +129,9 @@ export default function Prontuario() {
 
     if (selectedEnchiridion) {
       const content = selectedEnchiridion.medications
-        .map((medication) => (
-          `
+        .map(
+          (medication) =>
+            `
         Receita Simples
         Paciente: ${prontuario.name}
         Tutor: Clemendes
@@ -134,7 +146,7 @@ export default function Prontuario() {
         Tipo de Uso: ${medication.use_type}
         Farmácia: ${medication.pharmacy}
         `
-        ))
+        )
         .join("\n\n");
       doc.text(content, 10, 10);
       doc.save("prescription.pdf");
@@ -156,16 +168,24 @@ export default function Prontuario() {
     }
   };
 
-  const handleSearchChange = useCallback((e) => {
-    const value = e.target.value;
-    setSearch(value);
-    const filteredEnchiridions = enchiridions.filter(
-      (enchiridion) =>
-        enchiridion.reason_consult.toLowerCase().includes(value.toLowerCase()) ||
-        enchiridion.weights.toString().toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredEnchiridions(filteredEnchiridions);
-  }, [enchiridions]);
+  const handleSearchChange = useCallback(
+    (e) => {
+      const value = e.target.value;
+      setSearch(value);
+      const filteredEnchiridions = enchiridions.filter(
+        (enchiridion) =>
+          enchiridion.reason_consult
+            .toLowerCase()
+            .includes(value.toLowerCase()) ||
+          enchiridion.weights
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
+      );
+      setFilteredEnchiridions(filteredEnchiridions);
+    },
+    [enchiridions]
+  );
 
   const handleDeleteConfirm = () => {
     handleDelete(selectedMedicationId);
@@ -190,12 +210,6 @@ export default function Prontuario() {
       id,
       enchiridionid,
     }) => {
-      const navigate = useNavigate();
-
-      const handleClick = () => {
-        navigate(`/prontuarios/view/1`);
-      };
-
       return (
         <>
           {isClicked === "prescricoes" &&
@@ -211,7 +225,8 @@ export default function Prontuario() {
                       alt="medicine icon"
                       className="h-8"
                     />
-                    {date} - {teacherNames || teacherNames[id] || id}
+                    {/* {date} - {teacherNames || teacherNames[id] || id} */}
+                    aqui
                   </div>
 
                   {isClicked === "prescricoes" && (
@@ -276,10 +291,10 @@ export default function Prontuario() {
                       fontSize="24"
                     />
                   )}
-
-                  {date} - {teacherNames || teacherNames[id] || id}
+                  {date} -{" "}
+                  {teacherNames &&
+                    teacherNames.find((teacher) => teacher.id === id)?.name}
                 </div>
-
               </span>
 
               {isClicked === "consultas" ? (
@@ -300,7 +315,6 @@ export default function Prontuario() {
               ) : null}
             </div>
           ) : null}
-
         </>
       );
     };
@@ -310,22 +324,25 @@ export default function Prontuario() {
         <div className="bg-transparent flex">
           <button
             onClick={() => setIsClicked("consultas")}
-            className={`${isClicked === "consultas" ? "bg-[#007448]" : "bg-[#BDD9BF]"
-              } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl transition-colors duration-300 ease-in-out`}
+            className={`${
+              isClicked === "consultas" ? "bg-[#007448]" : "bg-[#BDD9BF]"
+            } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl transition-colors duration-300 ease-in-out`}
           >
             Consultas
           </button>
           <button
             onClick={() => setIsClicked("prescricoes")}
-            className={`${isClicked === "prescricoes" ? "bg-[#007448]" : "bg-[#BDD9BF]"
-              } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl  transition-colors duration-300 ease-in-out`}
+            className={`${
+              isClicked === "prescricoes" ? "bg-[#007448]" : "bg-[#BDD9BF]"
+            } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl  transition-colors duration-300 ease-in-out`}
           >
             Prescrições
           </button>
           <button
             onClick={() => setIsClicked("anexos")}
-            className={`${isClicked === "anexos" ? "bg-[#007448]" : "bg-[#BDD9BF]"
-              } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl  transition-colors duration-300 ease-in-out`}
+            className={`${
+              isClicked === "anexos" ? "bg-[#007448]" : "bg-[#BDD9BF]"
+            } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl  transition-colors duration-300 ease-in-out`}
           >
             Anexos
           </button>
@@ -414,7 +431,10 @@ export default function Prontuario() {
           {isClicked === "anexos" &&
             anexos.map((anexo) => (
               <div
-                onClick={() => window.location.href = "https://res.cloudinary.com/dyivjpkpv/image/upload/v1734541626/attachments/jly4k31mwhr1sqdhpu7b.png"}
+                onClick={() =>
+                  (window.location.href =
+                    "https://res.cloudinary.com/dyivjpkpv/image/upload/v1734541626/attachments/jly4k31mwhr1sqdhpu7b.png")
+                }
                 className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer relative"
                 key={anexo.id}
               >
@@ -425,13 +445,19 @@ export default function Prontuario() {
                   </div>
                   <div className="flex gap-4 ml-auto z-10">
                     <img
-                      onClick={(e) => { e.stopPropagation(); handleOpenModal("editAnexo", anexo.id, anexo.name); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenModal("editAnexo", anexo.id, anexo.name);
+                      }}
                       src={EditIcon}
                       alt="edit icon"
                       className="h-10 hover:scale-105"
                     />
                     <img
-                      onClick={(e) => { e.stopPropagation(); handleOpenModal("deleteAnexo", anexo.id); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenModal("deleteAnexo", anexo.id);
+                      }}
                       src={TrashIcon}
                       alt="trash icon"
                       className="h-10 hover:scale-105"
@@ -473,9 +499,7 @@ export default function Prontuario() {
             <span className="font-Montserrat font-semibold text-xl  text-[#595959]">
               {animal &&
                 animal.tutor &&
-                `${animal.tutor.name} - ${formatPhoneBRL(
-                  animal.tutor.phone
-                )}`}
+                `${animal.tutor.name} - ${formatPhoneBRL(animal.tutor.phone)}`}
             </span>
           </div>
           <Wrapper />
@@ -483,7 +507,6 @@ export default function Prontuario() {
       )}
 
       {/* RENDERIZAÇÃO DOS MODAIS */}
-
       <Modal
         open={openModal === "newAnexo"}
         onClose={handleCloseModal}
@@ -492,7 +515,7 @@ export default function Prontuario() {
       >
         <Box sx={{ ...style, width: "900px" }}>
           <ModalAnexo
-            animal_id = {id}
+            animal_id={id}
             label={`Nome do documento (exame): ${selectedFile}`}
             type="text"
             setOpen={setOpenModal}
@@ -560,10 +583,7 @@ export default function Prontuario() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={{ ...style, width: "900px", height: "auto" }}>
-          <ModalEdit
-            setOpen={setOpenModal}
-            handleClose={handleCloseModal}
-          />
+          <ModalEdit setOpen={setOpenModal} handleClose={handleCloseModal} />
         </Box>
       </Modal>
 

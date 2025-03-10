@@ -23,7 +23,7 @@ export const UserProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Token validation response:", response);
+      // console.log("Token validation response:", response);
       return response.status === 200;
     } catch (error) {
       // Token is expired, try refreshing it
@@ -53,15 +53,15 @@ export const UserProvider = ({ children }) => {
       console.error("Erro ao atualizar token:", error);
 
       // Handle specific error cases
-      if (error.response) {
-        console.error("Response data:", error.response.data);
-        console.error("Response status:", error.response.status);
-        console.error("Response headers:", error.response.headers);
-      } else if (error.request) {
-        console.error("No response received:", error.request);
-      } else {
-        console.error("Error setting up the request:", error.message);
-      }
+      // if (error.response) {
+      //   console.error("Response data:", error.response.data);
+      //   console.error("Response status:", error.response.status);
+      //   console.error("Response headers:", error.response.headers);
+      // } else if (error.request) {
+      //   console.error("No response received:", error.request);
+      // } else {
+      //   console.error("Error setting up the request:", error.message);
+      // }
 
       signOut(); // Ensure the user is signed out if the refresh fails
       return null;
@@ -96,14 +96,8 @@ export const UserProvider = ({ children }) => {
       const storedToken = localStorage.getItem("token");
       const storedRefreshToken = localStorage.getItem("refreshToken");
 
-      console.log("Loading user data...");
-      console.log("Stored Token:", storedToken);
-      console.log("Stored User:", storedUser);
-
       if (storedUser && storedToken) {
         const isValid = await validateToken(storedToken);
-        console.log("Token is valid:", isValid);
-
         if (isValid) {
           setUser(JSON.parse(storedUser));
           setToken(storedToken);
@@ -139,7 +133,7 @@ export const UserProvider = ({ children }) => {
       // Redirect to login page
       navigate("/login");
     } catch (error) {
-      console.error("Erro ao realizar logout:", error);
+      // console.error("Erro ao realizar logout:", error);
       throw error;
     } finally {
       setIsLoadingUserStorageData(false);
