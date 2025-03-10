@@ -23,7 +23,7 @@ export default function InputComponent(props) {
             : "outline-gray-input"
         } w-full border-solid border-2 border-gray rounded-lg h-11 p-2`}
         onChange={handleChange}
-        disabled={props.disable}
+        // disabled={props.disable}
       />
     </label>
   );

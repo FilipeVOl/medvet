@@ -19,6 +19,7 @@ import Box from "@mui/material/Box";
 import fundo from "../../images/fundo.svg";
 import { postAnimal } from "../../services/animals";
 import { Alert, Snackbar } from "@mui/material";
+import Swal from "sweetalert2";
 
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
@@ -56,7 +57,21 @@ export default function FirstPart(props) {
   });
 
   //muda o state do modal
-  const handleButtonClick = () => setOpenModal(!openModal);
+  const handleButtonClick = () => {
+    Swal.fire({
+      title: "Cadastrar animal?",
+      text: "O animal inserido ainda não possui cadastro, deseja cadastrá-lo?",
+      showCancelButton: true,
+      confirmButtonText: "Cadastrar",
+      cancelButtonText: "Voltar",
+      confirmButtonColor: "#144A36",
+      cancelButtonColor: "#000",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        registerNewAnimal();
+      }
+    });
+  };
 
   //seta os animais baseado no tutor.
   useEffect(() => {
@@ -226,13 +241,6 @@ export default function FirstPart(props) {
     handleButtonClick,
   ]);
 
-  const notification = () => {
-    alert("Animal adicionado com sucesso!");
-  };
-  const erroNotification = () => {
-    alert("Animal não pode ser criado.");
-  };
-
   // Snackbar Alert
   const [openAlert, setOpenAlert] = useState(false);
   const [severity, setSeverity] = useState("success");
@@ -247,6 +255,29 @@ export default function FirstPart(props) {
     setSeverity(severity);
     setMessage(message);
     setOpenAlert(true);
+  };
+
+  const registerNewAnimal = async () => {
+    const animal = {
+      name: paciente,
+      species: especie,
+      race: raca,
+      gender: sexo,
+      age: idade,
+      weight: peso,
+      coat: pelagem,
+      tutor_id: tutores[0].id,
+    };
+    const validyCreateAnimal = await postAnimal(animal, tutores[0].id);
+    if (validyCreateAnimal) {
+      const envioData = pageOneData;
+      envioData.idAnimal = [{ id: validyCreateAnimal.data }];
+      muiSnackAlert("success", "Animal cadastrado com sucesso!");
+      props.setSteps(2);
+      setPagOne(envioData);
+    } else {
+      muiSnackAlert("error", "Erro ao cadastrar animal!");
+    }
   };
 
   return (
@@ -447,7 +478,7 @@ export default function FirstPart(props) {
                   Sexo
                   <select
                     value={sexo}
-                    disabled={viewTutor}
+                    // disabled={viewTutor}
                     onChange={(e) => {
                       setSexo(e.target.value);
                       validateTrue("sexo");
@@ -631,62 +662,6 @@ export default function FirstPart(props) {
               Próximo
             </button>
           </form>
-        </div>
-        <div>
-          <Modal
-            open={openModal}
-            aria-labelledby="modal-modal-deletetitle"
-            aria-describedby="modal-modal-description2"
-          >
-            <Box id="box-modal-pag1">
-              <Typography
-                id="modal-modal-deletetitle"
-                variant="h6"
-                component="h1"
-              >
-                Cadastrar animal?
-                <p id="descri-modal">
-                  O animal inserido ainda não possui cadastro, deseja
-                  cadastrá-lo?
-                </p>
-                <div className="flex justify-between my-12">
-                  <IconButton id="voltar-animal" onClick={handleButtonClick}>
-                    Voltar
-                  </IconButton>
-                  <IconButton
-                    id="cadastrar-animal"
-                    onClick={async () => {
-                      const animal = {
-                        name: paciente,
-                        species: especie,
-                        race: raca,
-                        gender: sexo,
-                        age: idade,
-                        weight: peso,
-                        coat: pelagem,
-                        tutor_id: tutores[0].id,
-                      };
-                      const validyCreateAnimal = await postAnimal(
-                        animal,
-                        tutores[0].id
-                      );
-                      if (validyCreateAnimal) {
-                        const envioData = pageOneData;
-                        envioData.idAnimal = [{ id: validyCreateAnimal.data }];
-                        notification();
-                        props.setSteps(2);
-                        setPagOne(envioData);
-                      } else {
-                        erroNotification();
-                      }
-                    }}
-                  >
-                    Cadastrar
-                  </IconButton>
-                </div>
-              </Typography>
-            </Box>
-          </Modal>
         </div>
       </div>
     </>
