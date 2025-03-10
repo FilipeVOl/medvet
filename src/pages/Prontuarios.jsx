@@ -26,12 +26,12 @@ export default function Prontuarios() {
 
   const handleSearch = async (value) => {
     setSearchValue(value);
-    
-    if (value === '') {
+
+    if (value === "") {
       getAllAnimals(setProntuarios);
       return;
     }
-  
+
     try {
       switch (searchType) {
         case "patient":
@@ -47,10 +47,10 @@ export default function Prontuarios() {
           break;
       }
     } catch (error) {
-      console.error('Error during search:', error);
+      console.error("Error during search:", error);
       setProntuarios([]);
     }
-};
+  };
 
   return (
     <div className="font-Montserrat w-full pl-24 py-12 pr-12 flex flex-col ">
@@ -119,12 +119,16 @@ export default function Prontuarios() {
       </div>
 
       <div className="self-center p-4 md:p-8 mt-8">
-        <Pagination
-          count={10}
-          shape="rounded"
-          onChange={(e, page) => setPageSelected(page)}
-          size="medium"
-        />
+        {prontuarios.length > 0 ? (
+          <Pagination
+            count={Prontuarios.length / 10}
+            shape="rounded"
+            onChange={(e, page) => setPageSelected(page)}
+            size="medium"
+          />
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

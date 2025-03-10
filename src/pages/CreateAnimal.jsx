@@ -78,7 +78,7 @@ export default function CreateAnimal() {
 
   const handlePostAnimal = async () => {
     const validacaoCampos = validateInputs();
-  
+
     if (validacaoCampos) {
       window.scrollTo({
         top: 0,
@@ -88,13 +88,14 @@ export default function CreateAnimal() {
       return;
     } else {
       // Format age string
-      const formattedAge = idadeUnidade === "anos" 
-        ? `${idade}${idadeMeses ? ` anos e ${idadeMeses} meses` : " anos"}`
-        : `${idade} meses`;
-  
+      const formattedAge =
+        idadeUnidade === "anos"
+          ? `${idade}${idadeMeses ? ` anos e ${idadeMeses} meses` : " anos"}`
+          : `${idade} meses`;
+
       // Format weight string
       const formattedWeight = `${peso} ${pesoUnidade}`;
-  
+
       const animal = {
         name: paciente,
         species: especie,
@@ -105,7 +106,7 @@ export default function CreateAnimal() {
         coat: pelagem,
         tutor_id: tutores[0].id,
       };
-  
+
       const validyCreateAnimal = await postAnimal(animal, tutores[0].id);
       if (validyCreateAnimal) {
         Swal.fire({
@@ -159,7 +160,7 @@ export default function CreateAnimal() {
           <h1 className="text-2xl">Novo Animal</h1>
         </div>
         <div>
-          <form className="text-[18px] ">
+          <form className="text-[18px]">
             <div className=" w-full">
               <div id="div-pac-tut" className="flex gap-8 my-4 justify-center">
                 <label htmlFor="free-solo-2-demo" className="grow">

@@ -109,6 +109,7 @@ export const getAnimalsAndTutorByTutorName = async (set, name) => {
     const { data } = await axios.get(
       `http://localhost:3333/get/animal/tutor/name/${name}`
     );
+    console.log("data tutor e animal:", data);
     set(data);
     return data;
   } catch (e) {

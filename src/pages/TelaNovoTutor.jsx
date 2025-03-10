@@ -86,7 +86,7 @@ export default function Tutor(props) {
       try {
         const response = await axios.post("http://localhost:3333/tutor", data);
         console.log("criando: ", response);
-        if (response.status === 200) {
+        if (response.status === 201) {
           Swal.fire({
             title: "Tutor registrado",
             text: "Tutor cadastrado com sucesso",

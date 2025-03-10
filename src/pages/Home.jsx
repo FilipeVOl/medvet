@@ -83,9 +83,9 @@ const Home = () => {
           <strong>Hoje</strong>
         </div>
         <section>
-          {todayConsults.length > 0 && (
+          {todayConsults.length > 0 ? (
             <div className="mt-4 max-w-4xl w-full">
-              <h2 className="text-xl md:text-2xl w-full text-text-gray text-lg md:text-2xl font-medium mb-4">
+              <h2 className="text-xl md:text-2xl w-full text-text-gray font-medium mb-4">
                 {todayFormatted}
               </h2>
               {todayConsults.map((dados) => (
@@ -118,6 +118,10 @@ const Home = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : (
+            <div className="text-text-gray text-md md:ext-lg">
+              Nenhuma consulta agendada para hoje.
             </div>
           )}
         </section>

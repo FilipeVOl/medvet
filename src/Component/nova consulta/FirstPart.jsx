@@ -22,8 +22,6 @@ import { Alert, Snackbar } from "@mui/material";
 
 export default function FirstPart(props) {
   const { pagOne, setPagOne } = useContext(ConsultContext);
-  // melhorias
-  // mudar requisição de professor, para buscar dentro de teachers no array da requisição
   const [data, setData] = useState(pagOne.data);
   const [paciente, setPaciente] = useState(pagOne.paciente);
   const [tutor, setTutor] = useState(pagOne.tutor);
@@ -482,7 +480,6 @@ export default function FirstPart(props) {
                   requireVal={required.idade}
                   handleButton={validateTrue}
                   descrHandle="idade"
-                  disable={viewTutor}
                 />
                 <InputComponent
                   nome="Peso"
