@@ -9,20 +9,24 @@ const Home = () => {
   const [todayConsults, setTodayConsults] = useState([]);
 
   useEffect(() => {
-    getConsults(
-      (data) => {
-        const today = new Date();
-        const todayString = `${String(today.getDate()).padStart(
-          2,
-          "0"
-        )}${String(today.getMonth() + 1).padStart(
-          2,
-          "0"
-        )}${today.getFullYear()}`;
-        setTodayConsults(data[todayString] || []);
-      },
-      () => "today"
-    );
+    const fetchData = async () => {
+      await getConsults(
+        (data) => {
+          const today = new Date();
+          const todayString = `${String(today.getDate()).padStart(
+            2,
+            "0"
+          )}${String(today.getMonth() + 1).padStart(
+            2,
+            "0"
+          )}${today.getFullYear()}`;
+          setTodayConsults(data[todayString] || []);
+        },
+        () => "today"
+      );
+    };
+
+    fetchData();
   }, []);
 
   function transData(dateString) {

@@ -83,7 +83,6 @@ export const getTutoresByName = async (set, params = "") => {
 //     const { data } = await axios.get(
 //       `http://localhost:3333/get/tutor/searchphone?q=${tel}`
 //     );
-//     console.log("data tutoprs aqui:", data.tutors);
 //     return data.tutors;
 //   } catch (e) {
 //     console.log(e);
@@ -96,7 +95,6 @@ export const getTutorByNumber = async (tel, page = 1, limit = 10) => {
     const { data } = await axios.get(
       `http://localhost:3333/get/tutor/searchphone?q=${tel}&page=${page}&limit=${limit}`
     );
-    console.log("data tutores aqui:", data.tutors);
     return data; // Return the entire response, not just data.tutors
   } catch (e) {
     console.log(e);
@@ -109,7 +107,6 @@ export const getAnimalsAndTutorByTutorName = async (set, name) => {
     const { data } = await axios.get(
       `http://localhost:3333/get/animal/tutor/name/${name}`
     );
-    console.log("data tutor e animal:", data);
     set(data);
     return data;
   } catch (e) {

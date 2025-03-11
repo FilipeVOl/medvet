@@ -35,7 +35,7 @@ const getProfById = (id) => {
         console.error("Não acessou os profesores no banco", error);
       });
   } catch (e) {
-    console.log(e, "Problema na requisição de professores pelo id.");
+    console.log(e, "Problema na requisição de 1 pelo id.");
   }
 };
 

@@ -226,8 +226,6 @@ export default function Prontuario() {
                       className="text-[#100F49]"
                       sx={{ fontSize: 32 }}
                     />
-                    {/* {date} - {teacherNames || teacherNames[id] || id} */}
-                    aqui
                   </div>
 
                   {isClicked === "prescricoes" && (
@@ -293,7 +291,7 @@ export default function Prontuario() {
             ))}
 
           {isClicked === "consultas" ? (
-            <div className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer">
+            <div className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl">
               <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
                 <div className="flex flex-row gap-4">
                   {isClicked === "consultas" && (

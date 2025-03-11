@@ -18,9 +18,9 @@ export default function CreateAnimal() {
   const [sexo, setSexo] = useState("");
   const [idadeUnidade, setIdadeUnidade] = useState("anos");
   const [idadeMeses, setIdadeMeses] = useState("");
-  const [pesoUnidade, setPesoUnidade] = useState("kg");
   const [idade, setIdade] = useState("");
   const [peso, setPeso] = useState("");
+  const [pesoUnidade, setPesoUnidade] = useState("kg");
   const [pelagem, setPelagem] = useState("");
   const [tutores, setTutores] = useState([]);
   const [required, setRequired] = useState({
@@ -93,8 +93,10 @@ export default function CreateAnimal() {
           ? `${idade}${idadeMeses ? ` anos e ${idadeMeses} meses` : " anos"}`
           : `${idade} meses`;
 
+      formatWeightToKG();
+
       // Format weight string
-      const formattedWeight = `${peso} ${pesoUnidade}`;
+      const formattedWeight = `${peso}`;
 
       const animal = {
         name: paciente,
@@ -137,6 +139,13 @@ export default function CreateAnimal() {
     setSeverity(severity);
     setMessage(message);
     setOpenAlert(true);
+  };
+
+  const formatWeightToKG = () => {
+    if (pesoUnidade === "g") {
+      setPeso(peso / 1000);
+      setPesoUnidade("kg");
+    }
   };
 
   return (
@@ -261,6 +270,7 @@ export default function CreateAnimal() {
                   </select>
                 </label>
               </div>
+
               <div className="flex gap-8 justify-center my-4" id="ida-pes-pela">
                 <div className="grid h-full w-1/3">
                   <label className="text-lg mb-1">Idade</label>
@@ -326,6 +336,7 @@ export default function CreateAnimal() {
                     </select>
                   </div>
                 </div>
+
                 <div className="grid h-full w-1/3">
                   <InputComponent
                     nome="Pelagem"

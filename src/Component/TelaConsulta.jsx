@@ -2,7 +2,7 @@ import { useState, useCallback, useContext } from "react";
 import { Input, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";
 import z from "zod";
-import { UserContext } from "../contexts/userContext"
+import { UserContext } from "../contexts/userContext";
 // import axios from "axios";
 
 const schema = z.object({
@@ -72,16 +72,17 @@ const TelaConsulta = () => {
   return (
     <>
       <div className="font-Montserrat mt-6 w-full">
-      <div className=" md:mx-32 flex justify-start items-center mb-6 md:mb-8 font-semibold">
-      <span className="text-xl md:text-2xl font-bold">Agendar Consulta
-      </span>
-      </div>
+        <div className=" md:mx-32 flex justify-start items-center mb-6 md:mb-8 font-semibold">
+          <span className="text-xl md:text-2xl font-bold">
+            Agendar Consulta
+          </span>
+        </div>
         <form onSubmit={(e) => e.preventDefault()} className="pt-12 ml-4">
           <div className="flex gap-8">
             <Dropdown
               label="Paciente"
               options={dataPacientes}
-              value={ pacientes}
+              value={pacientes}
               onchange={(value) => {
                 handleChange(value, setPacientes);
               }}
