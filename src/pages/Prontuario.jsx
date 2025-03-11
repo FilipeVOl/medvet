@@ -1,23 +1,15 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
-import MedicalInformationIcon from "@mui/icons-material/MedicalInformation";
 import { getProntuario } from "../services/prontuario";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
   getEnchiridion,
   getEnchiridionsAnimalId,
 } from "../services/enchiridion";
-import TrashIcon from "../images/trashProntu.svg";
-import PrinterIcon from "../images/printer.svg";
-import EditIcon from "../images/editProntu.svg";
 import { useParams } from "react-router-dom";
 import CircularIndeterminate from "../Component/Prontuarios/Loading";
 import { useNavigate } from "react-router-dom";
 import { PrescContext } from "../contexts/prescContext";
 import { Link } from "react-router-dom";
-import MedicineIcon from "../images/medicine.svg";
-import AnexoIcon from "../images/anexar.svg";
 import { Modal, Box, Typography } from "@mui/material";
 import jsPDF from "jspdf";
 import { BorderAllRounded } from "@mui/icons-material";
@@ -30,6 +22,16 @@ import { getAnexos } from "../services/anexos";
 import { getAnimalById } from "../services/animals";
 import { getAllTeachers, getTeacherByName } from "../services/professores";
 import axios from "axios";
+import {
+  Search as SearchIcon,
+  Print as PrintIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  LocalHospital as MedicineIcon,
+  AttachFile as AnexoIcon,
+  AddPhotoAlternate as AddPhotoAlternateOutlinedIcon,
+  MedicalInformation as MedicalInformationIcon,
+} from "@mui/icons-material";
 
 export default function Prontuario() {
   const { id } = useParams();
@@ -220,10 +222,9 @@ export default function Prontuario() {
               >
                 <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
                   <div className="flex flex-row gap-4">
-                    <img
-                      src={MedicineIcon}
-                      alt="medicine icon"
-                      className="h-8"
+                    <MedicineIcon
+                      className="text-[#100F49]"
+                      sx={{ fontSize: 32 }}
                     />
                     {/* {date} - {teacherNames || teacherNames[id] || id} */}
                     aqui
@@ -231,24 +232,21 @@ export default function Prontuario() {
 
                   {isClicked === "prescricoes" && (
                     <div className="flex gap-4">
-                      <img
+                      <PrintIcon
                         onClick={() => handlePrint(enchiridionid)}
-                        src={PrinterIcon}
-                        alt="printer icon"
-                        className="h-10 hover:scale-110 duration-75"
+                        className="h-10 hover:scale-110 duration-75 cursor-pointer text-[#100F49]"
+                        sx={{ fontSize: 40 }}
                       />
-                      <img
+                      <EditIcon
                         onClick={() => handleOpenModal("editPresc")}
-                        src={EditIcon}
-                        alt="printer icon"
-                        className="h-10"
+                        className="h-10 cursor-pointer text-[#100F49]"
+                        sx={{ fontSize: 40 }}
                       />
-                      <img
-                        onClick={() => handleOpenModal("delete", medication.id)}
-                        src={TrashIcon}
-                        alt="trash icon"
-                        className="h-10"
-                      />
+                      {/**<DeleteIcon
+      onClick={() => handleOpenModal("delete", medication.id)}
+      className="h-10 cursor-pointer text-[#100F49]"
+      sx={{ fontSize: 40 }}
+    /> */}
                     </div>
                   )}
                 </span>
@@ -261,16 +259,29 @@ export default function Prontuario() {
                     <strong>Peso: </strong>
                     {weight}
                   </span>
-                ) : isClicked === "prescricoes" ? (
+                ) : null}
+                {isClicked === "prescricoes" ? (
                   <span className="font-Montserrat text-lg text-[#595959]">
-                    <strong>{medication[0].measurement}</strong>,{" "}
-                    <strong>({medication[0].unit})</strong> <br />
-                    <strong>{medication[0].description}</strong> <br />
-                    <strong>{medication[0].useType}</strong>
+                    <strong>
+                      {medication.measurement || medication[0]?.measurement}
+                    </strong>
+                    ,{" "}
+                    <strong>({medication.unit || medication[0]?.unit})</strong>{" "}
+                    <br />
+                    <strong>
+                      {medication.description || medication[0]?.description}
+                    </strong>{" "}
+                    <br />
+                    <strong>
+                      {medication.useType || medication[0]?.useType}
+                    </strong>
                     {" - "}
-                    <strong>{medication[0].pharmacy}</strong>
+                    <strong>
+                      {medication.pharmacy || medication[0]?.pharmacy}
+                    </strong>
                   </span>
-                ) : isClicked === "anexos" ? (
+                ) : null}
+                {isClicked === "anexos" ? (
                   <span className="font-Montserrat text-lg text-[#595959]">
                     <strong>Arquivo: </strong>
                     <a href="/path/to/your/pdf/file.pdf" download>
@@ -440,27 +451,28 @@ export default function Prontuario() {
               >
                 <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
                   <div className="date and image flex flex-row gap-4">
-                    <img src={AnexoIcon} alt="anexar icon" className="h-8" />
+                    <AnexoIcon
+                      className="text-[#100F49]"
+                      sx={{ fontSize: 32 }}
+                    />
                     {anexo.date} - {anexo.name}
                   </div>
                   <div className="flex gap-4 ml-auto z-10">
-                    <img
+                    <EditIcon
                       onClick={(e) => {
                         e.stopPropagation();
                         handleOpenModal("editAnexo", anexo.id, anexo.name);
                       }}
-                      src={EditIcon}
-                      alt="edit icon"
-                      className="h-10 hover:scale-105"
+                      className="cursor-pointer text-[#100F49]"
+                      sx={{ fontSize: 40 }}
                     />
-                    <img
+                    <DeleteIcon
                       onClick={(e) => {
                         e.stopPropagation();
                         handleOpenModal("deleteAnexo", anexo.id);
                       }}
-                      src={TrashIcon}
-                      alt="trash icon"
-                      className="h-10 hover:scale-105"
+                      className="cursor-pointer text-[#100F49]"
+                      sx={{ fontSize: 40 }}
                     />
                   </div>
                 </span>
