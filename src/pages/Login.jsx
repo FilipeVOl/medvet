@@ -87,10 +87,10 @@ const Login = () => {
 
     const formattedCPF = formatCPF(cpf);
 
-    if (!validateCPF(formattedCPF)) {
-      muiSnackAlert("error", "CPF inválido.");
-      return;
-    }
+    // if (!validateCPF(formattedCPF)) {
+    //   muiSnackAlert("error", "CPF inválido.");
+    //   return;
+    // }
 
     try {
       const response = await axios.post("http://localhost:3333/sessions", {
@@ -170,12 +170,6 @@ const Login = () => {
                   {...inputProps}
                   label="CPF"
                   required
-                  error={!validateCPF(formatCPF(cpf)) && cpf !== ""}
-                  helperText={
-                    !validateCPF(formatCPF(cpf)) && cpf !== ""
-                      ? "CPF inválido."
-                      : ""
-                  }
                   InputProps={{
                     style: {
                       backgroundColor: "#F2F2ED",
