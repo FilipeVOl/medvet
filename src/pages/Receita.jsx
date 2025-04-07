@@ -770,7 +770,7 @@ export const Receita = () => {
               <div>
                 <label>
                   Descrição (Posologia)
-                  <input
+                  <textarea
                     value={e.description}
                     onClick={() => validateTrue("description")}
                     onChange={(e) =>
@@ -785,8 +785,8 @@ export const Receita = () => {
                       required.description
                         ? "outline-red-600 border-red-500"
                         : "outline-gray-input"
-                    } border rounded-lg h-[46px] w-full p-2 text-base border-border-gray`}
-                  ></input>
+                    } border rounded-lg w-full p-2 text-base border-border-gray resize-y min-h-[100px]`}
+                  />
                 </label>
               </div>
             </form>

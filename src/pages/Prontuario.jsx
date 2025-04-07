@@ -1,10 +1,13 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { getProntuario } from "../services/prontuario";
 import CircularProgress from "@mui/material/CircularProgress";
+import { Close as CloseIcon } from '@mui/icons-material';
+
 import {
   getEnchiridion,
   getEnchiridionsAnimalId,
 } from "../services/enchiridion";
+import { Stepper, StepButton, Step, StepLabel, Button,IconButton } from "@mui/material";
 import { useParams } from "react-router-dom";
 import CircularIndeterminate from "../Component/Prontuarios/Loading";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +20,7 @@ import ModalAnexo from "../Component/Prontuarios/ModalAnexo";
 import ModalViewAnexo from "../Component/Prontuarios/ModalViewAnexo";
 import ModalDelete from "../Component/Prontuarios/ModalDelete";
 import ModalEdit from "../Component/Prontuarios/ModalEdit";
-import { getPrescByAnimalId } from "../services/prescription";
+import { getPrescByAnimalId, getPrescription } from "../services/prescription";
 import { getAnexos } from "../services/anexos";
 import { getAnimalById } from "../services/animals";
 import { getAllTeachers, getTeacherByName } from "../services/professores";
@@ -36,6 +39,13 @@ import {
 export default function Prontuario() {
   const { id } = useParams();
   const [animal, setAnimal] = useState({});
+  const [activeStep, setActiveStep] = useState(0);
+  const steps = [
+    "Informações Gerais",
+    "Status dos Sistemas",
+    "Sinais Vitais",
+    "Vacinação e Vermifugação",
+  ];
   const [enchiridions, setEnchiridions] = useState([]);
   const [medications, setMedications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -49,6 +59,8 @@ export default function Prontuario() {
   const [selectedAnexoId, setSelectedAnexoId] = useState(null); // Add this line
   const [anexos, setAnexos] = useState([]);
   const [search, setSearch] = useState("");
+  const [consultationDetails, setConsultationDetails] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [filteredEnchiridions, setFilteredEnchiridions] = useState([]);
   const { selectedMedicationId, setSelectedMedicationId } =
     useContext(PrescContext); // Add this line
@@ -80,7 +92,14 @@ export default function Prontuario() {
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
-    borderRadius: "0.5rem", // Add this line to set the border radius
+    borderRadius: "0.5rem",
+  };
+
+  const consultationModalStyle = {
+    ...style,
+    width: "80%",
+    maxHeight: "80vh",
+    overflow: "auto",
   };
 
   const handleFileUpload = (file) => {
@@ -116,6 +135,13 @@ export default function Prontuario() {
       return string.charAt(0).toUpperCase() + string.slice(1);
     }
   };
+  const handleNext = () => {
+    setActiveStep((prevStep) => prevStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevStep) => prevStep - 1);
+  };
 
   const formatPhoneBRL = (phone) => {
     if (phone) {
@@ -123,35 +149,28 @@ export default function Prontuario() {
     }
   };
 
-  const handlePrint = (selectedEnchiridionId) => {
-    const doc = new jsPDF();
-    const selectedEnchiridion = enchiridions.find(
-      (enchiridion) => enchiridion.id === selectedEnchiridionId
-    );
+  const handlePrint = async (selectedEnchiridionId) => {
+    try {
+      console.log(selectedEnchiridionId);
+      const pdfData = await getPrescription(selectedEnchiridionId);
 
-    if (selectedEnchiridion) {
-      const content = selectedEnchiridion.medications
-        .map(
-          (medication) =>
-            `
-        Receita Simples
-        Paciente: ${prontuario.name}
-        Tutor: Clemendes
-        Espécie: ${prontuario.species}
-        Raça: ${prontuario.race}
-        Sexo: ${prontuario.gender}
-        Idade: ${prontuario.age}
-        Peso: ${selectedEnchiridion.weight}
-        ID: ${selectedEnchiridion.id}
-        
-        Medicação: ${medication.measurement}
-        Tipo de Uso: ${medication.use_type}
-        Farmácia: ${medication.pharmacy}
-        `
-        )
-        .join("\n\n");
-      doc.text(content, 10, 10);
-      doc.save("prescription.pdf");
+      // Check if response indicates an error
+      if (pdfData.message) {
+        alert("Prescrição não encontrada"); // Or use your preferred notification system
+        return;
+      }
+
+      const blob = new Blob([pdfData], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+
+      // Open PDF in new window
+      window.open(url);
+
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error fetching prescription PDF:", error);
+      alert("Erro ao buscar a prescrição"); // Or use your preferred notification system
     }
   };
 
@@ -169,24 +188,27 @@ export default function Prontuario() {
       setEnchiridions(updatedEnchiridions);
     }
   };
-
   const handleSearchChange = useCallback(
     (e) => {
-      const value = e.target.value;
+      const value = e.target.value.toLowerCase();
       setSearch(value);
-      const filteredEnchiridions = enchiridions.filter(
-        (enchiridion) =>
-          enchiridion.reason_consult
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
-          enchiridion.weights
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
-      );
+
+      const filteredEnchiridions = enchiridions.filter((enchiridion) => {
+        const date = new Date(enchiridion.date)
+          .toLocaleDateString()
+          .toLowerCase();
+
+        const teacher =
+          teacherNames
+            .find((teacher) => teacher.id === enchiridion.teacher_id)
+            ?.name?.toLowerCase() || "";
+
+        return date.includes(value) || teacher.includes(value);
+      });
+
       setFilteredEnchiridions(filteredEnchiridions);
     },
-    [enchiridions]
+    [enchiridions, teacherNames]
   );
 
   const handleDeleteConfirm = () => {
@@ -212,6 +234,28 @@ export default function Prontuario() {
       id,
       enchiridionid,
     }) => {
+      const handleConsultClick = async () => {
+        if (isClicked === "consultas") {
+          try {
+            const response = await getProntuario(animal.id);
+            console.log("Response from getProntuario:", response);
+
+            // Find the matching consultation in enchiridions state
+            const consultation = enchiridions.find(
+              (e) => e.id === enchiridionid
+            );
+
+            if (consultation) {
+              setConsultationDetails(consultation);
+              setShowDetailsModal(true);
+            } else {
+              console.error("Consultation not found");
+            }
+          } catch (error) {
+            console.error("Error fetching consultation history:", error);
+          }
+        }
+      };
       return (
         <>
           {isClicked === "prescricoes" &&
@@ -291,7 +335,10 @@ export default function Prontuario() {
             ))}
 
           {isClicked === "consultas" ? (
-            <div className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl">
+            <div
+              onClick={handleConsultClick}
+              className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl"
+            >
               <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
                 <div className="flex flex-row gap-4">
                   {isClicked === "consultas" && (
@@ -427,16 +474,27 @@ export default function Prontuario() {
               />
             </div>
           )}
-          {enchiridions.map((enchiridion) => (
-            <ConsultWrapper
-              key={enchiridion.id}
-              enchiridionid={enchiridion.id}
-              date={new Date(enchiridion.date).toLocaleDateString()}
-              reasonConsult={enchiridion.reason_consult}
-              weight={enchiridion.weights}
-              id={enchiridion.teacher_id}
-            />
-          ))}
+          {search
+            ? filteredEnchiridions.map((enchiridion) => (
+                <ConsultWrapper
+                  key={enchiridion.id}
+                  enchiridionid={enchiridion.id}
+                  date={new Date(enchiridion.date).toLocaleDateString()}
+                  reasonConsult={enchiridion.reason_consult}
+                  weight={enchiridion.weights}
+                  id={enchiridion.teacher_id}
+                />
+              ))
+            : enchiridions.map((enchiridion) => (
+                <ConsultWrapper
+                  key={enchiridion.id}
+                  enchiridionid={enchiridion.id}
+                  date={new Date(enchiridion.date).toLocaleDateString()}
+                  reasonConsult={enchiridion.reason_consult}
+                  weight={enchiridion.weights}
+                  id={enchiridion.teacher_id}
+                />
+              ))}
           {isClicked === "anexos" &&
             anexos.map((anexo) => (
               <div
@@ -612,7 +670,269 @@ export default function Prontuario() {
           />
         </Box>
       </Modal>
+      <Modal
+        open={showDetailsModal}
+        onClose={() => {
+          setShowDetailsModal(false);
+          setActiveStep(0);
+        }}
+        aria-labelledby="consultation-details-modal"
+      >
+        <Box sx={consultationModalStyle}>
+          {consultationDetails && (
+            <div className="p-6">
+              <IconButton
+          onClick={() => {
+            setShowDetailsModal(false);
+            setActiveStep(0);
+          }}
+          sx={{
+            position: 'absolute',
+            right: '1rem',
+            top: '1rem',
+            color: 'rgb(107, 114, 128)',
+            '&:hover': {
+              color: 'rgb(75, 85, 99)',
+            }
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+              <h2 className="text-2xl font-bold mb-4">Detalhes da Consulta</h2>
 
+              <Stepper
+                nonLinear
+                activeStep={activeStep}
+                className="mb-8"
+                sx={{
+                  "& .MuiStepIcon-root": {
+                    color: "#BDD9BF",
+                    "&.Mui-active": {
+                      color: "#007448",
+                    },
+                    "&.Mui-completed": {
+                      color: "#007448",
+                    },
+                  },
+                  "& .MuiStepLabel-label": {
+                    color: "#595959",
+                    "&.Mui-active": {
+                      color: "#007448",
+                    },
+                  },
+                  "& .MuiStepButton-root:hover": {
+                    backgroundColor: "transparent",
+                  },
+                  "& .MuiStepConnector-line": {
+                    borderColor: "#BDD9BF",
+                  },
+                }}
+              >
+                {steps.map((label, index) => (
+                  <Step key={label}>
+                    <StepButton
+                      onClick={() => setActiveStep(index)}
+                      className="cursor-pointer"
+                    >
+                      {label}
+                    </StepButton>
+                  </Step>
+                ))}
+              </Stepper>
+
+              <div className="min-h-[400px]">
+                {activeStep === 0 && (
+                  <div className="space-y-4">
+                    <h3 className="font-bold text-xl mb-4">
+                      Informações Gerais
+                    </h3>
+                    <p>
+                      <strong>Data:</strong>{" "}
+                      {new Date(consultationDetails.date).toLocaleDateString()}
+                    </p>
+                    <p>
+                      <strong>Motivo:</strong>{" "}
+                      {consultationDetails.reason_consult}
+                    </p>
+                    <p>
+                      <strong>Histórico:</strong> {consultationDetails.history}
+                    </p>
+                    <p>
+                      <strong>Diagnóstico:</strong>{" "}
+                      {consultationDetails.diagnosis || "Não informado"}
+                    </p>
+                    <p>
+                      <strong>Tratamentos:</strong>{" "}
+                      {consultationDetails.trataments || "Não informado"}
+                    </p>
+                    <p>
+                      <strong>Observações:</strong>{" "}
+                      {consultationDetails.observations || "Não informado"}
+                    </p>
+                    <p>
+                      <strong>Exames Complementares:</strong>{" "}
+                      {consultationDetails.complementary_exams ||
+                        "Não informado"}
+                    </p>
+                  </div>
+                )}
+
+                {activeStep === 1 && (
+                  <div className="space-y-4">
+                    <h3 className="font-bold text-xl mb-4">
+                      Status dos Sistemas
+                    </h3>
+                    <p>
+                      <strong>Sistema Circulatório:</strong>{" "}
+                      {consultationDetails.system_circulatory}
+                    </p>
+                    <p>
+                      <strong>Sistema Digestivo:</strong>{" "}
+                      {consultationDetails.system_digestive}
+                    </p>
+                    <p>
+                      <strong>Sistema Geniturinário:</strong>{" "}
+                      {consultationDetails.system_genitourinary}
+                    </p>
+                    <p>
+                      <strong>Sistema Locomotor:</strong>{" "}
+                      {consultationDetails.system_locomotor}
+                    </p>
+                    <p>
+                      <strong>Sistema Nervoso:</strong>{" "}
+                      {consultationDetails.system_nervous}
+                    </p>
+                    <p>
+                      <strong>Sistema Respiratório:</strong>{" "}
+                      {consultationDetails.system_respiratory}
+                    </p>
+                  </div>
+                )}
+
+                {activeStep === 2 && (
+                  <div className="space-y-4">
+                    <h3 className="font-bold text-xl mb-4">Sinais Vitais</h3>
+                    <p>
+                      <strong>Temperatura:</strong>{" "}
+                      {consultationDetails.temperature}°C
+                    </p>
+                    <p>
+                      <strong>Freq. Cardíaca:</strong>{" "}
+                      {consultationDetails.frequency_cardiac} bpm
+                    </p>
+                    <p>
+                      <strong>Freq. Respiratória:</strong>{" "}
+                      {consultationDetails.frequency_respiratory}
+                    </p>
+                    <p>
+                      <strong>Desidratação:</strong>{" "}
+                      {consultationDetails.dehydration}
+                    </p>
+                    <p>
+                      <strong>Mucosas:</strong>{" "}
+                      {consultationDetails.type_mucous}
+                    </p>
+                    <p>
+                      <strong>Estado das Mucosas:</strong>{" "}
+                      {consultationDetails.whats_mucous}
+                    </p>
+                    <p>
+                      <strong>Linfonodos:</strong>{" "}
+                      {consultationDetails.lymph_node}
+                    </p>
+                    <p>
+                      <strong>Anexos da Pele:</strong>{" "}
+                      {consultationDetails.skin_annex}
+                    </p>
+                  </div>
+                )}
+
+                {activeStep === 3 && (
+                  <div className="space-y-6">
+                    {consultationDetails.vaccinations?.length > 0 && (
+                      <div>
+                        <h3 className="font-bold text-xl mb-4">Vacinas</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          {consultationDetails.vaccinations.map(
+                            (vaccine, index) => (
+                              <div
+                                key={index}
+                                className="p-4 bg-gray-50 rounded-lg"
+                              >
+                                <p>
+                                  <strong>Nome:</strong> {vaccine.name}
+                                </p>
+                                <p>
+                                  <strong>Data:</strong> {vaccine.date}
+                                </p>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="mt-6">
+                      <h3 className="font-bold text-xl mb-4">Vermifugação</h3>
+                      <p>
+                        <strong>Data da Vermifugação:</strong>{" "}
+                        {consultationDetails.date_deworming || "Não informado"}
+                      </p>
+                      <p>
+                        <strong>Vermífugo:</strong>{" "}
+                        {consultationDetails.deworming || "Não informado"}
+                      </p>
+                    </div>
+
+                    <div className="mt-6">
+                      <h3 className="font-bold text-xl mb-4">Peso</h3>
+                      <p>
+                        <strong>Peso Atual:</strong>{" "}
+                        {consultationDetails.weights?.[0] || "Não informado"} g
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-between mt-8">
+                <Button
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  variant="contained"
+                  sx={{
+                    bgcolor: "rgb(107, 114, 128)",
+                    "&:hover": {
+                      bgcolor: "rgb(75, 85, 99)",
+                    },
+                  }}
+                >
+                  Voltar
+                </Button>
+
+                <div className="flex gap-2">
+                 
+
+                  {activeStep < steps.length - 1 && (
+                    <Button
+                      variant="contained"
+                      onClick={handleNext}
+                      sx={{
+                        bgcolor: "rgb(0, 116, 72)",
+                        "&:hover": {
+                          bgcolor: "rgb(0, 92, 57)",
+                        },
+                      }}
+                    >
+                      Próximo
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </Box>
+      </Modal>
       {/* FIM DA RENDERIZAÇÃO DOS MODAIS */}
     </>
   );
