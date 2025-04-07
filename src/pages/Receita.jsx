@@ -378,7 +378,7 @@ export const Receita = () => {
   const addMedicamento = () => {
     const newMedication = {
       use_type: "oral",
-      pharmacy: "farmacia1",
+      pharmacy: "comum",
       unit: "",
       measurement: "",
       description: "",
@@ -405,7 +405,7 @@ export const Receita = () => {
   const handleSubmit = async () => {
     try {
       const hasErrors = validateInputs();
-  
+
       if (hasErrors) {
         window.scrollTo({
           top: 0,
@@ -414,14 +414,14 @@ export const Receita = () => {
         });
         return;
       }
-  
+
       const formattedAge =
         idadeUnidade === "anos"
           ? `${idade} anos${idadeMeses ? ` e ${idadeMeses} meses` : ""}`
           : `${idade} meses`;
-  
+
       const formattedWeight = `${peso} ${pesoUnidade}`;
-  
+
       const prescriptionData = {
         teacher_id: String(teacher_id),
         animal_id: animal_id,
@@ -433,20 +433,20 @@ export const Receita = () => {
         peso: formattedWeight,
         medications: medications.map((med) => ({
           use_type: med.use_type || "oral",
-          pharmacy: med.pharmacy || "farmacia1",
+          pharmacy: med.pharmacy || "comum",
           unit: String(med.unit),
           measurement: med.measurement,
           description: med.description,
         })),
       };
-  
+
       const prescriptionId = await postPrescription(prescriptionData);
-  
+
       if (prescriptionId) {
         try {
           const prescriptionResponse = await getPrescription(prescriptionId);
           console.log("Prescription created:", prescriptionResponse);
-  
+
           Swal.fire({
             icon: "success",
             title: "Receita criada com sucesso!",
@@ -460,7 +460,6 @@ export const Receita = () => {
             );
             navigate("/");
           });
-  
         } catch (error) {
           console.error("Error getting prescription details:", error);
           Swal.fire({

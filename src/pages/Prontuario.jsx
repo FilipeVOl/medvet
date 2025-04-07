@@ -13,7 +13,14 @@ import CircularIndeterminate from "../Component/Prontuarios/Loading";
 import { useNavigate } from "react-router-dom";
 import { PrescContext } from "../contexts/prescContext";
 import { Link } from "react-router-dom";
-import { Modal, Box, Typography } from "@mui/material";
+import {
+  Modal,
+  Box,
+  Typography,
+  DialogContent,
+  DialogContentText,
+  Dialog,
+} from "@mui/material";
 import jsPDF from "jspdf";
 import { BorderAllRounded } from "@mui/icons-material";
 import ModalAnexo from "../Component/Prontuarios/ModalAnexo";
@@ -35,6 +42,7 @@ import {
   AddPhotoAlternate as AddPhotoAlternateOutlinedIcon,
   MedicalInformation as MedicalInformationIcon,
 } from "@mui/icons-material";
+import { set } from "zod";
 
 export default function Prontuario() {
   const { id } = useParams();
@@ -55,7 +63,7 @@ export default function Prontuario() {
   const [selectedFile, setSelectedFile] = useState("");
   const [deletedMedications, setDeletedMedications] = useState([]);
   const [modal, setModal] = useState(false);
-  const [openModal, setOpenModal] = useState(null); // Add this line
+  const [openModal, setOpenModal] = useState(null);
   const [selectedAnexoId, setSelectedAnexoId] = useState(null); // Add this line
   const [anexos, setAnexos] = useState([]);
   const [search, setSearch] = useState("");
@@ -64,6 +72,23 @@ export default function Prontuario() {
   const [filteredEnchiridions, setFilteredEnchiridions] = useState([]);
   const { selectedMedicationId, setSelectedMedicationId } =
     useContext(PrescContext); // Add this line
+
+  const [selectedAttachment, setSelectedAttachment] = useState();
+  const [openAttachment, setOpenAttachment] = useState(false);
+  const handleOpenAttachment = (id) => {
+    console.log("ID do anexo:", id); // Log the ID of the selected anexo
+    const selectedAnexo = anexos.find((anexo) => anexo.id === id);
+    setSelectedAttachment(selectedAnexo);
+    console.log(selectedAnexo);
+    setOpenAttachment(true);
+    setSelectedAnexoId(id);
+  };
+  const handleCloseAttachment = () => {
+    setOpenAttachment(false);
+    setSelectedAnexoId(null);
+    setSelectedAttachment(null);
+    setSelectedFile(null);
+  };
 
   const handleOpenModal = (modalName, id = null, name = "") => {
     setOpenModal(modalName);
@@ -498,10 +523,7 @@ export default function Prontuario() {
           {isClicked === "anexos" &&
             anexos.map((anexo) => (
               <div
-                onClick={() =>
-                  (window.location.href =
-                    "https://res.cloudinary.com/dyivjpkpv/image/upload/v1734541626/attachments/jly4k31mwhr1sqdhpu7b.png")
-                }
+                onClick={() => handleOpenAttachment(anexo.id)}
                 className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer relative"
                 key={anexo.id}
               >
@@ -934,6 +956,43 @@ export default function Prontuario() {
         </Box>
       </Modal>
       {/* FIM DA RENDERIZAÇÃO DOS MODAIS */}
+
+      <Dialog
+        fullWidth={true}
+        maxWidth={"lg"}
+        open={openAttachment}
+        onClose={handleCloseAttachment}
+      >
+        <DialogContent>
+          <DialogContentText>
+            {selectedAttachment ? (
+              <>
+                <object
+                  data={selectedAttachment.url_archive}
+                  type="application/pdf"
+                  width="100%"
+                  height="600px"
+                >
+                  <p>
+                    Não foi possível carregar o PDF.&nbsp;
+                    <a
+                      href={selectedAttachment.url_archive}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Download
+                    </a>
+                  </p>
+                </object>
+              </>
+            ) : (
+              <div className="flex justify-center items-center p-10">
+                <CircularProgress />
+              </div>
+            )}
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
