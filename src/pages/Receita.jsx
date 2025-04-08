@@ -24,7 +24,7 @@ import "../Component/nova consulta/consultPages.css";
 import { getEnchiridion } from "../services/enchiridion";
 import {
   getTeacherByName,getProfessores,
-  getTeacherIdByName,
+  getTeacherIdByName,getAllTeachers,
 } from "../services/professores";
 import { getAnimalBySequenceOrName } from "../services/animals";
 
@@ -49,7 +49,7 @@ export const InputReceita = ({
   setSexo,
   setIdade,
   setPeso,
-  setIdadeUnidade, // Add this
+  setIdadeUnidade, 
   setIdadeMeses,
   setPesoUnidade,
   setId,
@@ -282,12 +282,20 @@ export const Receita = () => {
   const handleButtonClick = () => {
     setOpenModal(!openModal);
   };
+
   useEffect(() => {
-    getEnchiridion(setTeacherId);
-    getAnimalsReceipt(setTutores, setPacientes, "");
-    
-   
-    getProfessores(setProfessores, 1); 
+    const fetchData = async () => {
+      try {
+        await getEnchiridion(setTeacherId);
+        await getAnimalsReceipt(setTutores, setPacientes, "");
+        const teachersData = await getAllTeachers();
+        setProfessores(teachersData);
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+      }
+    };
+  
+    fetchData();
   }, []);
 
   useEffect(() => {

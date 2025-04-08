@@ -2,10 +2,7 @@ import axios from "axios";
 
 const postPrescription = async (prescription) => {
   try {
-    const res = await axios.post(
-      "http://localhost:3333/create/prescription",
-      prescription
-    );
+    const res = await axios.post("http://localhost:3333/create/prescription", prescription);
     console.log(res);
     return res.data; // Retorna o id diretamente de res.data
   } catch (err) {
@@ -15,35 +12,21 @@ const postPrescription = async (prescription) => {
 };
 
 const getPrescription = async (id) => {
-  const { data } = await axios.get(
-    `http://localhost:3333/pdf/prescription/${id}`
-  );
-  return data;
-};
-
-const getPrescriptionById = async (id) => {
-  const { data } = await axios.get(
-    `http://localhost:3333/get/prescription/id/${id}`
-  );
-  return data.prescription;
-};
+  const { data } = await axios
+    .get(`http://localhost:3333/pdf/prescription/${id}`)
+    return data;
+} 
 
 const getPrescByAnimalId = async (id) => {
-  const { data } = await axios.get(
-    `http://localhost:3333/get/prescription/animalId/${id}`
-  );
-  return data.prescriptions.map((presc) => presc.medications);
-};
+  const { data } = await axios
+    .get(`http://localhost:3333/get/prescription/animalId/${id}`)
+    return data.prescriptions.map(presc => presc.medications);
+}
 
 const getAllPresc = async () => {
-  const { data } = await axios.get(`http://localhost:3333/get/prescriptions`);
-  return data;
-};
+  const { data } = await axios
+    .get(`http://localhost:3333/get/prescriptions`)
+    return data;
+}
 
-export {
-  postPrescription,
-  getPrescription,
-  getAllPresc,
-  getPrescByAnimalId,
-  getPrescriptionById,
-};
+export { postPrescription, getPrescription, getAllPresc, getPrescByAnimalId };

@@ -1,20 +1,13 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { getProntuario } from "../services/prontuario";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { Close as CloseIcon } from '@mui/icons-material';
 
 import {
   getEnchiridion,
   getEnchiridionsAnimalId,
 } from "../services/enchiridion";
-import {
-  Stepper,
-  StepButton,
-  Step,
-  StepLabel,
-  Button,
-  IconButton,
-} from "@mui/material";
+import { Stepper, StepButton, Step, StepLabel, Button,IconButton } from "@mui/material";
 import { useParams } from "react-router-dom";
 import CircularIndeterminate from "../Component/Prontuarios/Loading";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +16,7 @@ import { Link } from "react-router-dom";
 import {
   Modal,
   Box,
+  Typography,
   DialogContent,
   DialogContentText,
   Dialog,
@@ -76,10 +70,8 @@ export default function Prontuario() {
   const [consultationDetails, setConsultationDetails] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [filteredEnchiridions, setFilteredEnchiridions] = useState([]);
-  const { selectedMedication, setSelectedMedication } =
+  const { selectedMedicationId, setSelectedMedicationId } =
     useContext(PrescContext); // Add this line
-
-  const [selectedPrescription, setSelectedPrescription] = useState([]);
 
   const [selectedAttachment, setSelectedAttachment] = useState();
   const [openAttachment, setOpenAttachment] = useState(false);
@@ -101,7 +93,7 @@ export default function Prontuario() {
   const handleOpenModal = (modalName, id = null, name = "") => {
     setOpenModal(modalName);
     if (modalName === "delete" || modalName === "editPresc") {
-      setSelectedMedication(id); // Set the selected medication ID in the context
+      setSelectedMedicationId(id); // Set the selected medication ID in the context
     } else if (modalName === "deleteAnexo" || modalName === "editAnexo") {
       setSelectedAnexoId(id); // Set the selected anexo ID in the state
     }
@@ -110,7 +102,7 @@ export default function Prontuario() {
 
   const handleCloseModal = () => {
     setOpenModal(null);
-    setSelectedMedication(null);
+    setSelectedMedicationId(null);
     setSelectedAnexoId(null);
   };
 
@@ -215,11 +207,11 @@ export default function Prontuario() {
     }
   };
 
-  const handleDelete = (m) => {
+  const handleDelete = (medicationId) => {
     if (isClicked === "prescricoes") {
       const updatedEnchiridions = enchiridions.map((enchiridion) => {
         const updatedMedications = enchiridion.medications.filter(
-          (medication) => medication.id !== m
+          (medication) => medication.id !== medicationId
         );
         return {
           ...enchiridion,
@@ -253,7 +245,7 @@ export default function Prontuario() {
   );
 
   const handleDeleteConfirm = () => {
-    handleDelete(selectedMedication);
+    handleDelete(selectedMedicationId);
     handleCloseModal();
   };
 
@@ -325,7 +317,7 @@ export default function Prontuario() {
                         sx={{ fontSize: 40 }}
                       />
                       <EditIcon
-                        onClick={() => handleOpenEditModal(medication)}
+                        onClick={() => handleOpenModal("editPresc")}
                         className="h-10 cursor-pointer text-[#100F49]"
                         sx={{ fontSize: 40 }}
                       />
@@ -448,8 +440,8 @@ export default function Prontuario() {
             Anexos
           </button>
         </div>
-        <div className="bg-[#F4F1EC] p-2 rounded-b-xl px-11 py-16">
-          {isClicked === "consultas" && (
+    <div className="bg-[#F4F1EC] p-2 rounded-b-xl px-11 py-16">
+           {/**   {isClicked === "consultas" && (
             <div className="flex justify-between gap-8">
               <div className="relative w-2/3">
                 <input
@@ -464,10 +456,10 @@ export default function Prontuario() {
                 </button>
               </div>
             </div>
-          )}
+          )}*/}
           {isClicked === "prescricoes" && (
-            <div className="flex justify-between gap-8">
-              <div className="relative w-full">
+           <div className="flex justify-between gap-8">
+            {/**    <div className="relative w-full">
                 <input
                   type="text"
                   className=" h-12  rounded-xl w-full px-10 focus:outline-none focus:ring-2 focus:ring-[#007448]"
@@ -476,7 +468,7 @@ export default function Prontuario() {
                 <button className="absolute left-2 top-1/2 transform -translate-y-1/2">
                   <SearchIcon />
                 </button>
-              </div>
+              </div>*/}
               <Link
                 to="/receita"
                 className="bg-[#100F49] h-12 w-1/3 text-white rounded-xl flex items-center justify-center gap-3"
@@ -488,7 +480,7 @@ export default function Prontuario() {
           )}
           {isClicked === "anexos" && (
             <div className="flex justify-between gap-8">
-              <div className="relative w-full">
+            {/**  <div className="relative w-full">
                 <input
                   type="text"
                   className=" h-12  rounded-xl w-full px-10 focus:outline-none focus:ring-2 focus:ring-[#007448]"
@@ -497,7 +489,7 @@ export default function Prontuario() {
                 <button className="absolute left-2 top-1/2 transform -translate-y-1/2">
                   <SearchIcon />
                 </button>
-              </div>
+              </div>*/} 
               <button
                 className="bg-[#100F49] h-12 w-1/3 text-white rounded-xl flex items-center justify-center gap-3"
                 onClick={() => handleOpenModal("newAnexo")}
@@ -585,18 +577,6 @@ export default function Prontuario() {
         </div>
       </div>
     );
-  };
-
-  const [openEditModal, setOpenEditModal] = useState(false);
-  const handleOpenEditModal = (medication) => {
-    console.log("Selected medication:", medication);
-    setOpenEditModal(true);
-    setSelectedPrescription(medication);
-  };
-
-  const handleCloseEditModal = () => {
-    setOpenEditModal(false);
-    setSelectedPrescription([]);
   };
 
   return (
@@ -698,22 +678,16 @@ export default function Prontuario() {
         </Box>
       </Modal>
 
-      <Dialog
-        open={openEditModal}
-        fullWidth={true}
-        maxWidth={"lg"}
-        onClose={handleCloseEditModal}
+      <Modal
+        open={openModal === "editPresc"}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
-        <DialogContent>
-          <DialogContentText className="text-2xl font-bold mb-4">
-            <ModalEdit
-              setOpen={setOpenModal}
-              selectedPrescription={selectedPrescription}
-              handleClose={handleCloseEditModal}
-            />
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
+        <Box sx={{ ...style, width: "900px", height: "auto" }}>
+          <ModalEdit setOpen={setOpenModal} handleClose={handleCloseModal} />
+        </Box>
+      </Modal>
 
       <Modal
         open={openModal === "deleteAnexo"}
@@ -742,22 +716,22 @@ export default function Prontuario() {
           {consultationDetails && (
             <div className="p-6">
               <IconButton
-                onClick={() => {
-                  setShowDetailsModal(false);
-                  setActiveStep(0);
-                }}
-                sx={{
-                  position: "absolute",
-                  right: "1rem",
-                  top: "1rem",
-                  color: "rgb(107, 114, 128)",
-                  "&:hover": {
-                    color: "rgb(75, 85, 99)",
-                  },
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
+          onClick={() => {
+            setShowDetailsModal(false);
+            setActiveStep(0);
+          }}
+          sx={{
+            position: 'absolute',
+            right: '1rem',
+            top: '1rem',
+            color: 'rgb(107, 114, 128)',
+            '&:hover': {
+              color: 'rgb(75, 85, 99)',
+            }
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
               <h2 className="text-2xl font-bold mb-4">Detalhes da Consulta</h2>
 
               <Stepper
@@ -971,6 +945,8 @@ export default function Prontuario() {
                 </Button>
 
                 <div className="flex gap-2">
+                 
+
                   {activeStep < steps.length - 1 && (
                     <Button
                       variant="contained"
