@@ -25,8 +25,8 @@ const ModalEdit = ({ label, type, handleClose }) => {
                 <div>
                   <InputLabel>Farmácia</InputLabel>
                   <select className="border-2 rounded-lg p-2 w-full">
-                    <option value="farmacia1">Farmacia 1</option>
-                    <option value="farmacia 2">Farmacia 2</option>
+                    <option value="comum">Farmácia Comum</option>
+                    <option value="manipulada">Farmácia Manipulada</option>
                   </select>
                 </div>
                 <div>

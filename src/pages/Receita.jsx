@@ -23,9 +23,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import "../Component/nova consulta/consultPages.css";
 import { getEnchiridion } from "../services/enchiridion";
 import {
-  getAllTeachers,
-  getTeacherByName,
-  getProfById,
+  getTeacherByName,getProfessores,
   getTeacherIdByName,
 } from "../services/professores";
 import { getAnimalBySequenceOrName } from "../services/animals";
@@ -99,21 +97,34 @@ export const InputReceita = ({
           freeSolo
           disableClearable
           id="free-solo-2-demo"
+          value={value}
           onChange={(_e, newValue) => {
             setter(newValue);
-            getAllTeachers(setArrProf);
+            if (newValue) {
+              getTeacherByName(newValue).then(data => {
+                if (data && data.teachers) {
+                  setArrProf(data.teachers);
+                }
+              });
+            }
           }}
-          options={arrProfs.map((option) => option.name)}
+          options={arrProfs.map((option) => option.name || '')}
           renderInput={(params) => (
             <TextField
-              onChange={(e) => {
-                setter(e.target.value);
-                getTeacherByName(setArrProf, e.target.value);
-              }}
               {...params}
               InputProps={{
                 ...params.InputProps,
                 type: "search",
+              }}
+              onChange={(e) => {
+                const searchValue = e.target.value;
+                if (searchValue) {
+                  getTeacherByName(searchValue).then(data => {
+                    if (data && data.teachers) {
+                      setArrProf(data.teachers);
+                    }
+                  });
+                }
               }}
             />
           )}
@@ -271,11 +282,12 @@ export const Receita = () => {
   const handleButtonClick = () => {
     setOpenModal(!openModal);
   };
-
   useEffect(() => {
     getEnchiridion(setTeacherId);
     getAnimalsReceipt(setTutores, setPacientes, "");
-    getAllTeachers(setProfessores);
+    
+   
+    getProfessores(setProfessores, 1); 
   }, []);
 
   useEffect(() => {

@@ -16,7 +16,7 @@ const pageData = {
 };
 const initialMedication = {
   use_type: "oral",
-  pharmacy: "farmacia1",
+  pharmacy: "comum",
   unit: "",
   measurement: "",
   description: ""
