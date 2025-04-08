@@ -1,13 +1,20 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { getProntuario } from "../services/prontuario";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Close as CloseIcon } from "@mui/icons-material";
 
 import {
   getEnchiridion,
   getEnchiridionsAnimalId,
 } from "../services/enchiridion";
-import { Stepper, StepButton, Step, StepLabel, Button,IconButton } from "@mui/material";
+import {
+  Stepper,
+  StepButton,
+  Step,
+  StepLabel,
+  Button,
+  IconButton,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
 import CircularIndeterminate from "../Component/Prontuarios/Loading";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +23,6 @@ import { Link } from "react-router-dom";
 import {
   Modal,
   Box,
-  Typography,
   DialogContent,
   DialogContentText,
   Dialog,
@@ -70,8 +76,10 @@ export default function Prontuario() {
   const [consultationDetails, setConsultationDetails] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [filteredEnchiridions, setFilteredEnchiridions] = useState([]);
-  const { selectedMedicationId, setSelectedMedicationId } =
+  const { selectedMedication, setSelectedMedication } =
     useContext(PrescContext); // Add this line
+
+  const [selectedPrescription, setSelectedPrescription] = useState([]);
 
   const [selectedAttachment, setSelectedAttachment] = useState();
   const [openAttachment, setOpenAttachment] = useState(false);
@@ -93,7 +101,7 @@ export default function Prontuario() {
   const handleOpenModal = (modalName, id = null, name = "") => {
     setOpenModal(modalName);
     if (modalName === "delete" || modalName === "editPresc") {
-      setSelectedMedicationId(id); // Set the selected medication ID in the context
+      setSelectedMedication(id); // Set the selected medication ID in the context
     } else if (modalName === "deleteAnexo" || modalName === "editAnexo") {
       setSelectedAnexoId(id); // Set the selected anexo ID in the state
     }
@@ -102,7 +110,7 @@ export default function Prontuario() {
 
   const handleCloseModal = () => {
     setOpenModal(null);
-    setSelectedMedicationId(null);
+    setSelectedMedication(null);
     setSelectedAnexoId(null);
   };
 
@@ -207,11 +215,11 @@ export default function Prontuario() {
     }
   };
 
-  const handleDelete = (medicationId) => {
+  const handleDelete = (m) => {
     if (isClicked === "prescricoes") {
       const updatedEnchiridions = enchiridions.map((enchiridion) => {
         const updatedMedications = enchiridion.medications.filter(
-          (medication) => medication.id !== medicationId
+          (medication) => medication.id !== m
         );
         return {
           ...enchiridion,
@@ -245,7 +253,7 @@ export default function Prontuario() {
   );
 
   const handleDeleteConfirm = () => {
-    handleDelete(selectedMedicationId);
+    handleDelete(selectedMedication);
     handleCloseModal();
   };
 
@@ -291,125 +299,148 @@ export default function Prontuario() {
       };
 
       return (
-        <>
-          {isClicked === "prescricoes" &&
-            medications.map((medication) => (
-              <div
-                className="flex flex-col bg-[#FFFEF9] px-11 py-6 zrounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
-                key={medication.id}
-              >
-                <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
-                  <div className="flex flex-row gap-4">
-                    <MedicineIcon
-                      onClick={() =>
-                        console.log(medications, medication, medications.length)
-                      }
-                      className="text-[#100F49]"
-                      sx={{ fontSize: 32 }}
-                    />
-                  </div>
-
-                  {isClicked === "prescricoes" && (
-                    <div className="flex gap-4">
-                      <PrintIcon
-                        onClick={() => handlePrint(animal.id)}
-                        className="h-10 hover:scale-110 duration-75 cursor-pointer text-[#100F49]"
-                        sx={{ fontSize: 40 }}
-                      />
-                      <EditIcon
-                        onClick={() => handleOpenModal("editPresc")}
-                        className="h-10 cursor-pointer text-[#100F49]"
-                        sx={{ fontSize: 40 }}
-                      />
-                      {/**<DeleteIcon
-                        onClick={() => handleOpenModal("delete", medication.id)}
-                        className="h-10 cursor-pointer text-[#100F49]"
-                        sx={{ fontSize: 40 }}
-                      /> */}
-                    </div>
-                  )}
-                </span>
-
-                {isClicked === "consultas" ? (
-                  <span className="font-Montserrat text-lg text-[#595959]">
-                    <strong>Motivo da consulta: </strong>
-                    {reasonConsult}
-                    <br />
-                    <strong>Peso: </strong>
-                    {weight}
-                  </span>
-                ) : null}
-                {isClicked === "prescricoes" ? (
-                  <span className="font-Montserrat text-lg text-[#595959]">
-                    <strong>
-                      {medication.measurement || medication[0]?.measurement}
-                    </strong>
-                    ,{" "}
-                    <strong>({medication.unit || medication[0]?.unit})</strong>{" "}
-                    <br />
-                    <strong>
-                      {medication.description || medication[0]?.description}
-                    </strong>{" "}
-                    <br />
-                    <strong>
-                      {medication.useType || medication[0]?.useType}
-                    </strong>
-                    {" - "}
-                    <strong>
-                      {medication.pharmacy || medication[0]?.pharmacy}
-                    </strong>
-                  </span>
-                ) : null}
-                {isClicked === "anexos" ? (
-                  <span className="font-Montserrat text-lg text-[#595959]">
-                    <strong>Arquivo: </strong>
-                    <a href="/path/to/your/pdf/file.pdf" download>
-                      Baixar PDF
-                    </a>
-                  </span>
-                ) : null}
-              </div>
-            ))}
-
-          {isClicked === "consultas" ? (
-            <div
-              onClick={handleConsultClick}
-              className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl"
-            >
-              <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
-                <div className="flex flex-row gap-4">
-                  {isClicked === "consultas" && (
-                    <MedicalInformationIcon
-                      className="text-[#100F49]"
-                      fontSize="24"
-                    />
-                  )}
-                  {date} -{" "}
-                  {teacherNames &&
-                    teacherNames.find((teacher) => teacher.id === id)?.name}
-                </div>
-              </span>
-
-              {isClicked === "consultas" ? (
-                <span className="font-Montserrat text-lg text-[#595959]">
-                  <strong>Motivo da consulta: </strong>
-                  {reasonConsult}
-                  <br />
-                  <strong>Peso: </strong>
-                  {weight}
-                </span>
-              ) : isClicked === "anexos" ? (
-                <span className="font-Montserrat text-lg text-[#595959]">
-                  <strong>Arquivo: </strong>
-                  <a href="/path/to/your/pdf/file.pdf" download>
-                    Baixar PDF
-                  </a>
-                </span>
-              ) : null}
+        <div
+          onClick={handleConsultClick}
+          className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl"
+        >
+          <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
+            <div className="flex flex-row gap-4">
+              <MedicalInformationIcon
+                className="text-[#100F49]"
+                fontSize="24"
+              />
+              {date} - {teacherNames.find((teacher) => teacher.id === id)?.name}
             </div>
-          ) : null}
-        </>
+          </span>
+
+          <span className="font-Montserrat text-lg text-[#595959]">
+            <strong>Motivo da consulta: </strong>
+            {reasonConsult}
+            <br />
+            <strong>Peso: </strong>
+            {weight}
+          </span>
+        </div>
       );
+
+      // return (
+      //   <>
+      //     {isClicked === "prescricoes" &&
+      //       medications.map((medication, index) => (
+      //         <div
+      //           className="flex flex-col bg-[#FFFEF9] px-11 py-6 zrounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
+      //           key={`${medication.id}-${index}`}
+      //         >
+      //           <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
+      //             <div className="flex flex-row gap-4">
+      //               <MedicineIcon
+      //                 onClick={() => console.log(medications)}
+      //                 className="text-[#100F49]"
+      //                 sx={{ fontSize: 32 }}
+      //               />
+      //             </div>
+
+      //             {isClicked === "prescricoes" && (
+      //               <div className="flex gap-4">
+      //                 <PrintIcon
+      //                   onClick={() => handlePrint(animal.id)}
+      //                   className="h-10 hover:scale-110 duration-75 cursor-pointer text-[#100F49]"
+      //                   sx={{ fontSize: 40 }}
+      //                 />
+      //                 <EditIcon
+      //                   onClick={() => handleOpenEditModal(medication)}
+      //                   className="h-10 cursor-pointer text-[#100F49]"
+      //                   sx={{ fontSize: 40 }}
+      //                 />
+      //                 {/**<DeleteIcon
+      //                   onClick={() => handleOpenModal("delete", medication.id)}
+      //                   className="h-10 cursor-pointer text-[#100F49]"
+      //                   sx={{ fontSize: 40 }}
+      //                 /> */}
+      //               </div>
+      //             )}
+      //           </span>
+
+      //           {isClicked === "consultas" ? (
+      //             <span className="font-Montserrat text-lg text-[#595959]">
+      //               <strong>Motivo da consulta: </strong>
+      //               {reasonConsult}
+      //               <br />
+      //               <strong>Peso: </strong>
+      //               {weight}
+      //             </span>
+      //           ) : null}
+      //           {isClicked === "prescricoes" ? (
+      //             <span className="font-Montserrat text-lg text-[#595959]">
+      //               <strong>
+      //                 {medication.measurement || medication[0]?.measurement}
+      //               </strong>
+      //               ,{" "}
+      //               <strong>({medication.unit || medication[0]?.unit})</strong>{" "}
+      //               <br />
+      //               <strong>
+      //                 {medication.description || medication[0]?.description}
+      //               </strong>{" "}
+      //               <br />
+      //               <strong>
+      //                 {medication.useType || medication[0]?.useType}
+      //               </strong>
+      //               {" - "}
+      //               <strong>
+      //                 {medication.pharmacy || medication[0]?.pharmacy}
+      //               </strong>
+      //             </span>
+      //           ) : null}
+      //           {isClicked === "anexos" ? (
+      //             <span className="font-Montserrat text-lg text-[#595959]">
+      //               <strong>Arquivo: </strong>
+      //               <a href="/path/to/your/pdf/file.pdf" download>
+      //                 Baixar PDF
+      //               </a>
+      //             </span>
+      //           ) : null}
+      //         </div>
+      //       ))}
+
+      //     {isClicked === "consultas" ? (
+      //       <div
+      //         onClick={handleConsultClick}
+      //         className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl"
+      //       >
+      //         <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
+      //           <div className="flex flex-row gap-4">
+      //             {isClicked === "consultas" && (
+      //               <MedicalInformationIcon
+      //                 className="text-[#100F49]"
+      //                 fontSize="24"
+      //               />
+      //             )}
+      //             {date} -{" "}
+      //             {teacherNames &&
+      //               teacherNames.find((teacher) => teacher.id === id)?.name}
+      //           </div>
+      //         </span>
+
+      //         {isClicked === "consultas" ? (
+      //           <span className="font-Montserrat text-lg text-[#595959]">
+      //             <strong>Motivo da consulta: </strong>
+      //             {reasonConsult}
+      //             <br />
+      //             <strong>Peso: </strong>
+      //             {weight}
+      //           </span>
+      //         ) : isClicked === "anexos" ? (
+      //           <span className="font-Montserrat text-lg text-[#595959]">
+      //             <strong>Arquivo: </strong>
+      //             <a href="/path/to/your/pdf/file.pdf" download>
+      //               Baixar PDF
+      //             </a>
+      //           </span>
+      //         ) : null}
+      //       </div>
+      //     ) : null}
+      //   </>
+      // );
     };
 
     return (
@@ -440,8 +471,8 @@ export default function Prontuario() {
             Anexos
           </button>
         </div>
-    <div className="bg-[#F4F1EC] p-2 rounded-b-xl px-11 py-16">
-           {/**   {isClicked === "consultas" && (
+        <div className="bg-[#F4F1EC] p-2 rounded-b-xl px-11 py-16">
+          {/* {isClicked === "consultas" && (
             <div className="flex justify-between gap-8">
               <div className="relative w-2/3">
                 <input
@@ -456,10 +487,10 @@ export default function Prontuario() {
                 </button>
               </div>
             </div>
-          )}*/}
+          )}
           {isClicked === "prescricoes" && (
-           <div className="flex justify-between gap-8">
-            {/**    <div className="relative w-full">
+            <div className="flex justify-between gap-8">
+              <div className="relative w-full">
                 <input
                   type="text"
                   className=" h-12  rounded-xl w-full px-10 focus:outline-none focus:ring-2 focus:ring-[#007448]"
@@ -468,7 +499,7 @@ export default function Prontuario() {
                 <button className="absolute left-2 top-1/2 transform -translate-y-1/2">
                   <SearchIcon />
                 </button>
-              </div>*/}
+              </div>
               <Link
                 to="/receita"
                 className="bg-[#100F49] h-12 w-1/3 text-white rounded-xl flex items-center justify-center gap-3"
@@ -477,10 +508,87 @@ export default function Prontuario() {
                 Nova Prescrição
               </Link>
             </div>
-          )}
+          )} */}
+
+          {isClicked === "consultas" &&
+            (search
+              ? filteredEnchiridions.map((enchiridion) => (
+                  <ConsultWrapper
+                    key={enchiridion.id}
+                    enchiridionid={enchiridion.id}
+                    date={new Date(enchiridion.date).toLocaleDateString()}
+                    reasonConsult={enchiridion.reason_consult}
+                    weight={enchiridion.weights}
+                    id={enchiridion.teacher_id}
+                  />
+                ))
+              : enchiridions.map((enchiridion) => (
+                  <ConsultWrapper
+                    key={enchiridion.id}
+                    enchiridionid={enchiridion.id}
+                    date={new Date(enchiridion.date).toLocaleDateString()}
+                    reasonConsult={enchiridion.reason_consult}
+                    weight={enchiridion.weights}
+                    id={enchiridion.teacher_id}
+                  />
+                )))}
+
+          {/* Render medications separately from consultations */}
+          {isClicked === "prescricoes" &&
+            medications.map((medication) => (
+              <div
+                className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
+                key={medication.id}
+              >
+                <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
+                  <div className="flex flex-row gap-4">
+                    <MedicineIcon
+                      onClick={() =>
+                        console.log(medications, medication, medications.length)
+                      }
+                      className="text-[#100F49]"
+                      sx={{ fontSize: 32 }}
+                    />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <PrintIcon
+                      onClick={() => handlePrint(animal.id)}
+                      className="h-10 hover:scale-110 duration-75 cursor-pointer text-[#100F49]"
+                      sx={{ fontSize: 40 }}
+                    />
+                    <EditIcon
+                      onClick={() => handleOpenEditModal(medication)}
+                      className="h-10 cursor-pointer text-[#100F49]"
+                      sx={{ fontSize: 40 }}
+                    />
+                  </div>
+                </span>
+
+                <span className="font-Montserrat text-lg text-[#595959]">
+                  <strong>
+                    {medication.measurement || medication[0]?.measurement}
+                  </strong>
+                  , <strong>({medication.unit || medication[0]?.unit})</strong>{" "}
+                  <br />
+                  <strong>
+                    {medication.description || medication[0]?.description}
+                  </strong>{" "}
+                  <br />
+                  <strong>
+                    {medication.useType || medication[0]?.useType}
+                  </strong>
+                  {" - "}
+                  <strong>
+                    {medication.pharmacy || medication[0]?.pharmacy}
+                  </strong>
+                </span>
+              </div>
+            ))}
+
           {isClicked === "anexos" && (
             <div className="flex justify-between gap-8">
-            {/**  <div className="relative w-full">
+              <div className="relative w-full">
                 <input
                   type="text"
                   className=" h-12  rounded-xl w-full px-10 focus:outline-none focus:ring-2 focus:ring-[#007448]"
@@ -489,7 +597,7 @@ export default function Prontuario() {
                 <button className="absolute left-2 top-1/2 transform -translate-y-1/2">
                   <SearchIcon />
                 </button>
-              </div>*/} 
+              </div>
               <button
                 className="bg-[#100F49] h-12 w-1/3 text-white rounded-xl flex items-center justify-center gap-3"
                 onClick={() => handleOpenModal("newAnexo")}
@@ -511,7 +619,8 @@ export default function Prontuario() {
               />
             </div>
           )}
-          {search
+
+          {/* {search
             ? filteredEnchiridions.map((enchiridion) => (
                 <ConsultWrapper
                   key={enchiridion.id}
@@ -531,7 +640,7 @@ export default function Prontuario() {
                   weight={enchiridion.weights}
                   id={enchiridion.teacher_id}
                 />
-              ))}
+              ))} */}
           {isClicked === "anexos" &&
             anexos.map((anexo) => (
               <div
@@ -577,6 +686,18 @@ export default function Prontuario() {
         </div>
       </div>
     );
+  };
+
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const handleOpenEditModal = (medication) => {
+    console.log("Selected medication:", medication);
+    setOpenEditModal(true);
+    setSelectedPrescription(medication);
+  };
+
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
+    setSelectedPrescription([]);
   };
 
   return (
@@ -678,16 +799,22 @@ export default function Prontuario() {
         </Box>
       </Modal>
 
-      <Modal
-        open={openModal === "editPresc"}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+      <Dialog
+        open={openEditModal}
+        fullWidth={true}
+        maxWidth={"lg"}
+        onClose={handleCloseEditModal}
       >
-        <Box sx={{ ...style, width: "900px", height: "auto" }}>
-          <ModalEdit setOpen={setOpenModal} handleClose={handleCloseModal} />
-        </Box>
-      </Modal>
+        <DialogContent>
+          <DialogContentText className="text-2xl font-bold mb-4">
+            <ModalEdit
+              setOpen={setOpenModal}
+              selectedPrescription={selectedPrescription}
+              handleClose={handleCloseEditModal}
+            />
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
 
       <Modal
         open={openModal === "deleteAnexo"}
@@ -716,22 +843,22 @@ export default function Prontuario() {
           {consultationDetails && (
             <div className="p-6">
               <IconButton
-          onClick={() => {
-            setShowDetailsModal(false);
-            setActiveStep(0);
-          }}
-          sx={{
-            position: 'absolute',
-            right: '1rem',
-            top: '1rem',
-            color: 'rgb(107, 114, 128)',
-            '&:hover': {
-              color: 'rgb(75, 85, 99)',
-            }
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
+                onClick={() => {
+                  setShowDetailsModal(false);
+                  setActiveStep(0);
+                }}
+                sx={{
+                  position: "absolute",
+                  right: "1rem",
+                  top: "1rem",
+                  color: "rgb(107, 114, 128)",
+                  "&:hover": {
+                    color: "rgb(75, 85, 99)",
+                  },
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
               <h2 className="text-2xl font-bold mb-4">Detalhes da Consulta</h2>
 
               <Stepper
@@ -945,8 +1072,6 @@ export default function Prontuario() {
                 </Button>
 
                 <div className="flex gap-2">
-                 
-
                   {activeStep < steps.length - 1 && (
                     <Button
                       variant="contained"
