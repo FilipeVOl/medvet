@@ -161,7 +161,7 @@ const ModalEdit = ({ label, type, handleClose, selectedPrescription }) => {
                 });
               }}
               className="border-[1px] hover:scale-105 duration-75 border-solid bg-[#144A36] text-[#FFFEF9] px-14 py-2 rounded-lg text-xl font-bold"
-            >
+          >
               Salvar
             </button>
           </div>

@@ -84,7 +84,7 @@ export default function Prontuario() {
   const [selectedAttachment, setSelectedAttachment] = useState();
   const [openAttachment, setOpenAttachment] = useState(false);
   const handleOpenAttachment = (id) => {
-    console.log("ID do anexo:", id); // Log the ID of the selected anexo
+    console.log("ID do anexo:", id); //   Log the ID of the selected anexo
     const selectedAnexo = anexos.find((anexo) => anexo.id === id);
     setSelectedAttachment(selectedAnexo);
     console.log(selectedAnexo);
@@ -182,10 +182,19 @@ export default function Prontuario() {
     }
   };
 
-  const handlePrint = async (selectedEnchiridionId) => {
+  const handlePrint = async (animalId) => {
+    console.log("animal", animalId);
+
+    const prescrition = await axios.get(
+      `http://localhost:3333/get/prescription/animalId/${animalId}`
+    );
+    console.log("prescription: ", prescrition.data.prescriptions[0]);
+
+    const { id } = prescrition.data.prescriptions[0];
+
     try {
-      console.log(selectedEnchiridionId);
-      const pdfData = await getPrescription(selectedEnchiridionId);
+      console.log("ID here: ", id);
+      window.open(`http://localhost:3333/pdf/prescription/${id}`);
 
       // Check if response indicates an error
       if (pdfData.message) {
@@ -203,7 +212,6 @@ export default function Prontuario() {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error fetching prescription PDF:", error);
-      alert("Erro ao buscar a prescrição"); // Or use your preferred notification system
     }
   };
 
@@ -289,6 +297,7 @@ export default function Prontuario() {
           }
         }
       };
+
       return (
         <>
           {isClicked === "prescricoes" &&
@@ -300,6 +309,9 @@ export default function Prontuario() {
                 <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
                   <div className="flex flex-row gap-4">
                     <MedicineIcon
+                      onClick={() =>
+                        console.log(medications, medication, medications.length)
+                      }
                       className="text-[#100F49]"
                       sx={{ fontSize: 32 }}
                     />
@@ -308,7 +320,7 @@ export default function Prontuario() {
                   {isClicked === "prescricoes" && (
                     <div className="flex gap-4">
                       <PrintIcon
-                        onClick={() => handlePrint(enchiridionid)}
+                        onClick={() => handlePrint(animal.id)}
                         className="h-10 hover:scale-110 duration-75 cursor-pointer text-[#100F49]"
                         sx={{ fontSize: 40 }}
                       />
@@ -318,10 +330,10 @@ export default function Prontuario() {
                         sx={{ fontSize: 40 }}
                       />
                       {/**<DeleteIcon
-      onClick={() => handleOpenModal("delete", medication.id)}
-      className="h-10 cursor-pointer text-[#100F49]"
-      sx={{ fontSize: 40 }}
-    /> */}
+                        onClick={() => handleOpenModal("delete", medication.id)}
+                        className="h-10 cursor-pointer text-[#100F49]"
+                        sx={{ fontSize: 40 }}
+                      /> */}
                     </div>
                   )}
                 </span>
