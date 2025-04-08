@@ -428,8 +428,8 @@ export default function Prontuario() {
             Anexos
           </button>
         </div>
-        <div className="bg-[#F4F1EC] p-2 rounded-b-xl px-11 py-16">
-          {isClicked === "consultas" && (
+    <div className="bg-[#F4F1EC] p-2 rounded-b-xl px-11 py-16">
+           {/**   {isClicked === "consultas" && (
             <div className="flex justify-between gap-8">
               <div className="relative w-2/3">
                 <input
@@ -444,10 +444,10 @@ export default function Prontuario() {
                 </button>
               </div>
             </div>
-          )}
+          )}*/}
           {isClicked === "prescricoes" && (
-            <div className="flex justify-between gap-8">
-              <div className="relative w-full">
+           <div className="flex justify-between gap-8">
+            {/**    <div className="relative w-full">
                 <input
                   type="text"
                   className=" h-12  rounded-xl w-full px-10 focus:outline-none focus:ring-2 focus:ring-[#007448]"
@@ -456,7 +456,7 @@ export default function Prontuario() {
                 <button className="absolute left-2 top-1/2 transform -translate-y-1/2">
                   <SearchIcon />
                 </button>
-              </div>
+              </div>*/}
               <Link
                 to="/receita"
                 className="bg-[#100F49] h-12 w-1/3 text-white rounded-xl flex items-center justify-center gap-3"
@@ -468,7 +468,7 @@ export default function Prontuario() {
           )}
           {isClicked === "anexos" && (
             <div className="flex justify-between gap-8">
-              <div className="relative w-full">
+            {/**  <div className="relative w-full">
                 <input
                   type="text"
                   className=" h-12  rounded-xl w-full px-10 focus:outline-none focus:ring-2 focus:ring-[#007448]"
@@ -477,7 +477,7 @@ export default function Prontuario() {
                 <button className="absolute left-2 top-1/2 transform -translate-y-1/2">
                   <SearchIcon />
                 </button>
-              </div>
+              </div>*/} 
               <button
                 className="bg-[#100F49] h-12 w-1/3 text-white rounded-xl flex items-center justify-center gap-3"
                 onClick={() => handleOpenModal("newAnexo")}
