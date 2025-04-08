@@ -1,13 +1,20 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { getProntuario } from "../services/prontuario";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Close as CloseIcon } from "@mui/icons-material";
 
 import {
   getEnchiridion,
   getEnchiridionsAnimalId,
 } from "../services/enchiridion";
-import { Stepper, StepButton, Step, StepLabel, Button,IconButton } from "@mui/material";
+import {
+  Stepper,
+  StepButton,
+  Step,
+  StepLabel,
+  Button,
+  IconButton,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
 import CircularIndeterminate from "../Component/Prontuarios/Loading";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +23,6 @@ import { Link } from "react-router-dom";
 import {
   Modal,
   Box,
-  Typography,
   DialogContent,
   DialogContentText,
   Dialog,
@@ -70,8 +76,10 @@ export default function Prontuario() {
   const [consultationDetails, setConsultationDetails] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [filteredEnchiridions, setFilteredEnchiridions] = useState([]);
-  const { selectedMedicationId, setSelectedMedicationId } =
+  const { selectedMedication, setSelectedMedication } =
     useContext(PrescContext); // Add this line
+
+  const [selectedPrescription, setSelectedPrescription] = useState([]);
 
   const [selectedAttachment, setSelectedAttachment] = useState();
   const [openAttachment, setOpenAttachment] = useState(false);
@@ -93,7 +101,7 @@ export default function Prontuario() {
   const handleOpenModal = (modalName, id = null, name = "") => {
     setOpenModal(modalName);
     if (modalName === "delete" || modalName === "editPresc") {
-      setSelectedMedicationId(id); // Set the selected medication ID in the context
+      setSelectedMedication(id); // Set the selected medication ID in the context
     } else if (modalName === "deleteAnexo" || modalName === "editAnexo") {
       setSelectedAnexoId(id); // Set the selected anexo ID in the state
     }
@@ -102,7 +110,7 @@ export default function Prontuario() {
 
   const handleCloseModal = () => {
     setOpenModal(null);
-    setSelectedMedicationId(null);
+    setSelectedMedication(null);
     setSelectedAnexoId(null);
   };
 
@@ -199,11 +207,11 @@ export default function Prontuario() {
     }
   };
 
-  const handleDelete = (medicationId) => {
+  const handleDelete = (m) => {
     if (isClicked === "prescricoes") {
       const updatedEnchiridions = enchiridions.map((enchiridion) => {
         const updatedMedications = enchiridion.medications.filter(
-          (medication) => medication.id !== medicationId
+          (medication) => medication.id !== m
         );
         return {
           ...enchiridion,
@@ -237,7 +245,7 @@ export default function Prontuario() {
   );
 
   const handleDeleteConfirm = () => {
-    handleDelete(selectedMedicationId);
+    handleDelete(selectedMedication);
     handleCloseModal();
   };
 
@@ -305,7 +313,7 @@ export default function Prontuario() {
                         sx={{ fontSize: 40 }}
                       />
                       <EditIcon
-                        onClick={() => handleOpenModal("editPresc")}
+                        onClick={() => handleOpenEditModal(medication)}
                         className="h-10 cursor-pointer text-[#100F49]"
                         sx={{ fontSize: 40 }}
                       />
@@ -567,6 +575,18 @@ export default function Prontuario() {
     );
   };
 
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const handleOpenEditModal = (medication) => {
+    console.log("Selected medication:", medication);
+    setOpenEditModal(true);
+    setSelectedPrescription(medication);
+  };
+
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
+    setSelectedPrescription([]);
+  };
+
   return (
     <>
       {isLoading ? (
@@ -666,16 +686,22 @@ export default function Prontuario() {
         </Box>
       </Modal>
 
-      <Modal
-        open={openModal === "editPresc"}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+      <Dialog
+        open={openEditModal}
+        fullWidth={true}
+        maxWidth={"lg"}
+        onClose={handleCloseEditModal}
       >
-        <Box sx={{ ...style, width: "900px", height: "auto" }}>
-          <ModalEdit setOpen={setOpenModal} handleClose={handleCloseModal} />
-        </Box>
-      </Modal>
+        <DialogContent>
+          <DialogContentText className="text-2xl font-bold mb-4">
+            <ModalEdit
+              setOpen={setOpenModal}
+              selectedPrescription={selectedPrescription}
+              handleClose={handleCloseEditModal}
+            />
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
 
       <Modal
         open={openModal === "deleteAnexo"}
@@ -704,22 +730,22 @@ export default function Prontuario() {
           {consultationDetails && (
             <div className="p-6">
               <IconButton
-          onClick={() => {
-            setShowDetailsModal(false);
-            setActiveStep(0);
-          }}
-          sx={{
-            position: 'absolute',
-            right: '1rem',
-            top: '1rem',
-            color: 'rgb(107, 114, 128)',
-            '&:hover': {
-              color: 'rgb(75, 85, 99)',
-            }
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
+                onClick={() => {
+                  setShowDetailsModal(false);
+                  setActiveStep(0);
+                }}
+                sx={{
+                  position: "absolute",
+                  right: "1rem",
+                  top: "1rem",
+                  color: "rgb(107, 114, 128)",
+                  "&:hover": {
+                    color: "rgb(75, 85, 99)",
+                  },
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
               <h2 className="text-2xl font-bold mb-4">Detalhes da Consulta</h2>
 
               <Stepper
@@ -933,8 +959,6 @@ export default function Prontuario() {
                 </Button>
 
                 <div className="flex gap-2">
-                 
-
                   {activeStep < steps.length - 1 && (
                     <Button
                       variant="contained"

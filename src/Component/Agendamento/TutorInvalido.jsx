@@ -1,4 +1,4 @@
-import { useState, useCallback ,useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Input, InputLabel, Snackbar } from "@mui/material";
 import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
@@ -6,7 +6,7 @@ import z from "zod";
 import { CreateConsult } from "../../services/agendamento";
 import InputMask from "react-input-mask";
 import { TextField } from "@mui/material";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const InputConsulta = ({ label, type, setter, value }) => {
   const handleChange = useCallback(
@@ -45,14 +45,17 @@ const InputConsulta = ({ label, type, setter, value }) => {
 
 const formatInitialPhone = (phoneNumber) => {
   if (!phoneNumber) return "";
-  let cleaned = phoneNumber.replace(/\D/g, '');
-  
-  if (phoneNumber.includes('(')) {
-    cleaned = phoneNumber.replace(/[\(\)\s-]/g, '');
+  let cleaned = phoneNumber.replace(/\D/g, "");
+
+  if (phoneNumber.includes("(")) {
+    cleaned = phoneNumber.replace(/[\(\)\s-]/g, "");
   }
 
   if (cleaned.length >= 11) {
-    return `(${cleaned.slice(0,2)}) ${cleaned.slice(2,7)}-${cleaned.slice(7,11)}`;
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(
+      7,
+      11
+    )}`;
   }
   return phoneNumber;
 };
@@ -60,11 +63,11 @@ const formatInitialPhone = (phoneNumber) => {
 const TutorInvalido = ({ tel }) => {
   const navigate = useNavigate();
   const initialPhone = formatInitialPhone(tel?.phone);
-     const [phone, setPhone] = useState(() => {
+  const [phone, setPhone] = useState(() => {
     const formatted = formatInitialPhone(tel?.phone);
     return formatted;
   });
-     const [phoneWMask, setMask] = useState(() => {
+  const [phoneWMask, setMask] = useState(() => {
     const formatted = formatInitialPhone(tel?.phone);
     return formatted;
   });
@@ -72,7 +75,7 @@ const TutorInvalido = ({ tel }) => {
   const [nameTutor, setTutor] = useState("");
   const [species, setEspecie] = useState("");
   const [stringDate, setDate] = useState("");
- // const [hora, setHora] = useState("");
+  // const [hora, setHora] = useState("");
   const [description, setDesc] = useState("");
   const [open, setOpen] = useState(false);
   const [openError, setError] = useState(false);
@@ -109,20 +112,25 @@ const TutorInvalido = ({ tel }) => {
 
   const ConsultaSchema = z.object({
     species: z.string().min(1, "Espécie é obrigatória"),
-    stringDate: z.string()
-    .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Data deve estar no formato DD/MM/YYYY")
-    .refine((date) => {
-      const [day, month, year] = date.split('/').map(Number);
-      return day >= 1 && day <= 31 && month >= 1 && month <= 12;
-    }, "Data inválida"),
-    phone: z.string()
-    .regex(/^\(\d{2}\)\d{5}-\d{4}$/, "Telefone deve estar no formato (XX)XXXXX-XXXX"),
-    description: z.string().nullable().default(''),
+    stringDate: z
+      .string()
+      .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Data deve estar no formato DD/MM/YYYY")
+      .refine((date) => {
+        const [day, month, year] = date.split("/").map(Number);
+        return day >= 1 && day <= 31 && month >= 1 && month <= 12;
+      }, "Data inválida"),
+    phone: z
+      .string()
+      .regex(
+        /^\(\d{2}\)\d{5}-\d{4}$/,
+        "Telefone deve estar no formato (XX)XXXXX-XXXX"
+      ),
+    description: z.string().nullable().default(""),
     nameAnimal: z.string().min(1, "Nome do animal é obrigatório"),
     nameTutor: z.string().min(1, "Nome do tutor é obrigatório"),
   });
 
- useEffect(() => {
+  useEffect(() => {
     if (tel?.phone) {
       const formatted = formatInitialPhone(tel.phone);
       setPhone(formatted);
@@ -140,32 +148,31 @@ const TutorInvalido = ({ tel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const [year, month, day] = stringDate.split('-');
+      const [year, month, day] = stringDate.split("-");
       const formattedDate = `${day}/${month}/${year}`;
-  
-      const formattedPhone = phoneWMask.replace(/\s/g, '');
-  
+
+      const formattedPhone = phoneWMask.replace(/\s/g, "");
+
       const consulta = ConsultaSchema.parse({
         nameAnimal,
         species,
         stringDate: formattedDate,
-        description: description || '',
+        description: description || "",
         phone: formattedPhone,
         nameTutor,
       });
-  
-      console.log('Sending data:', consulta);
+
+      console.log("Sending data:", consulta);
       const response = await CreateConsult(consulta);
-      console.log('Response:', response);
-      
+      console.log("Response:", response);
+
       handleClose();
-      
+
       setTimeout(() => {
-        navigate('/agenda'); 
+        navigate("/agenda");
       }, 1000);
-      
     } catch (error) {
-      console.error('Error details:', error);
+      console.error("Error details:", error);
       handleError();
     }
   };
@@ -174,18 +181,19 @@ const TutorInvalido = ({ tel }) => {
     const value = e.target.value;
     let formattedValue = value;
 
-    if (value.replace(/\D/g, '').length > 0) {
-      const digits = value.replace(/\D/g, '');
+    if (value.replace(/\D/g, "").length > 0) {
+      const digits = value.replace(/\D/g, "");
       if (digits.length >= 11) {
-        formattedValue = `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7,11)}`;
+        formattedValue = `(${digits.slice(0, 2)}) ${digits.slice(
+          2,
+          7
+        )}-${digits.slice(7, 11)}`;
       }
     }
 
     setPhone(formattedValue);
     setMask(formattedValue);
   };
-
-  
 
   return (
     <>
@@ -217,50 +225,6 @@ const TutorInvalido = ({ tel }) => {
                   setter={setEspecie}
                   value={species}
                 />
-
-              {/*     <div className="flex flex-col mb-4">
-              <InputLabel
-                    sx={{
-                      fontFamily: "Montserrat",
-                      color: "#000000",
-                      fontSize: "1rem",
-                      marginLeft: "1rem",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    Hora
-                  </InputLabel>{" "}
-                  <InputMask
-                    mask="99:99"
-                    value={hora}
-                    onChange={(e) => setHora(e.target.value)}
-                    maskChar={null}
-                  >
-                    {(inputProps) => (
-                      <Input
-                        {...inputProps}
-                        type="text"
-                        className={`${
-                          hora === "" ? "border-[#9F9F9F]" : "border-[#9F9F9F]"
-                        } border rounded-md h-[46px] p-2 text-base font-Montserrat`}
-                        disableUnderline={true}
-                        sx={{
-                          fontFamily: "Montserrat",
-                          "& .MuiInputBase-root::before": {
-                            borderBottom: "none",
-                          },
-                          "&:hover:before": {
-                            borderBottom: "none !important",
-                          },
-                          "&::after": {
-                            borderBottom: "none",
-                          },
-                        }}
-                      />
-                    )}
-                  </InputMask>
-                </div>
-*/}
                 <div className="flex flex-col mb-4">
                   <InputLabel
                     sx={{
@@ -410,7 +374,7 @@ TutorInvalido.propTypes = {
   value: PropTypes.string,
   width: PropTypes.number,
   tel: PropTypes.shape({
-    phone: PropTypes.string
+    phone: PropTypes.string,
   }),
   options: PropTypes.arrayOf(
     PropTypes.shape({
