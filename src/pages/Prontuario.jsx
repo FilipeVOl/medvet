@@ -53,8 +53,8 @@ import {
   Description as DescriptionIcon,
 } from "@mui/icons-material";
 import { set } from "zod";
-import SolicitacoesExameView from '../components/solicitacoes/SolicitacoesExameView';
-import SolicitacoesInternacaoView from '../components/solicitacoes/SolicitacoesInternacaoView';
+import SolicitacoesExameView from "../components/solicitacoes/SolicitacoesExameView";
+import SolicitacoesInternacaoView from "../components/solicitacoes/SolicitacoesInternacaoView";
 
 export default function Prontuario() {
   const { id } = useParams();
@@ -77,24 +77,22 @@ export default function Prontuario() {
   const [deletedMedications, setDeletedMedications] = useState([]);
   const [modal, setModal] = useState(false);
   const [openModal, setOpenModal] = useState(null);
-  const [selectedAnexoId, setSelectedAnexoId] = useState(null); 
+  const [selectedAnexoId, setSelectedAnexoId] = useState(null);
   const [anexos, setAnexos] = useState([]);
   const [search, setSearch] = useState("");
   const [consultationDetails, setConsultationDetails] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [filteredEnchiridions, setFilteredEnchiridions] = useState([]);
   const { selectedMedication, setSelectedMedication } =
-    useContext(PrescContext); 
+    useContext(PrescContext);
 
   const [selectedPrescription, setSelectedPrescription] = useState([]);
 
   const [selectedAttachment, setSelectedAttachment] = useState();
   const [openAttachment, setOpenAttachment] = useState(false);
   const handleOpenAttachment = (id) => {
-    console.log("ID do anexo:", id); 
     const selectedAnexo = anexos.find((anexo) => anexo.id === id);
     setSelectedAttachment(selectedAnexo);
-    console.log(selectedAnexo);
     setOpenAttachment(true);
     setSelectedAnexoId(id);
   };
@@ -108,7 +106,7 @@ export default function Prontuario() {
   const handleOpenModal = (modalName, id = null, name = "") => {
     setOpenModal(modalName);
     if (modalName === "delete" || modalName === "editPresc") {
-      setSelectedMedication(id); 
+      setSelectedMedication(id);
     } else if (modalName === "deleteAnexo" || modalName === "editAnexo") {
       setSelectedAnexoId(id);
     }
@@ -147,16 +145,16 @@ export default function Prontuario() {
       setSelectedFile(file);
     }
   };
-
   useEffect(() => {
     const fetchData = async () => {
       const response = await getEnchiridionsAnimalId(id);
-      const medication = await getPrescByAnimalId(id);
+      const prescriptionData = await getPrescByAnimalId(id);
       const anexos = await getAnexos(id);
       const animal = await getAnimalById(id);
       setAnimal(animal.data);
       setEnchiridions(response.enchiridions);
-      setMedications(medication);
+      // Extract the prescriptions array from the data
+      setMedications(prescriptionData.prescriptions || []);
       setAnexos(anexos);
       await getTeacherNames();
     };
@@ -166,7 +164,6 @@ export default function Prontuario() {
 
   const getTeacherNames = async () => {
     const response = await getAllTeachers();
-    console.log("Professores: ", response);
     setTeacherNames(response);
   };
 
@@ -190,21 +187,18 @@ export default function Prontuario() {
   };
 
   const handlePrint = async (animalId) => {
-    console.log("animal", animalId);
 
     const prescrition = await axios.get(
       `http://localhost:3333/get/prescription/animalId/${animalId}`
     );
-    console.log("prescription: ", prescrition.data.prescriptions[0]);
 
     const { id } = prescrition.data.prescriptions[0];
 
     try {
-      console.log("ID here: ", id);
       window.open(`http://localhost:3333/pdf/prescription/${id}`);
 
       if (pdfData.message) {
-        alert("Prescrição não encontrada"); 
+        alert("Prescrição não encontrada");
         return;
       }
 
@@ -283,7 +277,6 @@ export default function Prontuario() {
         if (isClicked === "consultas") {
           try {
             const response = await getProntuario(animal.id);
-            console.log("Response from getProntuario:", response);
 
             const consultation = enchiridions.find(
               (e) => e.id === enchiridionid
@@ -447,7 +440,9 @@ export default function Prontuario() {
     };
 
     return (
-      <div className="container bg-transparent flex mt-14 flex-col font-Montserrat">        <div className="bg-transparent flex">
+      <div className="container bg-transparent flex mt-14 flex-col font-Montserrat">
+        {" "}
+        <div className="bg-transparent flex">
           <button
             onClick={() => setIsClicked("consultas")}
             className={`${
@@ -535,7 +530,6 @@ export default function Prontuario() {
               </Link>
             </div>
           )} */}
-
           {isClicked === "consultas" &&
             (search
               ? filteredEnchiridions.map((enchiridion) => (
@@ -557,60 +551,63 @@ export default function Prontuario() {
                     weight={enchiridion.weights}
                     id={enchiridion.teacher_id}
                   />
-                )))}
+                )))}{" "}
+          {/* Render medications separately from consultations */}          {isClicked === "prescricoes" &&
+            (Array.isArray(medications) ? medications : [])
+              .flatMap((prescription) =>
+                (prescription.medications || []).map((medication) => ({
+                  ...medication,
+                  prescriptionId: prescription.id,
+                  prescriptionDate: prescription.createdAt,
+                }))
+              )
+              .map((medication, index) => (
+                <div
+                  className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
+                  key={`${medication.prescriptionId}-${index}`}
+                >
+                  <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
+                    <div className="flex flex-row gap-4">
+                      <MedicineIcon
+                        onClick={() => {
+                        }}
+                        className="text-[#100F49]"
+                        sx={{ fontSize: 32 }}
+                      />
+                    </div>
 
-          {/* Render medications separately from consultations */}
-          {isClicked === "prescricoes" &&
-            medications.map((medication) => (
-              <div
-                className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
-                key={medication.id}
-              >
-                <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
-                  <div className="flex flex-row gap-4">                    <MedicineIcon
-                      onClick={() => {
-                        console.log(medications, medication, medications.length);
-                      }}
-                      className="text-[#100F49]"
-                      sx={{ fontSize: 32 }}
-                    />
-                  </div>
+                    <div className="flex gap-4">
+                      <PrintIcon
+                        onClick={() =>
+                          handlePrint(animal.id, medication.prescriptionId)
+                        }
+                        className="h-10 hover:scale-110 duration-75 cursor-pointer text-[#100F49]"
+                        sx={{ fontSize: 40 }}
+                      />
+                    </div>
+                  </span>
 
-                  <div className="flex gap-4">
-                    <PrintIcon
-                      onClick={() => handlePrint(animal.id)}
-                      className="h-10 hover:scale-110 duration-75 cursor-pointer text-[#100F49]"
-                      sx={{ fontSize: 40 }}
-                    />
-                    <EditIcon
-                      onClick={() => handleOpenEditModal(medication)}
-                      className="h-10 cursor-pointer text-[#100F49]"
-                      sx={{ fontSize: 40 }}
-                    />
-                  </div>
-                </span>
-
-                <span className="font-Montserrat text-lg text-[#595959]">
-                  <strong>
-                    {medication.measurement || medication[0]?.measurement}
-                  </strong>
-                  , <strong>({medication.unit || medication[0]?.unit})</strong>{" "}
-                  <br />
-                  <strong>
-                    {medication.description || medication[0]?.description}
-                  </strong>{" "}
-                  <br />
-                  <strong>
-                    {medication.useType || medication[0]?.useType}
-                  </strong>
-                  {" - "}
-                  <strong>
-                    {medication.pharmacy || medication[0]?.pharmacy}
-                  </strong>
-                </span>
-              </div>
-            ))}
-
+                  <span className="font-Montserrat text-lg text-[#595959]">
+                    <strong>
+                      {medication.measurement || medication[0]?.measurement}
+                    </strong>
+                    ,{" "}
+                    <strong>({medication.unit || medication[0]?.unit})</strong>{" "}
+                    <br />
+                    <strong>
+                      {medication.description || medication[0]?.description}
+                    </strong>{" "}
+                    <br />
+                    <strong>
+                      {medication.useType || medication[0]?.useType}
+                    </strong>
+                    {" - "}
+                    <strong>
+                      {medication.pharmacy || medication[0]?.pharmacy}
+                    </strong>
+                  </span>
+                </div>
+              ))}
           {isClicked === "anexos" && (
             <div className="flex justify-between gap-8">
               <div className="relative w-full">
@@ -644,7 +641,6 @@ export default function Prontuario() {
               />
             </div>
           )}
-
           {/* {search
             ? filteredEnchiridions.map((enchiridion) => (
                 <ConsultWrapper
@@ -665,7 +661,8 @@ export default function Prontuario() {
                   weight={enchiridion.weights}
                   id={enchiridion.teacher_id}
                 />
-              ))} */}          {isClicked === "termos" && (
+              ))} */}{" "}
+          {isClicked === "termos" && (
             <>
               <div className="flex justify-between gap-8">
                 <div className="relative w-full">
@@ -680,7 +677,9 @@ export default function Prontuario() {
                 </div>
                 <button
                   className="bg-[#100F49] h-12 w-1/3 text-white rounded-xl flex items-center justify-center gap-3"
-                  onClick={() => setSelectedForm ? setSelectedForm('consulta') : null}
+                  onClick={() =>
+                    setSelectedForm ? setSelectedForm("consulta") : null
+                  }
                 >
                   <DescriptionIcon />
                   Novo Termo de Consulta
@@ -691,7 +690,6 @@ export default function Prontuario() {
               </div>
             </>
           )}
-
           {isClicked === "exames" && (
             <>
               <div className="flex justify-between gap-8">
@@ -705,14 +703,12 @@ export default function Prontuario() {
                     <SearchIcon />
                   </button>
                 </div>
-              
               </div>
               <div className="mt-8">
                 <SolicitacoesExameView animalId={id} />
               </div>
             </>
           )}
-
           {isClicked === "internacao" && (
             <>
               <div className="flex justify-between gap-8">
@@ -726,14 +722,12 @@ export default function Prontuario() {
                     <SearchIcon />
                   </button>
                 </div>
-              
               </div>
               <div className="mt-8">
                 <SolicitacoesInternacaoView animalId={id} />
               </div>
             </>
           )}
-
           {isClicked === "anexos" &&
             anexos.map((anexo) => (
               <div
@@ -783,9 +777,14 @@ export default function Prontuario() {
 
   const [openEditModal, setOpenEditModal] = useState(false);
   const handleOpenEditModal = (medication) => {
-    console.log("Selected medication:", medication);
     setOpenEditModal(true);
-    setSelectedPrescription(medication);
+    if (medication && medication.medications) {
+      setSelectedPrescription(medication.medications);
+    } else if (Array.isArray(medication)) {
+      setSelectedPrescription(medication);
+    } else {
+      setSelectedPrescription([medication]);
+    }
   };
 
   const handleCloseEditModal = () => {
@@ -821,7 +820,6 @@ export default function Prontuario() {
           <Wrapper />
         </div>
       )}
-
       {/* RENDERIZAÇÃO DOS MODAIS */}
       <Modal
         open={openModal === "newAnexo"}
@@ -841,7 +839,6 @@ export default function Prontuario() {
           />
         </Box>
       </Modal>
-
       <Modal
         open={openModal === "delete"}
         onClose={handleCloseModal}
@@ -857,7 +854,6 @@ export default function Prontuario() {
           />
         </Box>
       </Modal>
-
       <Modal
         open={openModal === "delete2"}
         onClose={handleCloseModal}
@@ -873,7 +869,6 @@ export default function Prontuario() {
           />
         </Box>
       </Modal>
-
       <Modal
         open={openModal === "editAnexo"}
         onClose={handleCloseModal}
@@ -890,8 +885,7 @@ export default function Prontuario() {
             anexoName={selectedFile} // Pass the anexo name to the ModalViewAnexo component
           />
         </Box>
-      </Modal>
-
+      </Modal>{" "}
       <Dialog
         open={openEditModal}
         fullWidth={true}
@@ -899,16 +893,14 @@ export default function Prontuario() {
         onClose={handleCloseEditModal}
       >
         <DialogContent>
-          <DialogContentText className="text-2xl font-bold mb-4">
-            <ModalEdit
-              setOpen={setOpenModal}
-              selectedPrescription={selectedPrescription}
-              handleClose={handleCloseEditModal}
-            />
-          </DialogContentText>
+          {/* Removed DialogContentText to fix DOM nesting warning */}
+          <ModalEdit
+            setOpen={setOpenModal}
+            selectedPrescription={selectedPrescription}
+            handleClose={handleCloseEditModal}
+          />
         </DialogContent>
       </Dialog>
-
       <Modal
         open={openModal === "deleteAnexo"}
         onClose={handleCloseModal}
@@ -1186,7 +1178,6 @@ export default function Prontuario() {
         </Box>
       </Modal>
       {/* FIM DA RENDERIZAÇÃO DOS MODAIS */}
-
       <Dialog
         fullWidth={true}
         maxWidth={"lg"}

@@ -467,7 +467,6 @@ export const Receita = () => {
       if (prescriptionId) {
         try {
           const prescriptionResponse = await getPrescription(prescriptionId);
-          console.log("Prescription created:", prescriptionResponse);
 
           Swal.fire({
             icon: "success",
@@ -476,7 +475,6 @@ export const Receita = () => {
             confirmButtonText: "OK",
             confirmButtonColor: "#144A36",
           }).then(() => {            try {
-              console.log('Abrindo PDF da receita:', prescriptionId);
               window.open(
                 `http://localhost:3333/pdf/prescription/${prescriptionId}`,
                 "_blank"

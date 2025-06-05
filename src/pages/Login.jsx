@@ -109,7 +109,6 @@ const Login = () => {
         email,
         phone,
       };
-      console.log("userData: ", userData);
 
       localStorage.setItem("token", token);
       saveUserAndToken(userData, token, token);

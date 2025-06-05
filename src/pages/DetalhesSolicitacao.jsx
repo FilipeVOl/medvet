@@ -23,17 +23,12 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
         setLoading(true);
         let endpoint = '';
         
-        // Se temos animalId, usamos a rota que retorna todas as prescrições do animal
         if (animalId) {
           try {
-            console.log(`Buscando todas as prescrições do animal ID: ${animalId}`);
             const { data } = await axios.get(`${API_URL}/get/prescription/animalId/${animalId}`);
-            console.log('Dados completos do animal + prescrições:', data);
             
-            // Processar os dados que têm estrutura animal + array de prescrições
             const dadosProcessados = { ...data };
             
-            // Normalizar as medicações em todas as prescrições
             if (data.prescriptions && data.prescriptions.length > 0) {
               dadosProcessados.prescriptions = data.prescriptions.map(presc => ({
                 ...presc,
@@ -53,18 +48,14 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
             return;
           } catch (error) {
             console.error(`Erro ao buscar prescrições do animal ${animalId}:`, error);
-            // Vamos continuar tentando outros métodos
           }
         }
         
-        // Se for receita e temos ID específico, buscamos por ID da prescrição
         if (tipo === 'receita') {
           // Tentamos buscar usando id da prescrição
           try {
             if (id) {
-              console.log(`Buscando receita usando rota de prescrição por ID: ${id}`);
               const { data } = await axios.get(`${API_URL}/get/prescription/id/${id}`);
-              console.log('Dados recebidos da API:', data);
               
               // Normaliza as medicações
               const dadosProcessados = { ...data };
@@ -79,7 +70,6 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
                 }));
               }
               
-              // Busca dados do animal se necessário
               if (data.animal_id) {
                 try {
                   const { data: animalData } = await axios.get(`${API_URL}/get/animal/id/${data.animal_id}`);
@@ -87,7 +77,6 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
                     dadosProcessados.animal = animalData;
                     dadosProcessados.animalName = animalData.name || animalData.nome;
                     
-                    // Busca dados do tutor se necessário
                     if (animalData.tutor_id) {
                       try {
                         const { data: tutorData } = await axios.get(`${API_URL}/get/tutor/${animalData.tutor_id}`);
@@ -134,23 +123,17 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
           }
         }
         
-        console.log(`Buscando detalhes de ${tipo} com ID ${id} em ${API_URL}${endpoint}`);
         
         // Add token for authorization if needed
         const token = localStorage.getItem('token');
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
         
         const { data } = await axios.get(`${API_URL}${endpoint}`, { headers });
-        console.log('Dados recebidos:', data);
         
-        // Processar dados específicos de cada tipo
         let dadosProcessados = { ...data };
         
-        // Para receitas, normalizar os dados de medicação
         if (tipo === 'receita') {
-          console.log('Processando dados de receita:', data);
           
-          // Garantir que medications existe e está no formato correto
           if (data.medications) {
             dadosProcessados.medications = data.medications.map(med => ({
               ...med,
@@ -164,7 +147,6 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
             dadosProcessados.medications = [];
           }
           
-          // Se ainda não tiver dados de animal e tutor, buscar
           if (!dadosProcessados.animalName && data.animal_id) {
             try {
               const { data: animalData } = await axios.get(`${API_URL}/get/animal/id/${data.animal_id}`, { headers });
@@ -218,7 +200,6 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
     try {
       const date = new Date(dateString);
       
-      // Verifica se a data é válida
       if (isNaN(date.getTime())) {
         return 'Data inválida';
       }
@@ -233,10 +214,8 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
 
   const downloadPDF = async (prescriptionId = null) => {
     try {
-      // Define a URL com base no tipo
       let url = '';
       
-      // Se um ID específico de prescrição foi fornecido, usamos ele
       const pdfId = prescriptionId || id;
       
       if (!pdfId) {
@@ -262,7 +241,6 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
           throw new Error('Tipo de solicitação inválido');
       }
       
-      console.log(`Tentando baixar PDF da URL: ${API_URL}${url}`);
       const token = localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       
@@ -271,9 +249,7 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
         headers
       });
       
-      // Verifica o tipo de conteúdo
       const contentType = response.headers['content-type'];
-      console.log('Tipo de conteúdo recebido:', contentType);
       
       if (contentType && contentType.includes('application/pdf')) {
         const blob = new Blob([response.data], { type: 'application/pdf' });
@@ -281,17 +257,14 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
         const link = document.createElement('a');
         link.href = downloadUrl;
         
-        // Define o nome do arquivo
         const fileName = `${tipo}_${pdfId}.pdf`;
         link.setAttribute('download', fileName);
         document.body.appendChild(link);
         link.click();
         link.remove();
         
-        // Limpa a URL do objeto após o download
         window.URL.revokeObjectURL(downloadUrl);
         
-        console.log('Download do PDF iniciado com sucesso');
       } else {
         console.error('Conteúdo não é um PDF válido. Tipo:', contentType);
         alert('O documento retornado não é um PDF válido.');
@@ -426,7 +399,6 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
               <>
                 <h3 className="font-medium mb-2">Medicamentos:</h3>
                 
-                {/* Caso especial: Se temos prescrições múltiplas (via animalId) */}
                 {dados?.prescriptions && dados.prescriptions.length > 0 ? (
                   <>
                     <div className="mb-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
@@ -565,7 +537,6 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
                   </ul>
                 )}
                 
-                {/* Botão de download PDF - apenas para prescrição única */}
                 {(!dados?.prescriptions || dados.prescriptions.length === 0) && (
                   <div className="flex justify-center mt-6">
                     <button
@@ -584,7 +555,6 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
           </div>
         </div>
         
-        {/* Botão de download PDF para outros tipos */}
         {tipo !== 'receita' && (
           <div className="flex justify-center mt-6">
             <button

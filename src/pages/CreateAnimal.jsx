@@ -36,7 +36,6 @@ export default function CreateAnimal() {
   //carrega os autoCompletes ao abrir a página.
   useEffect(() => {
     getAnimalsAndTutorByTutorName(setTutores, "");
-    console.log(tutores);
   }, []);
 
   const fullfillValidate = {

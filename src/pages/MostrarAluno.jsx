@@ -270,7 +270,6 @@ const MostrarAluno = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {console.log(filteredData)}
                   {filteredData &&
                     filteredData
                       .filter((row) => !row.status_delete)

@@ -31,12 +31,9 @@ export default function ListaSolicitacoes() {
         setLoading(true);
         
         try {
-          console.log('Buscando solicitações da API...');
           const data = await listarTodasSolicitacoes();
-          console.log('Dados recebidos da API:', data);
           
           if (data && data.length > 0) {
-            console.log('Dados válidos recebidos, enriquecendo com dados de animal e tutor...');
             
             const enrichedData = [];
             for (const solicitacao of data) {
@@ -208,7 +205,6 @@ export default function ListaSolicitacoes() {
   const handleViewDetails = (item) => {
     try {
       setSelectedItem(item);
-      console.log('Visualizando detalhes do item:', item);
       
       let route = '';
       switch (item.type) {
@@ -224,10 +220,8 @@ export default function ListaSolicitacoes() {
         case 'receita':
           if (item.animalId) {
             route = `/solicitacoes/${item.type}/${item.animalId}`;
-            console.log(`Usando animalId (${item.animalId}) para buscar todas as receitas do animal`);
           } else {
             route = `/receita/detalhes/${item.id}`;
-            console.log('animalId não disponível, usando id da receita diretamente');
           }
           break;
         default:
@@ -236,7 +230,6 @@ export default function ListaSolicitacoes() {
           return;
       }
       
-      console.log(`Navegando para a rota: ${route}`); 
       
       if (route) {
         navigate(route);
@@ -250,7 +243,6 @@ export default function ListaSolicitacoes() {
   const renderPdfButton = (item) => {
     const downloadPDF = async () => {
       try {
-        console.log('Item para download:', item);
         
       
         let url = '';
@@ -269,7 +261,6 @@ export default function ListaSolicitacoes() {
           default:
             throw new Error('Tipo de solicitação inválido');
         }
-          console.log(`Tentando baixar PDF da URL: ${API_URL}${url}`);
         
         const token = localStorage.getItem('token');
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
@@ -291,7 +282,6 @@ export default function ListaSolicitacoes() {
           document.body.appendChild(link);
           link.click();
           link.remove();
-          console.log('Download do PDF iniciado com sucesso');
         } else {
           console.error('A resposta não é um PDF válido:', contentType);
           alert('O documento retornado não é um PDF válido.');

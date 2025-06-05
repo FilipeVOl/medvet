@@ -36,9 +36,11 @@ export default function SolicitacoesExameView({ animalId }) {
       fetchExames();
     }
   }, [animalId]);
-
   const handlePrintExame = async (event, exameId) => {
-    event.stopPropagation();
+    // Check if event is a valid event object with stopPropagation method
+    if (event && typeof event.stopPropagation === 'function') {
+      event.stopPropagation();
+    }
     try {
       window.open(`http://localhost:3333/get/exame/${exameId}/pdf`);
     } catch (error) {
@@ -50,7 +52,7 @@ export default function SolicitacoesExameView({ animalId }) {
     setSelectedExame(exame);
     setDialogOpen(true);
   };
-
+  
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };

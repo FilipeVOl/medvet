@@ -51,7 +51,6 @@ const patchAluno = async (set, id, muiSnackAlert, message) => {
     });
     set(response.data);
     muiSnackAlert("success", message);
-    // console.log(response.data);
   } catch (error) {
     console.log(error);
   }

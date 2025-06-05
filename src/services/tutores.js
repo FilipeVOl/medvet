@@ -69,7 +69,6 @@ export const getTutoresByName = async (set, params = "") => {
     const { data } = await axios.get(
       `http://localhost:3333/get/tutor/name?q=${params}`
     );
-    console.log("tutores data:", data);
     set(data.tutors);
     return data.tutors;
   } catch (e) {
