@@ -3,6 +3,8 @@ import FirstPart from "../Component/nova consulta/FirstPart";
 import SecondPart from "../Component/nova consulta/secondPart";
 import ThirdPart from "../Component/nova consulta/ThirdPart";
 import Stepper from "../Component/nova consulta/Stepper";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export const ConsultContext = createContext();
 const pagOneData = {
@@ -106,11 +108,11 @@ export default function NovaConsulta() {
   };
   
   const savedData = loadFromStorage();
-  
-  const [steps, setSteps] = useState(1);
+    const [steps, setSteps] = useState(1);
   const [pagOne, setPagOne] = useState(savedData.pagOne);
   const [pagSec, setPagSec] = useState(savedData.pagSec);
   const [pagTh, setPagTh] = useState(savedData.pagTh);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   
   // Save to localStorage whenever data changes
   useEffect(() => {
@@ -136,12 +138,46 @@ export default function NovaConsulta() {
       console.error('Error saving pagTh to localStorage:', error);
     }
   }, [pagTh]);
-  
-  const allPagesData = {
+    const allPagesData = {
     pagOne,
     pagSec,
     pagTh,
   };
+  
+  // Função para limpar todos os dados do localStorage relacionados à consulta
+  const clearAllConsultData = () => {
+    // Limpar dados de consulta
+    localStorage.removeItem('consultaPagOne');
+    localStorage.removeItem('consultaPagSec');
+    localStorage.removeItem('consultaPagTh');
+    localStorage.removeItem('consultaInProgress');
+    localStorage.removeItem('diagnostico');
+    localStorage.removeItem('tratamento');
+    localStorage.removeItem('observacoes');
+    localStorage.removeItem('examesComplementares');
+    localStorage.removeItem('selectedForm');
+    localStorage.removeItem('motivoConsulta');
+    
+    // Limpar dados do animal
+    localStorage.removeItem('animalName');
+    localStorage.removeItem('animalSpecies');
+    localStorage.removeItem('animalRace');
+    localStorage.removeItem('animalGender');
+    localStorage.removeItem('animalAge');
+    localStorage.removeItem('animalCoat');
+    localStorage.removeItem('animalId');
+    
+    // Resetar os estados para os valores iniciais
+    setPagOne(pagOneData);
+    setPagSec(pagSecData);
+    setPagTh(pagThirdData);
+    
+    setOpenConfirmDialog(false);
+    
+    // Alerta para confirmar que os dados foram apagados
+    alert("Histórico apagado com sucesso! Os dados da consulta anterior foram removidos.");
+  };
+  
   return (
     <div className="flex flex-col mt-6 w-full">
       <ConsultContext.Provider
@@ -155,8 +191,46 @@ export default function NovaConsulta() {
           allPagesData,
         }}
       >
-        {<Stepper stepsPage={steps}/>}
+        <div className="flex justify-between items-center px-10 mb-4">
+          <Stepper stepsPage={steps}/>
+          <Button 
+            variant="contained" 
+            color="error" 
+            startIcon={<DeleteIcon />}
+            onClick={() => setOpenConfirmDialog(true)}
+            style={{ backgroundColor: "#DC2626" }}
+          >
+            Apagar Histórico
+          </Button>
+        </div>
         {handleSteps(steps, setSteps)}
+        
+        {/* Dialog de confirmação para apagar histórico */}
+        <Dialog
+          open={openConfirmDialog}
+          onClose={() => setOpenConfirmDialog(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Atenção! Deseja realmente apagar o histórico?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Esta ação irá apagar todos os dados preenchidos na consulta atual. Se a consulta 
+              anterior não foi finalizada e salva, todos os dados serão perdidos permanentemente.
+              Tem certeza que deseja continuar?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenConfirmDialog(false)} color="primary">
+              Cancelar
+            </Button>
+            <Button onClick={clearAllConsultData} color="error" autoFocus>
+              Sim, apagar tudo
+            </Button>
+          </DialogActions>
+        </Dialog>
       </ConsultContext.Provider>
     </div>
   );
