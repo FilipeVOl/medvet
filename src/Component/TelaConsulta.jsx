@@ -3,7 +3,6 @@ import { Input, InputLabel } from "@mui/material";
 import PropTypes from "prop-types";
 import z from "zod";
 import { UserContext } from "../contexts/userContext";
-// import axios from "axios";
 
 const schema = z.object({
   paciente: z.string(),

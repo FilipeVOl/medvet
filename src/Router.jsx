@@ -27,6 +27,14 @@ import Recovered from "./Component/Login/Recovered";
 import Reset from "./Component/Login/Reset";
 import { useContext, useEffect } from "react";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import Solicitacoes from "./pages/Solicitacoes";
+import Exames from "./pages/Exames";
+import Internacao from "./pages/Internacao";
+import Anestesia from "./pages/Anestesia";
+import ListaSolicitacoes from "./pages/ListaSolicitacoes";
+import DetalhesSolicitacao from "./pages/DetalhesSolicitacao";
+import FormConsulta from "./components/FormConsulta/FormConsulta";
+import TermoConsulta from "./pages/TermoConsulta";
 
 export function Router() {
   return (
@@ -81,7 +89,20 @@ function AppRoutes() {
           <Route path="prontuarios/view/:id" element={<InfoProntuario />} />
           <Route path="prontuarios/edit/:id" element={<EditProntuario />} />
           <Route path="receita" element={<Receita />} />
-          <Route path="animal" element={<CreateAnimal />} />
+          <Route path="animal" element={<CreateAnimal />} />          <Route path="solicitacoes" element={<Solicitacoes />} />          <Route path="solicitacoes/exames" element={<Exames />} />          {/* Internação temporariamente removida */}
+         <Route path="solicitacoes/internacao" element={<Internacao />} /> 
+          <Route path="solicitacoes/receituario" element={<Receita />} />
+          <Route path="solicitacoes/termo-consulta" element={<TermoConsulta />} />
+          <Route path="solicitacoes/lista" element={<ListaSolicitacoes />} />
+          <Route path="exames" element={<Exames />} />
+          <Route path="internacao" element={<Internacao />} />
+          <Route path="anestesia" element={<Anestesia />} />
+          <Route path="exames/detalhes/:id" element={<DetalhesSolicitacao tipo="exames" />} />
+          <Route path="internacao/detalhes/:id" element={<DetalhesSolicitacao tipo="internacao" />} />
+          <Route path="anestesia/detalhes/:id" element={<DetalhesSolicitacao tipo="anestesia" />} />
+          <Route path="receita/detalhes/:id" element={<DetalhesSolicitacao tipo="receita" />} />
+          
+          <Route path="solicitacoes/:tipo/:animalId" element={<DetalhesSolicitacao />} />
         </Route>
       </Route>
       <Route

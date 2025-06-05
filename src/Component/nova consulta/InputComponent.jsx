@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 export default function InputComponent(props) {
   const handleChange = (e) => {
-    props.setDataCom(e.target.value); // Salva no formato ISO diretamente
+    props.setDataCom(e.target.value); 
   };
 
   return (

@@ -59,7 +59,6 @@ export default function FirstPart(props) {
     data: false,
   });
 
-  //muda o state do modal
   const handleButtonClick = () => {
     Swal.fire({
       title: "Cadastrar animal?",
@@ -76,7 +75,6 @@ export default function FirstPart(props) {
     });
   };
 
-  //seta os animais baseado no tutor.
   useEffect(() => {
     if (
       typeof tutores[0] === "object" &&
@@ -84,6 +82,10 @@ export default function FirstPart(props) {
       tutores[0].animals.length > 0
     ) {
       setPacientes(tutores[0].animals);
+      
+      if (tutores[0].cpf) localStorage.setItem('tutorCpf', tutores[0].cpf);
+      if (tutores[0].phone) localStorage.setItem('tutorPhone', tutores[0].phone);
+      if (tutores[0].adress || tutores[0].address) localStorage.setItem('tutorAddress', tutores[0].adress || tutores[0].address || '');
     } else {
       setPacientes([]);
     }
@@ -95,7 +97,6 @@ export default function FirstPart(props) {
     }
   }, [tutores, paciente]);
 
-  // Initialization useEffect
   useEffect(() => {
     const fetchData = async () => {
       const teachers = await getAllTeachers();
@@ -105,7 +106,6 @@ export default function FirstPart(props) {
     fetchData();
   }, []);
 
-  // verifica se o novo valor é diferente do valor atual antes de chamar o set
   const handleInput = useCallback((objReceived, chave, valor, set) => {
     if (objReceived[chave] !== valor) {
       let obj = { ...objReceived };
@@ -114,14 +114,12 @@ export default function FirstPart(props) {
     }
   }, []);
 
-  //usa o set para vacina que modifica o array de vacinas
   const handleVacina = (arr, index, valor, key) => {
     const array = [...arr];
     array[index] = { ...array[index], [key]: valor };
     setVacina(array);
   };
 
-  //botão que adiciona vacinas
   const addVacina = () => {
     const array = [...vacina];
     const obj = { name: "", date: "" };
@@ -133,7 +131,6 @@ export default function FirstPart(props) {
     setVacina(arr.filter((_i, index) => index != e));
   };
 
-  // sim, surpreendentemente isso é mais eficiente
   const pageOneData = useMemo(
     () => ({
       data,
@@ -199,7 +196,6 @@ export default function FirstPart(props) {
     });
     setRequired(obj);
   };
-  //botao de Proximo validando lógica se o animal colocado existe
   const validateInputs = () => {
     const keys = Object.keys(fullfillValidate);
     const values = Object.values(fullfillValidate);
@@ -216,7 +212,6 @@ export default function FirstPart(props) {
     return validation;
   };
 
-  // useCallback previne a recriação da função a cada renderização
   const handleProx = useCallback(() => {
     const validacaoCampos = validateInputs();
     if (validacaoCampos) {
@@ -242,7 +237,6 @@ export default function FirstPart(props) {
     handleButtonClick,
   ]);
 
-  // Snackbar Alert
   const [openAlert, setOpenAlert] = useState(false);
   const [severity, setSeverity] = useState("success");
   const [message, setMessage] = useState("");
@@ -405,8 +399,7 @@ export default function FirstPart(props) {
                     freeSolo
                     id="free-solo-2-demo"
                     value={paciente}
-                    disabled={viewAnimal}
-                    onChange={(_e, newValue) => {
+                    disabled={viewAnimal}                    onChange={(_e, newValue) => {
                       setPaciente(newValue);
                       const filter = pacientes.filter(
                         (e) => e.name == newValue
@@ -418,9 +411,17 @@ export default function FirstPart(props) {
                       setPelagem(filter[0].coat);
                       setAnimalSelecionado(true);
                       validateTrue("paciente");
+                      
+                      localStorage.setItem('animalName', filter[0].name || '');
+                      localStorage.setItem('animalSpecies', filter[0].species || '');
+                      localStorage.setItem('animalRace', filter[0].race || '');
+                      localStorage.setItem('animalGender', filter[0].gender || '');
+                      localStorage.setItem('animalAge', filter[0].age || '');
+                      localStorage.setItem('animalCoat', filter[0].coat || '');
+                      localStorage.setItem('animalId', filter[0].id || '');
                     }}
                     disableClearable
-                    options={pacientes.map((option) => option.name)} // Assuming you want to use the name property as the label
+                    options={pacientes.map((option) => option.name)} 
                     renderInput={(params) => (
                       <TextField
                         sx={{
@@ -434,7 +435,7 @@ export default function FirstPart(props) {
                         value={paciente}
                         onChange={(e) => {
                           validateTrue("paciente");
-                          setPaciente(e.target.value); // Update the state with the new value
+                          setPaciente(e.target.value); 
                           setAnimalSelecionado(false);
                           if (animalSelecionado) {
                             setEspecie("");
@@ -609,9 +610,11 @@ export default function FirstPart(props) {
                     id="consult"
                     cols="25"
                     rows="3"
-                    className="w-full border-solid border-2 order-border-gray rounded-lg p-1 resize-none"
-                    value={motivo}
-                    onChange={(e) => setMotivo(e.target.value)}
+                    className="w-full border-solid border-2 order-border-gray rounded-lg p-1 resize-none"                    value={motivo}
+                    onChange={(e) => {
+                      setMotivo(e.target.value);
+                      localStorage.setItem('motivoConsulta', e.target.value);
+                    }}
                   ></textarea>
                 </label>
                 <label htmlFor="historico">

@@ -12,15 +12,28 @@ const postPrescription = async (prescription) => {
 };
 
 const getPrescription = async (id) => {
-  const { data } = await axios
-    .get(`http://localhost:3333/pdf/prescription/${id}`)
+  try {
+    console.log(`Buscando detalhes da prescrição com ID: ${id}`);
+    const { data } = await axios.get(`http://localhost:3333/get/prescription/id/${id}`);
+    console.log('Dados da prescrição recebidos:', data);
     return data;
+  } catch (error) {
+    console.error('Erro ao buscar prescrição:', error);
+    throw error;
+  }
 } 
 
 const getPrescByAnimalId = async (id) => {
-  const { data } = await axios
-    .get(`http://localhost:3333/get/prescription/animalId/${id}`)
-    return data.prescriptions.map(presc => presc.medications);
+  try {
+    console.log(`Buscando prescrições para o animal ID: ${id}`);
+    const { data } = await axios
+      .get(`http://localhost:3333/get/prescription/animalId/${id}`);
+    console.log('Dados retornados da API para animal+prescrições:', data);
+    return data; // Retorna o objeto completo com animal e prescrições
+  } catch (error) {
+    console.error('Erro ao buscar prescrições do animal:', error);
+    throw error;
+  }
 }
 
 const getAllPresc = async () => {

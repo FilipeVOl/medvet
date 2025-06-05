@@ -8,6 +8,10 @@ import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import PeopleIcon from "@mui/icons-material/People";
 import FolderSharedIcon from "@mui/icons-material/FolderShared";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import MedicationIcon from "@mui/icons-material/Medication";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import BiotechIcon from "@mui/icons-material/Biotech";
 
 const Navbar = () => {
   const arr = {
@@ -21,6 +25,12 @@ const Navbar = () => {
     Tutor: "showTutor",
     Professor: "showProfessor",
   };
+
+  const solicitacoesOptions = {
+    Exames: "exames",
+    Internação: "internacao",
+  };
+
   return (
     <div className=" fixed shadow-md min-h-screen bg-[#007448] p-10 text-white-med max-w-72 min-w-72">
       <div
@@ -65,16 +75,16 @@ const Navbar = () => {
         <Link to="criarconsulta" className="w-full">
           Criar Consulta
         </Link>
-      </div>
-      <div
-        id="receita"
+      </div>      <div
+        id="listasolicitacoes"
         className="flex py-4 hover:bg-[#008854] rounded-md px-2 transition-all duration-300"
       >
-        <ReceiptIcon className="mr-4" />
-        <Link to="receita" className="w-full">
-          Receitas
+        <AssignmentIcon className="mr-4" />
+        <Link to="solicitacoes" className="w-full">
+          Solicitações & Receitas
         </Link>
       </div>
+     
       <div className="my-2">
         <Accordion text="Cadastrados" icon={<PeopleIcon />} options={arr2} />
       </div>

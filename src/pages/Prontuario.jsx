@@ -33,6 +33,7 @@ import ModalAnexo from "../Component/Prontuarios/ModalAnexo";
 import ModalViewAnexo from "../Component/Prontuarios/ModalViewAnexo";
 import ModalDelete from "../Component/Prontuarios/ModalDelete";
 import ModalEdit from "../Component/Prontuarios/ModalEdit";
+import TermosConsultaView from "../components/FormConsulta/TermosConsultaView";
 import { getPrescByAnimalId, getPrescription } from "../services/prescription";
 import { getAnexos } from "../services/anexos";
 import { getAnimalById } from "../services/animals";
@@ -43,12 +44,17 @@ import {
   Print as PrintIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
+  LocalHospital as LocalHospitalIcon,
+  Biotech as BiotechIcon,
   LocalHospital as MedicineIcon,
   AttachFile as AnexoIcon,
   AddPhotoAlternate as AddPhotoAlternateOutlinedIcon,
   MedicalInformation as MedicalInformationIcon,
+  Description as DescriptionIcon,
 } from "@mui/icons-material";
 import { set } from "zod";
+import SolicitacoesExameView from '../components/solicitacoes/SolicitacoesExameView';
+import SolicitacoesInternacaoView from '../components/solicitacoes/SolicitacoesInternacaoView';
 
 export default function Prontuario() {
   const { id } = useParams();
@@ -65,26 +71,27 @@ export default function Prontuario() {
   const [isLoading, setIsLoading] = useState(true);
   const [teacherNames, setTeacherNames] = useState([]);
   const [isClicked, setIsClicked] = useState("consultas");
+  const [solicitacoes, setSolicitacoes] = useState([]);
   const fileInputRef = useRef();
   const [selectedFile, setSelectedFile] = useState("");
   const [deletedMedications, setDeletedMedications] = useState([]);
   const [modal, setModal] = useState(false);
   const [openModal, setOpenModal] = useState(null);
-  const [selectedAnexoId, setSelectedAnexoId] = useState(null); // Add this line
+  const [selectedAnexoId, setSelectedAnexoId] = useState(null); 
   const [anexos, setAnexos] = useState([]);
   const [search, setSearch] = useState("");
   const [consultationDetails, setConsultationDetails] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [filteredEnchiridions, setFilteredEnchiridions] = useState([]);
   const { selectedMedication, setSelectedMedication } =
-    useContext(PrescContext); // Add this line
+    useContext(PrescContext); 
 
   const [selectedPrescription, setSelectedPrescription] = useState([]);
 
   const [selectedAttachment, setSelectedAttachment] = useState();
   const [openAttachment, setOpenAttachment] = useState(false);
   const handleOpenAttachment = (id) => {
-    console.log("ID do anexo:", id); //   Log the ID of the selected anexo
+    console.log("ID do anexo:", id); 
     const selectedAnexo = anexos.find((anexo) => anexo.id === id);
     setSelectedAttachment(selectedAnexo);
     console.log(selectedAnexo);
@@ -101,9 +108,9 @@ export default function Prontuario() {
   const handleOpenModal = (modalName, id = null, name = "") => {
     setOpenModal(modalName);
     if (modalName === "delete" || modalName === "editPresc") {
-      setSelectedMedication(id); // Set the selected medication ID in the context
+      setSelectedMedication(id); 
     } else if (modalName === "deleteAnexo" || modalName === "editAnexo") {
-      setSelectedAnexoId(id); // Set the selected anexo ID in the state
+      setSelectedAnexoId(id);
     }
     setSelectedFile(name);
   };
@@ -137,7 +144,7 @@ export default function Prontuario() {
 
   const handleFileUpload = (file) => {
     if (file) {
-      setSelectedFile(file); // Set the selected file in the state
+      setSelectedFile(file);
     }
   };
 
@@ -196,19 +203,16 @@ export default function Prontuario() {
       console.log("ID here: ", id);
       window.open(`http://localhost:3333/pdf/prescription/${id}`);
 
-      // Check if response indicates an error
       if (pdfData.message) {
-        alert("Prescrição não encontrada"); // Or use your preferred notification system
+        alert("Prescrição não encontrada"); 
         return;
       }
 
       const blob = new Blob([pdfData], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
 
-      // Open PDF in new window
       window.open(url);
 
-      // Cleanup
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error fetching prescription PDF:", error);
@@ -281,7 +285,6 @@ export default function Prontuario() {
             const response = await getProntuario(animal.id);
             console.log("Response from getProntuario:", response);
 
-            // Find the matching consultation in enchiridions state
             const consultation = enchiridions.find(
               (e) => e.id === enchiridionid
             );
@@ -444,8 +447,7 @@ export default function Prontuario() {
     };
 
     return (
-      <div className="container bg-transparent flex mt-14 flex-col font-Montserrat">
-        <div className="bg-transparent flex">
+      <div className="container bg-transparent flex mt-14 flex-col font-Montserrat">        <div className="bg-transparent flex">
           <button
             onClick={() => setIsClicked("consultas")}
             className={`${
@@ -461,6 +463,30 @@ export default function Prontuario() {
             } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl  transition-colors duration-300 ease-in-out`}
           >
             Prescrições
+          </button>
+          <button
+            onClick={() => setIsClicked("termos")}
+            className={`${
+              isClicked === "termos" ? "bg-[#007448]" : "bg-[#BDD9BF]"
+            } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl  transition-colors duration-300 ease-in-out`}
+          >
+            Termos
+          </button>
+          <button
+            onClick={() => setIsClicked("exames")}
+            className={`${
+              isClicked === "exames" ? "bg-[#007448]" : "bg-[#BDD9BF]"
+            } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl  transition-colors duration-300 ease-in-out`}
+          >
+            Exames
+          </button>
+          <button
+            onClick={() => setIsClicked("internacao")}
+            className={`${
+              isClicked === "internacao" ? "bg-[#007448]" : "bg-[#BDD9BF]"
+            } p-2 text-white font-Montserrat font-semibold text-lg h-16 w-40 rounded-t-xl  transition-colors duration-300 ease-in-out`}
+          >
+            Internação
           </button>
           <button
             onClick={() => setIsClicked("anexos")}
@@ -541,11 +567,10 @@ export default function Prontuario() {
                 key={medication.id}
               >
                 <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
-                  <div className="flex flex-row gap-4">
-                    <MedicineIcon
-                      onClick={() =>
-                        console.log(medications, medication, medications.length)
-                      }
+                  <div className="flex flex-row gap-4">                    <MedicineIcon
+                      onClick={() => {
+                        console.log(medications, medication, medications.length);
+                      }}
                       className="text-[#100F49]"
                       sx={{ fontSize: 32 }}
                     />
@@ -640,7 +665,75 @@ export default function Prontuario() {
                   weight={enchiridion.weights}
                   id={enchiridion.teacher_id}
                 />
-              ))} */}
+              ))} */}          {isClicked === "termos" && (
+            <>
+              <div className="flex justify-between gap-8">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    className="h-12 rounded-xl w-full px-10 focus:outline-none focus:ring-2 focus:ring-[#007448]"
+                    placeholder="Buscar termo de consulta"
+                  />
+                  <button className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                    <SearchIcon />
+                  </button>
+                </div>
+                <button
+                  className="bg-[#100F49] h-12 w-1/3 text-white rounded-xl flex items-center justify-center gap-3"
+                  onClick={() => setSelectedForm ? setSelectedForm('consulta') : null}
+                >
+                  <DescriptionIcon />
+                  Novo Termo de Consulta
+                </button>
+              </div>
+              <div className="mt-8">
+                <TermosConsultaView animalId={id} />
+              </div>
+            </>
+          )}
+
+          {isClicked === "exames" && (
+            <>
+              <div className="flex justify-between gap-8">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    className="h-12 rounded-xl w-full px-10 focus:outline-none focus:ring-2 focus:ring-[#007448]"
+                    placeholder="Buscar exame"
+                  />
+                  <button className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                    <SearchIcon />
+                  </button>
+                </div>
+              
+              </div>
+              <div className="mt-8">
+                <SolicitacoesExameView animalId={id} />
+              </div>
+            </>
+          )}
+
+          {isClicked === "internacao" && (
+            <>
+              <div className="flex justify-between gap-8">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    className="h-12 rounded-xl w-full px-10 focus:outline-none focus:ring-2 focus:ring-[#007448]"
+                    placeholder="Buscar internação"
+                  />
+                  <button className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                    <SearchIcon />
+                  </button>
+                </div>
+              
+              </div>
+              <div className="mt-8">
+                <SolicitacoesInternacaoView animalId={id} />
+              </div>
+            </>
+          )}
+
           {isClicked === "anexos" &&
             anexos.map((anexo) => (
               <div

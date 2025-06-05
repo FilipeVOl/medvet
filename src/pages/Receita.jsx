@@ -402,6 +402,7 @@ export const Receita = () => {
       unit: "",
       measurement: "",
       description: "",
+      type: "1via", // Padrão para 1 via
     };
     setMedications((prev) => [...prev, newMedication]);
   };
@@ -457,6 +458,7 @@ export const Receita = () => {
           unit: String(med.unit),
           measurement: med.measurement,
           description: med.description,
+          type: med.type || "1via", // Incluindo o type na requisição
         })),
       };
 
@@ -473,12 +475,20 @@ export const Receita = () => {
             showConfirmButton: true,
             confirmButtonText: "OK",
             confirmButtonColor: "#144A36",
-          }).then(() => {
-            window.open(
-              `http://localhost:3333/pdf/prescription/${prescriptionId}`,
-              "_blank"
-            );
-            navigate("/");
+          }).then(() => {            try {
+              console.log('Abrindo PDF da receita:', prescriptionId);
+              window.open(
+                `http://localhost:3333/pdf/prescription/${prescriptionId}`,
+                "_blank"
+              );
+              setTimeout(() => {
+                navigate("/solicitacoes");
+              }, 1000);
+            } catch (pdfError) {
+              console.error('Erro ao abrir PDF:', pdfError);
+              alert('Receita criada com sucesso, mas ocorreu um erro ao abrir o PDF.');
+              navigate("/solicitacoes");
+            }
           });
         } catch (error) {
           console.error("Error getting prescription details:", error);
@@ -740,6 +750,27 @@ export const Receita = () => {
                   </select>
                 </label>
 
+                <label>
+                  Tipo de Receita
+                  <select
+                    value={e.type}
+                    onChange={(e) =>
+                      handleMedicamento(
+                        medications,
+                        index,
+                        e.target.value,
+                        "type"
+                      )
+                    }
+                    className="border flex-col grow flex w-full rounded-md p-3 text-base border-border-gray"
+                  >
+                    <option value="1via">1 Via</option>
+                    <option value="2via">2 Vias</option>
+                  </select>
+                </label>
+              </div>
+
+              <div className="grid grid-cols-2 gap-10">
                 <label>
                   Unidade (qt.)
                   <input

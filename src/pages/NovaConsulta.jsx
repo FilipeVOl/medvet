@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import FirstPart from "../Component/nova consulta/FirstPart";
 import SecondPart from "../Component/nova consulta/secondPart";
 import ThirdPart from "../Component/nova consulta/ThirdPart";
@@ -63,10 +63,80 @@ const handleSteps = (steps, setSteps) => {
   }
 };
 export default function NovaConsulta() {
+  // Limpar dados específicos de consulta anterior ao iniciar uma nova
+  useEffect(() => {
+    // Se estiver iniciando uma nova consulta (step 1), limpar dados anteriores
+    if (window.location.pathname === '/criarconsulta') {
+      // Verifica se há consulta em andamento (não limpar se estiver apenas recarregando a página)
+      const inProgress = localStorage.getItem('consultaInProgress');
+      
+      if (!inProgress) {
+        localStorage.setItem('consultaInProgress', 'true');
+        localStorage.removeItem('diagnostico');
+        localStorage.removeItem('tratamento');
+        localStorage.removeItem('observacoes');
+        localStorage.removeItem('examesComplementares');
+        localStorage.removeItem('selectedForm');
+        localStorage.removeItem('motivoConsulta');
+      }
+    }
+    
+    // Limpar flag ao desmontar o componente
+    return () => {
+      localStorage.removeItem('consultaInProgress');
+    };
+  }, []);
+  
+  // Try to load saved data from localStorage
+  const loadFromStorage = () => {
+    try {
+      const savedPagOne = localStorage.getItem('consultaPagOne');
+      const savedPagSec = localStorage.getItem('consultaPagSec');
+      const savedPagTh = localStorage.getItem('consultaPagTh');
+      
+      return {
+        pagOne: savedPagOne ? JSON.parse(savedPagOne) : pagOneData,
+        pagSec: savedPagSec ? JSON.parse(savedPagSec) : pagSecData,
+        pagTh: savedPagTh ? JSON.parse(savedPagTh) : pagThirdData
+      };
+    } catch (error) {
+      console.error('Error loading data from localStorage:', error);
+      return { pagOne: pagOneData, pagSec: pagSecData, pagTh: pagThirdData };
+    }
+  };
+  
+  const savedData = loadFromStorage();
+  
   const [steps, setSteps] = useState(1);
-  const [pagOne, setPagOne] = useState(pagOneData);
-  const [pagSec, setPagSec] = useState(pagSecData);
-  const [pagTh, setPagTh] = useState(pagThirdData);
+  const [pagOne, setPagOne] = useState(savedData.pagOne);
+  const [pagSec, setPagSec] = useState(savedData.pagSec);
+  const [pagTh, setPagTh] = useState(savedData.pagTh);
+  
+  // Save to localStorage whenever data changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('consultaPagOne', JSON.stringify(pagOne));
+    } catch (error) {
+      console.error('Error saving pagOne to localStorage:', error);
+    }
+  }, [pagOne]);
+  
+  useEffect(() => {
+    try {
+      localStorage.setItem('consultaPagSec', JSON.stringify(pagSec));
+    } catch (error) {
+      console.error('Error saving pagSec to localStorage:', error);
+    }
+  }, [pagSec]);
+  
+  useEffect(() => {
+    try {
+      localStorage.setItem('consultaPagTh', JSON.stringify(pagTh));
+    } catch (error) {
+      console.error('Error saving pagTh to localStorage:', error);
+    }
+  }, [pagTh]);
+  
   const allPagesData = {
     pagOne,
     pagSec,

@@ -17,18 +17,16 @@ export const Calendar = () => {
   useEffect(() => {
     const parsedEvents = Object.keys(agenda).flatMap((date) =>
       agenda[date].map((item) => ({
-        title: `${item.nameTutor} - ${item.nameAnimal}`, // Concatena Tutor e Animal como título
-        date: `${date.substring(4)}-${date.substring(2, 4)}-${date.substring(0, 2)}`, // Converte o formato de data (ddmmyyyy -> yyyy-mm-dd)
+        title: `${item.nameTutor} - ${item.nameAnimal}`, 
+        date: `${date.substring(4)}-${date.substring(2, 4)}-${date.substring(0, 2)}`, 
       }))
     );
     setEvents(parsedEvents);
   }, [agenda]);
 
-  // Gerencia a data selecionada
   const [dateClicked, setDateClicked] = useState("");
   const [view, setView] = useState("dayGridMonth");
 
-  // Abre o modal quando uma data é clicada
   const [open, setOpen] = useState(false);
 
   const handleDateSelect = (selectInfo) => {
