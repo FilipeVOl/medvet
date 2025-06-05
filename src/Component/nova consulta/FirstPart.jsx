@@ -57,21 +57,20 @@ export default function FirstPart(props) {
     tutor: false,
     professor: false,
     data: false,
-  });
-
-  const handleButtonClick = () => {
+  });  const handleButtonClick = () => {
     Swal.fire({
       title: "Cadastrar animal?",
-      text: "O animal inserido ainda não possui cadastro, deseja cadastrá-lo?",
-      showCancelButton: true,
+      text: "O animal inserido ainda não possui cadastro. É necessário cadastrá-lo para continuar.",
+      showDenyButton: true,
       confirmButtonText: "Cadastrar",
-      cancelButtonText: "Voltar",
+      denyButtonText: "Voltar",
       confirmButtonColor: "#144A36",
-      cancelButtonColor: "#000",
+      denyButtonColor: "#000",
     }).then((result) => {
       if (result.isConfirmed) {
         registerNewAnimal();
       }
+      // Removido a opção de continuar sem cadastrar o animal
     });
   };
 
@@ -125,10 +124,26 @@ export default function FirstPart(props) {
     const obj = { name: "", date: "" };
     array.push(obj);
     setVacina(array);
-  };
-  const removeVacina = (e) => {
+  };  const removeVacina = (e) => {
     const arr = [...vacina];
     setVacina(arr.filter((_i, index) => index != e));
+    
+    // Salvar os dados atualizados no localStorage
+    const updatedData = {
+      ...pagOne,
+      vacina: arr.filter((_i, index) => index != e)
+    };
+    localStorage.setItem('consultaPagOne', JSON.stringify(updatedData));
+    
+    // Exibir mensagem de confirmação usando muiSnackAlert (se disponível)
+    if (typeof muiSnackAlert === 'function') {
+      muiSnackAlert("success", "Vacina removida com sucesso!");
+    }
+    
+    // Recarregar a página após breve delay para permitir visualizar a mensagem
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   };
 
   const pageOneData = useMemo(
@@ -195,8 +210,7 @@ export default function FirstPart(props) {
       }
     });
     setRequired(obj);
-  };
-  const validateInputs = () => {
+  };  const validateInputs = () => {
     const keys = Object.keys(fullfillValidate);
     const values = Object.values(fullfillValidate);
     let validation = false;
@@ -209,9 +223,27 @@ export default function FirstPart(props) {
       }
     });
     setRequired(obj);
+
+    // Mostrar mensagens de erro específicas para campos obrigatórios
+    if (validation) {
+      const missingFields = [];
+      if (obj.paciente) missingFields.push("Paciente");
+      if (obj.especie) missingFields.push("Espécie");
+      if (obj.raca) missingFields.push("Raça");
+      if (obj.sexo) missingFields.push("Sexo");
+      if (obj.idade) missingFields.push("Idade");
+      if (obj.peso) missingFields.push("Peso");
+      if (obj.tutor) missingFields.push("Tutor");
+      if (obj.professor) missingFields.push("Professor");
+      if (obj.data) missingFields.push("Data");
+      
+      if (missingFields.length > 0) {
+        muiSnackAlert("warning", `Preencha os campos obrigatórios: ${missingFields.join(", ")}`);
+      }
+    }
+    
     return validation;
   };
-
   const handleProx = useCallback(() => {
     const validacaoCampos = validateInputs();
     if (validacaoCampos) {
@@ -226,6 +258,7 @@ export default function FirstPart(props) {
       props.setSteps(2);
       setPagOne(pageOneData);
     } else {
+      // Se o animal não existe, precisamos registrá-lo primeiro
       handleButtonClick();
     }
   }, [
@@ -250,28 +283,67 @@ export default function FirstPart(props) {
     setSeverity(severity);
     setMessage(message);
     setOpenAlert(true);
-  };
+  };  const registerNewAnimal = async () => {
+    // Formatar idade baseada na unidade selecionada e nos meses adicionais
+    let formattedAge = idade;
+    if (idadeUnidade === "anos" && idadeMeses && parseInt(idadeMeses) > 0) {
+      formattedAge = `${idade} anos e ${idadeMeses} meses`;
+    } else if (idadeUnidade === "anos") {
+      formattedAge = `${idade} anos`;
+    } else if (idadeUnidade === "meses") {
+      formattedAge = `${idade} meses`;
+    }
 
-  const registerNewAnimal = async () => {
+    // Formatar peso com unidade
+    const formattedWeight = pesoUnidade === "kg" ? peso : `${peso}g`;
+
     const animal = {
       name: paciente,
       species: especie,
       race: raca,
       gender: sexo,
-      age: idade,
-      weight: peso,
+      age: formattedAge,
+      weight: formattedWeight,
       coat: pelagem,
       tutor_id: tutores[0].id,
     };
-    const validyCreateAnimal = await postAnimal(animal, tutores[0].id);
-    if (validyCreateAnimal) {
-      const envioData = pageOneData;
-      envioData.idAnimal = [{ id: validyCreateAnimal.data }];
-      muiSnackAlert("success", "Animal cadastrado com sucesso!");
-      props.setSteps(2);
-      setPagOne(envioData);
-    } else {
-      muiSnackAlert("error", "Erro ao cadastrar animal!");
+
+    try {
+      muiSnackAlert("info", "Cadastrando animal...");
+      const response = await postAnimal(animal, tutores[0].id);
+      
+      if (response && response.data) {
+        // Salvar ID do animal para usar em outras partes do sistema
+        localStorage.setItem('animalName', animal.name);
+        localStorage.setItem('animalSpecies', animal.species);
+        localStorage.setItem('animalRace', animal.race || '');
+        localStorage.setItem('animalGender', animal.gender);
+        localStorage.setItem('animalAge', formattedAge);
+        localStorage.setItem('animalCoat', animal.coat || '');
+        localStorage.setItem('animalId', response.data);
+        
+        // Atualizar os dados do formulário
+        const envioData = pageOneData;
+        envioData.idAnimal = [{ id: response.data }];
+        
+        muiSnackAlert("success", "Animal cadastrado com sucesso!");
+        props.setSteps(2);
+        setPagOne(envioData);
+      } else {
+        throw new Error("Resposta inválida do servidor");
+      }
+    } catch (error) {
+      console.error("Erro ao cadastrar animal:", error);
+      
+      // Verificar se o erro está relacionado ao campo sequence
+      if (error.response?.data?.errors && 
+          error.response.data.errors.some(err => err.field === 'sequence' && err.message.includes('undefined'))) {
+        muiSnackAlert("error", "Erro com o campo 'sequence'. Por favor, tente novamente.");
+      } else {
+        muiSnackAlert("error", "Erro ao cadastrar animal: " + (error.response?.data?.message || error.message || "verifique os dados"));
+      }
+      
+      // Manter o usuário na página atual para que ele possa corrigir os dados ou tentar novamente
     }
   };
 
@@ -392,33 +464,37 @@ export default function FirstPart(props) {
                       />
                     )}
                   />
-                </label>
-                <label htmlFor="free-solo-2-demo" className={"grow"}>
-                  Paciente
+                </label>                <div className="grow flex flex-col">
+                  <div className="flex items-center">
+                    <label htmlFor="free-solo-2-demo">Paciente</label>
+                  </div>
                   <Autocomplete
                     freeSolo
                     id="free-solo-2-demo"
                     value={paciente}
-                    disabled={viewAnimal}                    onChange={(_e, newValue) => {
+                    disabled={viewAnimal}
+                    onChange={(_e, newValue) => {
                       setPaciente(newValue);
                       const filter = pacientes.filter(
                         (e) => e.name == newValue
                       );
-                      setEspecie(filter[0].species);
-                      setRaca(filter[0].race);
-                      setSexo(filter[0].gender);
-                      setIdade(filter[0].age);
-                      setPelagem(filter[0].coat);
-                      setAnimalSelecionado(true);
-                      validateTrue("paciente");
-                      
-                      localStorage.setItem('animalName', filter[0].name || '');
-                      localStorage.setItem('animalSpecies', filter[0].species || '');
-                      localStorage.setItem('animalRace', filter[0].race || '');
-                      localStorage.setItem('animalGender', filter[0].gender || '');
-                      localStorage.setItem('animalAge', filter[0].age || '');
-                      localStorage.setItem('animalCoat', filter[0].coat || '');
-                      localStorage.setItem('animalId', filter[0].id || '');
+                      if (filter && filter.length > 0) {
+                        setEspecie(filter[0].species || '');
+                        setRaca(filter[0].race || '');
+                        setSexo(filter[0].gender || '');
+                        setIdade(filter[0].age || '');
+                        setPelagem(filter[0].coat || '');
+                        setAnimalSelecionado(true);
+                        validateTrue("paciente");
+                        
+                        localStorage.setItem('animalName', filter[0].name || '');
+                        localStorage.setItem('animalSpecies', filter[0].species || '');
+                        localStorage.setItem('animalRace', filter[0].race || '');
+                        localStorage.setItem('animalGender', filter[0].gender || '');
+                        localStorage.setItem('animalAge', filter[0].age || '');
+                        localStorage.setItem('animalCoat', filter[0].coat || '');
+                        localStorage.setItem('animalId', filter[0].id || '');
+                      }
                     }}
                     disableClearable
                     options={pacientes.map((option) => option.name)} 
@@ -453,7 +529,7 @@ export default function FirstPart(props) {
                       />
                     )}
                   />
-                </label>
+                </div>
               </div>
               <div className="flex gap-8 justify-center" id="div-esp-rac-sex">
                 <InputComponent

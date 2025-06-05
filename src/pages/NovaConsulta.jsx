@@ -143,8 +143,7 @@ export default function NovaConsulta() {
     pagSec,
     pagTh,
   };
-  
-  // Função para limpar todos os dados do localStorage relacionados à consulta
+    // Função para limpar todos os dados do localStorage relacionados à consulta
   const clearAllConsultData = () => {
     // Limpar dados de consulta
     localStorage.removeItem('consultaPagOne');
@@ -176,6 +175,9 @@ export default function NovaConsulta() {
     
     // Alerta para confirmar que os dados foram apagados
     alert("Histórico apagado com sucesso! Os dados da consulta anterior foram removidos.");
+    
+    // Recarregar a página para garantir que todos os componentes sejam reiniciados
+    window.location.reload();
   };
   
   return (
