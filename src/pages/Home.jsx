@@ -94,7 +94,7 @@ const Home = () => {
               </h2>
               {todayConsults.map((dados) => (
                 <div
-                  key={dados.data}
+                  key={dados.id}
                   className="flex bg-side-gray my-3 rounded-lg"
                   data-testid="agenda"
                 >
