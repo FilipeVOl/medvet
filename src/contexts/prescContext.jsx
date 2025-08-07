@@ -19,7 +19,8 @@ const initialMedication = {
   pharmacy: "comum",
   unit: "",
   measurement: "",
-  description: ""
+  description: "",
+  medical_observation: ""
 };
 
 

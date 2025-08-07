@@ -11,7 +11,6 @@ const TutorSelector = ({ tutores, onTutorSelect, selectedTutor }) => {
         }
         value={selectedTutor}
         onChange={(_event, newValue) => {
-          console.log("Selected tutor:", newValue);
           onTutorSelect(newValue);
         }}
         renderOption={(props, option) => (

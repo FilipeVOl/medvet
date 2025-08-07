@@ -403,6 +403,7 @@ export const Receita = () => {
       measurement: "",
       description: "",
       type: "1via", // Padrão para 1 via
+      medical_observation: "", // Campo de observação médica
     };
     setMedications((prev) => [...prev, newMedication]);
   };
@@ -459,6 +460,7 @@ export const Receita = () => {
           measurement: med.measurement,
           description: med.description,
           type: med.type || "1via", // Incluindo o type na requisição
+          observations: med.medical_observation || "", // Mapeando medical_observation para observations
         })),
       };
 
@@ -835,6 +837,29 @@ export const Receita = () => {
                         : "outline-gray-input"
                     } border rounded-lg w-full p-2 text-base border-border-gray resize-y min-h-[100px]`}
                   />
+                </label>
+              </div>
+
+              {/* Campo de observação médica */}
+              <div>
+                <label>
+                  Observação Médica
+                  <textarea
+                    value={e.medical_observation || ""}
+                    onChange={(e) =>
+                      handleMedicamento(
+                        medications,
+                        index,
+                        e.target.value,
+                        "medical_observation"
+                      )
+                    }
+                    placeholder="Observações internas para uso médico..."
+                    className="border rounded-lg w-full p-2 text-base border-yellow-300 resize-y min-h-[80px] bg-yellow-50"
+                  />
+                  <small className="text-gray-600 text-xs">
+                    * Esta observação é para uso interno e não aparece na receita impressa
+                  </small>
                 </label>
               </div>
             </form>

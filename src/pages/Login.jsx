@@ -7,10 +7,10 @@ import { RecoveryContext } from "../contexts/recoveryContext";
 import { validateCPF } from "../utils/validateCPF";
 import { UserContext } from "../contexts/userContext";
 import axios from "axios";
-import InputMask from "react-input-mask";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { Snackbar, Alert } from "@mui/material";
+import { formatCPF, formatCPFDisplay, handleCPFChange } from "../utils/inputMasks";
 
 const Login = () => {
   const { setPage } = useContext(RecoveryContext);
@@ -35,14 +35,18 @@ const Login = () => {
       navigate("/");
     }
     if (rememberedCPF && rememberedPassword) {
-      setCPFState(rememberedCPF);
+      setCPFState(formatCPFDisplay(rememberedCPF));
       setPassword(rememberedPassword);
       setRememberMe(true);
     }
   }, [navigate, loadUserData]);
 
-  const formatCPF = (cpf) => {
-    return cpf.replace(/[^\d]/g, "");
+  const formatCPFForAPI = (cpf) => {
+    return formatCPF(cpf);
+  };
+
+  const handleCPFChangeLocal = (e) => {
+    handleCPFChange(e.target.value, setCPFState);
   };
 
   const validatePassword = (password) => {
@@ -61,7 +65,7 @@ const Login = () => {
   const handleRememberMe = (event) => {
     setRememberMe(event.target.checked);
     if (event.target.checked) {
-      localStorage.setItem("rememberedCPF", cpf);
+      localStorage.setItem("rememberedCPF", formatCPFForAPI(cpf));
       localStorage.setItem("rememberedPassword", password);
     } else {
       localStorage.removeItem("rememberedCPF");
@@ -85,7 +89,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const formattedCPF = formatCPF(cpf);
+    const formattedCPF = formatCPFForAPI(cpf);
 
     // if (!validateCPF(formattedCPF)) {
     //   muiSnackAlert("error", "CPF inválido.");
@@ -97,7 +101,7 @@ const Login = () => {
         cpf: formattedCPF,
         password,
       });
-      console.log("response session: ", response.data);
+     
 
       const { token, user } = response.data;
       const { name, cpf: userCpf, role, created_at, email, phone } = user;
@@ -159,60 +163,62 @@ const Login = () => {
           autoComplete="off"
         >
           <div className="flex flex-col justify-center items-center w-full gap-3 my-10">
-            <InputMask
-              mask="999.999.999-99"
+            <TextField
+              label="CPF"
               value={cpf}
-              onChange={(e) => setCPFState(e.target.value)}
-            >
-              {(inputProps) => (
-                <TextField
-                  {...inputProps}
-                  label="CPF"
-                  required
-                  InputProps={{
-                    style: {
-                      backgroundColor: "#F2F2ED",
-                      border: "none",
-                      outline: "none",
-                    },
-                  }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        border: "none",
-                        boxShadow:
-                          "0px 4px 4px 0px #00000005 inset, 0px 4px 4px 0px #00000026",
-                      },
-                      "&:hover fieldset": {
-                        border: "none",
-                        boxShadow:
-                          "0px 4px 4px 0px #00000005 inset, 0px 4px 4px 0px #00000026",
-                      },
-                      "&.Mui-focused fieldset": {
-                        border: "none",
-                        boxShadow:
-                          "0px 4px 4px 0px #00000005 inset, 0px 4px 4px 0px #00000026",
-                      },
-                      "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#d32f2f !important",
-                      },
-                    },
-                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#144A36 !important",
-                    },
-                    "& .MuiInputLabel-root.Mui-focused": {
-                      color: "#144A36",
-                    },
-                    "& .MuiInputLabel-root.Mui-error": {
-                      color: "#d32f2f",
-                    },
-                    "& .MuiFormHelperText-root.Mui-error": {
-                      color: "#d32f2f",
-                    },
-                  }}
-                />
-              )}
-            </InputMask>
+              onChange={handleCPFChangeLocal}
+              placeholder="000.000.000-00"
+              required
+              InputProps={{
+                style: {
+                  backgroundColor: "#F2F2ED",
+                  border: "none",
+                  outline: "none",
+                },
+              }}
+              sx={{
+                "& .MuiTextField-root": {
+                  m: 1,
+                  width: {
+                    xs: "90%",
+                    sm: "80%",
+                    md: "70%",
+                  },
+                },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    border: "none",
+                    boxShadow:
+                      "0px 4px 4px 0px #00000005 inset, 0px 4px 4px 0px #00000026",
+                  },
+                  "&:hover fieldset": {
+                    border: "none",
+                    boxShadow:
+                      "0px 4px 4px 0px #00000005 inset, 0px 4px 4px 0px #00000026",
+                  },
+                  "&.Mui-focused fieldset": {
+                    border: "none",
+                    boxShadow:
+                      "0px 4px 4px 0px #00000005 inset, 0px 4px 4px 0px #00000026",
+                  },
+                  "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#d32f2f !important",
+                  },
+                },
+                "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#144A36 !important",
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#144A36",
+                },
+                "& .MuiInputLabel-root.Mui-error": {
+                  color: "#d32f2f",
+                },
+                "& .MuiFormHelperText-root.Mui-error": {
+                  color: "#d32f2f",
+                },
+              }}
+            />
             <TextField
               label="Senha"
               type="password"

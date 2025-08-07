@@ -87,6 +87,8 @@ export default function Prontuario() {
     useContext(PrescContext);
 
   const [selectedPrescription, setSelectedPrescription] = useState([]);
+  const [selectedMedicationDetails, setSelectedMedicationDetails] = useState(null);
+  const [showMedicationModal, setShowMedicationModal] = useState(false);
 
   const [selectedAttachment, setSelectedAttachment] = useState();
   const [openAttachment, setOpenAttachment] = useState(false);
@@ -559,12 +561,15 @@ export default function Prontuario() {
                   ...medication,
                   prescriptionId: prescription.id,
                   prescriptionDate: prescription.createdAt,
+                  // Mapear observacao_medica para observations para compatibilidade
+                  observations: medication.observations || medication.observacao_medica || medication.medical_observation,
                 }))
               )
               .map((medication, index) => (
                 <div
-                  className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer"
+                  className="flex flex-col bg-[#FFFEF9] px-11 py-6 rounded-xl gap-6 mt-8 hover:shadow-xl cursor-pointer transition-all duration-200 hover:bg-blue-50 border-2 border-transparent hover:border-blue-200"
                   key={`${medication.prescriptionId}-${index}`}
+                  onClick={() => handleOpenMedicationModal(medication)}
                 >
                   <span className="font-Montserrat text-2xl text-[#2C2C2C] flex items-center justify-between gap-2">
                     <div className="flex flex-row gap-4">
@@ -578,9 +583,10 @@ export default function Prontuario() {
 
                     <div className="flex gap-4">
                       <PrintIcon
-                        onClick={() =>
-                          handlePrint(animal.id, medication.prescriptionId)
-                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePrint(animal.id, medication.prescriptionId);
+                        }}
                         className="h-10 hover:scale-110 duration-75 cursor-pointer text-[#100F49]"
                         sx={{ fontSize: 40 }}
                       />
@@ -605,6 +611,22 @@ export default function Prontuario() {
                     <strong>
                       {medication.pharmacy || medication[0]?.pharmacy}
                     </strong>
+                    
+                    {/* Exibição da observação médica */}
+                    {(medication.observations || medication[0]?.observations || medication.observacao_medica || medication[0]?.observacao_medica || medication.medical_observation || medication[0]?.medical_observation) && (
+                      <div className="mt-3 p-3 bg-yellow-50 border-l-4 border-yellow-300 rounded">
+                        <strong className="text-yellow-800">Observação Médica:</strong>
+                        <br />
+                        <span className="text-yellow-700 italic">
+                          {medication.observations || medication[0]?.observations || medication.observacao_medica || medication[0]?.observacao_medica || medication.medical_observation || medication[0]?.medical_observation}
+                        </span>
+                      </div>
+                    )}
+                    
+                    {/* Indicação de que o card é clicável */}
+                    <div className="mt-3 text-sm text-blue-600 italic">
+                      💡 Clique para ver todos os detalhes
+                    </div>
                   </span>
                 </div>
               ))}
@@ -792,6 +814,16 @@ export default function Prontuario() {
     setSelectedPrescription([]);
   };
 
+  const handleOpenMedicationModal = (medication) => {
+    setSelectedMedicationDetails(medication);
+    setShowMedicationModal(true);
+  };
+
+  const handleCloseMedicationModal = () => {
+    setShowMedicationModal(false);
+    setSelectedMedicationDetails(null);
+  };
+
   return (
     <>
       {isLoading ? (
@@ -821,6 +853,117 @@ export default function Prontuario() {
         </div>
       )}
       {/* RENDERIZAÇÃO DOS MODAIS */}
+      
+      {/* Modal de Detalhes da Medicação */}
+      <Modal
+        open={showMedicationModal}
+        onClose={handleCloseMedicationModal}
+        aria-labelledby="medication-details-modal"
+      >
+        <Box sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "80%",
+          maxWidth: "600px",
+          bgcolor: "background.paper",
+          borderRadius: "8px",
+          boxShadow: 24,
+          p: 4,
+          maxHeight: "80vh",
+          overflow: "auto"
+        }}>
+          {selectedMedicationDetails && (
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold text-gray-800">Detalhes da Medicação</h2>
+                <IconButton
+                  onClick={handleCloseMedicationModal}
+                  sx={{ color: "rgb(107, 114, 128)" }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-lg text-gray-700 mb-2">Medicamento</h3>
+                  <p className="text-xl font-bold text-blue-600">
+                    {selectedMedicationDetails.measurement}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <p className="text-sm text-gray-600">Quantidade</p>
+                    <p className="font-semibold">{selectedMedicationDetails.unit} unidades</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <p className="text-sm text-gray-600">Tipo de Uso</p>
+                    <p className="font-semibold">{(selectedMedicationDetails.use_type || selectedMedicationDetails.useType || 'Oral').toUpperCase()}</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <p className="text-sm text-gray-600">Farmácia</p>
+                    <p className="font-semibold">{selectedMedicationDetails.pharmacy || 'Comum'}</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <p className="text-sm text-gray-600">Tipo de Receita</p>
+                    <p className="font-semibold">{selectedMedicationDetails.type === '2via' ? '2 Vias (Controlado)' : '1 Via (Comum)'}</p>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-700 mb-2">Posologia</h3>
+                  <p className="text-gray-600 whitespace-pre-wrap">
+                    {selectedMedicationDetails.description || 'Não informada'}
+                  </p>
+                </div>
+
+                {(selectedMedicationDetails.observations || selectedMedicationDetails.observacao_medica || selectedMedicationDetails.medical_observation) && (
+                  <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-300">
+                    <h3 className="font-semibold text-yellow-800 mb-2">Observação Médica</h3>
+                    <p className="text-yellow-700 italic whitespace-pre-wrap">
+                      {selectedMedicationDetails.observations || selectedMedicationDetails.observacao_medica || selectedMedicationDetails.medical_observation}
+                    </p>
+                    <p className="text-xs text-yellow-600 mt-2">
+                      * Esta observação é para uso interno e não aparece na receita impressa
+                    </p>
+                  </div>
+                )}
+
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <p className="text-sm text-blue-600">
+                    <strong>Data da Prescrição:</strong> {selectedMedicationDetails.prescriptionDate ? 
+                      new Date(selectedMedicationDetails.prescriptionDate).toLocaleDateString() : 
+                      'Não informada'}
+                  </p>
+                  <p className="text-sm text-blue-600">
+                    <strong>ID da Prescrição:</strong> {selectedMedicationDetails.prescriptionId}
+                  </p>
+                </div>
+
+                <div className="flex justify-end gap-3 mt-6">
+                  <button
+                    onClick={() => handlePrint(animal.id, selectedMedicationDetails.prescriptionId)}
+                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2"
+                  >
+                    <PrintIcon fontSize="small" />
+                    Imprimir Receita
+                  </button>
+                  <button
+                    onClick={handleCloseMedicationModal}
+                    className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                  >
+                    Fechar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </Box>
+      </Modal>
+
       <Modal
         open={openModal === "newAnexo"}
         onClose={handleCloseModal}

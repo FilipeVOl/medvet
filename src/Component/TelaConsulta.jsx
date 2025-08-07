@@ -31,7 +31,6 @@ const TelaConsulta = () => {
       obs: obs,
     };
     schema.parse(info);
-    console.log(info);
   };
 
   const handleChange = useCallback((value, setter) => {

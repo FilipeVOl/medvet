@@ -1,5 +1,4 @@
 import { useState, useContext } from "react";
-import InputMask from "react-input-mask";
 import { postAluno } from "../utils/MostrarAluno.utils";
 import PropTypes from "prop-types";
 import { PutAluno } from "../services/alunos";
@@ -8,6 +7,7 @@ import InputComponent from "../Component/nova consulta/InputComponent";
 import { Snackbar, Alert } from "@mui/material";
 import { Select, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { formatCPF, formatCPFDisplay, handleCPFChange, formatPhone, formatPhoneDisplay, handlePhoneChange } from "../utils/inputMasks";
 
 export default function Cadastro(props) {
   const { selectedUser, setSelectedUser } = useContext(UpdateEditContext);
@@ -18,8 +18,8 @@ export default function Cadastro(props) {
     selectedUser ? selectedUser.registration : ""
   );
   const navigate = useNavigate();
-  const [cpf, setCpf] = useState(selectedUser ? selectedUser.cpf : "");
-  const [phone, setPhone] = useState(selectedUser ? selectedUser.phone : "");
+  const [cpf, setCpf] = useState(selectedUser ? formatCPFDisplay(selectedUser.cpf) : "");
+  const [phone, setPhone] = useState(selectedUser ? formatPhoneDisplay(selectedUser.phone) : "");
   const [email, setEmail] = useState(selectedUser ? selectedUser.email : "");
   const [course, setCourse] = useState("Medicina Veterinária");
   const [shift, setShift] = useState(selectedUser ? selectedUser.shift : "");
@@ -84,7 +84,8 @@ export default function Cadastro(props) {
     };
   }
 
-  const cpfSemPonto = cpf.replace(/[.-]/g, "");
+  const cpfSemPonto = formatCPF(cpf);
+  const phoneSemMask = formatPhone(phone);
   const data = {
     email,
     cpf: cpfSemPonto,
@@ -93,7 +94,7 @@ export default function Cadastro(props) {
     course,
     shift,
     period,
-    phone,
+    phone: phoneSemMask,
     name: nome,
     id: id,
   };
@@ -185,14 +186,14 @@ export default function Cadastro(props) {
             <div className="md:col-span-2 font-Montserrat grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
               <label htmlFor="cpf" className="font-Montserrat">
                 CPF *<br />
-                <InputMask
+                <input
                   id="cpf"
                   required
                   value={cpf}
                   name="cpf"
-                  mask="999.999.999-99"
+                  placeholder="000.000.000-00"
                   onChange={(e) => {
-                    setCpf(e.target.value);
+                    handleCPFChange(e.target.value, setCpf);
                   }}
                   className={`${
                     required.cpf
@@ -214,14 +215,14 @@ export default function Cadastro(props) {
             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
               <label htmlFor="phone" className="font-Montserrat">
                 Contato *<br />
-                <InputMask
-                  mask="(99)99999-9999"
+                <input
                   required
                   value={phone}
                   name="phone"
                   id="phone"
+                  placeholder="(00) 00000-0000"
                   onChange={(e) => {
-                    setPhone(e.target.value);
+                    handlePhoneChange(e.target.value, setPhone);
                   }}
                   className={`${
                     required.phone

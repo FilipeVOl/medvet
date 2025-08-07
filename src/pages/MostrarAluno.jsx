@@ -80,6 +80,7 @@ const columns = [
   { field: "name", headerName: "Nome" },
   { field: "phone", headerName: "N° de telefone" },
   { field: "editIcon", headerName: "" },
+  { field: "deleteIcon", headerName: "" },
 ];
 
 const MostrarAluno = () => {
@@ -278,26 +279,29 @@ const MostrarAluno = () => {
                           <StyledTableCell>{row.registration}</StyledTableCell>
                           <StyledTableCell>{row.name}</StyledTableCell>
                           <StyledTableCell>{row.phone}</StyledTableCell>
-                          <IconButton
-                            className="edit-button"
-                            onClick={() => {
-                              handleButtonClick();
-                              setSelectedUser(row);
-                            }}
-                          >
-                            <EditIcon sx={{ color: "#144A36" }} />
-                          </IconButton>
-
-                          <IconButton
-                            className="delete-button"
-                            onClick={() => {
-                              // handleDeleteClick();
-                              // setSelectedUser(row);
-                              handleDelete(row);
-                            }}
-                          >
-                            <DeleteIcon sx={{ color: "#d32f2f" }} />
-                          </IconButton>
+                          <StyledTableCell>
+                            <IconButton
+                              className="edit-button"
+                              onClick={() => {
+                                handleButtonClick();
+                                setSelectedUser(row);
+                              }}
+                            >
+                              <EditIcon sx={{ color: "#144A36" }} />
+                            </IconButton>
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            <IconButton
+                              className="delete-button"
+                              onClick={() => {
+                                // handleDeleteClick();
+                                // setSelectedUser(row);
+                                handleDelete(row);
+                              }}
+                            >
+                              <DeleteIcon sx={{ color: "#d32f2f" }} />
+                            </IconButton>
+                          </StyledTableCell>
                         </StyledTableRow>
                       ))}
                 </TableBody>

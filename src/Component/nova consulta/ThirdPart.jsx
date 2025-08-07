@@ -141,7 +141,6 @@ export default function ThirdPart(props) {
     await axios
       .post("http://localhost:3333/create/enchiridion", allDataState)
       .then((response) => {
-        console.log(response);
         if (response) {
           // muiSnackAlert("success", "Consulta criada com sucesso");
           handleGoToDash();

@@ -122,9 +122,7 @@ export default function FormExame({ animalData }) {
     setIsSubmitting(true);
 
     try {
-      console.log('Animal data:', animalData); // Log para debug
       
-      // Garantir que temos o ID do animal
       if (!animalData || !animalData.id) {
         throw new Error('ID do animal não fornecido');
       }

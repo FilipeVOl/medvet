@@ -39,8 +39,7 @@ export const getInternacoesAnimalId = async (animalId) => {
  */
 export const listarTodasSolicitacoes = async (setData) => {
   try {
-    console.log('Iniciando busca de solicitações...');
-      // Buscar as diferentes tipos de solicitações em paralelo
+    
     const [examesResponse, internacaoResponse, termoConsultaResponse, prescricoesResponse] = 
       await Promise.allSettled([
         axios.get(`${API_URL}/get/exames`),
@@ -180,24 +179,18 @@ async function enriquecerSolicitacoesComInfosAnimais(solicitacoes) {
     return;
   }
   
-  // Buscar informações dos animais em lote
   for (const animalId of animalIds) {
     try {
-      console.log(`Buscando informações do animal ${animalId}`);
       const { data: animal } = await axios.get(`${API_URL}/get/animal/id/${animalId}`);
       
       if (animal) {
-        console.log('Animal encontrado:', animal);
-        // Atualizar todas as solicitações deste animal
         solicitacoes.forEach(solicitacao => {
           if (solicitacao && solicitacao.animalId === animalId) {
             solicitacao.animalName = animal.name || animal.nome || 'Nome não disponível';
             
-            // Buscar informações do tutor
             if (animal.tutor_id) {
               solicitacao.tutorId = animal.tutor_id;
               
-              // Tentar buscar dados do tutor
               axios.get(`${API_URL}/get/tutor/${animal.tutor_id}`)
                 .then(({ data: tutor }) => {
                   if (tutor) {

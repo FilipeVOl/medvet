@@ -3,26 +3,41 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Box, TextField, Button, CircularProgress, FormControl, FormControlLabel, Checkbox, Grid, Paper, Typography } from '@mui/material';
-import InputMask from 'react-input-mask';
+import { formatCPF, formatCPFDisplay, handleCPFChange, formatPhone, formatPhoneDisplay, handlePhoneChange, formatCEP, formatCEPDisplay, handleCEPChange } from '../../utils/inputMasks';
 
 export default function FormConsulta({ animalData }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     nomeResponsavel: animalData?.tutorName || localStorage.getItem('tutorName') || '',
-    cpf: animalData?.tutorData?.cpf || localStorage.getItem('tutorCpf') || '',
+    cpf: animalData?.tutorData?.cpf ? formatCPFDisplay(animalData.tutorData.cpf) : (localStorage.getItem('tutorCpf') ? formatCPFDisplay(localStorage.getItem('tutorCpf')) : ''),
     endereco: animalData?.tutorData?.address || localStorage.getItem('tutorAddress') || '',
     cep: '',
-    telefone: animalData?.tutorData?.phone || localStorage.getItem('tutorPhone') || '',
+    telefone: animalData?.tutorData?.phone ? formatPhoneDisplay(animalData.tutorData.phone) : (localStorage.getItem('tutorPhone') ? formatPhoneDisplay(localStorage.getItem('tutorPhone')) : ''),
     motivoConsulta: animalData?.reason || localStorage.getItem('motivoConsulta') || '',
     observacoes: '',
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    if (name === 'cpf') {
+      handleCPFChange(value, (newValue) => {
+        setFormData(prev => ({ ...prev, [name]: newValue }));
+      });
+    } else if (name === 'telefone') {
+      handlePhoneChange(value, (newValue) => {
+        setFormData(prev => ({ ...prev, [name]: newValue }));
+      });
+    } else if (name === 'cep') {
+      handleCEPChange(value, (newValue) => {
+        setFormData(prev => ({ ...prev, [name]: newValue }));
+      });
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -43,6 +58,9 @@ export default function FormConsulta({ animalData }) {
     try {
       const payload = {
         ...formData,
+        cpf: formatCPF(formData.cpf),
+        telefone: formatPhone(formData.telefone),
+        cep: formatCEP(formData.cep),
         animalId: animalData?.id || '',
         animalName: animalData?.name || '',
         species: animalData?.species || '',
@@ -70,9 +88,9 @@ export default function FormConsulta({ animalData }) {
         localStorage.removeItem('motivoConsulta');
         
         localStorage.setItem('tutorName', formData.nomeResponsavel);
-        localStorage.setItem('tutorCpf', formData.cpf);
+        localStorage.setItem('tutorCpf', formatCPF(formData.cpf));
         localStorage.setItem('tutorAddress', formData.endereco);
-        localStorage.setItem('tutorPhone', formData.telefone);
+        localStorage.setItem('tutorPhone', formatPhone(formData.telefone));
 
       
         let pdfUrl;
@@ -146,28 +164,21 @@ export default function FormConsulta({ animalData }) {
           </Grid>
           
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputMask
-                mask="999.999.999-99"
-                value={formData.cpf}
-                onChange={handleChange}
-              >
-                {() => (
-                  <TextField
-                    label="CPF"
-                    name="cpf"
-                    variant="outlined"
-                    fullWidth
-                    InputProps={{
-                      style: { fontFamily: 'Montserrat' }
-                    }}
-                    InputLabelProps={{
-                      style: { fontFamily: 'Montserrat' }
-                    }}
-                  />
-                )}
-              </InputMask>
-            </FormControl>
+            <TextField
+              fullWidth
+              label="CPF"
+              name="cpf"
+              value={formData.cpf}
+              onChange={handleChange}
+              variant="outlined"
+              placeholder="000.000.000-00"
+              InputProps={{
+                style: { fontFamily: 'Montserrat' }
+              }}
+              InputLabelProps={{
+                style: { fontFamily: 'Montserrat' }
+              }}
+            />
           </Grid>
 
           <Grid item xs={12}>
@@ -188,53 +199,39 @@ export default function FormConsulta({ animalData }) {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputMask
-                mask="99999-999"
-                value={formData.cep}
-                onChange={handleChange}
-              >
-                {() => (
-                  <TextField
-                    label="CEP"
-                    name="cep"
-                    variant="outlined"
-                    fullWidth
-                    InputProps={{
-                      style: { fontFamily: 'Montserrat' }
-                    }}
-                    InputLabelProps={{
-                      style: { fontFamily: 'Montserrat' }
-                    }}
-                  />
-                )}
-              </InputMask>
-            </FormControl>
+            <TextField
+              fullWidth
+              label="CEP"
+              name="cep"
+              value={formData.cep}
+              onChange={handleChange}
+              variant="outlined"
+              placeholder="00000-000"
+              InputProps={{
+                style: { fontFamily: 'Montserrat' }
+              }}
+              InputLabelProps={{
+                style: { fontFamily: 'Montserrat' }
+              }}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputMask
-                mask="(99) 99999-9999"
-                value={formData.telefone}
-                onChange={handleChange}
-              >
-                {() => (
-                  <TextField
-                    label="Telefone"
-                    name="telefone"
-                    variant="outlined"
-                    fullWidth
-                    InputProps={{
-                      style: { fontFamily: 'Montserrat' }
-                    }}
-                    InputLabelProps={{
-                      style: { fontFamily: 'Montserrat' }
-                    }}
-                  />
-                )}
-              </InputMask>
-            </FormControl>
+            <TextField
+              fullWidth
+              label="Telefone"
+              name="telefone"
+              value={formData.telefone}
+              onChange={handleChange}
+              variant="outlined"
+              placeholder="(00) 00000-0000"
+              InputProps={{
+                style: { fontFamily: 'Montserrat' }
+              }}
+              InputLabelProps={{
+                style: { fontFamily: 'Montserrat' }
+              }}
+            />
           </Grid>
 
           <Grid item xs={12}>

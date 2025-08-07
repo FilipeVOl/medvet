@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Pagination } from "@mui/material";
 import { Input, InputLabel } from "@mui/material";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { UserContext } from "../../contexts/userContext";
 
 const ModalEdit = ({ label, type, handleClose, selectedPrescription }) => {
+  const { user } = useContext(UserContext);
   const [medications, setMedications] = useState(selectedPrescription || []);
   const [currentPage, setCurrentPage] = useState(1);
   const [medicationsPerPage] = useState(1);
 
+  // Verifica se o usuário é médico/professor (role professor ou admin)
+  const isMedico = user?.role === 'professor' || user?.role === 'admin';
+
   const totalMedications = selectedPrescription
     ? selectedPrescription.length
     : 0;
-  console.log("Total medications:", totalMedications);
 
   const currentMedication = medications[currentPage - 1] || {};
 
@@ -117,6 +121,24 @@ const ModalEdit = ({ label, type, handleClose, selectedPrescription }) => {
                   }
                 />
               </div>
+              
+              {/* Campo de observação médica - visível apenas para médicos */}
+              {isMedico && (
+                <div className="col-span-3">
+                  <InputLabel>Observação Médica (Uso Interno)</InputLabel>
+                  <textarea
+                    className="border-2 rounded-md w-full p-2 min-h-[80px] bg-yellow-50 border-yellow-300 resize-y"
+                    value={currentMedication.medical_observation || ""}
+                    onChange={(e) =>
+                      handleInputChange("medical_observation", e.target.value)
+                    }
+                    placeholder="Observações internas para uso médico..."
+                  />
+                  <small className="text-gray-600 text-xs">
+                    * Esta observação é visível apenas para médicos e não aparece na receita impressa
+                  </small>
+                </div>
+              )}
             </div>
           </form>
           <div className="flex flex-row justify-between items-center h-12 gap-8">

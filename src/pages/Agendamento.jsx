@@ -6,9 +6,9 @@ import PropTypes from "prop-types";
 import TutorValidado from "../Component/Agendamento/TutorValidado";
 import TutorInvalido from "../Component/Agendamento/TutorInvalido";
 import Box from "@mui/material/Box";
-import InputMask from "react-input-mask";
 import { Snackbar, Alert } from "@mui/material";
 import TutorSelector from "../Component/Agendamento/TutorSelector";
+import { formatPhone, formatPhoneDisplay, handlePhoneChange } from "../utils/inputMasks";
 
 const Agendamento = () => {
   const style = {
@@ -32,9 +32,7 @@ const Agendamento = () => {
   const [openSelector, setOpenSelector] = useState(false);
 
   const phoneUnmask = (value) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/^(\d{2})\((\d{2})\)(\d{4})-(\d{4})$/, "$1$2$3$4");
+    return formatPhone(value);
   };
 
   const handleClose = () => {
@@ -131,29 +129,22 @@ const Agendamento = () => {
                   <InputLabel sx={{ fontFamily: "Montserrat" }}>
                     Telefone
                   </InputLabel>
-                  <InputMask
-                    mask="(99) 99999-9999"
+                  <Input
+                    sx={{
+                      fontFamily: "Montserrat",
+                      borderRadius: "0.75rem",
+                      padding: "8px 12px",
+                      width: "100%",
+                      "& .MuiInput-input": { padding: 0 },
+                      "&:before": { display: "none" },
+                      "&:after": { display: "none" },
+                    }}
                     value={telefone}
-                    onChange={(e) => setTelefone(e.target.value)}
-                    maskChar={null}
-                  >
-                    {() => (
-                      <Input
-                        sx={{
-                          fontFamily: "Montserrat",
-                          borderRadius: "0.75rem",
-                          padding: "8px 12px",
-                          width: "100%",
-                          "& .MuiInput-input": { padding: 0 },
-                          "&:before": { display: "none" },
-                          "&:after": { display: "none" },
-                        }}
-                        placeholder="(00) 00000-0000"
-                        className="border border-[#848484] rounded-xl h-[46px] text-base w-full"
-                        data-testid="input-modal-agendamento"
-                      />
-                    )}
-                  </InputMask>
+                    onChange={(e) => handlePhoneChange(e.target.value, setTelefone)}
+                    placeholder="(00) 00000-0000"
+                    className="border border-[#848484] rounded-xl h-[46px] text-base w-full"
+                    data-testid="input-modal-agendamento"
+                  />
                 </div>
 
                 {Array.isArray(data) && data.length > 1 && !validate && (

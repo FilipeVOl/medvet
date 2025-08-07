@@ -38,7 +38,9 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
                   pharmacy: med.pharmacy || 'comum',
                   unit: med.unit || '0', 
                   measurement: med.measurement || 'Não informado',
-                  description: med.description || 'Sem instruções'
+                  description: med.description || 'Sem instruções',
+                  // Mapear todas as variantes do campo de observação
+                  observations: med.observations || med.observacao_medica || med.medical_observation,
                 })) || []
               }));
             }
@@ -66,7 +68,8 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
                   pharmacy: med.pharmacy || 'comum',
                   unit: med.unit || '0',
                   measurement: med.measurement || 'Não informado',
-                  description: med.description || 'Sem instruções'
+                  description: med.description || 'Sem instruções',
+                  observations: med.observations || med.observacao_medica || med.medical_observation,
                 }));
               }
               
@@ -141,7 +144,9 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
               pharmacy: med.pharmacy || 'comum',
               unit: med.unit || '0',
               measurement: med.measurement || 'Não informado',
-              description: med.description || 'Sem instruções'
+              description: med.description || 'Sem instruções',
+              // Mapear todas as variantes do campo de observação
+              observations: med.observations || med.observacao_medica || med.medical_observation,
             }));
           } else if (!dadosProcessados.medications) {
             dadosProcessados.medications = [];
@@ -447,6 +452,14 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
                                   <div className="text-gray-700 font-medium mb-1">Posologia:</div>
                                   <div className="text-gray-600 whitespace-pre-wrap">{med.description || 'Não informada'}</div>
                                 </div>
+                                
+                                {/* Exibição da observação médica */}
+                                {(med.observations || med.observacao_medica || med.medical_observation) && (
+                                  <div className="text-sm mt-3 bg-yellow-50 p-3 rounded border-l-4 border-yellow-300">
+                                    <div className="text-yellow-800 font-medium mb-1">Observação Médica:</div>
+                                    <div className="text-yellow-700 italic whitespace-pre-wrap">{med.observations || med.observacao_medica || med.medical_observation}</div>
+                                  </div>
+                                )}
                               </li>
                             ))
                           ) : (
@@ -510,6 +523,14 @@ export default function DetalhesSolicitacao({ tipo: propTipo }) {
                             <div className="text-gray-700 font-medium mb-1">Posologia:</div>
                             <div className="text-gray-600 whitespace-pre-wrap">{med.description || 'Não informada'}</div>
                           </div>
+                          
+                          {/* Exibição da observação médica */}
+                          {(med.observations || med.observacao_medica || med.medical_observation) && (
+                            <div className="text-sm mt-3 bg-yellow-50 p-3 rounded border-l-4 border-yellow-300">
+                              <div className="text-yellow-800 font-medium mb-1">Observação Médica:</div>
+                              <div className="text-yellow-700 italic whitespace-pre-wrap">{med.observations || med.observacao_medica || med.medical_observation}</div>
+                            </div>
+                          )}
                         </li>
                       ))
                     ) : dados?.medicamentos && dados.medicamentos.length > 0 ? (

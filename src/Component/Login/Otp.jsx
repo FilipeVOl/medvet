@@ -17,7 +17,6 @@ export default function OTPInput() {
       .then(() => setDisable(true))
       .then(() => alert("A new OTP has succesfully been sent to your email."))
       .then(() => setTimer(60))
-      .catch(console.log);
   }
 
   function verfiyOTP() {

@@ -65,7 +65,6 @@ export const getAllAnimals = async (res) => {
     try {
         const { data } = await axios.get(`http://localhost:3333/get/animals?numberOfItems=100000&page=1`)
         // The data from the API includes sequence, animal_id, animal_name, species, race, gender, age, coat, tutor_name
-        console.log('Returning first animal:', data[0].animal_name)
         res(data)
         return data
     } catch (e) {

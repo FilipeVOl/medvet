@@ -4,7 +4,7 @@ import { getConsults } from "../services/agendamento";
 import iconCalendar from "../images/calendarIcon.svg";
 import { Link } from "react-router-dom";
 import { Select, MenuItem } from "@mui/material";
-import InputMask from "react-input-mask";
+import { handleCEPChange } from "../utils/inputMasks";
 
 export default function Agenda() {
   const [agenda, setAgenda] = useState({});
@@ -124,13 +124,16 @@ export default function Agenda() {
                   }}
                 />
               ) : (
-                <InputMask
-                  mask="99/99/9999"
-                  maskChar={null}
+                <input
+                  type="text"
                   value={dateFilter}
                   onChange={(e) => {
-                    const cleanDate = e.target.value.replace(/[^\d]/g, "");
-                    setDateFilter(cleanDate);
+                    const value = e.target.value;
+                    const cleaned = value.replace(/[^\d]/g, "");
+                    let formatted = cleaned;
+                    if (cleaned.length > 2) formatted = cleaned.slice(0, 2) + "/" + cleaned.slice(2);
+                    if (cleaned.length > 4) formatted = cleaned.slice(0, 2) + "/" + cleaned.slice(2, 4) + "/" + cleaned.slice(4, 8);
+                    setDateFilter(formatted);
                     setNome("");
                   }}
                   className="w-full h-[42px] pl-10 pr-4 border border-[#9F9F9F] rounded-md font-Montserrat text-sm focus:outline-none focus:border-[#9F9F9F]"

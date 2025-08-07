@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 import Textarea from "@mui/joy/Textarea";
 import z from "zod";
 import { CreateConsult } from "../../services/agendamento";
-import InputMask from "react-input-mask";
 import { TextField } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
+import { formatPhoneDisplay, handlePhoneChange } from "../../utils/inputMasks";
 
 const InputConsulta = ({ label, type, setter, value }) => {
   const handleChange = useCallback(
@@ -154,9 +154,7 @@ const TutorInvalido = ({ tel }) => {
         nameTutor,
       });
   
-      console.log('Sending data:', consulta);
       const response = await CreateConsult(consulta);
-      console.log('Response:', response);
       
       handleClose();
       
@@ -171,18 +169,10 @@ const TutorInvalido = ({ tel }) => {
   };
 
   const handlePhone = (e) => {
-    const value = e.target.value;
-    let formattedValue = value;
-
-    if (value.replace(/\D/g, '').length > 0) {
-      const digits = value.replace(/\D/g, '');
-      if (digits.length >= 11) {
-        formattedValue = `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7,11)}`;
-      }
-    }
-
-    setPhone(formattedValue);
-    setMask(formattedValue);
+    handlePhoneChange(e.target.value, (formattedValue) => {
+      setPhone(formattedValue);
+      setMask(formattedValue);
+    });
   };
 
   
@@ -273,34 +263,28 @@ const TutorInvalido = ({ tel }) => {
                   >
                     Telefone
                   </InputLabel>
-                  <InputMask
-                    mask="(99) 99999-9999"
+                  <Input
                     value={phone}
                     onChange={handlePhone}
-                  >
-                    {(inputProps) => (
-                      <Input
-                        {...inputProps}
-                        type="text"
-                        className={`${
-                          phone === "" ? "border-[#144A36]" : "border-[#9F9F9F]"
-                        } border rounded-md h-[46px] p-2 text-base font-Montserrat`}
-                        disableUnderline={true}
-                        sx={{
-                          fontFamily: "Montserrat",
-                          "& .MuiInputBase-root::before": {
-                            borderBottom: "none",
-                          },
-                          "&:hover:before": {
-                            borderBottom: "none !important",
-                          },
-                          "&::after": {
-                            borderBottom: "none",
-                          },
-                        }}
-                      />
-                    )}
-                  </InputMask>
+                    type="text"
+                    placeholder="(00) 00000-0000"
+                    className={`${
+                      phone === "" ? "border-[#144A36]" : "border-[#9F9F9F]"
+                    } border rounded-md h-[46px] p-2 text-base font-Montserrat`}
+                    disableUnderline={true}
+                    sx={{
+                      fontFamily: "Montserrat",
+                      "& .MuiInputBase-root::before": {
+                        borderBottom: "none",
+                      },
+                      "&:hover:before": {
+                        borderBottom: "none !important",
+                      },
+                      "&::after": {
+                        borderBottom: "none",
+                      },
+                    }}
+                  />
                 </div>
 
                 <div className="flex flex-col mb-4">

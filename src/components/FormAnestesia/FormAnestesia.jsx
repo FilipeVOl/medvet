@@ -31,7 +31,6 @@ export default function FormAnestesia({ animalData }) {
       };
       
     
-      console.log('Form data:', data);
       
       alert('Autorização para anestesia registrada com sucesso!');
      

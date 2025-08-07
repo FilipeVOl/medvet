@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import InputMask from "react-input-mask";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { UpdateEditContext } from "../contexts/updateEditContext";
@@ -7,6 +6,7 @@ import { postProf, PutProf } from "../services/professores";
 import InputComponent from "../Component/nova consulta/InputComponent";
 import { Snackbar, Alert } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
+import { formatCPF, formatCPFDisplay, handleCPFChange, formatPhone, formatPhoneDisplay, handlePhoneChange } from "../utils/inputMasks";
 
 export default function Professor(props) {
   const navigate = useNavigate();
@@ -17,8 +17,8 @@ export default function Professor(props) {
   const [registration, setRegistration] = useState(
     selectedUser ? selectedUser.registration : ""
   );
-  const [cpf, setCpf] = useState(selectedUser ? selectedUser.cpf : "");
-  const [phone, setPhone] = useState(selectedUser ? selectedUser.phone : "");
+  const [cpf, setCpf] = useState(selectedUser ? formatCPFDisplay(selectedUser.cpf) : "");
+  const [phone, setPhone] = useState(selectedUser ? formatPhoneDisplay(selectedUser.phone) : "");
   const [email, setEmail] = useState(selectedUser ? selectedUser.email : "");
   const [course, setCourse] = useState("Medicina Veterinária");
   const [shift, setShift] = useState(selectedUser ? selectedUser.shift : "");
@@ -74,13 +74,14 @@ export default function Professor(props) {
     };
   }
 
-  const cpfSemPonto = cpf.replace(/[.-]/g, "");
+  const cpfSemPonto = formatCPF(cpf);
+  const phoneSemMask = formatPhone(phone);
   const data = {
     name: nome,
     registration,
     cpf: cpfSemPonto,
     course,
-    phone,
+    phone: phoneSemMask,
     email,
     password: cpfSemPonto,
     shift,
@@ -177,14 +178,14 @@ export default function Professor(props) {
             <div className="box-2 grid grid-cols-[1fr_2fr] gap-[5%]">
               <label htmlFor="cpf" className="font-Montserrat">
                 CPF *<br />
-                <InputMask
+                <input
                   id="cpf"
                   required
                   value={cpf}
                   name="cpf"
-                  mask="999.999.999-99"
+                  placeholder="000.000.000-00"
                   onChange={(e) => {
-                    setCpf(e.target.value);
+                    handleCPFChange(e.target.value, setCpf);
                   }}
                   className={`${
                     required.cpf
@@ -208,14 +209,14 @@ export default function Professor(props) {
             <div className="box-3 grid grid-cols-[1fr_2fr] gap-[5%]">
               <label htmlFor="phone" className="font-Montserrat">
                 Contato *<br />
-                <InputMask
-                  mask="(99)99999-9999"
+                <input
                   required
                   value={phone}
                   name="phone"
                   id="phone"
+                  placeholder="(00) 00000-0000"
                   onChange={(e) => {
-                    setPhone(e.target.value);
+                    handlePhoneChange(e.target.value, setPhone);
                   }}
                   className={`${
                     required.phone

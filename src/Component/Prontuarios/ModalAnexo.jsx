@@ -32,9 +32,7 @@ const ModalAnexo = ({ animal_id, label, type, setOpen, handleClose, handleFileUp
   const SubmitAnexo = async () => {
     try {
       const response = await createAnexo(animal_id, selectedFile, documentName);
-      console.log(response)
     } catch (error) {
-      console.log("Failed to create anexo:", error)
     }
   }
 

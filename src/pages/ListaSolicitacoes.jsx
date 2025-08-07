@@ -46,7 +46,6 @@ export default function ListaSolicitacoes() {
               }
             }
             
-            console.log('Dados enriquecidos:', enrichedData);
             setSolicitacoes(enrichedData);
             setLoading(false);
             return;
